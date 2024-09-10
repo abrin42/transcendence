@@ -1,0 +1,41 @@
+version: '3.8'
+
+services:
+    django:
+        build:
+            context: django
+        container_name: django_app
+        # volumes:
+        #     - static_volume:/app/static
+        expose:
+            - "8000"
+        restart: on-failure
+        networks: 
+          - ft_transcendence
+        # env_file:
+        #     .env
+        # depends_on:
+        #     - db
+    nginx:
+        image: nginx
+        container_name: nginx_server
+        ports:
+          - "8080:8080"
+        networks:
+          - ft_transcendence
+        build:
+          context: ./
+          dockerfile: ./nginx/Dockerfile
+        restart: on-failure
+        depends_on:
+          - django
+
+volumes:
+    static_volume:
+    media_volume:
+    postgres_data:
+
+networks:
+    ft_transcendence:
+      driver: bridge
+    #   name: ft_transcendence

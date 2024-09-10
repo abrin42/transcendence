@@ -1,0 +1,30 @@
+{% extends 'layout.html' %}
+
+{% block title %}
+    2FA
+{% endblock %}
+
+{% block content %}
+    <br><h1>2FA</h1><br>
+
+    <form  action="/player/tfa/" method="POST" >
+        {% csrf_token %}
+        
+        {% if user.email_2fa_active %}
+        <label>
+            <input type="radio" name="otp_method" value="email" {% if user.email_2fa_active and not user.sms_2fa_active %} checked {% endif %}> Receive OTP via Email
+        </label>
+        <br>
+        {% endif %}
+        
+        {% if user.sms_2fa_active %}
+            <label>
+                <input type="radio" name="otp_method" value="sms" {% if not user.email_2fa_active %} checked {% endif %}> Receive OTP via SMS
+            </label>
+            <br>
+        {% endif %}
+
+        <br>
+        <button type="submit" name="tfa">Send OTP</button>
+    </form>
+{% endblock %}

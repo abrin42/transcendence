@@ -1,0 +1,14 @@
+{% extends 'layout.html' %}
+
+{% block title %}
+    FRIENDS
+{% endblock %}
+
+{% block content %}
+    <br><br>
+
+    <p><a href= "{% url 'friend:add' %}">add friend</a></p>
+    <p><a href= "{% url 'friend:list' %}">friend list</a></p>
+    <p><a href= "{% url 'friend:pending' %}">pending list</a></p>
+    <p><a href= "{% url 'friend:refused' %}">refused list</a></p>
+{% endblock %}

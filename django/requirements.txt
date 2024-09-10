@@ -1,0 +1,10 @@
+Django==4.2
+django-environ==0.11.2 
+daphne==4.0.0
+pyotp==2.9.0
+channels==4.1.0
+django-phonenumber-field==8.0.0
+django-phonenumbers==1.0.1
+django-qr-code==4.0.1
+vonage==3.16.0
+pillow==10.4.0 

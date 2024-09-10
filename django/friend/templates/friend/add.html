@@ -1,0 +1,26 @@
+{% extends 'layout.html' %}
+
+{% block title %}
+    Submit Username
+{% endblock %}
+
+{% block content %}
+<br><br>
+
+<body>
+    <h1>Submit Another User's Username</h1>
+    <br>
+    {% if messages %}
+        {% for message in messages %}
+            <h2 style="color: red">⚠️{{ message }}⚠️</h2>
+        {% endfor %}
+    {% endif %}
+
+    <form method="post">
+        {% csrf_token %}
+        <label for="username">Username:</label>
+        <input type="text" id="username" name="username" required>
+        <button type="submit">Submit</button>
+    </form>
+</body>
+{% endblock %}

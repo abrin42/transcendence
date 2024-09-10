@@ -1,0 +1,23 @@
+{% extends 'layout.html' %}
+
+{% block title %}
+    Player Update
+{% endblock %}
+
+{% block content %}
+    <br>
+    <h1>Player Update</h1>
+    <br>
+    {% if messages %}
+    {% for message in messages %}
+        <h2 style="color: red">⚠️{{ message }}⚠️</h2>
+    {% endfor %}
+    {% endif %}
+    <br>
+    <form method="post" action="/player/update/" enctype="multipart/form-data">
+        {% csrf_token %}
+        {{ form }}
+        <button type="submit" name="login">Update</button>
+    </form>
+    <br><br>
+{% endblock %}

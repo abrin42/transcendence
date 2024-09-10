@@ -1,0 +1,24 @@
+{% extends 'layout.html' %}
+
+{% block title %}
+    Register a New User
+{% endblock %}
+
+{% block content %}
+<br>
+    <p>Check out my <a href="/api">Home page</a>.</p>
+
+    <h1>Register a New User</h1>
+    <form class="form-width-validation" action="/api/player/register/" method="post">
+        {% csrf_token %}
+        {{ form }}
+        <br><br>
+        <label>
+            <input type="checkbox" name="consent" required> I agree to the <a href="/privacy-policy">privacy policy</a>.
+        </label>
+
+        <br><br>
+        <button>Submit</button>
+    </form>
+    
+{% endblock %}
