@@ -1,19 +1,22 @@
 <script setup>
+//imports
+    import CreateDropupButton from '../components/CreateDropupButton.vue';
+
+    var myVideo = document.getElementById('videoBG');
+    myVideo.playbackRate = 2;
 </script>
 
 <template>
-    <div class="gameContainer">
-        <div class="game">
-            <div class="gameHeader">
-                <h1 class="gameTitle">Game</h1>
-            </div>
-            <div class="gameContent">
-                <p>Game content</p>
+    <main>
+        <div id="wrapper">
+            <div>
+                <CreateDropupButton />
             </div>
         </div>
-    </div>
+    </main>
 </template>
 
 <style lang="scss">
 @import './../assets/main.scss';
+
 </style>

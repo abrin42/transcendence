@@ -1,16 +1,29 @@
 <template>
   <div class="dropup">
-    <button class="dropbtn">🇫🇷</button>
-    <div class="dropup-content">
-      <a href="#">🇬🇧</a>
-      <a href="#">🇺🇸</a>
-      <a href="#">🇪🇸</a>
-    </div>
+    <button class="dropbtn" ref="p0">🇺🇸</button>
+      <div class="dropup-content">
+        <a @click="switchEN">🇺🇸</a>
+        <a @click="switchFR">🇫🇷</a>
+        <a @click="switchES">🇪🇸</a>
+      </div>
   </div>
 </template>
 
 <script setup>
-import { FwbDropdown } from 'flowbite-vue'
+  import { ref } from 'vue';
+
+function switchEN() {
+  this.$refs.p0 = "🇺🇸";
+}
+
+function switchFR() {
+  this.$refs.p0 = "🇫🇷";
+}
+
+function switchES() {
+  this.$refs.p1 = "🇪🇸";
+}
+  
 </script>
 
 <style>
