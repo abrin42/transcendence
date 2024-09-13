@@ -169,13 +169,105 @@
 
     }
 
+
+
+
+
+
+
+
+
+
+
+    export default {
+  data() {
+    return {
+      socket: null, // Contiendra l'objet WebSocket
+      message: '', // Message à envoyer
+      messages: [] // Liste des messages reçus
+    };
+  },
+  created() {
+    // Établir la connexion WebSocket lorsque le composant est créé
+    this.connectWebSocket();
+  },
+  methods: {
+    connectWebSocket() {
+      // Crée une nouvelle connexion WebSocket à l'URL spécifiée
+      this.socket = new WebSocket('ws://localhost:8000/ws/some_path/');
+
+      // Événement déclenché lorsque la connexion WebSocket est ouverte
+      this.socket.onopen = () => {
+        console.log('WebSocket connected');
+      };
+
+      // Événement déclenché lorsque le WebSocket reçoit un message
+      this.socket.onmessage = (event) => {
+        const data = JSON.parse(event.data); // Parse le message JSON
+        this.messages.push(data.message); // Ajoute le message reçu à la liste
+      };
+
+      // Événement déclenché lorsque la connexion WebSocket est fermée
+      this.socket.onclose = () => {
+        console.log('WebSocket disconnected');
+      };
+
+      // Événement déclenché lorsqu'une erreur survient sur la connexion WebSocket
+      this.socket.onerror = (error) => {
+        console.error('WebSocket error:', error);
+      };
+    },
+    sendMessage() {
+      if (this.message.trim() !== '') {
+        // Envoie le message saisi au serveur via le WebSocket
+        this.socket.send(JSON.stringify({
+          'message': this.message // Envoie le message sous forme de JSON
+        }));
+        this.message = ''; // Réinitialise l'input après l'envoi
+      }
+    }
+  },
+  beforeDestroy() {
+    // Ferme la connexion WebSocket lorsque le composant est détruit
+    if (this.socket) {
+      this.socket.close();
+    }
+  }
+};
+
+
+
+
+
+
 </script>
 
 <template>
     <main>
-        <div id="wrapper">
+        <!-- <div id="wrapper">
             <canvas id ="board"></canvas>
+
+        </div> -->
+
+
+
+
+
+        <div>
+            <h2>Chat WebSocket</h2>
+                <input 
+                    v-model="message" 
+                    placeholder="Type your message" 
+                    @keyup.enter="sendMessage" 
+                />
+                <button @click="sendMessage">Send</button>
+                <div v-for="(msg, index) in messages" :key="index">
+                    {{ msg }}
+                </div>
         </div>
+
+
+
     </main>
 </template>
 

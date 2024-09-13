@@ -53,6 +53,7 @@ INSTALLED_APPS = [
     'friend',
     'player',
     'game',
+    'websockets'
 
 ]
 
