@@ -3,6 +3,7 @@
   import AudioBackground from './components/AudioBackground.vue'
   import VideoBackground from './components/VideoBackground.vue'
 
+
 </script>
 
 <template>

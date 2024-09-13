@@ -1,12 +1,13 @@
 <template>
-
-    <div id="video">
-        <video id="videoBG" autoplay muted loop class="flex">
-            <source src="./../assets/Homeview.mp4" type="video/mp4">
-                Your browser does not support the video element.
-        </video>
+    <div id ="wrapper">
+        <div id="video">
+            <video id="videoBG" autoplay muted loop class="flex">
+                <source src="./../assets/MainMenuScene.mp4" type="video/mp4">
+                    Your browser does not support the video element.
+            </video>
+        </div>
     </div>
-  
+
 </template>
   
 <script>
@@ -27,5 +28,15 @@
         display: flex;
         justify-content: center;
         align-items: flex-start;
+    }
+
+    #wrapper {
+    position: absolute;
+    width: 100vw;
+    height: 100vh;
+    overflow: hidden;
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
     }
 </style>
