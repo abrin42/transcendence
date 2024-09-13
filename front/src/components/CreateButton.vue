@@ -17,8 +17,6 @@ function toggleIcon() {
 function clickButton() {
     console.log('Button clicked');
 }
-
-
 </script>
 
 <template>

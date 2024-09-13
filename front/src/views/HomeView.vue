@@ -8,18 +8,17 @@
 
 // Routing functions
 const router = useRouter();
-
 var myVideo = document.getElementById('videoBG');
 myVideo.playbackRate = 1;
 
-function goToGame() {
-    router.push('/game');
+function goToModeSelect() {
+    router.push('/modeselect');
+    
 }
 
 function goToCredits() {
     router.push('/credits');
 }
-
 
 </script>
 
@@ -27,7 +26,7 @@ function goToCredits() {
     <main>
         <div id="wrapper">
             <div class="buttonContainer">
-                <button class="button" @click="goToGame">
+                <button class="button" @click="goToModeSelect">
                     <i class="fas fa-play" style="margin-right: 8px;"></i>
                     <span class="buttonText buttonTextSize">Play</span>
                 </button>
@@ -39,9 +38,9 @@ function goToCredits() {
                 <button class="button button-log" @click="clickButton">
                     <span class="buttonText">Login</span>
                 </button>
-                <button>
+                <div>
                     <CreateSoundButton />
-                </button>
+                </div>
                 <div>
                     <CreateSettingsButton />
                 </div>
@@ -65,20 +64,11 @@ function goToCredits() {
     }
 }
 
+
 .icon-rotate {
     display: inline-block;
     animation: rotate 1s ease-out;
 }
-    
-    #wrapper {
-    position: absolute;
-    width: 100vw;
-    height: 100vh;
-    overflow: hidden;
-    display: flex;
-    justify-content: center;
-    align-items: flex-start;
-    }
     
     #dropup {
         z-index: 1;
@@ -88,6 +78,7 @@ function goToCredits() {
     } 
 
     .buttonContainer {
+    z-index: 1;
     display: flex;
     flex-direction: column;
     align-items: center;

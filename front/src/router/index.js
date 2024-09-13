@@ -1,6 +1,7 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import HomeView from '../views/HomeView.vue'
 import GameView from '../views/GameView.vue'
+import ModeSelectView from '../views/ModeSelectView.vue'
 import CreditsView from '../views/CreditsView.vue'
 import LegacyPongView from '../views/LegacyPongView.vue'
 
@@ -13,9 +14,9 @@ const router = createRouter({
       component: HomeView
     },
     {
-      path: '/game',
-      name: 'game',
-      component: GameView
+      path: '/modeselect',
+      name: 'modeselect',
+      component: ModeSelectView
     },
     {
       path: '/credits',
@@ -26,6 +27,9 @@ const router = createRouter({
       path: '/legacy',
       name: 'legacy',
       component: LegacyPongView
+      path: '/game',
+      name: 'game',
+      component: GameView
     }
   ]
 })

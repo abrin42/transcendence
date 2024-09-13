@@ -1,29 +1,31 @@
 <template>
   <div class="dropup">
-    <button class="dropbtn" ref="p0">🇺🇸</button>
+    <button id="p0" class="dropbtn" ref="p0">🇺🇸</button>
       <div class="dropup-content">
-        <a @click="switchEN">🇺🇸</a>
-        <a @click="switchFR">🇫🇷</a>
         <a @click="switchES">🇪🇸</a>
+        <a @click="switchFR">🇫🇷</a>
+        <a @click="switchEN">🇺🇸</a>
       </div>
   </div>
 </template>
 
 <script setup>
-  import { ref } from 'vue';
 
 function switchEN() {
-  this.$refs.p0 = "🇺🇸";
+  document.getElementById("p0").innerHTML = "🇺🇸";
+  // this.$refs.p0.innerHTML = "🇺🇸";
 }
 
 function switchFR() {
-  this.$refs.p0 = "🇫🇷";
+  document.getElementById("p0").innerHTML = "🇫🇷";
+  // this.$refs.p0.innerHTML = "🇫🇷";
 }
 
 function switchES() {
-  this.$refs.p1 = "🇪🇸";
+  document.getElementById("p0").innerHTML = "🇪🇸";
+  // this.$refs.p0.innerHTML = "🇪🇸";
 }
-  
+
 </script>
 
 <style>
