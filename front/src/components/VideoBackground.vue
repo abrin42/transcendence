@@ -1,7 +1,7 @@
 <template>
     <div id ="wrapper">
         <div id="video">
-            <video id="videoBG" autoplay muted loop class="flex">
+            <video id="videoBG" loop autoplay muted preload="true" class="flex">
                 <source src="./../assets/MainMenuScene.mp4" type="video/mp4">
                     Your browser does not support the video element.
             </video>
@@ -11,7 +11,6 @@
 </template>
   
 <script>
-
 </script>
 
 <style>

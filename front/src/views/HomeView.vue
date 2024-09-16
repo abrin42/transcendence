@@ -64,6 +64,9 @@ function goToCredits() {
     }
 }
 
+.wrapper {
+    z-index: 0;
+}
 
 .icon-rotate {
     display: inline-block;

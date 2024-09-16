@@ -12,7 +12,6 @@
     <main>
         <div id="wrapper">
             <div class="buttonContainer">
-
                 <div>
                     <CreateSoundButton />
                 </div>

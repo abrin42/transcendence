@@ -1,5 +1,5 @@
 <template>
-    <button class="button button-sound" @click="togglePlay">
+    <button id="unmuteButton" class="button button-sound" @click="togglePlay">
         <i v-if="isPlaying" class="fa-solid fa-volume-high"></i>
         <i v-else class="fa-solid fa-volume-xmark"></i>
     </button>
@@ -8,16 +8,17 @@
 <script setup>
     import { ref } from 'vue';
 
-    const isPlaying = ref(true);
-        
+    const isPlaying = ref(false);
+
+    var myAudio = document.getElementById('background_audio');
     function togglePlay() {
         isPlaying.value = !isPlaying.value;
-        if(document.getElementById('background_audio').muted == false){
-        document.getElementById('background_audio').muted = true;
-        } 
-        else {
-        document.getElementById('background_audio').muted = false;
-        }
+        unmuteButton.addEventListener('click', function() {
+        myAudio.muted = !myAudio.muted;
+        unmuteButton.addEventListener('click', function() {
+        var context = new AudioContext();
+        })
+  });
     };
 </script>
   
