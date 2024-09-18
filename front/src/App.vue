@@ -2,7 +2,12 @@
   import { RouterLink, RouterView } from 'vue-router'
   import AudioBackground from './components/AudioBackground.vue'
   import VideoBackground from './components/VideoBackground.vue'
-
+  import { ref, provide } from 'vue';
+  const isPlaying = ref(false);
+  provide('isPlaying', isPlaying);
+  provide('togglePlay', () => {
+  isPlaying.value = !isPlaying.value;
+  });
 
 </script>
 
@@ -13,7 +18,6 @@
     <transition name="route" mode="out-in">
       <component :is="Component"></component>
     </transition>
-
   </RouterView>
 </template>
 

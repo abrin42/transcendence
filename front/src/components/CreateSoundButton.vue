@@ -1,27 +1,26 @@
 <template>
-    <button id="unmuteButton" class="button button-sound" @click="togglePlay">
+    <button class="button button-sound" @click="togglePlayAndSound">
         <i v-if="isPlaying" class="fa-solid fa-volume-high"></i>
         <i v-else class="fa-solid fa-volume-xmark"></i>
     </button>
 </template>
   
 <script setup>
-    import { ref } from 'vue';
+    import { inject } from 'vue';
+    const isPlaying = inject('isPlaying');
+    const togglePlay = inject('togglePlay');
 
-    const isPlaying = ref(false);
-    document.getElementById('background_audio').muted = true;
+    function togglePlayAndSound() {
+    togglePlay(); // appelle fonction dans App.vue
+    const audioElement = document.getElementById('background_audio');
 
-    var myAudio = document.getElementById('background_audio');
-    function togglePlay() {
-        document.getElementById('background_audio').play();
-        isPlaying.value = !isPlaying.value;
-        if(document.getElementById('background_audio').muted == false){
-        document.getElementById('background_audio').muted = true;
-        } 
-        else {
-        document.getElementById('background_audio').muted = false;
-        }
-    };
+    if (isPlaying.value) {
+        audioElement.play();
+        audioElement.muted = false;
+    } else {
+        audioElement.muted = true;
+    }
+}
 </script>
   
 <style>

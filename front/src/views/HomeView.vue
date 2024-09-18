@@ -4,7 +4,6 @@
     import CreateDropupButton from '../components/CreateDropupButton.vue';
     import CreateSettingsButton from '../components/CreateSettingsButton.vue';
     import { useRouter } from 'vue-router';
-    import { ref } from 'vue';
 
 // Routing functions
 const router = useRouter();
@@ -13,13 +12,15 @@ myVideo.playbackRate = 1;
 
 function goToModeSelect() {
     router.push('/modeselect');
-    
 }
 
 function goToCredits() {
     router.push('/credits');
 }
 
+function goToLogin() {
+    router.push('/login');
+}
 </script>
 
 <template>
@@ -35,7 +36,7 @@ function goToCredits() {
                     <span class="buttonText">Credits</span>
                 </button>
 
-                <button class="button button-log" @click="clickButton">
+                <button class="button button-log" @click="goToLogin">
                     <span class="buttonText">Login</span>
                 </button>
                 <div>

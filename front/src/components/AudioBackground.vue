@@ -9,9 +9,5 @@
 
 <script>
   var myAudio = new Audio('./assets/test.mp3');
-  myAudio.addEventListener("click", (event) => {
-  if (myAudio.muted() == false)
-    myAudio.play();
-});
-
+  myAudio.load();
 </script>

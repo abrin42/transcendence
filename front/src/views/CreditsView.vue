@@ -1,6 +1,8 @@
 <script setup> 
     import CreateSoundButton from '../components/CreateSoundButton.vue';
     import CreateBackButton from '../components/CreateBackButton.vue';
+    import { useRouter } from 'vue-router';
+
     var myPlayer;
     changeVideo();
     

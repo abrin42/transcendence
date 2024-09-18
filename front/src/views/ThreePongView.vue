@@ -11,17 +11,7 @@
 <template>
     <main>
         <div id="wrapper">
-            <div class="buttonContainer">
-                <div>
-                    <CreateSoundButton />
-                </div>
-                <div>
-                    <CreateDropupButton />
-                </div>
-                <div>
-                    <CreateBackButton />
-                </div>
-            </div>
+
         </div>
     </main>
 </template>
