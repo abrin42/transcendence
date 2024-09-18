@@ -33,7 +33,7 @@ SECRET_KEY = get_secret('secret_key')
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['*']
 #ALLOWED_HOSTS = ['localhost', '127.0.0.1', 'yourdomain.com']
 
 
@@ -53,7 +53,10 @@ INSTALLED_APPS = [
     'friend',
     'player',
     'game',
-
+    'channels',
+    'websockets',
+    'ws4redis',
+    # 'corsheaders',
 ]
 
 MIDDLEWARE = [
@@ -64,6 +67,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    # 'corsheaders.middleware.CorsMiddleware',
 ]
 
 ROOT_URLCONF = 'pong.urls'
@@ -172,3 +176,23 @@ SMTP_PASSWORD = get_secret('smtp_password')
 JWT_SECRET_KEY = get_secret('jwt_secret_key')
 JWT_ALGORITHM = get_secret('jwt_algo')
 JWT_EXP_DELTA_SECONDS = get_secret('jwt_exp')
+
+
+
+ASGI_APPLICATION = 'pong.asgi.application'
+
+CORS_ALLOWED_ORIGINS = [
+    "http://localhost:8080",
+]
+
+# WEBSOCKET_URL = '/ws/'
+# WEBSOCKET_REDIS_BROKER_URL = 'redis://localhost:6379/0'
+
+# CHANNEL_LAYERS = {
+#     'default': {
+#         'BACKEND': 'channels_redis.core.RedisChannelLayer',
+#         'CONFIG': {
+#             "hosts": [('redis', 6379)],
+#         },
+#     },
+# }
