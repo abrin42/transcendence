@@ -4,43 +4,40 @@
     <div class="dropup-content locale-changer" v-show="menuVisible">
       <a v-if="currentLang !== 'ES'" @click="switchLang('ES')">🇪🇸</a>
       <a v-if="currentLang !== 'FR'" @click="switchLang('FR')">🇫🇷</a>
-      <a v-if="currentLang !== 'US'" @click="switchLang('US')">🇺🇸</a>
+      <a v-if="currentLang !== 'EN'" @click="switchLang('EN')">🇬🇧</a>
       <a v-if="currentLang !== 'DE'" @click="switchLang('DE')">🇩🇪</a>
+      <a v-if="currentLang !== 'IT'" @click="switchLang('IT')">🇮🇹</a>
+      <a v-if="currentLang !== 'MA'" @click="switchLang('MA')">⚔️</a>
     </div>
   </div>
 </template>
 
-      <!-- <div class="dropup-content locale-changer">
-        <select v-model="$i18n.locale">
-          <option value="EN" @click="switchEN">🇬🇧</option>
-          <option value="FR" @click="switchFR">🇫🇷</option>
-          <option value="ES" @click="switchES">🇪🇸</option>
-          <option value="MA" @click="switchMA">⚔️</option>
-        </select>
-      </div> -->
-
 <script setup>
 import { ref } from 'vue';
-import i18n from '../i18n.js'
+import {useI18n} from 'vue-i18n';
 
-const currentLang = ref('US');
-const currentFlag = ref('🇺🇸');
+const {locale} = useI18n();
+
+const currentLang = ref('EN');
+const currentFlag = ref('🇬🇧');
 const menuVisible = ref(false);
 let timeoutId;
 
 function switchLang(lang) {
   currentLang.value = lang;
-  if (lang === 'US') {
-      currentFlag.value = '🇺🇸';
-    } else if (lang === 'FR') {
-      currentFlag.value = '🇫🇷';
-      // $i18n.locale.value='FR';
-  } else if (lang === 'ES') {
-      currentFlag.value = '🇪🇸';
-  } else if (lang === 'DE') {
-      currentFlag.value = '🇩🇪';
-  }
-  console.log(i18n.t);
+  locale.value = lang;
+  if (lang === 'EN')
+    currentFlag.value = '🇬🇧';
+  else if (lang === 'FR')
+    currentFlag.value = '🇫🇷';
+  else if (lang === 'ES')
+    currentFlag.value = '🇪🇸';
+    else if (lang === 'DE')
+    currentFlag.value = '🇩🇪';
+    else if (lang === 'IT')
+    currentFlag.value = '🇮🇹';
+  else if (lang === 'MA')
+    currentFlag.value = '⚔️';
 }
 
 function showMenu() {

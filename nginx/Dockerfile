@@ -3,7 +3,7 @@ RUN mkdir /app
 COPY ./front /app/front
 WORKDIR /app/front
 RUN npm install
-RUN npm install vue-i18n@9
+RUN npm install vue-i18n@10
 RUN npm run build
 
 

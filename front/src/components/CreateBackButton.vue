@@ -2,7 +2,7 @@
 
     <button class="button" @click="goBack">
         <!-- ajouter icone retour? -->
-        <span class="buttonText buttonTextSize">Back</span>
+        <span class="buttonText buttonTextSize">{{ $t('back') }}</span>
     </button>
 
 </template>
