@@ -33,12 +33,12 @@ SECRET_KEY = get_secret('secret_key')
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
-ALLOWED_HOSTS = ['*']
+ALLOWED_HOSTS = []
 #ALLOWED_HOSTS = ['localhost', '127.0.0.1', 'yourdomain.com']
 
 
 # CSRF settings
-#CSRF_TRUSTED_ORIGINS = ['https://yourdomain.com']
+CSRF_TRUSTED_ORIGINS = ['http://localhost:8080']
 
 # Application definition
 
@@ -53,10 +53,7 @@ INSTALLED_APPS = [
     'friend',
     'player',
     'game',
-    'channels',
-    'websockets',
-    'ws4redis',
-    # 'corsheaders',
+
 ]
 
 MIDDLEWARE = [
@@ -67,7 +64,6 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
-    # 'corsheaders.middleware.CorsMiddleware',
 ]
 
 ROOT_URLCONF = 'pong.urls'
@@ -95,13 +91,24 @@ WSGI_APPLICATION = 'pong.wsgi.application'
 # https://docs.djangoproject.com/en/5.0/ref/settings/#databases
 
 DATABASES = {
+
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+
+        'ENGINE': 'django.db.backends.postgresql_psycopg2',
+
+        'NAME': "django",
+
+        'USER': "django",
+
+        'PASSWORD': "django",
+
+        'HOST': "postgresql",
+
+        'PORT': "5432",
+
     }
+
 }
-
-
 # Password validation
 # https://docs.djangoproject.com/en/5.0/ref/settings/#auth-password-validators
 
@@ -176,23 +183,3 @@ SMTP_PASSWORD = get_secret('smtp_password')
 JWT_SECRET_KEY = get_secret('jwt_secret_key')
 JWT_ALGORITHM = get_secret('jwt_algo')
 JWT_EXP_DELTA_SECONDS = get_secret('jwt_exp')
-
-
-
-ASGI_APPLICATION = 'pong.asgi.application'
-
-CORS_ALLOWED_ORIGINS = [
-    "http://localhost:8080",
-]
-
-# WEBSOCKET_URL = '/ws/'
-# WEBSOCKET_REDIS_BROKER_URL = 'redis://localhost:6379/0'
-
-# CHANNEL_LAYERS = {
-#     'default': {
-#         'BACKEND': 'channels_redis.core.RedisChannelLayer',
-#         'CONFIG': {
-#             "hosts": [('redis', 6379)],
-#         },
-#     },
-# }
