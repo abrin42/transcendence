@@ -17,13 +17,6 @@ function toggleIcon() {
 function clickButton() {
     console.log('Button clicked');
 }
-
-function rotateIcon() {
-    isRotating.value = true;
-    setTimeout(() => {
-        isRotating.value = false;
-    }, 1000);
-}
 </script>
 
 <template>

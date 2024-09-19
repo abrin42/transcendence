@@ -173,7 +173,7 @@
 
 <template>
     <main>
-        <div id="wrapper">
+        <div id>
             <canvas id ="board"></canvas>
         </div>
     </main>
