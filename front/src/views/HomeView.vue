@@ -28,15 +28,15 @@ function goToCredits() {
             <div class="buttonContainer">
                 <button class="button" @click="goToModeSelect">
                     <i class="fas fa-play" style="margin-right: 8px;"></i>
-                    <span class="buttonText buttonTextSize">Play</span>
+                    <span class="buttonText buttonTextSize">{{ $t('play') }}</span>
                 </button>
 
                 <button class="button button-credits" @click="goToCredits">
-                    <span class="buttonText">Credits</span>
+                    <span class="buttonText">{{ $t('credits') }}</span>
                 </button>
 
                 <button class="button button-log" @click="clickButton">
-                    <span class="buttonText">Login</span>
+                    <span class="buttonText">{{ $t('login') }}</span>
                 </button>
                 <div>
                     <CreateSoundButton />

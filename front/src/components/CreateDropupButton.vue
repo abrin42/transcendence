@@ -1,79 +1,104 @@
 <template>
-  <div class="dropup">
-    <button id="p0" class="dropbtn" ref="p0">🇺🇸</button>
-      <div class="dropup-content">
-        <a @click="switchES">🇪🇸</a>
-        <a @click="switchFR">🇫🇷</a>
-        <a @click="switchEN">🇺🇸</a>
-      </div>
+  <div class="dropup" @mouseleave="hideMenu" @mouseenter="showMenu">
+    <button id="p0" class="dropbtn">{{ currentFlag }}</button>
+    <div class="dropup-content locale-changer" v-show="menuVisible">
+      <a v-if="currentLang !== 'ES'" @click="switchLang('ES')">🇪🇸</a>
+      <a v-if="currentLang !== 'FR'" @click="switchLang('FR')">🇫🇷</a>
+      <a v-if="currentLang !== 'US'" @click="switchLang('US')">🇺🇸</a>
+      <a v-if="currentLang !== 'DE'" @click="switchLang('DE')">🇩🇪</a>
+    </div>
   </div>
 </template>
 
+      <!-- <div class="dropup-content locale-changer">
+        <select v-model="$i18n.locale">
+          <option value="EN" @click="switchEN">🇬🇧</option>
+          <option value="FR" @click="switchFR">🇫🇷</option>
+          <option value="ES" @click="switchES">🇪🇸</option>
+          <option value="MA" @click="switchMA">⚔️</option>
+        </select>
+      </div> -->
+
 <script setup>
+import { ref } from 'vue';
+import i18n from '../i18n.js'
 
-function switchEN() {
-  document.getElementById("p0").innerHTML = "🇺🇸";
-  // this.$refs.p0.innerHTML = "🇺🇸";
+const currentLang = ref('US');
+const currentFlag = ref('🇺🇸');
+const menuVisible = ref(false);
+let timeoutId;
+
+function switchLang(lang) {
+  currentLang.value = lang;
+  if (lang === 'US') {
+      currentFlag.value = '🇺🇸';
+    } else if (lang === 'FR') {
+      currentFlag.value = '🇫🇷';
+      // $i18n.locale.value='FR';
+  } else if (lang === 'ES') {
+      currentFlag.value = '🇪🇸';
+  } else if (lang === 'DE') {
+      currentFlag.value = '🇩🇪';
+  }
+  console.log(i18n.t);
 }
 
-function switchFR() {
-  document.getElementById("p0").innerHTML = "🇫🇷";
-  // this.$refs.p0.innerHTML = "🇫🇷";
+function showMenu() {
+  clearTimeout(timeoutId);
+  menuVisible.value = true;
 }
 
-function switchES() {
-  document.getElementById("p0").innerHTML = "🇪🇸";
-  // this.$refs.p0.innerHTML = "🇪🇸";
+function hideMenu() {
+  timeoutId = setTimeout(() => {
+      menuVisible.value = false;
+  }, 300);
 }
-
 </script>
 
 <style>
-/* Dropup Button */
 .dropbtn {
-  background-color: rgba(0,0,0,0.0);
-  color: white;
-  padding: 16px;
-  font-size: 16px;
-  border: none;
-}
-
-/* The container <div> - needed to position the dropup content */
-  .dropup {
-    position: relative;
-    display: inline-block;
-}
-
-/* Dropup content (Hidden by Default) */
-.dropup-content {
-  display: none;
   position: absolute;
-  bottom: 50px;
-  background-color: #f1f1f1;
-  min-width: 100%;
-  overflow: auto;
-  box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
-  z-index: 1;
+  right: 84vh;
+  top: 17vh;
+  width: 50px;
+  height: 50px;
+  background-color: rgba(255, 255, 255, 0.0);
+  border: 4px solid rgba(255, 255, 255, 0.5);
+  border-radius: 0.4vw;
+  border-width: 0.15vw;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 18px;
+  padding: 0;
 }
 
-/* Links inside the dropup */
+.dropup-content {
+  position: absolute;
+  background-color: rgba(255, 255, 255, 0.0);
+  bottom: -16.5vh;
+  right: 84vh;
+  display: flex;
+  flex-direction: column-reverse;
+}
+
 .dropup-content a {
-  color: black;
-  padding: 12px 16px;
-  text-decoration: none;
-  display: block;
+  width: 50px;
+  height: 50px;
+  margin: 2px 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 18px;
+  border-bottom: none;
+  background-color: rgba(255, 255, 255, 0.0);
+  border: 4px solid rgba(255, 255, 255, 0.5);
+  border-width: 0.15vw;
+  border-radius: 0.4vw;
 }
 
-/* Change color of dropup links on hover */
-.dropup-content a:hover {background-color: #ddd}
-
-/* Show the dropup menu on hover */
-.dropup:hover .dropup-content {
-  display: block;
-}
-
-/* Change the background color of the dropup button when the dropup content is shown */
-.dropup:hover .dropbtn {
-  background-color: #c3c3c3;
+.dropup-content a:hover {
+  border-color: rgba(255, 255, 255, 1);
+  background-color: rgba(255, 255, 255, 0.4);
 }
 </style>
