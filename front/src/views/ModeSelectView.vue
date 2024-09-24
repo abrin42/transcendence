@@ -5,20 +5,21 @@
     import CreateSoundButton from '../components/CreateSoundButton.vue';
     import { useRouter } from 'vue-router';
 
+    const router = useRouter();
 
     var myVideo = document.getElementById('videoBG');
     myVideo.playbackRate = 1.3;
 
     function goToSolo() {
-        router.push('/gameselect');
+    router.push('/gameselect');
     }
 
     function goToMulti() {
-        router.push('/gameselect');
+    router.push('/gameselect');
     }
 
-    function goToTourney() {
-        router.push('/gameselect');
+    function goToTournoi() {
+    router.push('/gameselect');
     }
 </script>
 
@@ -35,10 +36,13 @@
                     <span class="buttonText">Multi</span>
                 </button>
 
-                <button class="button button-log" @click="goToTourney">
-                    <span class="buttonText">Tourney</span>
+                <button class="button button-tournoi" @click="goToTournoi">
+                    <span class="buttonText">Tournoi</span>
                 </button>
 
+                <button class="button button-log" @click="clickButton">
+                    <span class="buttonText">Login</span>
+                </button>
                 <div>
                     <CreateSoundButton />
                 </div>
@@ -55,6 +59,6 @@
     </main>
 </template>
 
-<style lang="scss">
+<style>
 
 </style>

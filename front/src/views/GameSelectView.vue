@@ -5,7 +5,7 @@
     import CreateSoundButton from '../components/CreateSoundButton.vue';
     import { useRouter } from 'vue-router';
 
-    useRouter();
+    const router = useRouter();
 
     var myVideo = document.getElementById('videoBG');
     myVideo.playbackRate = 1.3;
@@ -15,7 +15,7 @@
     }
 
     function goToCyber() {
-        router.push('/legacy');
+        router.push('/cyberpong');
     }
 
     function goToThree() {
@@ -32,11 +32,11 @@
                     <span class="buttonText buttonTextSize">Legacy</span>
                 </button>
 
-                <button class="button button-credits" @click="goToCyber">
+                <button class="button button-cyber" @click="goToCyber">
                     <span class="buttonText">CyberPong</span>
                 </button>
 
-                <button class="button button-log" @click="goToThree">
+                <button class="button button-three" @click="goToThree">
                     <span class="buttonText">ThreePong</span>
                 </button>
 
@@ -56,7 +56,7 @@
     </main>
 </template>
 
-<style lang="scss">
+<style>
 
 
 </style>

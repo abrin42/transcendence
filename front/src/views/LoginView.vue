@@ -4,15 +4,17 @@
     import CreateBackButton from '../components/CreateBackButton.vue';
     import CreateSoundButton from '../components/CreateSoundButton.vue';
 
-    var myVideo = document.getElementById('videoBG');
+    // useRouter();
+
+
 </script>
 
 <template>
-    <main>
+    <!-- <main>
         <div id="wrapper">
 
         </div>
-    </main>
+    </main> -->
 </template>
 
 <style lang="scss">

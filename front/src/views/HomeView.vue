@@ -7,6 +7,7 @@
 
 // Routing functions
 const router = useRouter();
+
 var myVideo = document.getElementById('videoBG');
 myVideo.playbackRate = 1;
 
@@ -16,10 +17,6 @@ function goToModeSelect() {
 
 function goToCredits() {
     router.push('/credits');
-}
-
-function goToLogin() {
-    router.push('/login');
 }
 </script>
 
@@ -31,12 +28,11 @@ function goToLogin() {
                     <i class="fas fa-play" style="margin-right: 8px;"></i>
                     <span class="buttonText buttonTextSize">Play</span>
                 </button>
-
                 <button class="button button-credits" @click="goToCredits">
                     <span class="buttonText">Credits</span>
                 </button>
 
-                <button class="button button-log" @click="goToLogin">
+                <button class="button button-log" @click="clickButton">
                     <span class="buttonText">Login</span>
                 </button>
                 <div>

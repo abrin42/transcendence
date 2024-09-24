@@ -3,6 +3,8 @@
     import CreateBackButton from '../components/CreateBackButton.vue';
     import { useRouter } from 'vue-router';
 
+    useRouter();
+
     var myPlayer;
     changeVideo();
     
@@ -15,7 +17,6 @@
 <template>
     <main>
         <div id="wrapper">
-
             <video autoplay muted loop class="flex">
                 <source src="./../assets/CreditsSceneNoEffects.mp4" type="video/mp4">
                     Your browser does not support the video element.
