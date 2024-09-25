@@ -8,3 +8,4 @@ django-phonenumbers==1.0.1
 django-qr-code==4.0.1
 vonage==3.16.0
 pillow==10.4.0 
+djangorestframework==3.15.2

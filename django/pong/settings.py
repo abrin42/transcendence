@@ -53,7 +53,7 @@ INSTALLED_APPS = [
     'friend',
     'player',
     'game',
-
+    'rest_framework',
 ]
 
 MIDDLEWARE = [
