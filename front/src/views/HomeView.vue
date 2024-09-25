@@ -1,12 +1,10 @@
 <script setup>
-// Imports
 import CreateSoundButton from '../components/CreateSoundButton.vue';
 import CreateDropupButton from '../components/CreateDropupButton.vue';
 import CreateSettingsButton from '../components/CreateSettingsButton.vue';
 import { useRouter } from 'vue-router';
 import { ref } from 'vue';
 
-// Routing functions
 const router = useRouter();
 var myVideo = document.getElementById('videoBG');
 myVideo.playbackRate = 1;
@@ -20,6 +18,9 @@ function goToCredits() {
     router.push('/credits');
 }
 
+function goToSettings() {
+    router.push('/settings');
+}
 </script>
 
 <template>
@@ -38,15 +39,9 @@ function goToCredits() {
                 <button class="button button-log" @click="clickButton">
                     <span class="buttonText">{{ $t('login') }}</span>
                 </button>
-                <div>
-                    <CreateSoundButton />
-                </div>
-                <div>
-                    <CreateSettingsButton />
-                </div>
-                <div>
-                    <CreateDropupButton />
-                </div>
+                <CreateSoundButton />
+                <CreateSettingsButton @click="goToSettings" />
+                <CreateDropupButton />
             </div>
         </div>
     </main>
@@ -132,6 +127,7 @@ function goToCredits() {
     top: 10px;
     left: 48vW;
 }
+
 .button-settings {
     position: absolute;
     width: 60px;

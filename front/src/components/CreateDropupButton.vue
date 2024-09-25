@@ -14,9 +14,9 @@
 
 <script setup>
 import { ref } from 'vue';
-import {useI18n} from 'vue-i18n';
+import { useI18n } from 'vue-i18n';
 
-const {locale} = useI18n();
+const { locale } = useI18n();
 
 const currentLang = ref('EN');
 const currentFlag = ref('🇬🇧');
@@ -32,9 +32,9 @@ function switchLang(lang) {
     currentFlag.value = '🇫🇷';
   else if (lang === 'ES')
     currentFlag.value = '🇪🇸';
-    else if (lang === 'DE')
+  else if (lang === 'DE')
     currentFlag.value = '🇩🇪';
-    else if (lang === 'IT')
+  else if (lang === 'IT')
     currentFlag.value = '🇮🇹';
   else if (lang === 'MA')
     currentFlag.value = '⚔️';
@@ -47,12 +47,13 @@ function showMenu() {
 
 function hideMenu() {
   timeoutId = setTimeout(() => {
-      menuVisible.value = false;
+    menuVisible.value = false;
   }, 300);
 }
 </script>
 
 <style>
+
 .dropbtn {
   position: absolute;
   right: 84vh;

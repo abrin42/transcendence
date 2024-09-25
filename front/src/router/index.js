@@ -3,6 +3,7 @@ import HomeView from '../views/HomeView.vue'
 import GameView from '../views/GameView.vue'
 import ModeSelectView from '../views/ModeSelectView.vue'
 import CreditsView from '../views/CreditsView.vue'
+import SettingsView from '../views/SettingsView.vue'
 
 const router = createRouter({
   history: createWebHistory(),
@@ -26,6 +27,11 @@ const router = createRouter({
       path: '/game',
       name: 'game',
       component: GameView
+    },
+    {
+      path: '/settings',
+      name: 'settings',
+      component: SettingsView
     }
   ]
 })

@@ -36,7 +36,6 @@ function clickButton() {
             </button>
 
             <button class="button button-settings" @click="rotateIcon">
-                <!-- Ajoutez ou enlevez la classe icon-rotate selon l'état -->
                 <i :class="['fas fa-gear', { 'icon-rotate': isRotating }]"></i>
             </button>
 
@@ -64,7 +63,6 @@ function clickButton() {
     animation: rotate 1s ease-out;
 }
 
-/* Autres styles existants */
 .buttonContainer {
     display: flex;
     flex-direction: column;
@@ -94,6 +92,7 @@ function clickButton() {
     font-weight: 600;
     cursor: pointer;
     opacity: 1;
+    width: auto;
 }
 
 .button i {
