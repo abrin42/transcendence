@@ -52,24 +52,24 @@ function hideMenu() {
 }
 </script>
 
-<style>
+<style scoped>
 @import './../assets/main.scss';
 
 .dropbtn {
 	/* Handler Position and Size */
 	position: fixed;
-    top: 92vh;
-    right: 95vw;
+	top: 92vh;
+	right: 95vw;
 	width: 3vw;
-    height: 6vh;
+	height: 6vh;
 
 	/* Background style button HomeView */
-    background-color: rgba(0, 0, 0, 0.25);
-    padding: 2vh 2vw;
-    border: 0.15vw solid rgba(0, 0, 0, 0.25);
+	background-color: rgba(0, 0, 0, 0.25);
+	padding: 2vh 2vw;
+	border: 0.15vw solid rgba(0, 0, 0, 0.25);
 	border-radius: 0.4vw;
-    transition: border-color 0.5s;
-    margin-top: 1vh;
+	transition: border-color 0.5s;
+	margin-top: 1vh;
 
 	/* Handler emoji */
 	display: flex;
@@ -80,8 +80,8 @@ function hideMenu() {
 
 .dropup-content {
 	position: fixed;
-    bottom: 8vh;
-    right: 95vw;
+	bottom: 8vh;
+	right: 95vw;
 	display: flex;
 	flex-direction: column-reverse;
 }
@@ -89,15 +89,15 @@ function hideMenu() {
 .dropup-content a {
 	/* Handler Position */
 	width: 3vw;
-    height: 6vh;
+	height: 6vh;
 
 	/* Background style button HomeView */
-    background-color: rgba(0, 0, 0, 0.25);
-    padding: 2vh 2vw;
-    border: 0.15vw solid rgba(0, 0, 0, 0.25);
+	background-color: rgba(0, 0, 0, 0.25);
+	padding: 2vh 2vw;
+	border: 0.15vw solid rgba(0, 0, 0, 0.25);
 	border-radius: 0.4vw;
-    transition: border-color 0.5s;
-    margin-top: 1vh;
+	transition: border-color 0.5s;
+	margin-top: 1vh;
 
 	/* Handler emoji */
 	display: flex;

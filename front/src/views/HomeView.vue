@@ -10,7 +10,7 @@ const router = useRouter();
 var myVideo = document.getElementById('videoBG');
 myVideo.playbackRate = 1;
 
-function __gotTo(page) {
+function __goTo(page) {
     if (page == null) {
         return;
     }
@@ -23,18 +23,18 @@ function __gotTo(page) {
     <main>
         <div id="wrapper">
             <div class="buttonContainer">
-                <button class="button" @click="__gotTo('/modeselect')">
+                <button class="button" @click="__goTo('/modeselect')">
                     <i class="fas fa-play" style="margin-right: 1vw;"></i>
                     <span class="buttonText buttonTextSize">{{ $t('play') }}</span>
                 </button>
-                <button class="button button-credits" @click="__gotTo('/credits')">
+                <button class="button button-credits" @click="__goTo('/credits')">
                     <span class="buttonText">{{ $t('credits') }}</span>
                 </button>
 
                 <!-- * BUTTONS OTHERS * -->
                 <CreateSoundButton />
-                <CreateLogButton @click="__gotTo('/log')" />
-                <CreateSettingsButton @click="__gotTo('/settings')" />
+                <CreateLogButton />
+                <CreateSettingsButton @click="__goTo('/settings')" />
                 <CreateDropupButton />
             </div>
         </div>
@@ -79,8 +79,6 @@ function __gotTo(page) {
     border-radius: 0.4vw;
     transition: border-color 0.5s;
     margin-top: 1vh;
-    width: auto;
-    height: auto;
     display: flex;
     align-items: center;
     justify-content: center;

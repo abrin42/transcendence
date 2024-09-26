@@ -1,8 +1,6 @@
 <script setup>
-
 import CreateDropupButton from '../components/CreateDropupButton.vue';
 import CreateBackButton from '../components/CreateBackButton.vue';
-
 
 var myVideo = document.getElementById('videoBG');
 myVideo.playbackRate = 1.3;

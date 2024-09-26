@@ -6,7 +6,6 @@
 
 <script setup>
 import { useRouter } from 'vue-router';
-
 const router = useRouter();
 function goBack() {
     router.go(-1);
@@ -15,10 +14,10 @@ function goBack() {
 
 <style>
 .overloadBtn {
-    position: absolute;
-    height: 50px;
-    width: 50px;
-    left: 83.5vh;
-    top: 90vh;
+    position: fixed;
+    width: 3vw;
+    height: 6vh;
+    top: 92vh;
+    left: 95vw;
 }
 </style>

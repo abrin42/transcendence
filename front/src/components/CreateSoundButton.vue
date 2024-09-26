@@ -7,7 +7,6 @@
 
 <script setup>
 import { ref } from 'vue';
-
 const isPlaying = ref(false);
 
 var myAudio = document.getElementById('background_audio');
