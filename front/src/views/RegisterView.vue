@@ -6,8 +6,17 @@ import Input from '../components/Input.vue';
 import { useRouter } from 'vue-router';
 
 const router = useRouter();
+const username = ref('');
 const email = ref('');
 const password = ref('');
+const confirmPassword = ref('');
+
+defineExpose({
+    username,
+    email,
+    password,
+    confirmPassword
+});
 
 function __goTo(page) {
     if (page == null) {
@@ -16,36 +25,44 @@ function __goTo(page) {
     router.push(page);
 }
 
-function login() {
-    if (!email.value || !password.value) {
-        alert('Veuillez entrer un email et un mot de passe.');
+function createAccount() {
+    if (password.value !== confirmPassword.value) {
+        alert('Les mots de passe ne correspondent pas.');
         return;
     }
 
-    console.log('Tentative de connexion avec:', email.value, password.value);
-    alert('Connexion réussie avec l\'email: ' + email.value);
+    const newUser = {
+        username: username.value,
+        email: email.value,
+        password: password.value,
+    };
+
+    console.log('Données utilisateur prêtes pour être envoyées à la base de données :', newUser);
+    alert('Compte créé avec succès !');
 }
 </script>
 
 <template>
     <main>
         <div id="wrapper">
-            <h1>LOGIN</h1>
+            <h1>SIGN UP</h1>
             <div class="logContainer">
                 <button class="button button-log42">
                     <img class="img-42" src="../assets/img/42_Logob.png" alt="Logo 42" />
                 </button>
-                <button class="button button-register" @click="__goTo('/register')">
-                    <span class="buttonText buttonTextSize">{{ $t('Sign-up') }}</span>
-                </button>
-                <button class="button button-connect" @click="login">
+                <button class="button button-login" @click="__goTo('/log')">
                     <span class="buttonText buttonTextSize">{{ $t('Login') }}</span>
+                </button>
+                <button class="button button-createAccount" @click="createAccount">
+                    <span class="buttonText buttonTextSize">{{ $t('Create your account') }}</span>
                 </button>
             </div>
 
             <div class="__inputInfo">
-                <Input iconClass="fa-envelope" placeholderText="Enter your email" v-model="email" />
-                <Input iconClass="fa-lock" placeholderText="Enter your password" isPassword v-model="password" />
+                <Input iconClass="fa-user" placeholderText="Username" v-model="username" />
+                <Input iconClass="fa-envelope" placeholderText="Email" v-model="email" />
+                <Input iconClass="fa-lock" placeholderText="Password" isPassword v-model="password" />
+                <Input iconClass="fa-lock" placeholderText="Confirm password" isPassword v-model="confirmPassword" />
             </div>
 
             <div class="buttonContainer">
@@ -101,7 +118,7 @@ h1 {
 .logContainer {
     position: fixed;
     width: 25vw;
-    height: 40vh;
+    height: 52.5vh;
     left: auto;
     top: 25%;
 
@@ -132,25 +149,25 @@ h1 {
     transition: background-color 0.3s ease;
 }
 
-.button-register {
+.button-createAccount {
+    position: fixed;
+    width: 15vw;
+    height: 6vh;
+    left: 42.5%;
+    top: 65%;
+
+    background-color: rgba(202, 149, 128, 0.5);
+    border: 0.15vw solid rgba(202, 149, 128, 0.25);
+    border-radius: 0.4vw;
+    transition: background-color 0.3s ease;
+}
+
+.button-login {
     position: fixed;
     width: 10vw;
     height: 6vh;
     left: 47.5%;
     top: 30%;
-
-    background-color: rgba(0, 0, 0, 0.5);
-    border: 0.15vw solid rgba(0, 0, 0, 0.25);
-    border-radius: 0.4vw;
-    transition: background-color 0.3s ease;
-}
-
-.button-connect {
-    position: fixed;
-    width: 15vw;
-    height: 6vh;
-    left: 42.5%;
-    top: 52.5%;
 
     background-color: rgba(0, 0, 0, 0.5);
     border: 0.15vw solid rgba(0, 0, 0, 0.25);
@@ -169,7 +186,7 @@ h1 {
     transition: content 0.3s ease;
 }
 
-.button-register:hover .buttonText {
+.button-login:hover .buttonText {
     color: rgb(0, 0, 0);
     transition: color 0.3s ease, font-size 0.3s ease;
 }

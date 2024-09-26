@@ -3,20 +3,18 @@ import CreateSoundButton from '../components/CreateSoundButton.vue';
 import CreateLogButton from '../components/CreateLogButton.vue';
 import CreateSettingsButton from '../components/CreateSettingsButton.vue';
 import CreateDropupButton from '../components/CreateDropupButton.vue';
-import { useRouter } from 'vue-router';
-import { ref } from 'vue';
 
-const router = useRouter();
 var myVideo = document.getElementById('videoBG');
 myVideo.playbackRate = 1;
 
+import { useRouter } from 'vue-router';
+const router = useRouter();
 function __goTo(page) {
     if (page == null) {
         return;
     }
     router.push(page);
 }
-
 </script>
 
 <template>
@@ -87,7 +85,7 @@ function __goTo(page) {
 
 .buttonText {
     color: rgba(255, 255, 255, 0.8);
-    font-size: 1.25rem;
+    font-size: 1.5rem;
     font-weight: 600;
     cursor: pointer;
     opacity: 1;
