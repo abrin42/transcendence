@@ -1,7 +1,5 @@
 <template>
     <button class="button overloadBtn" @click="goBack">
-        <!-- ajouter icone retour? -->
-        <!-- <span class="buttonText buttonTextSize">{{ $t('back') }}</span> -->
         <i class="fa-solid fa-backward"></i>
     </button>
 </template>
@@ -21,6 +19,6 @@ function goBack() {
     height: 50px;
     width: 50px;
     left: 83.5vh;
-    top: .1vh;
+    top: 90vh;
 }
 </style>

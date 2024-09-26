@@ -11,7 +11,6 @@ myVideo.playbackRate = 1;
 
 function goToModeSelect() {
     router.push('/modeselect');
-
 }
 
 function goToCredits() {
@@ -20,6 +19,10 @@ function goToCredits() {
 
 function goToSettings() {
     router.push('/settings');
+}
+
+function goToLog() {
+    router.push('/log')
 }
 </script>
 
@@ -36,7 +39,7 @@ function goToSettings() {
                     <span class="buttonText">{{ $t('credits') }}</span>
                 </button>
 
-                <button class="button button-log" @click="clickButton">
+                <button class="button button-log" @click="goToLog">
                     <span class="buttonText">{{ $t('login') }}</span>
                 </button>
                 <CreateSoundButton />
@@ -69,13 +72,6 @@ function goToSettings() {
     animation: rotate 1s ease-out;
 }
 
-#dropup {
-    z-index: 1;
-    position: relative;
-    top: 690px;
-    left: -770px;
-}
-
 .buttonContainer {
     z-index: 1;
     display: flex;
@@ -87,29 +83,32 @@ function goToSettings() {
 }
 
 .button {
-    background-color: rgba(255, 255, 255, 0.0);
-    padding: 1rem 1rem;
-    border: 4px solid rgba(255, 255, 255, 0.5);
+    background-color: rgba(0, 0, 0, 0.25);
+    padding: 0.5rem 1rem;
+    border: 4px solid rgba(0, 0, 0, 0.25);
     border-radius: 0.4vw;
     border-width: 0.15vw;
     transition: border-color 0.5s;
     margin-top: 10px;
-    width: 200px;
+    width: auto;
+    height: auto;
     display: flex;
     align-items: center;
     justify-content: center;
+    box-sizing: border-box;
 }
 
 .buttonText {
-    color: rgb(255, 255, 255);
+    color: rgba(255, 255, 255, 0.8);
     font-size: 1.25rem;
     font-weight: 600;
     cursor: pointer;
     opacity: 1;
+    white-space: nowrap;
 }
 
 .button i {
-    color: rgb(255, 255, 255);
+    color: rgba(255, 255, 255, 0.8);
     font-size: 1.5rem;
     cursor: pointer;
 }
@@ -125,7 +124,7 @@ function goToSettings() {
     width: 120px;
     height: 50px;
     top: 10px;
-    left: 48vW;
+    left: 45vW;
 }
 
 .button-settings {
@@ -133,7 +132,7 @@ function goToSettings() {
     width: 60px;
     height: 50px;
     top: 10px;
-    left: 43vW;
+    left: 40vW;
 }
 
 .button-sound {
@@ -141,13 +140,19 @@ function goToSettings() {
     width: 60px;
     height: 50px;
     top: 10px;
-    right: 95vh;
+    right: 90vh;
 }
 
 .button-credits {
     position: absolute;
     top: 75vh;
-    width: 120px;
-    height: 50px;
+    width: auto;
+    min-width: 1px;
+    height: auto;
+    padding: 0.5rem 1rem;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    white-space: nowrap;
 }
 </style>

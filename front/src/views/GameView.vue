@@ -12,8 +12,8 @@ myVideo.playbackRate = 1.3;
     <main>
         <div id="wrapper">
             <div class="buttonContainer">
-                <CreateDropupButton />
                 <CreateBackButton />
+                <CreateDropupButton />
             </div>
         </div>
     </main>
@@ -21,5 +21,15 @@ myVideo.playbackRate = 1.3;
 
 <style lang="scss">
 @import './../assets/main.scss';
+
+.buttonContainer {
+    z-index: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 140vh;
+    position: relative;
+}
 
 </style>
