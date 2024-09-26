@@ -22,7 +22,7 @@ function goToSettings() {
 }
 
 function goToLog() {
-    router.push('/log')
+    router.push('/log');
 }
 </script>
 
@@ -31,7 +31,7 @@ function goToLog() {
         <div id="wrapper">
             <div class="buttonContainer">
                 <button class="button" @click="goToModeSelect">
-                    <i class="fas fa-play" style="margin-right: 8px;"></i>
+                    <i class="fas fa-play" style="margin-right: 1vw;"></i>
                     <span class="buttonText buttonTextSize">{{ $t('play') }}</span>
                 </button>
 
@@ -79,17 +79,16 @@ function goToLog() {
     align-items: center;
     justify-content: center;
     height: 140vh;
-    position: relative;
+    /* position: relative; */
 }
 
 .button {
     background-color: rgba(0, 0, 0, 0.25);
-    padding: 0.5rem 1rem;
-    border: 4px solid rgba(0, 0, 0, 0.25);
+    padding: 2vh 2vw;
+    border: 0.15vw solid rgba(0, 0, 0, 0.25);
     border-radius: 0.4vw;
-    border-width: 0.15vw;
     transition: border-color 0.5s;
-    margin-top: 10px;
+    margin-top: 1vh;
     width: auto;
     height: auto;
     display: flex;
@@ -109,7 +108,7 @@ function goToLog() {
 
 .button i {
     color: rgba(255, 255, 255, 0.8);
-    font-size: 1.5rem;
+    font-size: 1.5vw;
     cursor: pointer;
 }
 
@@ -120,36 +119,36 @@ function goToLog() {
 }
 
 .button-log {
-    position: absolute;
-    width: 120px;
-    height: 50px;
-    top: 10px;
-    left: 45vW;
+    /* position: absolute; */
+    width: 15vw;
+    height: 7vh;
+    top: 2vh;
+    left: 45vw;
 }
 
 .button-settings {
-    position: absolute;
-    width: 60px;
-    height: 50px;
-    top: 10px;
-    left: 40vW;
+    /* position: absolute; */
+    width: 5vw;
+    height: 7vh;
+    top: 2vh;
+    left: 40vw;
 }
 
 .button-sound {
-    position: absolute;
-    width: 60px;
-    height: 50px;
-    top: 10px;
-    right: 90vh;
+    position: relative;
+    width: 3vw;
+    height: 6vh;
+    bottom: 78vh;
+    right: 47vw;
 }
 
 .button-credits {
-    position: absolute;
+    /* position: absolute; */
     top: 75vh;
     width: auto;
-    min-width: 1px;
+    min-width: 1vw;
     height: auto;
-    padding: 0.5rem 1rem;
+    padding: 2vh 2vw;
     display: flex;
     justify-content: center;
     align-items: center;

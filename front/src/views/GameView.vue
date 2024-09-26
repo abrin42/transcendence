@@ -31,5 +31,4 @@ myVideo.playbackRate = 1.3;
     height: 140vh;
     position: relative;
 }
-
 </style>
