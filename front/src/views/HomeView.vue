@@ -1,7 +1,8 @@
 <script setup>
 import CreateSoundButton from '../components/CreateSoundButton.vue';
-import CreateDropupButton from '../components/CreateDropupButton.vue';
+import CreateLogButton from '../components/CreateLogButton.vue';
 import CreateSettingsButton from '../components/CreateSettingsButton.vue';
+import CreateDropupButton from '../components/CreateDropupButton.vue';
 import { useRouter } from 'vue-router';
 import { ref } from 'vue';
 
@@ -9,41 +10,31 @@ const router = useRouter();
 var myVideo = document.getElementById('videoBG');
 myVideo.playbackRate = 1;
 
-function goToModeSelect() {
-    router.push('/modeselect');
+function __gotTo(page) {
+    if (page == null) {
+        return;
+    }
+    router.push(page);
 }
 
-function goToCredits() {
-    router.push('/credits');
-}
-
-function goToSettings() {
-    router.push('/settings');
-}
-
-function goToLog() {
-    router.push('/log');
-}
 </script>
 
 <template>
     <main>
         <div id="wrapper">
             <div class="buttonContainer">
-                <button class="button" @click="goToModeSelect">
+                <button class="button" @click="__gotTo('/modeselect')">
                     <i class="fas fa-play" style="margin-right: 1vw;"></i>
                     <span class="buttonText buttonTextSize">{{ $t('play') }}</span>
                 </button>
-
-                <button class="button button-credits" @click="goToCredits">
+                <button class="button button-credits" @click="__gotTo('/credits')">
                     <span class="buttonText">{{ $t('credits') }}</span>
                 </button>
 
-                <button class="button button-log" @click="goToLog">
-                    <span class="buttonText">{{ $t('login') }}</span>
-                </button>
+                <!-- * BUTTONS OTHERS * -->
                 <CreateSoundButton />
-                <CreateSettingsButton @click="goToSettings" />
+                <CreateLogButton @click="__gotTo('/log')" />
+                <CreateSettingsButton @click="__gotTo('/settings')" />
                 <CreateDropupButton />
             </div>
         </div>
@@ -79,7 +70,6 @@ function goToLog() {
     align-items: center;
     justify-content: center;
     height: 140vh;
-    /* position: relative; */
 }
 
 .button {
@@ -112,46 +102,21 @@ function goToLog() {
     cursor: pointer;
 }
 
-.button:hover {
-    border-color: rgba(255, 255, 255, 1);
-    background-color: rgba(255, 255, 255, 0.4);
-    transition: border-color, background-color 0.5s;
-}
-
-.button-log {
-    /* position: absolute; */
-    width: 15vw;
-    height: 7vh;
-    top: 2vh;
-    left: 45vw;
-}
-
-.button-settings {
-    /* position: absolute; */
-    width: 5vw;
-    height: 7vh;
-    top: 2vh;
-    left: 40vw;
-}
-
-.button-sound {
-    position: relative;
-    width: 3vw;
-    height: 6vh;
-    bottom: 78vh;
-    right: 47vw;
-}
-
 .button-credits {
-    /* position: absolute; */
     top: 75vh;
     width: auto;
     min-width: 1vw;
     height: auto;
-    padding: 2vh 2vw;
+    padding: 1vh 1vw;
     display: flex;
     justify-content: center;
     align-items: center;
     white-space: nowrap;
+}
+
+.button:hover {
+    border-color: rgba(255, 255, 255, 1);
+    background-color: rgba(255, 255, 255, 0.4);
+    transition: border-color, background-color 0.5s;
 }
 </style>

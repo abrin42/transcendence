@@ -56,44 +56,54 @@ function hideMenu() {
 @import './../assets/main.scss';
 
 .dropbtn {
-	position: absolute;
-	bottom: -23vh;
-	right: 84vh;
-	width: 50px;
-	height: 50px;
-	background-color: rgba(255, 255, 255, 0.0);
-	border: 4px solid rgba(255, 255, 255, 0.5);
+	/* Handler Position and Size */
+	position: fixed;
+    top: 92vh;
+    right: 95vw;
+	width: 3vw;
+    height: 6vh;
+
+	/* Background style button HomeView */
+    background-color: rgba(0, 0, 0, 0.25);
+    padding: 2vh 2vw;
+    border: 0.15vw solid rgba(0, 0, 0, 0.25);
 	border-radius: 0.4vw;
-	border-width: 0.15vw;
+    transition: border-color 0.5s;
+    margin-top: 1vh;
+
+	/* Handler emoji */
 	display: flex;
 	align-items: center;
 	justify-content: center;
-	font-size: 18px;
-	padding: 0;
+	font-size: 1.5vw;
 }
 
 .dropup-content {
-	position: absolute;
-	background-color: rgba(255, 255, 255, 0.0);
-	bottom: -16.5vh;
-	right: 84vh;
+	position: fixed;
+    bottom: 8vh;
+    right: 95vw;
 	display: flex;
 	flex-direction: column-reverse;
 }
 
 .dropup-content a {
-	width: 50px;
-	height: 50px;
-	margin: 2px 0;
+	/* Handler Position */
+	width: 3vw;
+    height: 6vh;
+
+	/* Background style button HomeView */
+    background-color: rgba(0, 0, 0, 0.25);
+    padding: 2vh 2vw;
+    border: 0.15vw solid rgba(0, 0, 0, 0.25);
+	border-radius: 0.4vw;
+    transition: border-color 0.5s;
+    margin-top: 1vh;
+
+	/* Handler emoji */
 	display: flex;
 	align-items: center;
 	justify-content: center;
-	font-size: 18px;
-	border-bottom: none;
-	background-color: rgba(255, 255, 255, 0.0);
-	border: 4px solid rgba(255, 255, 255, 0.5);
-	border-width: 0.15vw;
-	border-radius: 0.4vw;
+	font-size: 1.5vw;
 }
 
 .dropup-content a:hover {
