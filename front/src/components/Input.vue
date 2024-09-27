@@ -1,7 +1,6 @@
 <script setup>
 import { ref, computed } from 'vue';
 
-// Définir les props pour le composant
 const props = defineProps({
     modelValue: {
         type: String,
@@ -21,18 +20,15 @@ const props = defineProps({
     }
 });
 
-// Gestion de la visibilité du mot de passe
 const isPasswordVisible = ref(false);
 const inputType = computed(() => {
     return props.isPassword && !isPasswordVisible.value ? 'password' : 'text';
 });
 
-// Fonction pour alterner la visibilité du mot de passe
 const togglePasswordVisibility = () => {
     isPasswordVisible.value = !isPasswordVisible.value;
 };
 
-// Émettre la mise à jour du modèle de données pour le parent
 const emit = defineEmits(['update:modelValue']);
 </script>
 
@@ -40,11 +36,9 @@ const emit = defineEmits(['update:modelValue']);
     <div class="inputContainer">
         <i :class="`fa-solid ${iconClass}`" class="inputIcon"></i>
 
-        <!-- Liaison v-model avec l'événement update:modelValue -->
         <input :type="inputType" :value="modelValue" @input="$emit('update:modelValue', $event.target.value)"
             :placeholder="placeholderText" class="textInput" />
 
-        <!-- Icône pour la visibilité du mot de passe -->
         <i v-if="isPassword" :class="`fa-solid ${isPasswordVisible ? 'fa-eye' : 'fa-eye-slash'}`"
             class="togglePasswordIcon" @click="togglePasswordVisibility">
         </i>

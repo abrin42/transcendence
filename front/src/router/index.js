@@ -6,6 +6,7 @@ import CreditsView from '../views/CreditsView.vue'
 import SettingsView from '../views/SettingsView.vue'
 import LogView from '../views/LogView.vue'
 import RegisterView from '../views/RegisterView.vue'
+import DashboardView from '../views/DashboardView.vue'
 
 const router = createRouter({
   history: createWebHistory(),
@@ -44,6 +45,11 @@ const router = createRouter({
       path: '/register',
       name: 'register',
       component: RegisterView
+    },
+    {
+      path: '/dashboard',
+      name: 'dashboard',
+      component: DashboardView
     }
   ]
 })

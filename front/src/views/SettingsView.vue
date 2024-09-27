@@ -1,55 +1,59 @@
-<script>
+<script setup>
+import { reactive, ref, onMounted, onBeforeUnmount } from 'vue';
 import CreateBackButton from '../components/CreateBackButton.vue';
+import CreateDropupButton from '@/components/CreateDropupButton.vue';
 
-export default {
-    data() {
-        return {
-            keys: {
-                player1Left: 'ArrowLeft',
-                player1Right: 'ArrowRight',
-                player2Left: 'A',
-                player2Right: 'D',
-            },
-            selectedKey: null,
-        };
-    },
-    methods: {
-        changeKey(action) {
-            this.selectedKey = action;
-            window.addEventListener('keydown', this.setKey);
-        },
-        setKey(event) {
-            const newKey = event.key.toUpperCase(); // Convertit la touche en majuscule
-            if (this.isKeyAlreadyUsed(newKey)) {
-                alert('Cette touche est déjà utilisée !');
-                return;
-            }
-            if (
-                (this.selectedKey === 'player1Left' && newKey === this.keys.player1Right) ||
-                (this.selectedKey === 'player1Right' && newKey === this.keys.player1Left) ||
-                (this.selectedKey === 'player2Left' && newKey === this.keys.player2Right) ||
-                (this.selectedKey === 'player2Right' && newKey === this.keys.player2Left)
-            ) {
-                alert('Le même joueur ne peut pas utiliser la même touche pour gauche et droite.');
-                return;
-            }
+const keys = reactive({
+    player1Left: 'ArrowLeft',
+    player1Right: 'ArrowRight',
+    player2Left: 'A',
+    player2Right: 'D',
+});
 
-            if (this.selectedKey) {
-                this.keys[this.selectedKey] = newKey; // Assigne toujours en majuscule
-                this.selectedKey = null;
-                window.removeEventListener('keydown', this.setKey);
-            }
-        },
-        isKeyAlreadyUsed(newKey) {
-            return Object.values(this.keys).includes(newKey);
-        }
+const selectedKey = ref(null);
+
+const changeKey = (action) => {
+    selectedKey.value = action;
+    window.addEventListener('keydown', setKey);
+};
+
+const setKey = (event) => {
+    const newKey = event.key.toUpperCase();
+    if (isKeyAlreadyUsed(newKey)) {
+        alert('Cette touche est déjà utilisée.');
+        return;
+    }
+    if (
+        (selectedKey.value === 'player1Left' && newKey === keys.player1Right) ||
+        (selectedKey.value === 'player1Right' && newKey === keys.player1Left) ||
+        (selectedKey.value === 'player2Left' && newKey === keys.player2Right) ||
+        (selectedKey.value === 'player2Right' && newKey === keys.player2Left)
+    ) {
+        alert('Le meme joueur ne peut pas utiliser la meme touche pour gauche et droite.');
+        return;
+    }
+
+    if (selectedKey.value) {
+        keys[selectedKey.value] = newKey;
+        selectedKey.value = null;
+        window.removeEventListener('keydown', setKey);
     }
 };
+
+const isKeyAlreadyUsed = (newKey) => {
+    return Object.values(keys).includes(newKey);
+};
+
+onBeforeUnmount(() => {
+    window.removeEventListener('keydown', setKey);
+});
 </script>
 
 <template>
     <main>
         <div id="wrapper">
+            <CreateBackButton />
+            <CreateDropupButton />
             <div class="settingsBackground">
                 <span class="titleSettings">Settings</span>
                 <div class="settingsText">
@@ -138,18 +142,6 @@ export default {
     align-items: flex-start;
     justify-content: center;
     height: auto;
-}
-
-.button {
-    background-color: rgba(255, 255, 255, 0.0);
-    padding: 0.5rem 1rem;
-    border: 4px solid rgba(255, 255, 255, 0.5);
-    border-radius: 0.4vw;
-    margin-bottom: 15px;
-    width: 150px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
 }
 
 .buttonText {
