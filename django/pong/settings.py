@@ -53,6 +53,8 @@ INSTALLED_APPS = [
     'friend',
     'player',
     'game',
+
+    'api',
     'rest_framework',
 ]
 
