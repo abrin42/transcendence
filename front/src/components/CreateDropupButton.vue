@@ -1,4 +1,5 @@
 <template>
+  <!-- <PlayerList /> -->
   <div class="dropup" @mouseleave="hideMenu" @mouseenter="showMenu">
     <button id="p0" class="dropbtn">{{ currentFlag }}</button>
     <div class="dropup-content locale-changer" v-show="menuVisible">
@@ -8,6 +9,7 @@
       <a v-if="currentLang !== 'DE'" @click="switchLang('DE')">🇩🇪</a>
       <a v-if="currentLang !== 'IT'" @click="switchLang('IT')">🇮🇹</a>
       <a v-if="currentLang !== 'MA'" @click="switchLang('MA')">⚔️</a>
+      <!-- <h3>{{ players.username }}</h3> -->
     </div>
   </div>
 </template>
@@ -15,6 +17,8 @@
 <script setup>
 import { ref } from 'vue';
 import {useI18n} from 'vue-i18n';
+// import PlayerList from './PlayerList.vue';
+// console.log(PlayerList.getPlayer());
 
 const {locale} = useI18n();
 
@@ -27,17 +31,17 @@ function switchLang(lang) {
   currentLang.value = lang;
   locale.value = lang;
   if (lang === 'EN')
-    currentFlag.value = '🇬🇧';
-  else if (lang === 'FR')
-    currentFlag.value = '🇫🇷';
-  else if (lang === 'ES')
-    currentFlag.value = '🇪🇸';
-    else if (lang === 'DE')
-    currentFlag.value = '🇩🇪';
-    else if (lang === 'IT')
-    currentFlag.value = '🇮🇹';
-  else if (lang === 'MA')
-    currentFlag.value = '⚔️';
+  currentFlag.value = '🇬🇧';
+else if (lang === 'FR')
+currentFlag.value = '🇫🇷';
+else if (lang === 'ES')
+currentFlag.value = '🇪🇸';
+else if (lang === 'DE')
+currentFlag.value = '🇩🇪';
+else if (lang === 'IT')
+currentFlag.value = '🇮🇹';
+else if (lang === 'MA')
+currentFlag.value = '⚔️';
 }
 
 function showMenu() {
@@ -47,9 +51,34 @@ function showMenu() {
 
 function hideMenu() {
   timeoutId = setTimeout(() => {
-      menuVisible.value = false;
+    menuVisible.value = false;
   }, 300);
 }
+
+// import axios from 'axios'
+// export default {
+//   name: 'PlayerList',
+//   data() {
+//     return {
+//       players: [],
+//       errorMsg: ''
+//     }
+//   },
+//   methods:{
+//     getPlayers() {
+//       axios.get('http://localhost:8080/api/test-api/1?format=json')
+//       .then((response) => {
+//         console.log(response.data)
+//         this.players = response.data
+//       })
+//       .catch((error) => {
+//         console.log(error)
+//         this.errorMsg = 'Error retrieving data'
+//       })
+//     }
+//   }
+// }
+// console.log(getPlayers());
 </script>
 
 <style>

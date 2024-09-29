@@ -4,6 +4,7 @@ COPY ./front /app/front
 WORKDIR /app/front
 RUN npm install
 RUN npm install vue-i18n@10
+RUN npm install axios
 RUN npm run build
 
 
