@@ -7,7 +7,7 @@
 {% block content %}
     <br><h1>2FA</h1><br>
 
-    <form  action="/player/tfa/" method="POST" >
+    <form  action="/api/player/tfa/" method="POST" >
         {% csrf_token %}
         
         {% if user.email_2fa_active %}

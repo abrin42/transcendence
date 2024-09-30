@@ -39,11 +39,11 @@ def token_user(request):
     token = request.COOKIES.get('jwt')
     if not token:
         JsonResponse({'valid': False, 'message': 'No token found'}, status=401)
-        return redirect('/player/login/')
+        return redirect('/api/player/login/')
     user = decode_jwt(token)
     if not user:
         JsonResponse({'valid': False, 'message': 'Invalid or expired token'}, status=401)
-        return redirect('/player/login/')
+        return redirect('/api/player/login/')
     print(f"(token_user) {user}")
     return user
 

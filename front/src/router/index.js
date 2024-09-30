@@ -3,7 +3,10 @@ import HomeView from '../views/HomeView.vue'
 import GameView from '../views/GameView.vue'
 import ModeSelectView from '../views/ModeSelectView.vue'
 import CreditsView from '../views/CreditsView.vue'
-import LegacyPongView from '../views/LegacyPongView.vue'
+import SettingsView from '../views/SettingsView.vue'
+import LogView from '../views/LogView.vue'
+import RegisterView from '../views/RegisterView.vue'
+import DashboardView from '../views/DashboardView.vue'
 
 const router = createRouter({
   history: createWebHistory(),
@@ -29,9 +32,24 @@ const router = createRouter({
       component: GameView
     },
     {
-      path: '/legacy',
-      name: 'legacy',
-      component: LegacyPongView
+      path: '/settings',
+      name: 'settings',
+      component: SettingsView
+    },
+    {
+      path: '/log',
+      name: 'log',
+      component: LogView
+    },
+    {
+      path: '/register',
+      name: 'register',
+      component: RegisterView
+    },
+    {
+      path: '/dashboard',
+      name: 'dashboard',
+      component: DashboardView
     }
   ]
 })

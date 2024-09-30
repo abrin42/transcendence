@@ -1,20 +1,23 @@
 <template>
-
-    <button class="button" @click="goBack">
-        <!-- ajouter icone retour? -->
-        <span class="buttonText buttonTextSize">{{ $t('back') }}</span>
+    <button class="button overloadBtn" @click="goBack">
+        <i class="fa-solid fa-backward"></i>
     </button>
-
 </template>
-  
-<script setup>
-    import { useRouter } from 'vue-router';
 
-    const router = useRouter();
-    function goBack() {
-        router.go(-1);
-    }
+<script setup>
+import { useRouter } from 'vue-router';
+const router = useRouter();
+function goBack() {
+    router.go(-1);
+}
 </script>
-  
+
 <style>
+.overloadBtn {
+    position: fixed;
+    width: 3vw;
+    height: 6vh;
+    top: 92vh;
+    left: 95vw;
+}
 </style>

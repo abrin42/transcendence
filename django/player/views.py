@@ -37,7 +37,7 @@ def register_view(request):
 
                 token = generate_jwt(user)
                 response = HttpResponse(status=302)  # 302 redirect to another page
-                response = redirect('/player/account/')
+                response = redirect('/api/player/account/')
                 set_jwt_token(response, token)
 
                 return response
@@ -68,13 +68,13 @@ def login_view(request):
                             user.save()
 
                         response = HttpResponse(status=302)  # 302 redirect to another page
-                        response = redirect('/player/account/')
+                        response = redirect('/api/player/account/')
                         set_jwt_token(response, token)
 
                         return response
                     
                     response = HttpResponse(status=302)  # 302 redirect to another page
-                    response = redirect('/player/tfa/', {"user": user})
+                    response = redirect('/api/player/tfa/', {"user": user})
                     return response
             else:
                 return render(request, 'player/login.html', {'error': 'Invalid username or password'})
@@ -110,7 +110,7 @@ def tfa_view(request):
                 contact = user.email
                 send_otp(request, totp, contact, method='email')
             
-            return redirect('/player/otp/')
+            return redirect('/api/player/otp/')
 
     return render(request, 'player/tfa.html', {'user': user})
 
@@ -133,7 +133,7 @@ def otp_view(request):
                     if totp.verify(user_otp):
                         token = generate_jwt(user)
                         response = HttpResponse(status=302)  # 302 redirect to another page
-                        response = redirect('/player/account/')
+                        response = redirect('/api/player/account/')
                         set_jwt_token(response, token)
                         
                         del request.session['otp_secret_key']
@@ -150,7 +150,7 @@ def otp_view(request):
 def auth_42_callback(request):
     code = request.GET.get('code')
     if not code:
-        return redirect('/player/login/')
+        return redirect('/api/player/login/')
 
     token_url = 'https://api.intra.42.fr/oauth/token'
     data = {
@@ -163,19 +163,19 @@ def auth_42_callback(request):
 
     response = requests.post(token_url, data=data)
     if response.status_code != 200: #if the HTTP request (get) is not successful 
-        return redirect('/player/login/')
+        return redirect('/api/player/login/')
 
     token_info = response.json()
     access_token = token_info.get('access_token')
     if not access_token:
-        return redirect('/player/login/')
+        return redirect('/api/player/login/')
 
     user_info_response = requests.get(
         'https://api.intra.42.fr/v2/me',
         headers={'Authorization': f'Bearer {access_token}'}
     )
     if user_info_response.status_code != 200: #if the HTTP request (get) is not successful 
-        return redirect('/player/login/')
+        return redirect('/api/player/login/')
 
     user_info = user_info_response.json()
     login_name = user_info.get('login')
@@ -184,7 +184,7 @@ def auth_42_callback(request):
     # profile_picture = user_info["image"]["versions"]["small"]
 
     if not username:
-        return redirect('/player/login/')
+        return redirect('/api/player/login/')
 
     user, created = Player.objects.get_or_create(
         username=username,
@@ -198,13 +198,13 @@ def auth_42_callback(request):
         # if profile_picture: 
         #     set_picture_42(request, user, profile_picture)
         token = generate_jwt(user)
-        response = redirect('/player/account/')
+        response = redirect('/api/player/account/')
         set_jwt_token(response, token)
         user = token_user(request)
         #login(request, user)
         return response
 
-    return redirect('/player/account/')
+    return redirect('/api/player/account/')
 
 def account_view(request):
     user = token_user(request)
@@ -225,7 +225,7 @@ def update_view(request):
         form = UpdateForm(request.POST, request.FILES, instance=user)
         if form.is_valid():
             form.save()
-            return redirect('/player/account/')
+            return redirect('/api/player/account/')
     else:
         form = UpdateForm(instance=user)
     return render(request, 'player/update.html', {'form': form})
@@ -237,7 +237,7 @@ def update_password_view(request):
         form = ChangePasswordForm(user, request.POST)
         if form.is_valid():
             form.save()
-            return redirect('/player/account/')
+            return redirect('/api/player/account/')
         else:
             return render(request, 'player/update_password.html', {"form": form})
     else:
@@ -246,7 +246,7 @@ def update_password_view(request):
 
 def logout_view(request):
     token = request.COOKIES.get('jwt')
-    response = redirect('/player/login/')
+    response = redirect('/api/player/login/')
     if token:
         BlacklistedToken.objects.create(token=token)
         response.delete_cookie('jwt')

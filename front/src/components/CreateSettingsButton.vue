@@ -1,14 +1,14 @@
 <script setup>
-    import { ref } from 'vue';
+import { ref } from 'vue';
 
-    const isRotating = ref(false);
+const isRotating = ref(false);
 
-    function rotateIcon() {
-        isRotating.value = true;
-        setTimeout(() => {
-            isRotating.value = false;
-        }, 1000);
-    }
+function rotateIcon() {
+    isRotating.value = true;
+    setTimeout(() => {
+        isRotating.value = false;
+    }, 1000);
+}
 
 </script>
 
@@ -17,8 +17,8 @@
         <i :class="['fas fa-gear', { 'icon-rotate': isRotating }]"></i>
     </button>
 </template>
-  
-  
+
+
 <style>
 .icon-rotate {
     display: inline-block;
@@ -26,10 +26,10 @@
 }
 
 .button-settings {
-    position: absolute;
-    width: 60px;
-    height: 50px;
-    top: 10px;
-    left: 43vW;
+    position: fixed;
+    width: 3vw;
+    height: 6vh;
+    bottom: 93vh;
+    left: 95vw;
 }
 </style>
