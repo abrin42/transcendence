@@ -181,7 +181,7 @@ def auth_42_callback(request):
     login_name = user_info.get('login')
     username = f'{login_name}'
     email = user_info.get('email')
-    profile_picture = user_info["image"]["versions"]["small"]
+    # profile_picture = user_info["image"]["versions"]["small"]
 
     if not username:
         return redirect('/player/login/')
@@ -195,8 +195,8 @@ def auth_42_callback(request):
         user.student = True
         user.nickname = user.username
         user.save()
-        if profile_picture: 
-            set_picture_42(request, user, profile_picture)
+        # if profile_picture: 
+        #     set_picture_42(request, user, profile_picture)
         token = generate_jwt(user)
         response = redirect('/player/account/')
         set_jwt_token(response, token)
