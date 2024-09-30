@@ -299,7 +299,8 @@ onMounted(() => {
 
     function movePlayer(e) 
     {
-      if (e.code === "KeyW") 
+      keysPressed[e.code] = true;
+      if (keysPressed["KeyW"]) 
       {
         const message = 
         {
@@ -308,7 +309,7 @@ onMounted(() => {
         };
         sendMessage(message);                    
       } 
-      else if (e.code === "KeyS") 
+      else if (keysPressed["KeyS"])
       {
         const message = 
         {
@@ -318,7 +319,7 @@ onMounted(() => {
         sendMessage(message);                           
       }
 
-      if (e.code === "ArrowUp") 
+      if (keysPressed["ArrowUp"]) 
       {
         const message = 
         {
@@ -327,7 +328,7 @@ onMounted(() => {
         };
         sendMessage(message);       
       } 
-      else if (e.code === "ArrowDown") 
+      else if (keysPressed["ArrowDown"]) 
       {
         const message = 
         {
@@ -340,7 +341,7 @@ onMounted(() => {
     }
 
     function stopPlayer(e) {
-
+      delete keysPressed[e.code];
     }
 
 

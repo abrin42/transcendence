@@ -158,6 +158,8 @@ class PongConsumer(AsyncWebsocketConsumer):
         self.board_y_max = 700
         self.board_x_max = 700
         self.board_min = 3.88
+        self.board_min = 0
+
 
         self.boardWidth = 700
         self.boardHeight = 700
