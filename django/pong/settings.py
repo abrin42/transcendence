@@ -33,7 +33,7 @@ SECRET_KEY = get_secret('secret_key')
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['api']
 #ALLOWED_HOSTS = ['localhost', '127.0.0.1', 'yourdomain.com']
 
 
