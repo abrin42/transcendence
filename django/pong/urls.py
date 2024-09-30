@@ -29,7 +29,7 @@ urlpatterns = [
     path('api/player/', include('player.urls')),
     path('api/game/', include('game.urls')),
     path('api/layout/', views.layout),
-
+    path('api/test-api/', include('api.urls')),
 ]
 
 urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

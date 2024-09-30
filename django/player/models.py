@@ -20,7 +20,7 @@ class Player(AbstractUser):
     win = models.IntegerField(default=0)
     lose = models.IntegerField(default=0)
     nickname = models.CharField(blank=True, null=True, max_length=30)
-
+    language = models.CharField(blank=True, null=True, max_length=2, default="EN")
     def __str__(self):
         return self.username
     
