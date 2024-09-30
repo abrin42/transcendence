@@ -183,3 +183,25 @@ SMTP_PASSWORD = get_secret('smtp_password')
 JWT_SECRET_KEY = get_secret('jwt_secret_key')
 JWT_ALGORITHM = get_secret('jwt_algo')
 JWT_EXP_DELTA_SECONDS = get_secret('jwt_exp')
+
+
+
+ASGI_APPLICATION = 'pong.asgi.application'
+
+CORS_ALLOWED_ORIGINS = [
+    "http://localhost:8080",
+]
+
+CORS_ALLOW_ALL_ORIGINS = True
+
+# WEBSOCKET_URL = '/ws/'
+# WEBSOCKET_REDIS_BROKER_URL = 'redis://localhost:6379/0'
+
+# CHANNEL_LAYERS = {
+#     'default': {
+#         'BACKEND': 'channels_redis.core.RedisChannelLayer',
+#         'CONFIG': {
+#             "hosts": [('redis', 6379)],
+#         },
+#     },
+# }
