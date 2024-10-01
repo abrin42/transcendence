@@ -6,10 +6,9 @@
 
 {% block content %}
 <br>
-    <p>Check out my <a href="/api">Home page</a>.</p>
 
     <h1>Register a New User</h1>
-    <form class="form-width-validation" action="/api/player/register/" method="post">
+    <form class="form-width-validation" action="/player/register/" method="post">
         {% csrf_token %}
         {{ form }}
         <br><br>

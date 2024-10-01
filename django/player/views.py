@@ -8,8 +8,9 @@ from django.core.files.base import ContentFile
 from django.http import JsonResponse, HttpResponse, HttpResponseForbidden
 from django.middleware.csrf import get_token
 from django.conf import settings
+from django.urls import reverse
 from django.views.decorators.csrf import csrf_exempt
-from .otp import send_otp
+from .otp import send_otp, create_otp
 from .jwt import generate_jwt, decode_jwt, token_user, set_jwt_token
 from .forms import RegisterForm, ChangePasswordForm, UpdateForm
 from .models import Player, BlacklistedToken
@@ -43,9 +44,9 @@ def register_view(request):
                 return response
     else:
         form = RegisterForm()
-    return render(request, 'player/register.html', {'form': form})
-
-
+    return render(request, 'player/register.html', {'form': form}) 
+    
+    
 def login_view(request):
     if request.method == "POST":
         if 'login' in request.POST:
@@ -96,22 +97,8 @@ def tfa_view(request):
 
     if request.method == "POST":
         if 'tfa' in request.POST:
-            totp = pyotp.TOTP(pyotp.random_base32(), interval=60)
-                
-            request.session['username'] = user.username
-            request.session['otp_secret_key'] = totp.secret
-            request.session['otp_valid_date'] = (datetime.now() + timedelta(minutes=1)).isoformat()
-                
-            otp_method = request.POST.get('otp_method')
-            if  otp_method == 'sms':
-                contact = str(user.phone_number)
-                send_otp(request, totp, contact, method='sms')
-            elif otp_method == 'email':
-                contact = user.email
-                send_otp(request, totp, contact, method='email')
-            
+            create_otp(request, user)
             return redirect('/api/player/otp/')
-
     return render(request, 'player/tfa.html', {'user': user})
 
 @login_required
@@ -139,11 +126,16 @@ def otp_view(request):
                         del request.session['otp_secret_key']
                         del request.session['otp_valid_date']
                         del request.session['username']
+                        del request.session['otp_method']
 
                         return response
                 else:
                     return render(request, 'player/otp.html', {'error': 'OTP has expired'})
             return render(request, 'player/otp.html', {'error': 'Invalid OTP'})
+        
+        elif 'resend_otp' in request.POST:
+            create_otp(request, user)
+
     return render(request, 'player/otp.html')
 
 
@@ -181,7 +173,7 @@ def auth_42_callback(request):
     login_name = user_info.get('login')
     username = f'{login_name}'
     email = user_info.get('email')
-    # profile_picture = user_info["image"]["versions"]["small"]
+    #profile_picture = user_info["image"]["versions"]["small"]
 
     if not username:
         return redirect('/api/player/login/')
@@ -195,19 +187,23 @@ def auth_42_callback(request):
         user.student = True
         user.nickname = user.username
         user.save()
-        # if profile_picture: 
-        #     set_picture_42(request, user, profile_picture)
+        #if profile_picture: 
+        #    set_picture_42(request, user, profile_picture)
         token = generate_jwt(user)
         response = redirect('/api/player/account/')
         set_jwt_token(response, token)
+        login(request, user)
         user = token_user(request)
-        #login(request, user)
         return response
 
     return redirect('/api/player/account/')
 
+@login_required
 def account_view(request):
     user = token_user(request)
+    if user is None: 
+        return redirect(reverse('player:login'))
+
     if request.method == 'POST':
         email_2fa_active = 'email_2fa_active' in request.POST
         sms_2fa_active = 'sms_2fa_active' in request.POST
@@ -218,9 +214,11 @@ def account_view(request):
         user.save()
     return render(request, 'player/account.html', {'user': user})
 
+@login_required
 def update_view(request):
     user = token_user(request)
-
+    if user is None: 
+        return redirect(reverse('player:login'))
     if request.method == 'POST':
         form = UpdateForm(request.POST, request.FILES, instance=user)
         if form.is_valid():
@@ -230,13 +228,17 @@ def update_view(request):
         form = UpdateForm(instance=user)
     return render(request, 'player/update.html', {'form': form})
 
+@login_required
 def update_password_view(request):
     user = token_user(request)
+    if user is None: 
+        return redirect(reverse('player:login'))
 
     if request.method == 'POST':
         form = ChangePasswordForm(user, request.POST)
         if form.is_valid():
             form.save()
+            login(request, user)
             return redirect('/api/player/account/')
         else:
             return render(request, 'player/update_password.html', {"form": form})
@@ -244,6 +246,7 @@ def update_password_view(request):
         form = ChangePasswordForm(user)
         return render(request, 'player/update_password.html', {"form": form})
 
+@login_required
 def logout_view(request):
     token = request.COOKIES.get('jwt')
     response = redirect('/api/player/login/')
@@ -253,6 +256,9 @@ def logout_view(request):
     logout(request)
     return response
 
+@login_required
 def delete_account_view(request):
     user = token_user(request)
+    if user is None: 
+        return redirect(reverse('player:login'))
     return render(request, 'player/delete_account.html')
