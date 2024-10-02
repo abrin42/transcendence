@@ -1,79 +1,113 @@
 <template>
-  <div class="dropup">
-    <button id="p0" class="dropbtn" ref="p0">🇺🇸</button>
-      <div class="dropup-content">
-        <a @click="switchES">🇪🇸</a>
-        <a @click="switchFR">🇫🇷</a>
-        <a @click="switchEN">🇺🇸</a>
-      </div>
-  </div>
+	<div class="dropup" @mouseleave="hideMenu" @mouseenter="showMenu">
+		<button id="p0" class="dropbtn">{{ currentFlag }}</button>
+		<div class="dropup-content locale-changer" v-show="menuVisible">
+			<a v-if="currentLang !== 'ES'" @click="switchLang('ES')">🇪🇸</a>
+			<a v-if="currentLang !== 'FR'" @click="switchLang('FR')">🇫🇷</a>
+			<a v-if="currentLang !== 'EN'" @click="switchLang('EN')">🇬🇧</a>
+			<a v-if="currentLang !== 'DE'" @click="switchLang('DE')">🇩🇪</a>
+			<a v-if="currentLang !== 'IT'" @click="switchLang('IT')">🇮🇹</a>
+			<a v-if="currentLang !== 'MA'" @click="switchLang('MA')">⚔️</a>
+		</div>
+	</div>
 </template>
 
 <script setup>
+import { ref } from 'vue';
+import { useI18n } from 'vue-i18n';
 
-function switchEN() {
-  document.getElementById("p0").innerHTML = "🇺🇸";
-  // this.$refs.p0.innerHTML = "🇺🇸";
+const { locale } = useI18n();
+
+const currentLang = ref('EN');
+const currentFlag = ref('🇬🇧');
+const menuVisible = ref(false);
+let timeoutId;
+
+function switchLang(lang) {
+	currentLang.value = lang;
+	locale.value = lang;
+	if (lang === 'EN')
+		currentFlag.value = '🇬🇧';
+	else if (lang === 'FR')
+		currentFlag.value = '🇫🇷';
+	else if (lang === 'ES')
+		currentFlag.value = '🇪🇸';
+	else if (lang === 'DE')
+		currentFlag.value = '🇩🇪';
+	else if (lang === 'IT')
+		currentFlag.value = '🇮🇹';
+	else if (lang === 'MA')
+		currentFlag.value = '⚔️';
 }
 
-function switchFR() {
-  document.getElementById("p0").innerHTML = "🇫🇷";
-  // this.$refs.p0.innerHTML = "🇫🇷";
+function showMenu() {
+	clearTimeout(timeoutId);
+	menuVisible.value = true;
 }
 
-function switchES() {
-  document.getElementById("p0").innerHTML = "🇪🇸";
-  // this.$refs.p0.innerHTML = "🇪🇸";
+function hideMenu() {
+	timeoutId = setTimeout(() => {
+		menuVisible.value = false;
+	}, 300);
 }
-
 </script>
 
-<style>
-/* Dropup Button */
+<style scoped>
+@import './../assets/main.scss';
+
 .dropbtn {
-  background-color: rgba(0,0,0,0.0);
-  color: white;
-  padding: 16px;
-  font-size: 16px;
-  border: none;
+	/* Handler Position and Size */
+	position: fixed;
+	top: 92vh;
+	right: 95vw;
+	width: 3vw;
+	height: 6vh;
+
+	/* Background style button HomeView */
+	background-color: rgba(0, 0, 0, 0.25);
+	padding: 2vh 2vw;
+	border: 0.15vw solid rgba(0, 0, 0, 0.25);
+	border-radius: 0.4vw;
+	transition: border-color 0.5s;
+	margin-top: 1vh;
+
+	/* Handler emoji */
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	font-size: 1.5vw;
 }
 
-/* The container <div> - needed to position the dropup content */
-  .dropup {
-    position: relative;
-    display: inline-block;
-}
-
-/* Dropup content (Hidden by Default) */
 .dropup-content {
-  display: none;
-  position: absolute;
-  bottom: 50px;
-  background-color: #f1f1f1;
-  min-width: 100%;
-  overflow: auto;
-  box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
-  z-index: 1;
+	position: fixed;
+	bottom: 8vh;
+	right: 95vw;
+	display: flex;
+	flex-direction: column-reverse;
 }
 
-/* Links inside the dropup */
 .dropup-content a {
-  color: black;
-  padding: 12px 16px;
-  text-decoration: none;
-  display: block;
+	/* Handler Position */
+	width: 3vw;
+	height: 6vh;
+
+	/* Background style button HomeView */
+	background-color: rgba(0, 0, 0, 0.25);
+	padding: 2vh 2vw;
+	border: 0.15vw solid rgba(0, 0, 0, 0.25);
+	border-radius: 0.4vw;
+	transition: border-color 0.5s;
+	margin-top: 1vh;
+
+	/* Handler emoji */
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	font-size: 1.5vw;
 }
 
-/* Change color of dropup links on hover */
-.dropup-content a:hover {background-color: #ddd}
-
-/* Show the dropup menu on hover */
-.dropup:hover .dropup-content {
-  display: block;
-}
-
-/* Change the background color of the dropup button when the dropup content is shown */
-.dropup:hover .dropbtn {
-  background-color: #c3c3c3;
+.dropup-content a:hover {
+	border-color: rgba(255, 255, 255, 1);
+	background-color: rgba(255, 255, 255, 0.4);
 }
 </style>

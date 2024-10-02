@@ -23,42 +23,19 @@
     }
 </script>
 
+
 <template>
     <main>
         <div id="wrapper">
             <div class="buttonContainer">
-                <button class="button" @click="goToSolo">
-                    <i class="fas fa-play" style="margin-right: 8px;"></i>
-                    <span class="buttonText buttonTextSize">Solo</span>
-                </button>
-
-                <button class="button button-credits" @click="goToMulti">
-                    <span class="buttonText">Multi</span>
-                </button>
-
-                <button class="button button-tournoi" @click="goToTournoi">
-                    <span class="buttonText">Tournoi</span>
-                </button>
-
-                <button class="button button-log" @click="clickButton">
-                    <span class="buttonText">Login</span>
-                </button>
-                <div>
-                    <CreateSoundButton />
-                </div>
-
-                <div>
-                    <CreateDropupButton />
-                </div>
-
-                <div>
-                    <CreateBackButton />
-                </div>
+                <CreateSoundButton />
+                <CreateDropupButton />
+                <CreateBackButton />
             </div>
         </div>
     </main>
 </template>
 
-<style>
-
+<style scoped>
+@import './../assets/main.scss';
 </style>

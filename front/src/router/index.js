@@ -10,10 +10,11 @@ import LeaderboardView from '../views/LeaderboardView.vue'
 import LoginView from '../views/LoginView.vue'
 import MatchmakingView from '../views/MatchmakingView.vue'
 import MyAccountView from '../views/MyAccountView.vue'
-import RegisterView from '../views/RegisterView.vue'
-import SettingsView from '../views/SettingsView.vue'
 import TourneyModeView from '../views/TourneyModeView.vue'
-
+import SettingsView from '../views/SettingsView.vue'
+import LogView from '../views/LogView.vue'
+import RegisterView from '../views/RegisterView.vue'
+import DashboardView from '../views/DashboardView.vue'
 
 const router = createRouter({
   history: createWebHistory(),
@@ -37,6 +38,26 @@ const router = createRouter({
       path: '/gameselect',
       name: 'gameselect',
       component: GameSelectView
+    },
+    {
+      path: '/settings',
+      name: 'settings',
+      component: SettingsView
+    },
+    {
+      path: '/log',
+      name: 'log',
+      component: LogView
+    },
+    {
+      path: '/register',
+      name: 'register',
+      component: RegisterView
+    },
+    {
+      path: '/dashboard',
+      name: 'dashboard',
+      component: DashboardView
     },
     {
       path: '/tourneymode',

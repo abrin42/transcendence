@@ -26,10 +26,10 @@
 }
 
 .button-settings {
-    position: absolute;
-    width: 60px;
-    height: 50px;
-    top: 10px;
-    left: 43vW;
+    position: fixed;
+    width: 3vw;
+    height: 6vh;
+    bottom: 93vh;
+    left: 95vw;
 }
 </style>
