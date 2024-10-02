@@ -4,7 +4,6 @@ from .models import Player
 import os
 import requests
 
-
 def username_underscore(request):
     post_data = request.POST.copy()
     raw_username = post_data.get('username')

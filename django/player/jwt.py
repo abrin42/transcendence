@@ -69,9 +69,8 @@ def verify_jwt(request):
     if isinstance(user, Player):
         print(f"(verify_jwt)user: {user}")
         user_data = {
-            'username': user.username,
-            'email': user.email,
-            # Add other relevant fields here
+            'id': user.id,
+
         }
     
         return JsonResponse({'valid': True, 'message': 'Token is valid', 'user': user_data}, content_type='application/json')
