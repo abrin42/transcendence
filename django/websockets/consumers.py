@@ -12,7 +12,7 @@ class PongConsumer(AsyncWebsocketConsumer):
 #good
     async def speed_up_ball(self):
         if (self.ball_speed < 10):
-            return (0.1)
+            return (0.2)
         return (0)
 
 #good
@@ -32,18 +32,26 @@ class PongConsumer(AsyncWebsocketConsumer):
 
 
     async def sendPts(self, type, player):
-        self.PTSp1 = self.PTSp1 + 1
-        await self.send(text_data=json.dumps({
-            'type': type,
-            'updatePts': self.PTSp1,
-            'player': player,
-        }))
-        self.PTSp2 = self.PTSp2 + 1
-        await self.send(text_data=json.dumps({
-            'type': type,
-            'updatePts': self.PTSp2,
-            'player': player,
-    }))
+        if player == "1":
+            self.PTSp1 = self.PTSp1 + 1
+            await self.send(text_data=json.dumps({
+                'type': type,
+                'updatePts': self.PTSp1,
+                'player': player,
+            }))
+            if (self.PTSp1 == self.nb_pts_for_win):
+                await self.endGame()
+
+        elif player == "2":
+            self.PTSp2 = self.PTSp2 + 1
+            await self.send(text_data=json.dumps({
+                'type': type,
+                'updatePts': self.PTSp2,
+                'player': player,
+            }))
+            if (self.PTSp2 == self.nb_pts_for_win):
+                await self.endGame()
+            
 
     async def sendBall(self, x, y):
         await self.send(text_data=json.dumps({
@@ -62,23 +70,48 @@ class PongConsumer(AsyncWebsocketConsumer):
         }))
 
 #good
+
+
+    async def endGame(self):
+        self.Game_on = -1
+        await self.disconnect(1000)
+        await self.send(text_data=json.dumps({
+            'type': "endGame",
+        }))
+
+
+    async def sendPadInit(self):
+        await self.send(text_data=json.dumps({
+            'type': "mouvUp",
+            'newY': self.init_pad,
+            'player': "1",
+        }))
+        await self.send(text_data=json.dumps({
+            'type': "mouvUp",
+            'newY': self.init_pad,
+            'player': "2",
+        }))
+
     async def begin_point(self):
-        self.posPad1 = self.boardHeight / 2 - self.paddle_height / 2
-        self.posPad2 = self.boardHeight / 2 - self.paddle_height / 2
-        self.ball_speed = 2.5
+        self.posPad1 = self.init_pad
+        self.posPad2 = self.init_pad
+        self.ball_speed = self.init_ball_speed 
         self.ball_x = self.startXBall
         self.ball_y = self.startYBall
         self.future_x = self.ball_x
         self.future_y = self.ball_y
         await self.sendBall(self.ball_x, self.ball_y)
+        await self.sendPadInit()
+        #         self.posPad1 = 280
+        # self.posPad2 = 280
         # draw_board(left_paddle_current_y, right_paddle_current_y) pour l'instant pas de reste des pad quand point 
         # setTimeout(move_ball, 1500)
 
 
 #good
     async def  victory(self):
-        # await self.sendinfo_back(self.future_x, self.board_x_max, (self.board_x_max / 2))
-        if (self.future_x < 0):
+        # await self.sendinfo_back(self.future_x, 0, 0)
+        if (self.future_x < 6.983):
             await self.sendPts("updatePts", "2")
             self.ball_angle = 180
             await self.begin_point()
@@ -125,25 +158,49 @@ class PongConsumer(AsyncWebsocketConsumer):
 
 
     async def loop_game(self):
-        while(True):
-            # await self.sendPts("updatePts", "1")
-            await self.move_ball()
-            # self.ball_x = self.ball_x + 1
-            await self.sendBall(self.ball_x, self.ball_y)
-            await asyncio.sleep(0.01)
+        while self.Game_on != -1:
+            while(self.Game_on == 1):
+                # await self.sendPts("updatePts", "1")
+                await self.move_ball()
+                # self.ball_x = self.ball_x + 1
+                await self.sendBall(self.ball_x, self.ball_y)
+                await asyncio.sleep(self.tick_back)
+            await asyncio.sleep(0.5)
+
+    async def ia_loop_game(self):
+        self.P2Ready = 1      
+        while True:
+            # await self.sendPadUp("mouvUp", "2")
+            await self.sendPadDown("mouvDown", "2")
+            await asyncio.sleep(0.5) #a def en fonction du sujet 
+
 
 
 
     async def connect(self):
+        self.boardWidth = 700
+        self.boardHeight = 700
+        self.IA = 0
+
+        self.init_ball_speed = 4
+        self.tick_back = 0.01
+
+        self.Game_on = 0
+        self.nb_pts_for_win = 10
+
+        self.P1Ready = 0
+        self.P2Ready = 0
+
         self.PTSp1 = 0
         self.PTSp2 = 0
-        self.posPad1 = 280
-        self.posPad2 = 280
         self.xPad1 = 10
         self.xPad2 = 700 - 30  # -10 ecart du bord et -20 largeur padel 
         self.paddle_width = 20
         self.paddle_height = 140
         self.position_in_paddle = 0
+        self.init_pad = self.boardHeight / 2 - self.paddle_height / 2
+        self.posPad1 = self.init_pad
+        self.posPad2 = self.init_pad
 
         self.startXBall = 350
         self.startYBall = 350
@@ -152,39 +209,36 @@ class PongConsumer(AsyncWebsocketConsumer):
         self.future_x = 350
         self.future_y = 350
         self.ball_angle = 180 if random.random() > 0.5 else 0
-        self.ball_speed = 2.5
         self.ball_radius = 7.18
+        self.ball_speed = self.init_ball_speed
 
         self.board_y_max = 700
         self.board_x_max = 700
         self.board_min = 3.88
         self.board_min = 0
-
-
-        self.boardWidth = 700
-        self.boardHeight = 700
+        self.win = 10
 
         await self.accept()
         await self.send(text_data=json.dumps({
             'type': 'connection_success',
             'message': 'Connexion réussie!'
         }))
-        await asyncio.sleep(1.0)
         asyncio.ensure_future(self.loop_game())
         
 
 
     async def disconnect(self, close_code):
-        print(f"Déconnexion du client, code: {close_code}")
-        if close_code:
-            await self.send(text_data=json.dumps({
+        if (close_code == 1000): #fin de partie normal 
+                    await self.send(text_data=json.dumps({
                 'type': 'disconnect',
-                'reason': f"Déconnecté avec le code : {close_code}"
+                'close_code': close_code
             }))
-        else:
+        elif (close_code == 1001): #joueur qui part de la partie donc mettre en pause
+            self.Game_on = 0
             await self.send(text_data=json.dumps({
                 'type': 'disconnect',
-                'reason': 'Déconnexion normale'
+                'close_code': close_code
+
             }))
 
 # player1 = joueur de gauche 
@@ -204,6 +258,7 @@ class PongConsumer(AsyncWebsocketConsumer):
 
     async def sendPadUp(self, type, player):
         if player == 1:
+            self.P1Ready = 1
             self.posPad1 -= 5
             if self.posPad1 < 0:
                 self.posPad1 = 0
@@ -214,6 +269,7 @@ class PongConsumer(AsyncWebsocketConsumer):
                 'player': player,
             }))
         if player == 2:
+            self.P2Ready = 1
             self.posPad2 -= 5
             if self.posPad2 < 0:
                 self.posPad2 = 0
@@ -226,6 +282,7 @@ class PongConsumer(AsyncWebsocketConsumer):
 
     async def sendPadDown(self, type, player):
         if player == 1:
+            self.P1Ready = 1
             self.posPad1 += 5
             if self.posPad1 > 560:
                 self.posPad1 = 560
@@ -236,6 +293,7 @@ class PongConsumer(AsyncWebsocketConsumer):
                 'player': player,
             }))
         if player == 2:
+            self.P2Ready = 1
             self.posPad2 += 5
             if self.posPad2 > 560:
                 self.posPad2 = 560
@@ -245,6 +303,16 @@ class PongConsumer(AsyncWebsocketConsumer):
                 'newY': newY,
                 'player': player,
             }))
+
+    async def sendStart(self):
+        await self.send(text_data=json.dumps({
+            'type': "startGame",
+        }))
+        # await asyncio.sleep(3.0)
+        # self.posPad1 = self.init_pad
+        # self.posPad2 = self.init_pad
+        # await self.sendPadInit()
+        self.Game_on = 1
 
     async def receive(self, text_data):
         try:
@@ -258,6 +326,13 @@ class PongConsumer(AsyncWebsocketConsumer):
                     await self.sendPadUp(type, player)
                 elif type == "mouvDown":
                     await self.sendPadDown(type, player)
+                elif type == "GameIA":
+                    self.IA = 1
+                    asyncio.ensure_future(self.ia_loop_game())
+
+            if self.P1Ready == 1 and self.P2Ready == 1 and self.Game_on == 0:
+                await self.sendStart()
+
         except json.JSONDecodeError:
             await self.send(text_data=json.dumps({
                 'error': 'Format JSON invalide'

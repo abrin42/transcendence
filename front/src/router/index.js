@@ -4,6 +4,8 @@ import GameView from '../views/GameView.vue'
 import ModeSelectView from '../views/ModeSelectView.vue'
 import CreditsView from '../views/CreditsView.vue'
 import LegacyPongView from '../views/LegacyPongView.vue'
+import IAPongView from '../views/IAPongView.vue'
+
 
 const router = createRouter({
   history: createWebHistory(),
@@ -32,6 +34,11 @@ const router = createRouter({
       path: '/legacy',
       name: 'legacy',
       component: LegacyPongView
+    },
+    {
+      path: '/IA',
+      name: 'IA',
+      component: IAPongView
     }
   ]
 })

@@ -51,10 +51,10 @@ function connectWebSocket() {
 
 
   socket.value.onmessage = (event) => {
-    // console.log("---ON MESSAGE---");
+    console.log("---ON MESSAGE---");
 
     const data = JSON.parse(event.data);
-    // console.log(data.type);
+    console.log(data.type);
     // console.log(data.x);
     // console.log(data.y);
     // console.log(data.message);
@@ -66,6 +66,15 @@ function connectWebSocket() {
       // console.log(data.type);
       // console.log(data.message);
       // connectionStatus.value = data.message;
+
+
+      const message =
+      {
+        type: "GameIA",
+        player: "2",
+      };
+      sendMessage(message);
+
       connection = 1;
     }
     else if (data.type == 'updatePts')
@@ -93,7 +102,7 @@ function connectWebSocket() {
       console.log(data.type);
     }
     else if (data.type == 'startGame')
-    { 
+    {
       console.log(data.type);
     }
     else if (data.type == 'info_back') //a enlever test
@@ -124,8 +133,8 @@ function sendMessage(msg) {
   // console.log(msg);
   if (socket.value && socket.value.readyState === WebSocket.OPEN) 
   {
-    // console.log("---SEND MESSAGE---");
-    // console.log(msg.type);
+    console.log("---SEND MESSAGE---");
+    console.log(msg.type);
     // console.log(msg.player);
     // console.log(msg.posPad);
     socket.value.send(JSON.stringify({
@@ -315,8 +324,6 @@ onMounted(() => {
     let keysPressed = {};
     let moveInterval1up = null;
     let moveInterval1down = null;
-    let moveInterval2up = null;
-    let moveInterval2down = null;
     let tickPadel = 10;
 
 
@@ -353,35 +360,6 @@ onMounted(() => {
           }, tickPadel );
         }                        
       }
-
-      if (keysPressed["ArrowUp"]) 
-      {
-        if (!moveInterval2up)
-        {
-          moveInterval2up = setInterval(() => {
-            const message = 
-            {
-              type: "mouvUp",
-              player: "2",
-            };
-            sendMessage(message);                    
-          }, tickPadel );
-        }      
-      } 
-      else if (keysPressed["ArrowDown"]) 
-      {
-        if (!moveInterval2down)
-        {
-          moveInterval2down = setInterval(() => {
-            const message = 
-            {
-              type: "mouvDown",
-              player: "2",
-            };
-            sendMessage(message);                    
-          }, tickPadel );
-        }                        
-      }
         document.addEventListener('keyup', stopPlayer);
     }
 
@@ -396,16 +374,6 @@ onMounted(() => {
       {
         clearInterval(moveInterval1down);
         moveInterval1down = null;
-      }
-      else if (e.code == "ArrowUp")
-      {  
-        clearInterval(moveInterval2up);
-        moveInterval2up = null;
-      }
-      else if (e.code == "ArrowDown")
-      {
-        clearInterval(moveInterval2down);
-        moveInterval2down = null;
       }
     }
 
