@@ -8,38 +8,23 @@ import { useRouter } from 'vue-router';
 import { reactive, onMounted } from 'vue';
 
 const state = reactive({
-  id: '',
-  username: '',
-  nickname: '',
+  date_joined:"",
+  email:"",
+  email_2fa_active:false,
+  lose:0,
+  nickname:"",
+  password:"",
+  phone_number:"",
+  profile_picture:"",
+  rank:0,
+  username:"",
+  win:0,
 });
-
-async function fetchUserData() {
-  try {
-    const response = await fetch('/api/player/verify-jwt/', {
-      credentials: 'include',
-    });
-    const text = await response.text();
-    console.log('Raw response:', text);
-
-    let data;
-    try {
-      data = JSON.parse(text);
-    } catch (err) {
-      console.error('Error parsing response:', err);
-      return;
-    }
-
-    if (data.valid) {
-      state.id = data.user.id;
-    }
-  } catch (error) {
-    console.error('Error fetching user data:', error);
-  }
-}
 
 async function getUser() {
   try {
-    const response = await fetch(`http://localhost:8080/api/test-api/${state.id}`, {
+    //const response = await fetch(`http://localhost:8080/api/test-api/${state.id}`, {
+    const response = await fetch(`http://localhost:8080/api/player/connected_user`, {
       method: 'GET',
     });
 
@@ -49,8 +34,10 @@ async function getUser() {
 
     const user = await response.json();
     console.log('User data:', user);
-    state.nickname = user.nickname;
-    state.username = user.username;  // Set the username here
+    console.log('player data', user[0].fields)
+    state.nickname = user[0].fields.nickname;
+    state.username = user[0].fields.username;  // Set the username here
+    console.log('nickname: ' ,state.nickname)
   } catch (error) {
     console.error('Error retrieving user data:', error);
   }
