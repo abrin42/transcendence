@@ -2,5 +2,9 @@
     "play": "Spielen",
     "credits": "Danksagung",
     "login": "Anmelden",
-    "back": "Zurück"
+    "back": "Zurück",
+    "settings": "Einstellungen",
+    "player": "Spieler",
+    "right": "RECHTE",
+    "left": "LINKE"
 }

@@ -2,5 +2,9 @@
     "play": "Play",
     "credits": "Credits",
     "login": "Login",
-    "back": "Back"
+    "back": "Back",
+    "settings": "Settings",
+    "player": "Player",
+    "right": "RIGHT",
+    "left": "LEFT"
 }

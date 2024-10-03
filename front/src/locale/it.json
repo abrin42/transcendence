@@ -2,5 +2,9 @@
     "play": "Giocare",
     "credits": "Ringraziamenti",
     "login": "Login",
-    "back": "Indietro"
+    "back": "Indietro",
+    "settings": "Parametri",
+    "player": "Giocatore",
+    "right": "DESTRA",
+    "left": "SINISTRA"
 }

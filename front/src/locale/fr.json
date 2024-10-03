@@ -2,5 +2,9 @@
     "play": "Jouer",
     "credits": "Crédits",
     "login": "Connexion",
-    "back": "Retour"
+    "back": "Retour",
+    "settings": "Paramètres",
+    "player": "Joueur",
+    "right": "DROITE",
+    "left": "GAUCHE"
 }
