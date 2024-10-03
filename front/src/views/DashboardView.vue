@@ -6,7 +6,7 @@ import InputEdit from '@/components/InputEdit.vue';
 import profilePicture from '@/assets/img/default-profile.png';
 import { reactive, onMounted } from 'vue';
 
-const state = reactive({
+const userAccount = reactive({
   date_joined:"",
   email:"",
   email_2fa_active:false,
@@ -14,7 +14,7 @@ const state = reactive({
   nickname:"",
   password:"",
   phone_number:"",
-  profile_picture: profilePicture,
+  profilePicture: profilePicture,
   rank:0,
   username:"",
   win:0,
@@ -34,11 +34,11 @@ async function getUser() {
     const user = await response.json();
     console.log('User data:', user);
     console.log('player data', user[0].fields)
-    state.nickname = user[0].fields.nickname;
-    state.username = user[0].fields.username;  // Set the username here
-    state.email = user[0].fields.email;
-    state.password = user[0].fields.password;
-    console.log('nickname: ' ,state.nickname)
+    userAccount.nickname = user[0].fields.nickname;
+    userAccount.username = user[0].fields.username;  // Set the username here
+    userAccount.email = user[0].fields.email;
+    userAccount.password = user[0].fields.password;
+    console.log('nickname: ' ,userAccount.nickname)
   } catch (error) {
     console.error('Error retrieving user data:', error);
   }
@@ -46,10 +46,6 @@ async function getUser() {
 
 onMounted(async () => {
   await getUser(); // Only call getUser if state.id is available
-  const myVideo = document.getElementById('videoBG');
-  if (myVideo) {
-    myVideo.playbackRate = 1;
-  }
 });
 
 
@@ -58,7 +54,7 @@ const handleProfilePictureChange = (event) => {
     if (file) {
         const reader = new FileReader();
         reader.onload = (e) => {
-            state.profile_picture = e.target.result;
+            userAccount.profilePicture = e.target.result;
         };
         reader.readAsDataURL(file);
     }
@@ -73,7 +69,7 @@ const handleProfilePictureChange = (event) => {
             <div class="containerDashboard">
                 <div class="input-section profile-picture-section">
                     <h2 class="category-title">Profile Picture</h2>
-                    <img :src="state.profilePicture || 'default-profile.png'" alt="Profile Picture"
+                    <img :src="userAccount.profilePicture || 'default-profile.png'" alt="Profile Picture"
                         class="profile-picture" />
                     <label for="file-upload" class="custom-file-upload">
                         <i class="fas fa-upload"></i> Choose File
@@ -84,18 +80,18 @@ const handleProfilePictureChange = (event) => {
 
                 <div class="input-section">
                     <h2 class="category-title">Username</h2>
-                    <InputEdit class="inputEdit" v-model="state.username" placeholderText="Edit Username" />
+                    <InputEdit class="inputEdit" v-model="userAccount.username" placeholderText="Edit Username" />
                 </div>
 
                 <div class="input-section">
                     <h2 class="category-title">Email</h2>
-                    <InputEdit class="inputEdit" v-model="state.email" placeholderText="Edit Email" />
+                    <InputEdit class="inputEdit" v-model="userAccount.email" placeholderText="Edit Email" />
                 </div>
 
                 <div class="input-section">
                     <h2 class="category-title">Password</h2>
                     <div class="password-field">
-                        <InputEdit class="inputEdit" v-model="state.password" placeholderText="Edit Password"
+                        <InputEdit class="inputEdit" v-model="userAccount.password" placeholderText="Edit Password"
                             type="password" />
                     </div>
                 </div>

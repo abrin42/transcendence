@@ -6,7 +6,7 @@ import Input from '../components/Input.vue';
 import { useRouter } from 'vue-router';
 
 const router = useRouter();
-const email = ref('');
+const username = ref('');
 const password = ref('');
 
 function __goTo(page) {
@@ -16,14 +16,76 @@ function __goTo(page) {
     router.push(page);
 }
 
-function login() {
-    if (!email.value || !password.value) {
+async function login() {
+    if (!username.value || !password.value) {
         alert('Veuillez entrer un email et un mot de passe.');
         return;
     }
 
-    console.log('Tentative de connexion avec:', email.value, password.value);
-    alert('Connexion réussie avec l\'email: ' + email.value);
+    try {
+        const response = await fetch('/api/player/login/', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRFToken': getCsrfToken() // Assuming you have CSRF protection enabled
+            },
+            body: JSON.stringify({
+                username: username.value,
+                password: password.value
+            })
+        });
+        console.log(username);
+        console.log(password);
+        if (response.ok) {
+            const data = await response.json();
+            if (data.redirect_url) {
+                router.push(data.redirect_url);
+            } else {
+                alert('Login successful');
+            }
+        }
+        __goTo('/dashboard')
+    } catch (error) {
+        console.error('Erreur lors de la connexion:', error);
+        alert('An error occurred during login2222');
+    }
+}
+
+async function getUrl() {
+    try {
+        const response = await fetch('/api/player/login42/', {
+            method: 'POST', // Change to POST to match the Django view
+            headers: {
+                'Content-Type': 'application/json',
+                //'X-CSRFToken': getCsrfToken()
+            },
+        });
+
+        if (!response.ok) {
+            throw new Error(`HTTP error! Status: ${response.status}`);
+        }
+
+        const data = await response.json();
+        if (data.url) {
+            // Use the URL returned from the backend
+            window.location.href = data.url; // Redirect to the URL
+        } else {
+            alert('Could not get URL for login');
+        }
+
+    } catch (error) {
+        console.error('Error during login:', error);
+        alert('An error occurred during login');
+    }
+}
+
+function getCsrfToken() {
+    // Helper function to get the CSRF token from cookies
+    const cookieValue = document.cookie
+        .split('; ')
+        .find(row => row.startsWith('csrftoken='))
+        ?.split('=')[1];
+    return cookieValue || '';
 }
 </script>
 
@@ -32,7 +94,7 @@ function login() {
         <div id="wrapper">
             <h1>LOGIN</h1>
             <div class="logContainer">
-                <button class="button button-log42">
+                <button class="button button-log42" @click="getUrl">
                     <img class="img-42" src="../assets/img/42_Logob.png" alt="Logo 42" />
                 </button>
                 <button class="button button-register" @click="__goTo('/register')">
@@ -44,7 +106,7 @@ function login() {
             </div>
 
             <div class="__inputInfo">
-                <Input iconClass="fa-envelope" placeholderText="Enter your email" v-model="email" />
+                <Input iconClass="fa-envelope" placeholderText="Enter your email" v-model="username" />
                 <Input iconClass="fa-lock" placeholderText="Enter your password" isPassword v-model="password" />
             </div>
 
@@ -55,6 +117,7 @@ function login() {
         </div>
     </main>
 </template>
+
 
 <style scoped>
 h1 {
