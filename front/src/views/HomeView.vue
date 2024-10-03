@@ -6,6 +6,47 @@
     import CreateLogButton from '../components/CreateLogButton.vue';
 
     import { useRouter } from 'vue-router';
+    import { reactive, onMounted } from 'vue';
+    //api user connected
+    const userAccount = reactive({
+      date_joined:"",
+      email:"",
+      email_2fa_active:false,
+      lose:0,
+      nickname:"",
+      password:"",
+      phone_number:"",
+      profilePicture:"",
+      rank:0,
+      username:"",
+      win:0,
+    });
+    
+    async function getUser() {
+      try {
+          const response = await fetch(`http://localhost:8080/api/player/connected_user`, {
+            method: 'GET',
+          });
+          
+          if (!response.ok) {
+            throw new Error(`HTTP error! Status: ${response.status}`);
+          }
+          
+    const user = await response.json();
+    console.log('User data:', user);
+    console.log('player data', user[0].fields)
+    userAccount.nickname = user[0].fields.nickname;
+    userAccount.username = user[0].fields.username;  // Set the username here
+    userAccount.email = user[0].fields.email;
+    userAccount.password = user[0].fields.password;
+    console.log('nickname: ' ,userAccount.nickname)
+  } catch (error) {
+    console.error('Error retrieving user data:', error);
+  }
+}
+
+
+
 
 // Routing functions
 const router = useRouter();
@@ -14,19 +55,23 @@ var myVideo = document.getElementById('videoBG');
 myVideo.playbackRate = 1;
 
 function goToModeSelect() {
-    router.push('/modeselect');
+  router.push('/modeselect');
 }
 
 function goToCredits() {
-    router.push('/credits');
+  router.push('/credits');
 }
 
 function __goTo(page) {
-    if (page == null) {
-        return;
-    }
-    router.push(page);
+  if (page == null) {
+    return;
+  }
+  router.push(page);
 }
+onMounted(async () => {
+  await getUser(); // Only call getUser if state.id is available
+});
+
 </script>
 
 <template>
