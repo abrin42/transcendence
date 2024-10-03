@@ -4,61 +4,20 @@ import CreateBackButton from '@/components/CreateBackButton.vue';
 import CreateDropupButton from '@/components/CreateDropupButton.vue';
 import InputEdit from '@/components/InputEdit.vue';
 import profilePicture from '@/assets/img/default-profile.png';
-import { reactive, onMounted } from 'vue';
 
-const state = reactive({
-  date_joined:"",
-  email:"",
-  email_2fa_active:false,
-  lose:0,
-  nickname:"",
-  password:"",
-  phone_number:"",
-  profile_picture: profilePicture,
-  rank:0,
-  username:"",
-  win:0,
+const userAccount = ref({
+    username: 'JohnDoe',
+    email: 'user@example.com',
+    password: '',
+    profilePicture: profilePicture,
 });
-
-async function getUser() {
-  try {
-    //const response = await fetch(`http://localhost:8080/api/test-api/${state.id}`, {
-    const response = await fetch(`http://localhost:8080/api/player/connected_user`, {
-      method: 'GET',
-    });
-
-    if (!response.ok) {
-      throw new Error(`HTTP error! Status: ${response.status}`);
-    }
-
-    const user = await response.json();
-    console.log('User data:', user);
-    console.log('player data', user[0].fields)
-    state.nickname = user[0].fields.nickname;
-    state.username = user[0].fields.username;  // Set the username here
-    state.email = user[0].fields.email;
-    state.password = user[0].fields.password;
-    console.log('nickname: ' ,state.nickname)
-  } catch (error) {
-    console.error('Error retrieving user data:', error);
-  }
-}
-
-onMounted(async () => {
-  await getUser(); // Only call getUser if state.id is available
-  const myVideo = document.getElementById('videoBG');
-  if (myVideo) {
-    myVideo.playbackRate = 1;
-  }
-});
-
 
 const handleProfilePictureChange = (event) => {
     const file = event.target.files[0];
     if (file) {
         const reader = new FileReader();
         reader.onload = (e) => {
-            state.profile_picture = e.target.result;
+            userAccount.value.profilePicture = e.target.result;
         };
         reader.readAsDataURL(file);
     }
@@ -73,7 +32,7 @@ const handleProfilePictureChange = (event) => {
             <div class="containerDashboard">
                 <div class="input-section profile-picture-section">
                     <h2 class="category-title">Profile Picture</h2>
-                    <img :src="state.profilePicture || 'default-profile.png'" alt="Profile Picture"
+                    <img :src="userAccount.profilePicture || 'default-profile.png'" alt="Profile Picture"
                         class="profile-picture" />
                     <label for="file-upload" class="custom-file-upload">
                         <i class="fas fa-upload"></i> Choose File
@@ -84,18 +43,18 @@ const handleProfilePictureChange = (event) => {
 
                 <div class="input-section">
                     <h2 class="category-title">Username</h2>
-                    <InputEdit class="inputEdit" v-model="state.username" placeholderText="Edit Username" />
+                    <InputEdit class="inputEdit" v-model="userAccount.username" placeholderText="Edit Username" />
                 </div>
 
                 <div class="input-section">
                     <h2 class="category-title">Email</h2>
-                    <InputEdit class="inputEdit" v-model="state.email" placeholderText="Edit Email" />
+                    <InputEdit class="inputEdit" v-model="userAccount.email" placeholderText="Edit Email" />
                 </div>
 
                 <div class="input-section">
                     <h2 class="category-title">Password</h2>
                     <div class="password-field">
-                        <InputEdit class="inputEdit" v-model="state.password" placeholderText="Edit Password"
+                        <InputEdit class="inputEdit" v-model="userAccount.password" placeholderText="Edit Password"
                             type="password" />
                     </div>
                 </div>

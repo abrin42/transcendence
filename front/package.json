@@ -10,11 +10,16 @@
   },
   "dependencies": {
     "bootstrap": "^5.3.3",
+    "ci": "^2.3.0",
+    "curtainjs": "^1.0.2",
     "flowbite": "^2.5.1",
     "flowbite-vue": "^0.1.6",
+    "gsap": "^3.12.5",
+    "jquery": "^3.7.1",
     "pinia": "^2.1.7",
     "vue": "^3.4.29",
-    "vue-i18n": "^10.0.0",
+    "vue-curtains": "^1.0.2",
+    "vue-i18n": "^10.0.3",
     "vue-router": "^4.3.3"
   },
   "devDependencies": {

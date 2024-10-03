@@ -1,4 +1,7 @@
 <script setup> 
+    //imports
+    import { useRouter } from 'vue-router';
+
     //board properties
     let board;
     let boardWidth = 700;
@@ -173,7 +176,7 @@
 
 <template>
     <main>
-        <div id>
+        <div id ="legacy-wrapper">
             <canvas id ="board"></canvas>
         </div>
     </main>
@@ -186,8 +189,10 @@
         text-align: center;
     }
 
-    #wrapper {
+    #legacy-wrapper {
         background-color: black;
+        width: 100vW;
+        height: 100vh;
     }
 
     #board {
@@ -196,5 +201,7 @@
         border-bottom: 5px solid white;
         border-left: 5px solid white;
         border-right: 5px solid white;
+        width: 75vW;
+        height: 100vh;
     }
 </style>
