@@ -47,11 +47,22 @@ def register_view(request):
         form = RegisterForm()
     return render(request, 'player/register.html', {'form': form}) 
     
-    
+
+import json
+from django.views.decorators.csrf import csrf_exempt
+from django.http import JsonResponse
+
+#@csrf_exempt  # For development only, better to use proper CSRF handling in production
 def login_view(request):
     if request.method == "POST":
-        if 'login' in request.POST:
-            post_data = username_underscore(request)
+        try:
+            data = json.loads(request.body)
+            username = data.get('username')
+            password = data.get('password')
+            post_data = {'username': username, 'password': password}
+            print(f'username: {username}')
+            print(f'password: {password}')
+            #post_data = username_underscore(request)
             form = AuthenticationForm(data=post_data)
             if form.is_valid():
                 user = form.get_user()
@@ -69,26 +80,25 @@ def login_view(request):
                             user.nickname = user.username[1:]
                             user.save()
 
-                        response = HttpResponse(status=302)  # 302 redirect to another page
-                        response = redirect('/api/player/account/')
+                        response = JsonResponse({'redirect_url': '/dashboard/'}, status=302)
                         set_jwt_token(response, token)
 
                         return response
                     
-                    response = HttpResponse(status=302)  # 302 redirect to another page
-                    response = redirect('/api/player/tfa/', {"user": user})
+                    response = JsonResponse({'redirect_url': '/api/player/tfa/'}, status=302)
                     return response
-            else:
-                return render(request, 'player/login.html', {'error': 'Invalid username or password'})
+            return JsonResponse({'error': 'Invalid username or password'}, status=400)
+        
+        except json.JSONDecodeError:
+            return JsonResponse({'error': 'Invalid request body'}, status=400)
 
-        elif '42_login' in request.POST:
-            oauth_url = f"{settings.FT42_OAUTH_URL}?client_id={settings.FT42_CLIENT_ID}&redirect_uri={settings.FT42_REDIRECT_URI}&response_type=code"
-            return redirect(oauth_url)
+    return JsonResponse({'error': 'Invalid request method'}, status=405)
 
-    else:
-        form = AuthenticationForm()
 
-    return render(request, 'player/login.html', {"form": form })
+    #elif '42_login' in request.POST:
+    #    oauth_url = f"{settings.FT42_OAUTH_URL}?client_id={settings.FT42_CLIENT_ID}&redirect_uri={settings.FT42_REDIRECT_URI}&response_type=code"
+    #    return redirect(oauth_url)
+
 
 @login_required
 def tfa_view(request):
@@ -247,10 +257,10 @@ def update_password_view(request):
         form = ChangePasswordForm(user)
         return render(request, 'player/update_password.html', {"form": form})
 
-@login_required
+#@login_required
 def logout_view(request):
     token = request.COOKIES.get('jwt')
-    response = redirect('/api/player/login/')
+    response = redirect('/log/')
     if token:
         BlacklistedToken.objects.create(token=token)
         response.delete_cookie('jwt')

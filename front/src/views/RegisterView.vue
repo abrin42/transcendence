@@ -30,7 +30,7 @@ function createAccount() {
         alert('Les mots de passe ne correspondent pas.');
         return;
     }
-
+    
     const newUser = {
         username: username.value,
         email: email.value,
