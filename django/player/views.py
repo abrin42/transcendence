@@ -22,6 +22,7 @@ import requests
 import jwt
 import json
 import logging
+from django.core import serializers
 
 
 def register_view(request):
@@ -262,3 +263,9 @@ def delete_account_view(request):
     if user is None: 
         return redirect(reverse('player:login'))
     return render(request, 'player/delete_account.html')
+
+@login_required
+def connected_user(request):
+    user = token_user(request)
+    data = serializers.serialize('json', [user])
+    return HttpResponse(data, content_type='application/json')
