@@ -6,5 +6,10 @@
     "settings": "Settings",
     "player": "Player",
     "right": "RIGHT",
-    "left": "LEFT"
+    "left": "LEFT",
+    "profile_picture": "Profile Picture",
+    "choose_file": "Choose File",
+    "username": "Username",
+    "email": "Email",
+    "password": "Password"
 }

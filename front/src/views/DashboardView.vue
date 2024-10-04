@@ -68,28 +68,28 @@ const handleProfilePictureChange = (event) => {
             <CreateDropupButton />
             <div class="containerDashboard">
                 <div class="input-section profile-picture-section">
-                    <h2 class="category-title">Profile Picture</h2>
+                    <h2 class="category-title">{{ $t('profile_picture') }}</h2>
                     <img :src="userAccount.profilePicture || 'default-profile.png'" alt="Profile Picture"
                         class="profile-picture" />
                     <label for="file-upload" class="custom-file-upload">
-                        <i class="fas fa-upload"></i> Choose File
+                        <i class="fas fa-upload"></i> {{ $t('choose_file') }}
                     </label>
                     <input id="file-upload" type="file" @change="handleProfilePictureChange" accept="image/*"
                         class="hidden-file-input" />
                 </div>
 
                 <div class="input-section">
-                    <h2 class="category-title">Username</h2>
+                    <h2 class="category-title">{{ $t('username') }}</h2>
                     <InputEdit class="inputEdit" v-model="userAccount.username" placeholderText="Edit Username" />
                 </div>
 
                 <div class="input-section">
-                    <h2 class="category-title">Email</h2>
+                    <h2 class="category-title">{{ $t('email') }}</h2>
                     <InputEdit class="inputEdit" v-model="userAccount.email" placeholderText="Edit Email" />
                 </div>
 
                 <div class="input-section">
-                    <h2 class="category-title">Password</h2>
+                    <h2 class="category-title">{{ $t('password') }}</h2>
                     <div class="password-field">
                         <InputEdit class="inputEdit" v-model="userAccount.password" placeholderText="Edit Password"
                             type="password" />

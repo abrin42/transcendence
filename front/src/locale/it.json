@@ -6,5 +6,10 @@
     "settings": "Parametri",
     "player": "Giocatore",
     "right": "DESTRA",
-    "left": "SINISTRA"
+    "left": "SINISTRA",
+    "profile_picture": "Immagine del Profilo",
+    "choose_file": "Scegliere il File",
+    "username": "Nome Utente",
+    "email": "E-mail",
+    "password": "Password"
 }
