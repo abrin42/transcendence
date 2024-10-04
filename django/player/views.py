@@ -30,6 +30,9 @@ def register_view(request):
         try:
             data = json.loads(request.body)
             print(data)
+            username = data.get('username')
+            username: f"_{username}"
+
             form = RegisterForm(data)
             if form.is_valid():
                 print("FORM IS VALID")
@@ -61,7 +64,7 @@ def login_view(request):
             username = data.get('username')
             password = data.get('password')
             post_data = {
-                'username': username, 
+                'username': f"_{username}", 
                 'password': password
             }
             print(f'username: {username}')
@@ -98,10 +101,6 @@ def login_view(request):
 
     return JsonResponse({'error': 'Invalid request method'}, status=405)
 
-
-    #elif '42_login' in request.POST:
-    #    oauth_url = f"{settings.FT42_OAUTH_URL}?client_id={settings.FT42_CLIENT_ID}&redirect_uri={settings.FT42_REDIRECT_URI}&response_type=code"
-    #    return redirect(oauth_url)
 
 @csrf_exempt  # For development only, better to use proper CSRF handling in production
 def login42_view(request):
