@@ -70,7 +70,6 @@ def verify_jwt(request):
         print(f"(verify_jwt)user: {user}")
         user_data = {
             'id': user.id,
-
         }
     
         return JsonResponse({'valid': True, 'message': 'Token is valid', 'user': user_data}, content_type='application/json')

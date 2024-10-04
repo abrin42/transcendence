@@ -27,39 +27,43 @@ from django.core import serializers
 
 def register_view(request):
     if request.method == 'POST':
-        form = RegisterForm(request.POST)
-        if form.is_valid():
-            user = form.save()
-            raw_password = form.cleaned_data.get('password1')
-            user = authenticate(username=user.username, password=raw_password)
-            if user is not None:
-                login(request, user)
-                user.nickname = user.username[1:]
-                user.save()
+        try:
+            data = json.loads(request.body)
+            print(data)
+            form = RegisterForm(data)
+            if form.is_valid():
+                print("FORM IS VALID")
+                user = form.save()
+                raw_password = form.cleaned_data.get('password1')
+                user = authenticate(username=user.username, password=raw_password)
+                if user is not None:
+                    login(request, user)
+                    user.nickname = user.username[1:]
+                    user.save()
 
-                token = generate_jwt(user)
-                response = HttpResponse(status=302)  # 302 redirect to another page
-                response = redirect('/api/player/account/')
-                set_jwt_token(response, token)
+                    token = generate_jwt(user)
+                    response = JsonResponse({'message': 'Registration successful', 'redirect_url': '/dashboard'}, status=200)
+                    set_jwt_token(response, token)
 
-                return response
-    else:
-        form = RegisterForm()
-    return render(request, 'player/register.html', {'form': form}) 
-    
+                    return response
+            return JsonResponse({'error': 'Invalid username or password'}, status=400)
 
-import json
-from django.views.decorators.csrf import csrf_exempt
-from django.http import JsonResponse
+        except json.JSONDecodeError:
+            return JsonResponse({'error': 'Invalid request body'}, status=400)
 
-@csrf_exempt  # For development only, better to use proper CSRF handling in production
+    return JsonResponse({'error': 'Invalid request method'}, status=405)
+
+
 def login_view(request):
     if request.method == "POST":
         try:
             data = json.loads(request.body)
             username = data.get('username')
             password = data.get('password')
-            post_data = {'username': username, 'password': password}
+            post_data = {
+                'username': username, 
+                'password': password
+            }
             print(f'username: {username}')
             print(f'password: {password}')
             #post_data = username_underscore(request)
