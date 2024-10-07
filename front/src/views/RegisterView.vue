@@ -82,9 +82,6 @@ function getCsrfToken() {
         <div id="wrapper">
             <h1>SIGN UP</h1>
             <div class="logContainer">
-                <button class="button button-log42">
-                    <img class="img-42" src="../assets/img/42_Logob.png" alt="Logo 42" />
-                </button>
                 <button class="button button-login" @click="__goTo('/log')">
                     <span class="buttonText buttonTextSize">{{ $t('Login') }}</span>
                 </button>
@@ -163,27 +160,6 @@ h1 {
     background-color: rgba(0, 0, 0, 0.25);
 }
 
-.img-42 {
-    width: 5vw;
-    height: 5vh;
-    align-items: center;
-    justify-content: center;
-    display: flex;
-}
-
-.button-log42 {
-    position: fixed;
-    width: 3vw;
-    height: 6vh;
-    left: 42.5%;
-    top: 30%;
-
-    background-color: rgba(0, 0, 0, 0.5);
-    border: 0.15vw solid rgba(0, 0, 0, 0.25);
-    border-radius: 0.4vw;
-    transition: background-color 0.3s ease;
-}
-
 .button-createAccount {
     position: fixed;
     width: 15vw;
@@ -214,11 +190,6 @@ h1 {
     position: fixed;
     left: 42.5%;
     top: 38%;
-}
-
-.img-42:hover {
-    content: url('../assets/img/42_Logo.png');
-    transition: content 0.3s ease;
 }
 
 .button-login:hover .buttonText {

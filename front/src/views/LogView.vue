@@ -8,6 +8,7 @@ import { useRouter } from 'vue-router';
 const router = useRouter();
 const username = ref('');
 const password = ref('');
+const is2FA = ref(false); // 2FA = Two-Factor Authentication
 
 function __goTo(page) {
     if (page == null) {
@@ -44,6 +45,7 @@ async function login() {
                 alert('Login successful');
             }
         }
+        // todo: __goTo('/2fa');
         __goTo('/dashboard')
     } catch (error) {
         console.error('Erreur lors de la connexion:', error);

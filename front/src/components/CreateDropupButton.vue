@@ -79,8 +79,8 @@ function switchLang(lang) {
 	const langs = ["EN","FR","ES","DE","IT","MA"];
 	const flags = ["🇬🇧","🇫🇷","🇪🇸","🇩🇪","🇮🇹","⚔️"];
 	for (let i = 0; i < 6; ++i)
-	if (lang == langs[i])
-	userAccount.flag = flags[i];
+		if (lang == langs[i])
+			userAccount.flag = flags[i];
 	setLanguage(lang);
 }
 
