@@ -67,9 +67,6 @@ def login_view(request):
                 'username': f"_{username}", 
                 'password': password
             }
-            print(f'username: {username}')
-            print(f'password: {password}')
-            #post_data = username_underscore(request)
             form = AuthenticationForm(data=post_data)
             if form.is_valid():
                 user = form.get_user()
@@ -115,12 +112,14 @@ def tfa_view(request):
     ########################### Here I use the user from request and call its Player object. I apply the JWT token only when the 2FA/OTP is valid
     user = verify_user(request)
     ###########################
+    print(user)
+    print(request)
 
     if request.method == "POST":
-        if 'tfa' in request.POST:
-            create_otp(request, user)
-            return redirect('/api/player/otp/')
-    return render(request, 'player/tfa.html', {'user': user})
+        create_otp(request, user)
+        response = JsonResponse({'message': 'Code sent successfully', 'redirect_url': '/2fa'}, status=200)
+        return response
+    return JsonResponse({'error': 'Invalid request method'}, status=405)
 
 @login_required
 def otp_view(request):

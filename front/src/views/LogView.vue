@@ -46,7 +46,7 @@ async function login() {
             }
         }
         // todo: __goTo('/2fa');
-        __goTo('/dashboard')
+        __goTo('/2fa')
     } catch (error) {
         console.error('Erreur lors de la connexion:', error);
         alert('An error occurred during login2222');

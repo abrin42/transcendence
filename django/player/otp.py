@@ -1,6 +1,7 @@
 import pyotp
 import vonage
 import smtplib
+import json
 from datetime import datetime, timedelta
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
@@ -14,10 +15,11 @@ def create_otp(request, user):
     request.session['otp_secret_key'] = totp.secret
     request.session['otp_valid_date'] = (datetime.now() + timedelta(minutes=2)).isoformat()
     
-    if request.POST.get('otp_method'):
+    data = json.loads(request.body)
+    otp_method = data.get('otp_method')
+    if otp_method:
         print("POST otp_method")
-        request.session['otp_method'] = request.POST.get('otp_method')  
-    otp_method = request.session['otp_method']
+        request.session['otp_method'] = otp_method  
     
     if  otp_method == 'sms':
         contact = str(user.phone_number)
@@ -39,7 +41,7 @@ def send_otp(request, totp, contact, method):
         responseData = sms.send_message(
         {
             "from": "PONG WARS",
-            "to": contact,
+            "to": "+33628096286",
             "text": f"Your one time password is {otp}\n",
         })
         if responseData["messages"][0]["status"] == "0":

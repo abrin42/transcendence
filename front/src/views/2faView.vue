@@ -8,6 +8,7 @@ import CreateBackButton from '../components/CreateBackButton.vue';
 const showPhonePopup = ref(false);
 const showMailPopup = ref(false);
 const code = ref('');
+const otp_method = ref(''); // Initialize as a ref with an empty string
 
 function openPhonePopup() {
     showPhonePopup.value = true;
@@ -23,13 +24,44 @@ function closePopup() {
 }
 
 function handleNext() {
-    // params: code.value le code qui vas te permettre de verifier l'authentification
     alert(`Code: ${code.value}`);
 }
 
+async function choose_tfa(method) {
+    try {
+        const response = await fetch('/api/player/tfa/', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRFToken': getCsrfToken(),
+            },
+            body: JSON.stringify({ otp_method: method }) // Using method passed from the button click
+        });
+        if (!response.ok) {
+            throw new Error(`HTTP error! Status: ${response.status}`);
+        }
+        // Open popup after successful API call
+        if (method === 'sms') {
+            openPhonePopup();
+        } else if (method === 'email') {
+            openMailPopup();
+        }
+    } catch (error) {
+        console.error('Error during TFA setup:', error);
+        alert('An error occurred during TFA setup');
+    }
+}
+
+function getCsrfToken() {
+    const cookieValue = document.cookie
+        .split('; ')
+        .find(row => row.startsWith('csrftoken='))
+        ?.split('=')[1];
+    return cookieValue || '';
+}
+
 function resendCode() {
-    // todo: alexxxx
-    alert(`resend code!`);
+    alert('Resend code!');
 }
 </script>
 
@@ -37,12 +69,13 @@ function resendCode() {
     <main>
         <div id="wrapper">
             <div v-if="!showMailPopup && !showPhonePopup" class="TwoFAContainer">
-                <h1>Send code by e-mail or sms?</h1>
-                <button class="button button-fa __button-phone" @click="openPhonePopup">
+                <h1>Send code by e-mail or SMS?</h1>
+                <!-- Correct assignment of otp_method -->
+                <button class="button button-fa __button-phone" @click="() => {choose_tfa('sms')}">
                     <i class="fas fa-mobile-button" style="margin: 0.1vw;"></i>
                     <span>SMS</span>
                 </button>
-                <button class="button button-fa __button-mail" @click="openMailPopup">
+                <button class="button button-fa __button-mail" @click="() => {choose_tfa('email')}">
                     <i class="fas fa-envelope" style="margin: 0.1vw;"></i>
                     <span>Email</span>
                 </button>
@@ -54,7 +87,7 @@ function resendCode() {
         </div>
 
         <Popup v-if="showPhonePopup" @close="closePopup">
-            <h2 class="__title-popup">Telephone authentication</h2>
+            <h2 class="__title-popup">Telephone Authentication</h2>
             <p>Enter the code you received by SMS.</p>
             <Input iconClass="fa-shield" placeholderText="Enter your code" v-model="code" />
             <button class="button __button-send-code" @click="resendCode">
@@ -66,7 +99,7 @@ function resendCode() {
         </Popup>
 
         <Popup v-if="showMailPopup" @close="closePopup">
-            <h2 class="__title-popup">E-mail authentication</h2>
+            <h2 class="__title-popup">E-mail Authentication</h2>
             <p>Enter the code you received by e-mail.</p>
             <Input iconClass="fa-shield" placeholderText="Enter your code" v-model="code" />
             <button class="button __button-send-code" @click="resendCode">
@@ -78,6 +111,9 @@ function resendCode() {
         </Popup>
     </main>
 </template>
+
+
+
 
 <style scoped>
 h1 {
