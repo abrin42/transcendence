@@ -7,7 +7,7 @@ document.addEventListener('DOMContentLoaded', function() {
     //console.log("csrfToken: " + csrfToken)
 
     if (csrfToken) {
-        fetch('/player/verify-jwt/', {
+        fetch('/api/player/verify-jwt/', {
             method: 'POST', // Use POST if that's expected on the server side
             headers: {
                 'Authorization': `Bearer ${csrfToken}`,

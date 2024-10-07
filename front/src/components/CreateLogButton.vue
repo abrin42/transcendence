@@ -17,7 +17,7 @@ function __goTo(page) {
     router.push(page);
 }
 
-const isConnect = ref(false); // Change to false to see the button change
+const isConnect = ref(true); // Changer quand le player est connecter
 var username = 'username';
 
 const minWidth = 7;

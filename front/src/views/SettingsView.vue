@@ -55,12 +55,12 @@ onBeforeUnmount(() => {
             <CreateBackButton />
             <CreateDropupButton />
             <div class="settingsBackground">
-                <span class="titleSettings">Settings</span>
+                <span class="titleSettings">{{ $t('settings') }}</span>
                 <div class="settingsText">
-                    <span>Player 1 - RIGHT</span>
-                    <span>Player 1 - LEFT</span>
-                    <span>Player 2 - RIGHT</span>
-                    <span>Player 2 - LEFT</span>
+                    <span>{{ $t('player') }} 1 - {{ $t('right') }}</span>
+                    <span>{{ $t('player') }} 1 - {{ $t('left') }}</span>
+                    <span>{{ $t('player') }} 2 - {{ $t('right') }}</span>
+                    <span>{{ $t('player') }} 2 - {{ $t('left') }}</span>
                 </div>
                 <div class="buttonContainer">
                     <button class="button" @click="changeKey('player1Right')">
