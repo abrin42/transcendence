@@ -8,6 +8,7 @@ import { useRouter } from 'vue-router';
 const router = useRouter();
 const email = ref('');
 const password = ref('');
+const is2FA = ref(true);
 
 function __goTo(page) {
     if (page == null) {
@@ -23,7 +24,10 @@ function login() {
     }
 
     console.log('Tentative de connexion avec:', email.value, password.value);
-    alert('Connexion réussie avec l\'email: ' + email.value);
+    if (is2FA.value)
+        __goTo('/2fa');
+    else
+        alert('Connexion réussie avec l\'email: ' + email.value);
 }
 </script>
 

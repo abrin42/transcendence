@@ -17,7 +17,7 @@ function __goTo(page) {
     router.push(page);
 }
 
-const isConnect = ref(true); // Change to false to see the button change
+const isConnect = ref(false); // Change to false to see the button change
 var login = 'Name';
 
 const minWidth = 7;

@@ -54,7 +54,7 @@ function createAccount() {
                     <span class="buttonText buttonTextSize">{{ $t('Login') }}</span>
                 </button>
                 <button class="button button-createAccount" @click="createAccount">
-                    <span class="buttonText buttonTextSize">{{ $t('Create your account') }}</span>
+                    <span class="buttonText buttonTextSize buttonCreateAcc">{{ $t('Create your account') }}</span>
                 </button>
             </div>
 
@@ -160,6 +160,10 @@ h1 {
     border: 0.15vw solid rgba(202, 149, 128, 0.25);
     border-radius: 0.4vw;
     transition: background-color 0.3s ease;
+}
+
+.buttonCreateAcc {
+    font-size: large;
 }
 
 .button-login {
