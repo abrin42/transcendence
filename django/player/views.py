@@ -280,9 +280,10 @@ def logout_view(request):
 @login_required
 def delete_account_view(request):
     user = token_user(request)
-    if user is None: 
-        return redirect(reverse('player:login'))
     return render(request, 'player/delete_account.html')
+    # if user is None: 
+        # return redirect(reverse('player:login'))
+    # return render(request, 'player/delete_account.html')
 
 @login_required
 def connected_user(request):
@@ -305,4 +306,7 @@ def update_language(request):
             return JsonResponse({'error': 'Invalid request body'}, status=400)
     return JsonResponse({'error': 'Invalid request method'}, status=405)
 
-        
+def get_all_user(request):
+    data = Player.objects.all()
+    data =serializers.serialize('json', data)
+    return HttpResponse(data, content_type='application/json')
