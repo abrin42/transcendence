@@ -1,12 +1,11 @@
 <template>
-    <button class="button button-log" :style="{ width: buttonWidth, left: buttonLeft }"
-        @click="__goTo(isConnect ? '/dashboard' : '/log')">
+    <button class="button button-log" @click="__goTo(isConnect ? '/dashboard' : '/log')">
         <span class="buttonText">{{ isConnect ? username : $t('login') }}</span>
     </button>
 </template>
 
 <script setup>
-import { ref, computed } from 'vue';
+import { ref } from 'vue';
 import { useRouter } from 'vue-router';
 const router = useRouter();
 
@@ -18,33 +17,22 @@ function __goTo(page) {
 }
 
 const isConnect = ref(true); // Changer quand le player est connecter
-var username = 'username';
-
-const minWidth = 7;
-const charLimit = 11;
-const initialLeft = 87.5;
-const buttonWidth = computed(() => {
-    const text = isConnect.value ? username : 'Login';
-    const extraChars = text.length - charLimit;
-
-    if (extraChars > 0) {
-        return `${minWidth + extraChars * 0.5}vw`;
-    }
-    return `${minWidth}vw`;
-});
-
-const buttonLeft = computed(() => {
-    const currentWidth = parseFloat(buttonWidth.value);
-    const widthDifference = currentWidth - minWidth;
-    return `${initialLeft - widthDifference}vw`;
-});
+var username = 'username ewjbjiffw'; // Nom d'utilisateur pour tester
 </script>
 
-<style>
+<style scoped>
 .button-log {
     position: fixed;
-    height: 6vh;
-    bottom: 93vh;
+    bottom: 7vh; /* Position en bas de l'écran */
+    left: 83vw; /* Aligner à gauche avec une marge de 2vw du bord de l'écran */
+    height: 6vh; /* Hauteur du bouton */
+    padding: 0.5rem 1rem; /* Espacement intérieur */
+    min-width: 7vw; /* Largeur minimale pour le bouton */
+    max-width: 50vw; /* Largeur maximale */
+    white-space: nowrap; /* Empêche le texte de se retourner */
     transition: width 0.3s ease, left 0.3s ease;
+}
+.buttonText {
+    display: inline-block;
 }
 </style>
