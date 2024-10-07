@@ -167,25 +167,28 @@ LOGIN_URL = "/api/player/login/"
 LOGIN_REDIRECT_URL = "/"
 
 # 42 API
-FT42_CLIENT_ID = get_secret('FT42_client_id')
-FT42_CLIENT_SECRET = get_secret('FT42_client_secret')
-FT42_REDIRECT_URI = get_secret('FT42_redirect_uri')
-FT42_OAUTH_URL = get_secret('FT42_0auth_url')
+FT42_CLIENT_ID = os.environ.get('FT42_client_id')
+FT42_CLIENT_SECRET = os.environ.get('FT42_client_secret')
+FT42_REDIRECT_URI = os.environ.get('FT42_redirect_uri')
+# if FT42_REDIRECT_URI is None:
+#     raise Exception("Missing FT42_REDIRECT_URI env var")
+# FT42_REDIRECT_URI = os.environ.get('FT42_redirect_uri')
+FT42_OAUTH_URL = os.environ.get('FT42_0auth_url')
 
 # Vonage API
-VONAGE_API_KEY = get_secret('vonage_api_key')
-VONAGE_SECRET_KEY = get_secret('vonage_secret_key')
+VONAGE_API_KEY = os.environ.get('vonage_api_key')
+VONAGE_SECRET_KEY = os.environ.get('vonage_secret_key')
 
 # SMTP Server Configuration
-SMTP_SERVER = get_secret('smtp_server')
-SMTP_PORT = get_secret('smtp_port')
-SMTP_USERNAME = get_secret('smtp_username')
-SMTP_PASSWORD = get_secret('smtp_password')
+SMTP_SERVER = os.environ.get('smtp_server')
+SMTP_PORT = os.environ.get('smtp_port')
+SMTP_USERNAME = os.environ.get('smtp_username')
+SMTP_PASSWORD = os.environ.get('smtp_password')
 
 # JWT
-JWT_SECRET_KEY = get_secret('jwt_secret_key')
-JWT_ALGORITHM = get_secret('jwt_algo')
-JWT_EXP_DELTA_SECONDS = get_secret('jwt_exp')
+JWT_SECRET_KEY = os.environ.get('jwt_secret_key')
+JWT_ALGORITHM = os.environ.get('jwt_algo')
+JWT_EXP_DELTA_SECONDS = os.environ.get('jwt_exp')
 
 
 

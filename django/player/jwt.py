@@ -13,7 +13,7 @@ User = get_user_model()
 def generate_jwt(user):
     payload = {
         'user_id': user.id,
-        'exp': datetime.datetime.utcnow() + datetime.timedelta(seconds=settings.JWT_EXP_DELTA_SECONDS),
+        'exp': datetime.datetime.utcnow() + datetime.timedelta(seconds=3600),
         'iat': datetime.datetime.utcnow(),
     }
     token = jwt.encode(payload, settings.JWT_SECRET_KEY, algorithm=settings.JWT_ALGORITHM)

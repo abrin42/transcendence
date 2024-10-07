@@ -32,13 +32,12 @@ async function getUser() {
     }
 
     const user = await response.json();
-    // console.log('User data:', user);
-    // console.log('player data', user[0].fields)
+    console.log('User data:', user);
+    console.log('player data', user[0].fields)
     userAccount.nickname = user[0].fields.nickname;
     userAccount.username = user[0].fields.username;  // Set the username here
     userAccount.email = user[0].fields.email;
     userAccount.password = user[0].fields.password;
-    // console.log('nickname: ' ,userAccount.nickname)
   } catch (error) {
     console.error('Error retrieving user data:', error);
   }
