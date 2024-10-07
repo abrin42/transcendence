@@ -2,5 +2,14 @@
     "play": "Spielen",
     "credits": "Danksagung",
     "login": "Anmelden",
-    "back": "Zurück"
+    "back": "Zurück",
+    "settings": "Einstellungen",
+    "player": "Spieler",
+    "right": "RECHTE",
+    "left": "LINKE",
+    "profile_picture": "Profilbild",
+    "choose_file": "Datei Auswählen",
+    "username": "Benutzername",
+    "email": "E-mail",
+    "password": "Passwort"
 }

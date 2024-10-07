@@ -7,6 +7,26 @@ from email.mime.text import MIMEText
 from django.conf import settings
 
 
+def create_otp(request, user):
+    totp = pyotp.TOTP(pyotp.random_base32(), interval=60)
+    
+    request.session['username'] = user.username
+    request.session['otp_secret_key'] = totp.secret
+    request.session['otp_valid_date'] = (datetime.now() + timedelta(minutes=2)).isoformat()
+    
+    if request.POST.get('otp_method'):
+        print("POST otp_method")
+        request.session['otp_method'] = request.POST.get('otp_method')  
+    otp_method = request.session['otp_method']
+    
+    if  otp_method == 'sms':
+        contact = str(user.phone_number)
+        send_otp(request, totp, contact, method='sms')
+    elif otp_method == 'email':
+        contact = user.email
+        send_otp(request, totp, contact, method='email')
+
+
 def send_otp(request, totp, contact, method):
     otp = totp.now()
     print("----------------------------------")
@@ -54,4 +74,3 @@ def send_otp(request, totp, contact, method):
         except Exception as e:
             print(f"Failed to send email: {e}")
         print("----------------------------------")
-
