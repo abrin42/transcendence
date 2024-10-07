@@ -15,6 +15,8 @@ import SettingsView from '../views/SettingsView.vue'
 import LogView from '../views/LogView.vue'
 import RegisterView from '../views/RegisterView.vue'
 import DashboardView from '../views/DashboardView.vue'
+import IAPongView from '../views/IAPongView.vue'
+
 
 const router = createRouter({
   history: createWebHistory(),
@@ -73,6 +75,11 @@ const router = createRouter({
       path: '/legacy',
       name: 'legacy',
       component: LegacyPongView
+    },
+    {
+      path: '/IA',
+      name: 'IA',
+      component: IAPongView
     }
   ]
 })
