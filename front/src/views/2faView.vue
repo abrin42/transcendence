@@ -141,7 +141,6 @@ h1 {
     }
 }
 
-
 .TwoFAContainer {
     z-index: 1;
     display: flex;

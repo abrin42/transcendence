@@ -26,7 +26,7 @@ function togglePlay() {
     position: fixed;
     width: 3vw;
     height: 6vh;
-    bottom: 93vh;
-    right: 95vw;
+    top: 92vh;
+    left: 95vw;
 }
 </style>
