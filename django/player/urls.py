@@ -16,4 +16,9 @@ urlpatterns = [
     path('update/', views.update_view, name='update'),
     path('update_password/', views.update_password_view, name='update_password'),
     path('delete_account/', views.delete_account_view, name='delete_account'),
+<<<<<<< Updated upstream
+=======
+    path('connected_user/', views.connected_user, name='connected_user'),
+    path('get_all_user/', views.get_all_user, name='get_all_user'),
+>>>>>>> Stashed changes
 ]

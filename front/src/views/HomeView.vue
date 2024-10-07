@@ -4,7 +4,52 @@
     import CreateDropupButton from '../components/CreateDropupButton.vue';
     import CreateSettingsButton from '../components/CreateSettingsButton.vue';
     import { useRouter } from 'vue-router';
+<<<<<<< Updated upstream
     import { ref } from 'vue';
+=======
+    import { reactive, onMounted } from 'vue';
+    //api user connected
+    const userAccount = reactive({
+      date_joined:"",
+      email:"",
+      email_2fa_active:false,
+      lose:0,
+      nickname:"",
+      password:"",
+      phone_number:"",
+      profilePicture:"",
+      rank:0,
+      username:"",
+      win:0,
+    });
+    
+    async function getUser() {
+      try {
+          //const response = await fetch(`http://localhost:8080/api/player/get_all_user`, {
+          const response = await fetch(`http://localhost:8080/api/player/connected_user`, {
+            method: 'GET',
+          });
+          
+          if (!response.ok) {
+            throw new Error(`HTTP error! Status: ${response.status}`);
+          }
+          
+    const user = await response.json();
+    console.log('User data:', user);
+    console.log('player data', user[0].fields)
+    userAccount.nickname = user[0].fields.nickname;
+    userAccount.username = user[0].fields.username;  // Set the username here
+    userAccount.email = user[0].fields.email;
+    userAccount.password = user[0].fields.password;
+    console.log('nickname: ' ,userAccount.nickname)
+  } catch (error) {
+    console.error('Error retrieving user data:', error);
+  }
+}
+
+
+
+>>>>>>> Stashed changes
 
 // Routing functions
 const router = useRouter();

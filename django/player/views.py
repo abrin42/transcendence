@@ -255,4 +255,33 @@ def logout_view(request):
 
 def delete_account_view(request):
     user = token_user(request)
+<<<<<<< Updated upstream
     return render(request, 'player/delete_account.html')
+=======
+    if user is None: 
+        return redirect(reverse('player:login'))
+    return render(request, 'player/delete_account.html')
+
+@login_required
+def connected_user(request):
+    user = token_user(request)
+    data = serializers.serialize('json', [user])
+    return HttpResponse(data, content_type='application/json')
+
+@login_required
+def update_language(request):
+    user = token_user(request)
+    if request.method == "POST":
+        try:
+            data = json.loads(request.body)
+            language = data.get('language')
+            user.language = language
+            user.update()
+        except json.JSONDecodeError:
+            return JsonResponse({'error': 'Invalid request body'}, status=400)
+
+def get_all_user(request):
+    data = Player.objects.all()
+    data =serializers.serialize('json', data)
+    return HttpResponse(data, content_type='application/json')
+>>>>>>> Stashed changes
