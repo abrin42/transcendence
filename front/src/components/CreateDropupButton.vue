@@ -22,8 +22,12 @@ const { locale } = useI18n();
 
 const userAccount = reactive({
 	language:"",
-	flag:"🇬🇧",
+	flag:"",
 });
+
+const menuVisible = ref(false);
+let timeoutId;
+
 
 async function getLanguage() {
   try {
@@ -70,30 +74,20 @@ function getCsrfToken() {
     return cookieValue || '';
 }
 
+function switchLang(lang) {
+	locale.value = lang;
+	const langs = ["EN","FR","ES","DE","IT","MA"];
+	const flags = ["🇬🇧","🇫🇷","🇪🇸","🇩🇪","🇮🇹","⚔️"];
+	for (let i = 0; i < 6; ++i)
+	if (lang == langs[i])
+	userAccount.flag = flags[i];
+	setLanguage(lang);
+}
+
 onMounted(async () => {
   await getLanguage();
   switchLang(userAccount.language);
 });
-
-const menuVisible = ref(false);
-let timeoutId;
-
-function switchLang(lang) {
-	locale.value = lang;
-	if (lang === 'EN')
-		userAccount.flag = '🇬🇧';
-	else if (lang === 'FR')
-		userAccount.flag = '🇫🇷';
-	else if (lang === 'ES')
-		userAccount.flag = '🇪🇸';
-	else if (lang === 'DE')
-		userAccount.flag = '🇩🇪';
-	else if (lang === 'IT')
-		userAccount.flag = '🇮🇹';
-	else if (lang === 'MA')
-		userAccount.flag = '⚔️';
-	setLanguage(lang);
-}
 
 function showMenu() {
 	clearTimeout(timeoutId);
