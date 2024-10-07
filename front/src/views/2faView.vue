@@ -23,7 +23,13 @@ function closePopup() {
 }
 
 function handleNext() {
+    // params: code.value le code qui vas te permettre de verifier l'authentification
     alert(`Code: ${code.value}`);
+}
+
+function resendCode() {
+    // todo: alexxxx
+    alert(`resend code!`);
 }
 </script>
 
@@ -34,7 +40,7 @@ function handleNext() {
                 <h1>Send code by e-mail or sms?</h1>
                 <button class="button button-fa __button-phone" @click="openPhonePopup">
                     <i class="fas fa-mobile-button" style="margin: 0.1vw;"></i>
-                    <span>Phone</span>
+                    <span>SMS</span>
                 </button>
                 <button class="button button-fa __button-mail" @click="openMailPopup">
                     <i class="fas fa-envelope" style="margin: 0.1vw;"></i>
@@ -51,7 +57,7 @@ function handleNext() {
             <h2 class="__title-popup">Telephone authentication</h2>
             <p>Enter the code you received by SMS.</p>
             <Input iconClass="fa-shield" placeholderText="Enter your code" v-model="code" />
-            <button class="button __button-send-code">
+            <button class="button __button-send-code" @click="resendCode">
                 <span>Resend the code</span>
             </button>
             <button class="button __button-next" @click="handleNext">
@@ -63,7 +69,7 @@ function handleNext() {
             <h2 class="__title-popup">E-mail authentication</h2>
             <p>Enter the code you received by e-mail.</p>
             <Input iconClass="fa-shield" placeholderText="Enter your code" v-model="code" />
-            <button class="button __button-send-code" @click="console.log('todo alexxxxxxx')">
+            <button class="button __button-send-code" @click="resendCode">
                 <span>Resend the code</span>
             </button>
             <button class="button __button-next" @click="handleNext">

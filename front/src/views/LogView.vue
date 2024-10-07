@@ -8,7 +8,7 @@ import { useRouter } from 'vue-router';
 const router = useRouter();
 const email = ref('');
 const password = ref('');
-const is2FA = ref(true);
+const is2FA = ref(false); // 2FA = Two-Factor Authentication
 
 function __goTo(page) {
     if (page == null) {

@@ -1,7 +1,7 @@
 <template>
     <button class="button button-log" :style="{ width: buttonWidth, left: buttonLeft }"
         @click="__goTo(isConnect ? '/dashboard' : '/log')">
-        <span class="buttonText">{{ isConnect ? login : $t('login') }}</span>
+        <span class="buttonText">{{ isConnect ? username : $t('login') }}</span>
     </button>
 </template>
 
@@ -18,13 +18,13 @@ function __goTo(page) {
 }
 
 const isConnect = ref(false); // Change to false to see the button change
-var login = 'Name';
+var username = 'username';
 
 const minWidth = 7;
 const charLimit = 11;
 const initialLeft = 87.5;
 const buttonWidth = computed(() => {
-    const text = isConnect.value ? login : 'Login';
+    const text = isConnect.value ? username : 'Login';
     const extraChars = text.length - charLimit;
 
     if (extraChars > 0) {
