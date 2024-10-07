@@ -21,6 +21,8 @@ class Player(AbstractUser):
     win = models.IntegerField(default=0)
     lose = models.IntegerField(default=0)
 
+    language = models.CharField(max_length=2, default="EN")
+
     def __str__(self):
         return self.username
     

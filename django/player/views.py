@@ -289,3 +289,20 @@ def connected_user(request):
     user = token_user(request)
     data = serializers.serialize('json', [user])
     return HttpResponse(data, content_type='application/json')
+
+@login_required
+def update_language(request):
+    user = token_user(request)
+    if request.method == "POST":
+        try:
+            data = json.loads(request.body)
+            language = data.get('language')
+            user.language = language
+            user.save()
+            response = JsonResponse({'redirect_url': '/dashboard/'}, status=302)
+            return response
+        except json.JSONDecodeError:
+            return JsonResponse({'error': 'Invalid request body'}, status=400)
+    return JsonResponse({'error': 'Invalid request method'}, status=405)
+
+        
