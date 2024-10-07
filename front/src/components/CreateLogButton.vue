@@ -1,7 +1,7 @@
 <template>
-    <button class="button button-log" :style="{ width: buttonWidth, left: buttonLeft }">
-        <span v-if="isConnect" @click="__goTo('/dashboard')" class="buttonText">{{ login }}</span>
-        <span v-else @click="__goTo('/log')" class="buttonText">{{ $t('login') }}</span>
+    <button class="button button-log" :style="{ width: buttonWidth, left: buttonLeft }"
+        @click="__goTo(isConnect ? '/dashboard' : '/log')">
+        <span class="buttonText">{{ isConnect ? login : $t('login') }}</span>
     </button>
 </template>
 
