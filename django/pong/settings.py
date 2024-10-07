@@ -9,18 +9,10 @@ https://docs.djangoproject.com/en/5.0/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/5.0/ref/settings/
 """
-import os, json, datetime
+import os
 from pathlib import Path
-from django.core.exceptions import ImproperlyConfigured
 
-with open("secrets.json") as f:
-    secrets = json.loads(f.read())
 
-def get_secret(setting, secrets=secrets):
-    try:
-        return secrets[setting]
-    except KeyError:
-        raise ImproperlyConfigured(f"Set the {setting} environment variable.")
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -29,7 +21,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/5.0/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = get_secret('secret_key')
+SECRET_KEY = os.environ.get('secret_key')
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
@@ -163,10 +155,7 @@ MEDIA_ROOT = os.path.join(BASE_DIR, 'media/')
 MEDIA_URL = '/media/'
 
 #Custom user model
-LOGIN_URL = "/api/player/login/"
-LOGIN_REDIRECT_URL = "/"
-
-# 42 API
+#     raise Exception("Missing FT42_REDIRECT_URI env var")
 FT42_CLIENT_ID = os.environ.get('FT42_client_id')
 FT42_CLIENT_SECRET = os.environ.get('FT42_client_secret')
 FT42_REDIRECT_URI = os.environ.get('FT42_redirect_uri')
