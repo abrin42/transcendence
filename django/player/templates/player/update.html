@@ -14,7 +14,7 @@
     {% endfor %}
     {% endif %}
     <br>
-    <form method="post" action="/player/update/" enctype="multipart/form-data">
+    <form method="post" action="/api/player/update/" enctype="multipart/form-data">
         {% csrf_token %}
         {{ form }}
         <button type="submit" name="login">Update</button>
