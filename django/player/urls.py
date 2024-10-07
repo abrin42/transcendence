@@ -10,6 +10,7 @@ urlpatterns = [
     path('tfa/', views.tfa_view, name='tfa'),
     path('otp/', views.otp_view, name="otp"),
     path('account/', views.account_view, name="account"),
+    path('login42/', views.login42_view, name="login42"),
     path('auth/42/callback/', views.auth_42_callback, name='auth_42_callback'),
     path('logout/', views.logout_view, name='logout'),
     path('verify-jwt/', jwt.verify_jwt, name='verify_jwt'),

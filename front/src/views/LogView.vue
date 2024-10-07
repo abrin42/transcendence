@@ -51,6 +51,34 @@ async function login() {
     }
 }
 
+async function getUrl() {
+    try {
+        const response = await fetch('/api/player/login42/', {
+            method: 'POST', // Change to POST to match the Django view
+            headers: {
+                'Content-Type': 'application/json',
+                //'X-CSRFToken': getCsrfToken()
+            },
+        });
+
+        if (!response.ok) {
+            throw new Error(`HTTP error! Status: ${response.status}`);
+        }
+
+        const data = await response.json();
+        if (data.url) {
+            // Use the URL returned from the backend
+            window.location.href = data.url; // Redirect to the URL
+        } else {
+            alert('Could not get URL for login');
+        }
+
+    } catch (error) {
+        console.error('Error during login:', error);
+        alert('An error occurred during login');
+    }
+}
+
 function getCsrfToken() {
     // Helper function to get the CSRF token from cookies
     const cookieValue = document.cookie
@@ -66,7 +94,7 @@ function getCsrfToken() {
         <div id="wrapper">
             <h1>LOGIN</h1>
             <div class="logContainer">
-                <button class="button button-log42">
+                <button class="button button-log42" @click="getUrl">
                     <img class="img-42" src="../assets/img/42_Logob.png" alt="Logo 42" />
                 </button>
                 <button class="button button-register" @click="__goTo('/register')">
