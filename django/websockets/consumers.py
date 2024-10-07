@@ -168,10 +168,13 @@ class PongConsumer(AsyncWebsocketConsumer):
             await asyncio.sleep(0.5)
 
     async def ia_loop_game(self):
-        self.P2Ready = 1      
-        while True:
+        await self.sendinfo_back("test", 100 ,100)
+        while self.P1Ready == 0:
+            await asyncio.sleep(0.5) #a def en fonction du sujet 
+        while True and self.P1Ready == 1:
+            # await self.sendinfo_back("test", 100 ,100)
             # await self.sendPadUp("mouvUp", "2")
-            await self.sendPadDown("mouvDown", "2")
+            await self.sendPadDown("mouvDown", 2)
             await asyncio.sleep(0.5) #a def en fonction du sujet 
 
 
@@ -281,6 +284,7 @@ class PongConsumer(AsyncWebsocketConsumer):
             }))
 
     async def sendPadDown(self, type, player):
+        # await self.sendinfo_back("hereeeee",type, player)
         if player == 1:
             self.P1Ready = 1
             self.posPad1 += 5
@@ -293,6 +297,7 @@ class PongConsumer(AsyncWebsocketConsumer):
                 'player': player,
             }))
         if player == 2:
+            await self.sendinfo_back("je passe dans 2 laaa", type ,player)
             self.P2Ready = 1
             self.posPad2 += 5
             if self.posPad2 > 560:
@@ -328,6 +333,7 @@ class PongConsumer(AsyncWebsocketConsumer):
                     await self.sendPadDown(type, player)
                 elif type == "GameIA":
                     self.IA = 1
+                    self.P2Ready = 1
                     asyncio.ensure_future(self.ia_loop_game())
 
             if self.P1Ready == 1 and self.P2Ready == 1 and self.Game_on == 0:

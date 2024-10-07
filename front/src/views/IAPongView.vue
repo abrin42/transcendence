@@ -54,7 +54,7 @@ function connectWebSocket() {
     console.log("---ON MESSAGE---");
 
     const data = JSON.parse(event.data);
-    console.log(data.type);
+    // console.log(data.type);
     // console.log(data.x);
     // console.log(data.y);
     // console.log(data.message);
@@ -67,7 +67,7 @@ function connectWebSocket() {
       // console.log(data.message);
       // connectionStatus.value = data.message;
 
-
+      console.log(data.type);
       const message =
       {
         type: "GameIA",
@@ -86,6 +86,7 @@ function connectWebSocket() {
     } 
     else if (data.type == 'mouvUp' || data.type == 'mouvDown')
     {
+      console.log(data.type);
       updatePadel(data.player, data.newY);
       // messages.value.push(data.type);
     }
@@ -165,11 +166,6 @@ onMounted(() => {
 });
 
 
-
-
-
-
-
     //board properties
     let board;
     let boardWidth = 700;
@@ -247,79 +243,8 @@ onMounted(() => {
             context.fillRect(board.width / 2 - 10, i, 2, 15);
         }
 
-        //draw player 1 over and over;
-        // player1.y += player1.speed;
-        // let nextPlayer1 = player1.y + player1.speed;
-        // if (!limits(nextPlayer1)){
-        //     player1.y = nextPlayer1;
-        // }
-
-
-        //draw player 2 over and over;
-        //player2.y += player2.speed;
-        // let nextPlayer2 = player2.y + player2.speed;
-        // if (!limits(nextPlayer2)){
-        //     player2.y = nextPlayer2;
-        // }
-
-        //draw ball
-        // ball.x += ball.speedX;
-        // ball.y += ball.speedY;
-
-        //handling redirection when hitting top or bottom
-        // if (ball.y <= 0 || (ball.y + ball.height >= boardHeight)){
-        //     ball.speedY *= -1;
-        // }
-        // paddle collision
-        // if (paddleCollision(ball, player1)){
-        //     if (ball.x <= player1.x + player1.width){
-        //         //left side of ball touches right side of left paddle
-        //         ball.speedX *= -1; //changes direction 
-        //     }
-        // }
-        // else if (paddleCollision(ball, player2)){
-        //     if ( ball.x + ball.width >= player2.x)
-        //     {
-        //         //right side of ball touches left side of right paddle
-        //         ball.speedX *= -1; // changes direction
-        //     }
-        // }
-        // point scored a del 
-        // if (ball.x < 0){
-        //   const message = {
-        //     type: "updatePts",
-        //     player: "1",
-        //   };
-        //   sendMessage(message);
-        //   resetGame(1);
-        // }
-        // else if (ball.x + ballSize > boardWidth){
-        //     const message = {
-        //     type: "updatePts",
-        //     player: "2",
-        //   };
-        //   sendMessage(message);          
-        //   resetGame(-1);
-        // }
-
-        //draw start message
-        // context.font = "25px Courier New";
-        // context.fillText("Press any key to begin", boardWidth -500 , boardHeight /2 + 15)
-
-        //make view responsive
-        //game over function redirect to menu, or congrats screen
-        //add "press any key to start" function
-        //add a sound key
-        //add sound effects on impact
-        //add an esc key function
-        //add an AI
-        //adapt ball speed, and dimensions to real pong game
-        //add paddle redirections: top goes to top, bottom to bottom and center straight line
     }
 
-    // function limits(yPosition){
-    //     return(yPosition < 0 || yPosition + playerHeight > boardHeight); //Yposition is our left corner so we add playerHeight
-    // }
     
     let keysPressed = {};
     let moveInterval1up = null;
@@ -376,20 +301,6 @@ onMounted(() => {
         moveInterval1down = null;
       }
     }
-
-
-    // function paddleCollision(a, b){
-    //     return a.x <b.x + b.width && //top left corner of a doesnt touch top right corner of b
-    //         a.x +a.width > b.x && // top right corner of a past top left corner of b
-    //         a.y < b.y + b.height && // top left corner of a doesnt touch bottom left corner of b
-    //         a.y + a.height > b.y; // bottom left corner of a past top left corner of b
-    // }
-
-    // function resetGame(direction){
-    //     ball = {x : boardWidth / 2, y : boardHeight / 2, width : ballSize, height : ballSize, speedX: direction, speedY: 2}
-
-    // }
-
 
 
 

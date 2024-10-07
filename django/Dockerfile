@@ -13,4 +13,4 @@ ENV DJANGO_SETTINGS_MODULE=pong.settings
 ENV PYTHONUNBUFFERED=1
 RUN python manage.py collectstatic --noinput
 EXPOSE 8000
-CMD ["sh", "-c", "python3 manage.py makemigrations && python3 manage.py migrate && daphne -b 0.0.0.0 -p 8000 pong.asgi:application"]
+CMD ["sh", "-c", "python3 manage.py makemigrations && python3 manage.py migrate && daphne -b 0.0.0.0 -p 8000 pong.asgi:application -t 512"]
