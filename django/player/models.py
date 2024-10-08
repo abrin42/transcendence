@@ -9,17 +9,19 @@ def upload_to_profile_pictures(instance, filename):
     return os.path.join('profile_pictures', instance.username, filename)
 
 class Player(AbstractUser):
+    student = models.BooleanField(default=False)
+    nickname = models.CharField(blank=True, null=True, max_length=30)
     profile_picture = models.ImageField(upload_to=upload_to_profile_pictures, blank=True, null=False, default="profile_pictures/fallback.png")
-    rank = models.IntegerField(default=1000)
     phone_number = PhoneNumberField(blank=True, null=True)
 
     email_2fa_active = models.BooleanField(default=False)
     sms_2fa_active = models.BooleanField(default=False)
-    student = models.BooleanField(default=False)
-
+    
+    rank = models.IntegerField(default=1000)
     win = models.IntegerField(default=0)
     lose = models.IntegerField(default=0)
-    nickname = models.CharField(blank=True, null=True, max_length=30)
+
+    language = models.CharField(max_length=2, default="EN")
 
     def __str__(self):
         return self.username

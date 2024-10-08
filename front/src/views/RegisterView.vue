@@ -8,14 +8,16 @@ import { useRouter } from 'vue-router';
 const router = useRouter();
 const username = ref('');
 const email = ref('');
-const password = ref('');
-const confirmPassword = ref('');
+const phone_number = ref('');
+const password1 = ref('');
+const password2 = ref('');
 
 defineExpose({
     username,
     email,
-    password,
-    confirmPassword
+    phone_number,
+    password1,
+    password2
 });
 
 function __goTo(page) {
@@ -25,21 +27,54 @@ function __goTo(page) {
     router.push(page);
 }
 
-function createAccount() {
-    if (password.value !== confirmPassword.value) {
+
+async function createAccount() {
+    if (password1.value !== password2.value) {
         alert('Les mots de passe ne correspondent pas.');
         return;
     }
 
-    const newUser = {
-        username: username.value,
-        email: email.value,
-        password: password.value,
-    };
+    console.log(password1.value)
+    console.log(password2.value)
+    try {
+        const response = await fetch('/api/player/register/', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRFToken': getCsrfToken() // Add your CSRF token retrieval here
+            },
+            body: JSON.stringify({
+                username: username.value,
+                email: email.value,
+                phone_number: phone_number.value,
+                password1: password1.value,
+                password2: password2.value,
+            })
+        });
 
-    console.log('Données utilisateur prêtes pour être envoyées à la base de données :', newUser);
-    alert('Compte créé avec succès !');
+        if (response.ok) {
+            const responseData = await response.json();
+            alert('Compte créé avec succès !');
+            __goTo(responseData.redirect_url);
+        } else {
+            const errorData = await response.json();
+            alert('Erreur: ' + errorData.error);
+        }
+    } catch (error) {
+        console.error('Erreur lors de la création du compte:', error);
+        alert('Une erreur est survenue pendant la création du compte.');
+    }
 }
+
+function getCsrfToken() {
+    // Helper function to get the CSRF token from cookies
+    const cookieValue = document.cookie
+        .split('; ')
+        .find(row => row.startsWith('csrftoken='))
+        ?.split('=')[1];
+    return cookieValue || '';
+}
+
 </script>
 
 <template>
@@ -47,9 +82,6 @@ function createAccount() {
         <div id="wrapper">
             <h1>SIGN UP</h1>
             <div class="logContainer">
-                <button class="button button-log42">
-                    <img class="img-42" src="../assets/img/42_Logob.png" alt="Logo 42" />
-                </button>
                 <button class="button button-login" @click="__goTo('/log')">
                     <span class="buttonText buttonTextSize">{{ $t('Login') }}</span>
                 </button>
@@ -61,8 +93,8 @@ function createAccount() {
             <div class="__inputInfo">
                 <Input iconClass="fa-user" placeholderText="Username" v-model="username" />
                 <Input iconClass="fa-envelope" placeholderText="Email" v-model="email" />
-                <Input iconClass="fa-lock" placeholderText="Password" isPassword v-model="password" />
-                <Input iconClass="fa-lock" placeholderText="Confirm password" isPassword v-model="confirmPassword" />
+                <Input iconClass="fa-lock" placeholderText="Password" isPassword v-model="password1" />
+                <Input iconClass="fa-lock" placeholderText="Confirm password" isPassword v-model="password2" />
             </div>
 
             <div class="buttonContainer">
@@ -128,27 +160,6 @@ h1 {
     background-color: rgba(0, 0, 0, 0.25);
 }
 
-.img-42 {
-    width: 5vw;
-    height: 5vh;
-    align-items: center;
-    justify-content: center;
-    display: flex;
-}
-
-.button-log42 {
-    position: fixed;
-    width: 3vw;
-    height: 6vh;
-    left: 42.5%;
-    top: 30%;
-
-    background-color: rgba(0, 0, 0, 0.5);
-    border: 0.15vw solid rgba(0, 0, 0, 0.25);
-    border-radius: 0.4vw;
-    transition: background-color 0.3s ease;
-}
-
 .button-createAccount {
     position: fixed;
     width: 15vw;
@@ -179,11 +190,6 @@ h1 {
     position: fixed;
     left: 42.5%;
     top: 38%;
-}
-
-.img-42:hover {
-    content: url('../assets/img/42_Logo.png');
-    transition: content 0.3s ease;
 }
 
 .button-login:hover .buttonText {

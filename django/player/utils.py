@@ -4,7 +4,6 @@ from .models import Player
 import os
 import requests
 
-
 def username_underscore(request):
     post_data = request.POST.copy()
     raw_username = post_data.get('username')
@@ -14,11 +13,11 @@ def username_underscore(request):
     
 def verify_user(request):
     if not request.user.is_authenticated:
-        return redirect('/player/login/')
+        return redirect('/api/player/login/')
     try:
         user = get_object_or_404(Player, username=request.user.username)
     except Player.DoesNotExist:
-        return redirect('/player/login/')
+        return redirect('/api/player/login/')
 
     print(f"username: {user.username}")
     print(f"phone_number: {user.phone_number}")

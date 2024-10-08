@@ -1,6 +1,24 @@
-version: '3.8'
+# version: '3.8'
 
 services:
+    redis:
+      container_name: redis
+      image: "redis:7"
+      restart: always
+      # ports:
+      #   - "6379:6379"
+      networks:
+        - ft_transcendence
+    postgresql:
+      container_name: postgresql
+      image: postgres:16.1
+      restart: always
+      env_file:
+        - .env
+      volumes:
+        - postgres_data:/var/lib/postgresql/data 
+      networks:
+        - ft_transcendence
     django:
         build:
             context: django
@@ -12,10 +30,14 @@ services:
         restart: on-failure
         networks: 
           - ft_transcendence
-        # env_file:
-        #     .env
-        # depends_on:
-        #     - db
+        depends_on:
+          - redis
+          # - postgresql
+        environment:
+          - REDIS_HOST=redis
+        env_file:
+          .env
+
     nginx:
         image: nginx
         container_name: nginx_server
@@ -30,10 +52,13 @@ services:
         depends_on:
           - django
 
+
 volumes:
     static_volume:
     media_volume:
     postgres_data:
+      driver: local
+    protonmail_config:
 
 networks:
     ft_transcendence:

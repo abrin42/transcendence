@@ -9,18 +9,10 @@ https://docs.djangoproject.com/en/5.0/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/5.0/ref/settings/
 """
-import os, json, datetime
+import os
 from pathlib import Path
-from django.core.exceptions import ImproperlyConfigured
 
-with open("secrets.json") as f:
-    secrets = json.loads(f.read())
 
-def get_secret(setting, secrets=secrets):
-    try:
-        return secrets[setting]
-    except KeyError:
-        raise ImproperlyConfigured(f"Set the {setting} environment variable.")
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -29,16 +21,16 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/5.0/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = get_secret('secret_key')
+SECRET_KEY = os.environ.get('secret_key')
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['api']
 #ALLOWED_HOSTS = ['localhost', '127.0.0.1', 'yourdomain.com']
 
 
 # CSRF settings
-#CSRF_TRUSTED_ORIGINS = ['https://yourdomain.com']
+CSRF_TRUSTED_ORIGINS = ['http://localhost:8080']
 
 # Application definition
 
@@ -54,6 +46,8 @@ INSTALLED_APPS = [
     'player',
     'game',
 
+    'api',
+    'rest_framework',
 ]
 
 MIDDLEWARE = [
@@ -91,13 +85,24 @@ WSGI_APPLICATION = 'pong.wsgi.application'
 # https://docs.djangoproject.com/en/5.0/ref/settings/#databases
 
 DATABASES = {
+
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+
+        'ENGINE': 'django.db.backends.postgresql_psycopg2',
+
+        'NAME': "django",
+
+        'USER': "django",
+
+        'PASSWORD': "django",
+
+        'HOST': "postgresql",
+
+        'PORT': "5432",
+
     }
+
 }
-
-
 # Password validation
 # https://docs.djangoproject.com/en/5.0/ref/settings/#auth-password-validators
 
@@ -150,25 +155,48 @@ MEDIA_ROOT = os.path.join(BASE_DIR, 'media/')
 MEDIA_URL = '/media/'
 
 #Custom user model
-LOGIN_URL = "player/login/"
-
-# 42 API
-FT42_CLIENT_ID = get_secret('FT42_client_id')
-FT42_CLIENT_SECRET = get_secret('FT42_client_secret')
-FT42_REDIRECT_URI = get_secret('FT42_redirect_uri')
-FT42_OAUTH_URL = get_secret('FT42_0auth_url')
+#     raise Exception("Missing FT42_REDIRECT_URI env var")
+FT42_CLIENT_ID = os.environ.get('FT42_client_id')
+FT42_CLIENT_SECRET = os.environ.get('FT42_client_secret')
+FT42_REDIRECT_URI = os.environ.get('FT42_redirect_uri')
+# if FT42_REDIRECT_URI is None:
+#     raise Exception("Missing FT42_REDIRECT_URI env var")
+# FT42_REDIRECT_URI = os.environ.get('FT42_redirect_uri')
+FT42_OAUTH_URL = os.environ.get('FT42_0auth_url')
 
 # Vonage API
-VONAGE_API_KEY = get_secret('vonage_api_key')
-VONAGE_SECRET_KEY = get_secret('vonage_secret_key')
+VONAGE_API_KEY = os.environ.get('vonage_api_key')
+VONAGE_SECRET_KEY = os.environ.get('vonage_secret_key')
 
 # SMTP Server Configuration
-SMTP_SERVER = get_secret('smtp_server')
-SMTP_PORT = get_secret('smtp_port')
-SMTP_USERNAME = get_secret('smtp_username')
-SMTP_PASSWORD = get_secret('smtp_password')
+SMTP_SERVER = os.environ.get('smtp_server')
+SMTP_PORT = os.environ.get('smtp_port')
+SMTP_USERNAME = os.environ.get('smtp_username')
+SMTP_PASSWORD = os.environ.get('smtp_password')
 
 # JWT
-JWT_SECRET_KEY = get_secret('jwt_secret_key')
-JWT_ALGORITHM = get_secret('jwt_algo')
-JWT_EXP_DELTA_SECONDS = get_secret('jwt_exp')
+JWT_SECRET_KEY = os.environ.get('jwt_secret_key')
+JWT_ALGORITHM = os.environ.get('jwt_algo')
+JWT_EXP_DELTA_SECONDS = os.environ.get('jwt_exp')
+
+
+
+ASGI_APPLICATION = 'pong.asgi.application'
+
+CORS_ALLOWED_ORIGINS = [
+    "http://localhost:8080",
+]
+
+CORS_ALLOW_ALL_ORIGINS = True
+
+# WEBSOCKET_URL = '/ws/'
+# WEBSOCKET_REDIS_BROKER_URL = 'redis://localhost:6379/0'
+
+# CHANNEL_LAYERS = {
+#     'default': {
+#         'BACKEND': 'channels_redis.core.RedisChannelLayer',
+#         'CONFIG': {
+#             "hosts": [('redis', 6379)],
+#         },
+#     },
+# }

@@ -1,7 +1,7 @@
 <template>
-    <button class="button button-log" :style="{ width: buttonWidth, left: buttonLeft }">
-        <span v-if="isConnect" @click="__goTo('/dashboard')" class="buttonText">{{ login }}</span>
-        <span v-else @click="__goTo('/log')" class="buttonText">{{ $t('login') }}</span>
+    <button class="button button-log" :style="{ width: buttonWidth, left: buttonLeft }"
+        @click="__goTo(isConnect ? '/dashboard' : '/log')">
+        <span class="buttonText">{{ isConnect ? username : $t('login') }}</span>
     </button>
 </template>
 
@@ -17,14 +17,14 @@ function __goTo(page) {
     router.push(page);
 }
 
-const isConnect = ref(true); // Change to false to see the button change
-var login = 'Name';
+const isConnect = ref(true); // Changer quand le player est connecter
+var username = 'username';
 
 const minWidth = 7;
 const charLimit = 11;
 const initialLeft = 87.5;
 const buttonWidth = computed(() => {
-    const text = isConnect.value ? login : 'Login';
+    const text = isConnect.value ? username : 'Login';
     const extraChars = text.length - charLimit;
 
     if (extraChars > 0) {

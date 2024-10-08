@@ -19,6 +19,9 @@ import JoinLobbyView from '../views/JoinLobbyView.vue'
 import LogView from '../views/LogView.vue'
 import RegisterView from '../views/RegisterView.vue'
 import DashboardView from '../views/DashboardView.vue'
+import IAPongView from '../views/IAPongView.vue'
+import TwoFaView from '../views/2faView.vue'
+
 
 const router = createRouter({
   history: createWebHistory(),
@@ -97,7 +100,17 @@ const router = createRouter({
       path: '/legacy',
       name: 'legacy',
       component: LegacyPongView
-    }
+    },
+    {
+      path: '/IA',
+      name: 'IA',
+      component: IAPongView
+    },
+		{
+			path: '/2fa',
+			name: '2fa',
+			component: TwoFaView
+		},
   ]
 })
 

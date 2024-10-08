@@ -4,20 +4,56 @@ import CreateBackButton from '@/components/CreateBackButton.vue';
 import CreateDropupButton from '@/components/CreateDropupButton.vue';
 import InputEdit from '@/components/InputEdit.vue';
 import profilePicture from '@/assets/img/default-profile.png';
+import { reactive, onMounted } from 'vue';
 
-const userAccount = ref({
-    username: 'JohnDoe',
-    email: 'user@example.com',
-    password: '',
-    profilePicture: profilePicture,
+const userAccount = reactive({
+  date_joined:"",
+  email:"",
+  email_2fa_active:false,
+  lose:0,
+  nickname:"",
+  password:"",
+  phone_number:"",
+  profilePicture: profilePicture,
+  rank:0,
+  username:"",
+  win:0,
 });
+
+async function getUser() {
+  try {
+    //const response = await fetch(`http://localhost:8080/api/test-api/${state.id}`, {
+    const response = await fetch(`http://localhost:8080/api/player/connected_user`, {
+      method: 'GET',
+    });
+
+    if (!response.ok) {
+      throw new Error(`HTTP error! Status: ${response.status}`);
+    }
+
+    const user = await response.json();
+    console.log('User data:', user);
+    console.log('player data', user[0].fields)
+    userAccount.nickname = user[0].fields.nickname;
+    userAccount.username = user[0].fields.username;  // Set the username here
+    userAccount.email = user[0].fields.email;
+    userAccount.password = user[0].fields.password;
+  } catch (error) {
+    console.error('Error retrieving user data:', error);
+  }
+}
+
+onMounted(async () => {
+  await getUser(); // Only call getUser if state.id is available
+});
+
 
 const handleProfilePictureChange = (event) => {
     const file = event.target.files[0];
     if (file) {
         const reader = new FileReader();
         reader.onload = (e) => {
-            userAccount.value.profilePicture = e.target.result;
+            userAccount.profilePicture = e.target.result;
         };
         reader.readAsDataURL(file);
     }
@@ -31,28 +67,28 @@ const handleProfilePictureChange = (event) => {
             <CreateDropupButton />
             <div class="containerDashboard">
                 <div class="input-section profile-picture-section">
-                    <h2 class="category-title">Profile Picture</h2>
+                    <h2 class="category-title">{{ $t('profile_picture') }}</h2>
                     <img :src="userAccount.profilePicture || 'default-profile.png'" alt="Profile Picture"
                         class="profile-picture" />
                     <label for="file-upload" class="custom-file-upload">
-                        <i class="fas fa-upload"></i> Choose File
+                        <i class="fas fa-upload"></i> {{ $t('choose_file') }}
                     </label>
                     <input id="file-upload" type="file" @change="handleProfilePictureChange" accept="image/*"
                         class="hidden-file-input" />
                 </div>
 
                 <div class="input-section">
-                    <h2 class="category-title">Username</h2>
+                    <h2 class="category-title">{{ $t('username') }}</h2>
                     <InputEdit class="inputEdit" v-model="userAccount.username" placeholderText="Edit Username" />
                 </div>
 
                 <div class="input-section">
-                    <h2 class="category-title">Email</h2>
+                    <h2 class="category-title">{{ $t('email') }}</h2>
                     <InputEdit class="inputEdit" v-model="userAccount.email" placeholderText="Edit Email" />
                 </div>
 
                 <div class="input-section">
-                    <h2 class="category-title">Password</h2>
+                    <h2 class="category-title">{{ $t('password') }}</h2>
                     <div class="password-field">
                         <InputEdit class="inputEdit" v-model="userAccount.password" placeholderText="Edit Password"
                             type="password" />
