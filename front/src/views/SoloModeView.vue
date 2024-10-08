@@ -27,11 +27,14 @@
     <main>
         <div id="wrapper">
             <div class="buttonContainer">
-                <button class="button button-credits" @click="goToGameSelect()">
+                <button class="button button-credits" @click="__goToGameSelect()">
                     <span class="buttonText">{{ $t('solo') }}</span>
                 </button>
-                <button class="button button-credits" @click="goToMulti()">
+                <button class="button button-credits" @click="__goToMulti()">
                     <span class="buttonText">{{ $t('multiplayer') }}</span>
+                </button>
+                <button class="button button-credits" @click="__goToTournoi()">
+                    <span class="buttonText">{{ $t('tourney') }}</span>
                 </button>
                 <CreateSoundButton />
                 <CreateDropupButton />

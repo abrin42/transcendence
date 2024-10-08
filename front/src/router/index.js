@@ -10,8 +10,12 @@ import LeaderboardView from '../views/LeaderboardView.vue'
 import LoginView from '../views/LoginView.vue'
 import MatchmakingView from '../views/MatchmakingView.vue'
 import MyAccountView from '../views/MyAccountView.vue'
-import TourneyModeView from '../views/TourneyModeView.vue'
+import TourneyView from '../views/TourneyView.vue'
+import MultiModeView from '../views/MultiModeView.vue'
+
 import SettingsView from '../views/SettingsView.vue'
+import CreateLobbyView from '../views/CreateLobbyView.vue'
+import JoinLobbyView from '../views/JoinLobbyView.vue'
 import LogView from '../views/LogView.vue'
 import RegisterView from '../views/RegisterView.vue'
 import DashboardView from '../views/DashboardView.vue'
@@ -60,9 +64,29 @@ const router = createRouter({
       component: DashboardView
     },
     {
-      path: '/tourneymode',
-      name: 'tourneymode',
-      component: TourneyModeView
+      path: '/multimode',
+      name: 'multimode',
+      component: MultiModeView
+    },
+    {
+      path: '/tourney',
+      name: 'tourney',
+      component: TourneyView
+    },
+    {
+      path: '/createlobby',
+      name: 'createlobby',
+      component: CreateLobbyView
+    },
+    {
+      path: '/joinlobby',
+      name: 'joinlobby',
+      component: JoinLobbyView
+    },
+    {
+      path: '/matchmaking',
+      name: 'matchmaking',
+      component: MatchmakingView
     },
     {
       path: '/cyberpong',

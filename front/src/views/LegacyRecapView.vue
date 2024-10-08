@@ -10,16 +10,14 @@
     var myVideo = document.getElementById('videoBG');
     myVideo.playbackRate = 1.3;
 
-    function goToLegacy() {
-        router.push('/legacy');
+
+
+    function goToHome() {
+        router.push('/');
     }
 
-    function goToCyber() {
-        router.push('/cyberpong');
-    }
-
-    function goToThree() {
-        router.push('/legacy');
+    function goToGameSelect() {
+        router.push('/gameselect');
     }
 </script>
 
@@ -27,17 +25,13 @@
     <main>
         <div id="wrapper">
             <div class="buttonContainer">
-                <button class="button" @click="goToLegacy">
+                <button class="button" @click="goToHome">
                     <i class="fas fa-play" style="margin-right: 8px;"></i>
-                    <span class="buttonText buttonTextSize">Legacy</span>
+                    <span class="buttonText buttonTextSize">Home</span>
                 </button>
 
-                <button class="button button-cyber" @click="goToCyber">
-                    <span class="buttonText">CyberPong</span>
-                </button>
-
-                <button class="button button-three" @click="goToThree">
-                    <span class="buttonText">ThreePong</span>
+                <button class="button button-cyber" @click="goToGameSelect">
+                    <span class="buttonText"> Play Again </span>
                 </button>
 
                 <div>
