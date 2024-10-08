@@ -30,7 +30,7 @@ ALLOWED_HOSTS = ['api']
 
 
 # CSRF settings
-CSRF_TRUSTED_ORIGINS = ['http://localhost:8080']
+CSRF_TRUSTED_ORIGINS = ['https://localhost:8443']
 
 # Application definition
 
@@ -185,6 +185,7 @@ ASGI_APPLICATION = 'pong.asgi.application'
 
 CORS_ALLOWED_ORIGINS = [
     "http://localhost:8080",
+    # "https://localhost:8443",
 ]
 
 CORS_ALLOW_ALL_ORIGINS = True

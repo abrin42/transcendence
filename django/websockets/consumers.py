@@ -219,7 +219,6 @@ class PongConsumer(AsyncWebsocketConsumer):
         self.board_x_max = 700
         self.board_min = 3.88
         self.board_min = 0
-        self.win = 10
 
         await self.accept()
         await self.send(text_data=json.dumps({
