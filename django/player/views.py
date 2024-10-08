@@ -24,7 +24,7 @@ import json
 import logging
 from django.core import serializers
 
-
+@csrf_exempt
 def register_view(request):
     if request.method == 'POST':
         try:
@@ -56,7 +56,7 @@ def register_view(request):
 
     return JsonResponse({'error': 'Invalid request method'}, status=405)
 
-
+@csrf_exempt
 def login_view(request):
     if request.method == "POST":
         try:
@@ -75,21 +75,21 @@ def login_view(request):
                 if user is not None:
                     user = get_object_or_404(Player, username=user.username)
 
-                    if not user.email_2fa_active and not user.sms_2fa_active:
-                        token = generate_jwt(user)
-                        user = decode_jwt(token)
-                        print(user)
-                        
-                        if not user.nickname:
-                            user.nickname = user.username[1:]
-                            user.save()
+                    #if not user.email_2fa_active and not user.sms_2fa_active:
+                    #    token = generate_jwt(user)
+                    #    user = decode_jwt(token)
+                    #    print(user)
+                    #    
+                    #    if not user.nickname:
+                    #        user.nickname = user.username[1:]
+                    #        user.save()
 
-                        response = JsonResponse({'redirect_url': '/dashboard/'}, status=302)
-                        set_jwt_token(response, token)
+                    #    response = JsonResponse({'redirect_url': '/dashboard'}, status=302)
+                    #    set_jwt_token(response, token)
 
-                        return response
+                    #    return response
                     
-                    response = JsonResponse({'redirect_url': '/api/player/tfa/'}, status=302)
+                    response = JsonResponse({'redirect_url': '/2fa'}, status=302)
                     return response
             return JsonResponse({'error': 'Invalid username or password'}, status=400)
         
@@ -108,6 +108,7 @@ def login42_view(request):
 
 
 @login_required
+@csrf_exempt
 def tfa_view(request):
     ########################### Here I use the user from request and call its Player object. I apply the JWT token only when the 2FA/OTP is valid
     user = verify_user(request)
@@ -122,41 +123,56 @@ def tfa_view(request):
     return JsonResponse({'error': 'Invalid request method'}, status=405)
 
 @login_required
+@csrf_exempt
 def otp_view(request):
     ########################### Here I use the user from request and call its Player object. I apply the JWT token only when the 2FA/OTP is valid
     user = verify_user(request)
     ###########################
-
     if request.method == "POST":
-        if 'otp' in request.POST:
-            user_otp = request.POST.get('otp')
+        try:
+            data = json.loads(request.body)
+            user_otp = data.get('user_otp')
             otp_secret_key = request.session.get('otp_secret_key')
             otp_valid_date = request.session.get('otp_valid_date')
+         
+            print(f'user_otp: {user_otp}')
+            print(f'otp_secret_key: {otp_secret_key}')
+            print(f'otp_valid_date: {otp_valid_date}')
 
             if otp_secret_key and otp_valid_date:
                 valid_until = datetime.fromisoformat(otp_valid_date)
+                print(f'valid_until: {valid_until}')
+
                 if valid_until > datetime.now():
                     totp = pyotp.TOTP(otp_secret_key, interval=60)
+                    print(f'totp: {totp}')
+
                     if totp.verify(user_otp):
                         token = generate_jwt(user)
-                        response = HttpResponse(status=302)  # 302 redirect to another page
-                        response = redirect('/api/player/account/')
-                        set_jwt_token(response, token)
+                        print(f'token: {token}')
+
+                        response = JsonResponse({'redirect_url': '/2fa'}, status=302)
+                        set_jwt_token(response, token)                        
+                        print("JWT OK")
                         
+
                         del request.session['otp_secret_key']
                         del request.session['otp_valid_date']
                         del request.session['username']
                         del request.session['otp_method']
 
+                        print("OKOKOK")
                         return response
-                else:
-                    return render(request, 'player/otp.html', {'error': 'OTP has expired'})
-            return render(request, 'player/otp.html', {'error': 'Invalid OTP'})
+                    
+                    return JsonResponse({'error': 'Invalid OTP'}, status=400)
+                return JsonResponse({'error': 'Your OTP code has expired'}, status=400)
+            
+            return JsonResponse({'error': 'No OTP session found. Please request a new code.'}, status=400)
         
-        elif 'resend_otp' in request.POST:
-            create_otp(request, user)
+        except json.JSONDecodeError:
+            return JsonResponse({'error': 'Invalid request body'}, status=400)
 
-    return render(request, 'player/otp.html')
+    return JsonResponse({'error': 'Invalid request method'}, status=405)
 
 
 def auth_42_callback(request):
@@ -266,7 +282,8 @@ def update_password_view(request):
         form = ChangePasswordForm(user)
         return render(request, 'player/update_password.html', {"form": form})
 
-#@login_required
+
+@login_required
 def logout_view(request):
     token = request.COOKIES.get('jwt')
     response = redirect('/log/')
@@ -276,6 +293,7 @@ def logout_view(request):
     logout(request)
     return response
 
+
 @login_required
 def delete_account_view(request):
     user = token_user(request)
@@ -284,11 +302,16 @@ def delete_account_view(request):
         # return redirect(reverse('player:login'))
     # return render(request, 'player/delete_account.html')
 
+
 @login_required
 def connected_user(request):
     user = token_user(request)
-    data = serializers.serialize('json', [user])
-    return HttpResponse(data, content_type='application/json')
+    if user:        
+        data = serializers.serialize('json', [user])
+        return HttpResponse(data, content_type='application/json')
+    response = JsonResponse({'redirect_url': '/log'}, status=200)
+    return response
+
 
 @login_required
 def update_language(request):

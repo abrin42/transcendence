@@ -4,11 +4,19 @@ import Input from '../components/Input.vue';
 import Popup from '../components/Popup.vue';
 import CreateDropupButton from '../components/CreateDropupButton.vue';
 import CreateBackButton from '../components/CreateBackButton.vue';
+import { useRouter } from 'vue-router';
 
 const showPhonePopup = ref(false);
 const showMailPopup = ref(false);
 const code = ref('');
-const otp_method = ref(''); // Initialize as a ref with an empty string
+const router = useRouter();
+
+
+function __goTo(page) {
+    if (page == null)
+        return;
+    router.push(page);
+}
 
 function openPhonePopup() {
     showPhonePopup.value = true;
@@ -23,9 +31,32 @@ function closePopup() {
     showMailPopup.value = false;
 }
 
-function handleNext() {
-    alert(`Code: ${code.value}`);
+async function handleNext() {
+    try {
+        const response = await fetch('/api/player/otp/', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRFToken': getCsrfToken(),
+            },
+            body: JSON.stringify({ user_otp: code.value }) // Using method passed from the button click
+        });
+        console.log("POST OKOK")
+        if (response.status !== 302 && response.status !== 200)
+            __goTo('/2fa')
+
+        //if (!response.ok) {
+        //    throw new Error(`HTTP error! Status: ${response.status}`);
+        //}
+        else
+            __goTo('/dashboard')
+
+    } catch (error) {
+        console.error('Error during OTPPP setup:', error);
+        alert('An error occurred during OTPPP setup');
+    }
 }
+
 
 async function choose_tfa(method) {
     try {

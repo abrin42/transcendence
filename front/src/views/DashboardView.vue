@@ -29,10 +29,7 @@ async function getUser() {
     if (!response.ok) {
       throw new Error(`HTTP error! Status: ${response.status}`);
     }
-
     const user = await response.json();
-    console.log('User data:', user);
-    console.log('player data', user[0].fields)
     userAccount.nickname = user[0].fields.nickname;
     userAccount.username = user[0].fields.username;  // Set the username here
     userAccount.email = user[0].fields.email;

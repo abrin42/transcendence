@@ -13,12 +13,13 @@ def username_underscore(request):
     
 def verify_user(request):
     if not request.user.is_authenticated:
-        return redirect('/api/player/login/')
+        response = JsonResponse({'redirect_url': '/log'}, status=302)
+        return response
     try:
         user = get_object_or_404(Player, username=request.user.username)
     except Player.DoesNotExist:
-        return redirect('/api/player/login/')
-
+        response = JsonResponse({'redirect_url': '/log'}, status=302)
+        return response
     print(f"username: {user.username}")
     print(f"phone_number: {user.phone_number}")
     return user

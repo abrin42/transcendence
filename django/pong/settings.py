@@ -168,17 +168,25 @@ FT42_OAUTH_URL = os.environ.get('FT42_0auth_url')
 VONAGE_API_KEY = os.environ.get('vonage_api_key')
 VONAGE_SECRET_KEY = os.environ.get('vonage_secret_key')
 
+
 # SMTP Server Configuration
-SMTP_SERVER = os.environ.get('smtp_server')
-SMTP_PORT = os.environ.get('smtp_port')
-SMTP_USERNAME = os.environ.get('smtp_username')
-SMTP_PASSWORD = os.environ.get('smtp_password')
+#SMTP_SERVER = os.environ.get('smtp_server')
+#SMTP_PORT = os.environ.get('smtp_port')
+#SMTP_USERNAME = os.environ.get('smtp_username')
+#SMTP_PASSWORD = os.environ.get('smtp_password')
+
+# EMAIL Configuration
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_PORT = 587
+EMAIL_USE_TLS = True
+EMAIL_HOST_USER = 'cyberpong16@gmail.com'
+EMAIL_HOST_PASSWORD = 'vmjz nkhw bgns zbud '
 
 # JWT
 JWT_SECRET_KEY = os.environ.get('jwt_secret_key')
 JWT_ALGORITHM = os.environ.get('jwt_algo')
 JWT_EXP_DELTA_SECONDS = os.environ.get('jwt_exp')
-
 
 
 ASGI_APPLICATION = 'pong.asgi.application'
