@@ -3,6 +3,7 @@ import json
 import asyncio
 import math
 import random
+from datetime import datetime
 
 class PongConsumer(AsyncWebsocketConsumer):
 
@@ -168,14 +169,24 @@ class PongConsumer(AsyncWebsocketConsumer):
             await asyncio.sleep(0.5)
 
     async def ia_loop_game(self):
-        await self.sendinfo_back("test", 100 ,100)
         while self.P1Ready == 0:
-            await asyncio.sleep(0.5) #a def en fonction du sujet 
+            await asyncio.sleep(0.5) #a def en fonction du sujet
+        begin_time = datetime.now()
+        random_paddle_pos = random.random() * 1000 % self.paddle_height
+        await self.sendinfo_back("hereeeee",random_paddle_pos, 0)
         while True and self.P1Ready == 1:
-            # await self.sendinfo_back("test", 100 ,100)
-            # await self.sendPadUp("mouvUp", "2")
-            await self.sendPadDown("mouvDown", 2)
-            await asyncio.sleep(0.5) #a def en fonction du sujet 
+            current_time = datetime.now()
+            if (current_time.second - begin_time.second >= 1):
+                begin_time = datetime.now()
+                await self.sendinfo_back("time difference",current_time.second - begin_time.second, random_paddle_pos)
+                random_paddle_pos = random.random() * 1000 % self.paddle_height
+            # if (self.ball_y < self.posPad2 + self.paddle_height / 2):
+            if (self.ball_y < self.posPad2 + random_paddle_pos):
+                await self.sendPadUp("mouvUp", 2)
+            # if (self.ball_y > self.posPad2 + self.paddle_height / 2):
+            elif (self.ball_y > self.posPad2 + random_paddle_pos):
+                await self.sendPadDown("mouvDown", 2)
+            await asyncio.sleep(self.tick_back) #a def en fonction du sujet 
 
 
 
@@ -185,7 +196,7 @@ class PongConsumer(AsyncWebsocketConsumer):
         self.boardHeight = 700
         self.IA = 0
 
-        self.init_ball_speed = 4
+        self.init_ball_speed = 8
         self.tick_back = 0.01
 
         self.Game_on = 0
@@ -217,9 +228,8 @@ class PongConsumer(AsyncWebsocketConsumer):
 
         self.board_y_max = 700
         self.board_x_max = 700
-        self.board_min = 3.88
+        # self.board_min = 3.88
         self.board_min = 0
-        self.win = 10
 
         await self.accept()
         await self.send(text_data=json.dumps({
@@ -297,7 +307,7 @@ class PongConsumer(AsyncWebsocketConsumer):
                 'player': player,
             }))
         if player == 2:
-            await self.sendinfo_back("je passe dans 2 laaa", type ,player)
+            # await self.sendinfo_back("je passe dans 2 laaa", type ,player)
             self.P2Ready = 1
             self.posPad2 += 5
             if self.posPad2 > 560:
