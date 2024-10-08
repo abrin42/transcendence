@@ -171,20 +171,20 @@ class PongConsumer(AsyncWebsocketConsumer):
     async def ia_loop_game(self):
         while self.P1Ready == 0:
             await asyncio.sleep(0.5) #a def en fonction du sujet
-        begin_time = datetime.now()
+        begin_time = datetime.now().timestamp()
         random_paddle_pos = random.random() * 1000 % self.paddle_height
-        await self.sendinfo_back("hereeeee",random_paddle_pos, 0)
+        ball_position = self.ball_y
         while True and self.P1Ready == 1:
-            current_time = datetime.now()
-            if (current_time.second - begin_time.second >= 1):
-                begin_time = datetime.now()
-                await self.sendinfo_back("time difference",current_time.second - begin_time.second, random_paddle_pos)
+            current_time = datetime.now().timestamp()
+            # await self.sendinfo_back("current_time",current_time, 0)
+            # await self.sendinfo_back("begin_time",begin_time, 0)
+            if (current_time - begin_time >= 1):
+                ball_position = self.ball_y
+                begin_time = datetime.now().timestamp()
                 random_paddle_pos = random.random() * 1000 % self.paddle_height
-            # if (self.ball_y < self.posPad2 + self.paddle_height / 2):
-            if (self.ball_y < self.posPad2 + random_paddle_pos):
+            if (ball_position < self.posPad2 + random_paddle_pos):
                 await self.sendPadUp("mouvUp", 2)
-            # if (self.ball_y > self.posPad2 + self.paddle_height / 2):
-            elif (self.ball_y > self.posPad2 + random_paddle_pos):
+            elif (ball_position > self.posPad2 + random_paddle_pos):
                 await self.sendPadDown("mouvDown", 2)
             await asyncio.sleep(self.tick_back) #a def en fonction du sujet 
 
