@@ -18,6 +18,10 @@ urlpatterns = [
     path('update_password/', views.update_password_view, name='update_password'),
     path('delete_account/', views.delete_account_view, name='delete_account'),
     path('connected_user/', views.connected_user, name='connected_user'),
-    path('update_language/', views.update_language, name='update_language'),
     path('get_all_user/', views.get_all_user, name='get_all_user'),
+    path('update_language/', views.update_language, name='update_language'),
+    path('update_nickname/', views.update_nickname, name='update_nickname'),
+    path('update_email/', views.update_email, name='update_email'),
+    path('update_phone_number/', views.update_phone_number, name='update_phone_number'),
+    path('update_profile_picture/', views.update_profile_picture, name='update_profile_picture'),
 ]
