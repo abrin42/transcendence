@@ -6,7 +6,8 @@ RUN apt-get update
 RUN apt-get install -y --no-install-recommends postgresql-client
 # RUN rm -rf /var/lib/apt/lists/*
 RUN pip install --upgrade pip
-RUN pip install --no-cache-dir -r requirements.txt
+# RUN pip install --no-cache-dir -r requirements.txt
+RUN pip install -r requirements.txt
 ENV DJANGO_SETTINGS_MODULE=pong.settings
 
 RUN pip install pyotp
