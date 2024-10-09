@@ -95,6 +95,7 @@ function getCsrfToken() {
     <main>
         <div id="wrapper">
             <h1>LOGIN</h1>
+
             <div class="logContainer">
                 <button class="button button-log42" @click="getUrl">
                     <img class="img-42" src="../assets/img/42_Logob.png" alt="Logo 42" />
