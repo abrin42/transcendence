@@ -1,6 +1,8 @@
 <script setup>
 import { ref, onMounted, onUnmounted } from 'vue';
+import { useRouter } from 'vue-router';
 
+const router = useRouter();
 const socket = ref(null);
 // const message = ref('');
 const messages = ref([]);
@@ -89,7 +91,7 @@ function connectWebSocket() {
     else if (data.type == 'endGame')
     {
       connection = 0;
-      Router.push('home');
+      router.push('/legacyrecap');
       console.log(data.type);
     }
     else if (data.type == 'startGame')
@@ -140,11 +142,6 @@ function sendMessage(msg) {
   }
 }
 
-
-
-
-
-
 onUnmounted(() => {
   if (socket.value) {
     socket.value.close();
@@ -154,12 +151,6 @@ onUnmounted(() => {
 onMounted(() => {
   connectWebSocket();
 });
-
-
-
-
-
-
 
     //board properties
     let board;
@@ -212,7 +203,7 @@ onMounted(() => {
         //draw player1
         context.fillStyle = "white";
         context.fillRect(player1.x, player1.y, player1.width, player1.height);
-
+        context.fillText("[P] to pause", boardWidth/5*4, 100);
         requestAnimationFrame(update); // Gameloop
         document.addEventListener("keydown", movePlayer);
         // document.addEventListener("keydown", leaveGame);
@@ -222,7 +213,7 @@ onMounted(() => {
         requestAnimationFrame(update);
         
         context.clearRect(0, 0, board.width, board.height); // clear rectangle after movement (remove previous paddle position)
-        context.fillRect(player1.x, player1.y, player1.width, player1.height); // redesine tous 
+        context.fillRect(player1.x, player1.y, player1.width, player1.height); // redessine tous 
         context.fillRect(player2.x, player2.y, player2.width, player2.height);
         context.fillStyle = "white";
         context.fillRect(ball.x, ball.y, ball.width, ball.height);

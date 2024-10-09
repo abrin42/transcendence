@@ -3,7 +3,7 @@
     import CreateDropupButton from '../components/CreateDropupButton.vue';
     import CreateBackButton from '../components/CreateBackButton.vue';
     import CreateSoundButton from '../components/CreateSoundButton.vue';
-
+    import CreateHomeButton from '../components/CreateHomeButton.vue';
     var myVideo = document.getElementById('videoBG');
     myVideo.playbackRate = 1.3;
 
@@ -28,15 +28,10 @@
                 <button class="button" @click="goToJoinLobby">
                     <span class="buttonText">Join Lobby</span>
                 </button>
-                <div>
-                    <CreateSoundButton />
-                </div>
-                <div>
-                    <CreateDropupButton />
-                </div>
-                <div>
-                    <CreateBackButton />
-                </div>
+                <CreateHomeButton />
+                <CreateSoundButton />
+                <CreateDropupButton />
+                <CreateBackButton />
             </div>
         </div>
     </main>

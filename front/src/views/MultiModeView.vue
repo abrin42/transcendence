@@ -3,6 +3,7 @@
     import CreateDropupButton from '../components/CreateDropupButton.vue';
     import CreateBackButton from '../components/CreateBackButton.vue';
     import CreateSoundButton from '../components/CreateSoundButton.vue';
+    import CreateHomeButton from '../components/CreateHomeButton.vue';
     import { useRouter } from 'vue-router';
 
     const router = useRouter();
@@ -36,6 +37,7 @@
                 <button class="button button-credits" @click="goToTourney()">
                     <span class="buttonText">{{ $t('tourney') }}</span>
                 </button>
+                <CreateHomeButton />
                 <CreateSoundButton />
                 <CreateDropupButton />
                 <CreateBackButton />

@@ -4,7 +4,10 @@ import ModeSelectView from '../views/ModeSelectView.vue'
 import CreditsView from '../views/CreditsView.vue'
 import GameSelectView from '../views/GameSelectView.vue'
 import LegacyPongView from '../views/LegacyPongView.vue'
+import LegacyRecapView from '../views/LegacyRecapView.vue'
 import CyberPongView from '../views/CyberPongView.vue'
+import CyberRecapView from '../views/CyberRecapView.vue'
+
 import ThreePongView from '../views/ThreePongView.vue'
 import LeaderboardView from '../views/LeaderboardView.vue'
 import LoginView from '../views/LoginView.vue'
@@ -21,7 +24,6 @@ import RegisterView from '../views/RegisterView.vue'
 import DashboardView from '../views/DashboardView.vue'
 import IAPongView from '../views/IAPongView.vue'
 import TwoFaView from '../views/2faView.vue'
-
 
 const router = createRouter({
   history: createWebHistory(),
@@ -97,9 +99,19 @@ const router = createRouter({
       component: CyberPongView
     },
     {
+      path: '/cyberrecap',
+      name: 'cyberrecap',
+      component: CyberRecapView
+    },
+    {
       path: '/legacy',
       name: 'legacy',
       component: LegacyPongView
+    },
+    {
+      path: '/legacyrecap',
+      name: 'legacyrecap',
+      component: LegacyRecapView
     },
     {
       path: '/IA',
