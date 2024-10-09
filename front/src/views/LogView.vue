@@ -5,7 +5,6 @@ import Input from '../components/Input.vue';
 import { useRouter } from 'vue-router';
 import { ref, reactive, onMounted } from 'vue';
 
-
 const router = useRouter();
 const username = ref('');
 const password = ref('');

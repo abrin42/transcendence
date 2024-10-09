@@ -21,7 +21,6 @@ def create_otp(request, user):
         print("POST otp_method")
         request.session['otp_method'] = otp_method  
     
-    user.phone_number = "+33600000000"
     if  otp_method == 'sms':
         contact = str(user.phone_number)
         send_otp(request, totp, contact, method='sms')

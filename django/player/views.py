@@ -113,8 +113,6 @@ def tfa_view(request):
     ########################### Here I use the user from request and call its Player object. I apply the JWT token only when the 2FA/OTP is valid
     user = verify_user(request)
     ###########################
-    print(user)
-    print(request)
 
     if request.method == "POST":
         create_otp(request, user)
@@ -155,7 +153,6 @@ def otp_view(request):
                         set_jwt_token(response, token)                        
                         print("JWT OK")
                         
-
                         del request.session['otp_secret_key']
                         del request.session['otp_valid_date']
                         del request.session['username']
@@ -234,6 +231,10 @@ def auth_42_callback(request):
 
     return redirect('/dashboard/')
 
+
+
+
+
 @login_required
 def account_view(request):
     user = token_user(request)
@@ -283,8 +284,10 @@ def update_password_view(request):
         return render(request, 'player/update_password.html', {"form": form})
 
 
-@login_required
+
+#@login_required
 def logout_view(request):
+   # if request.method == "POST":
     token = request.COOKIES.get('jwt')
     response = redirect('/log/')
     if token:
@@ -292,6 +295,7 @@ def logout_view(request):
         response.delete_cookie('jwt')
     logout(request)
     return response
+  #  return JsonResponse({'error': 'Invalid request method'}, status=405)
 
 
 @login_required
@@ -308,89 +312,12 @@ def connected_user(request):
     user = token_user(request)
     if user:        
         data = serializers.serialize('json', [user])
-        return HttpResponse(data, content_type='application/json')
-    response = JsonResponse({'redirect_url': '/log'}, status=200)
-    return response
-
+    else:
+        data = json.dumps({'error': 'User not found'})
+    return HttpResponse(data, content_type='application/json')
 
 
 def get_all_user(request):
     data = Player.objects.all()
-    data =serializers.serialize('json', data)
+    data = serializers.serialize('json', data)
     return HttpResponse(data, content_type='application/json')
-
-@login_required
-def update_language(request):
-    user = token_user(request)
-    if request.method == "POST":
-        try:
-            data = json.loads(request.body)
-            
-            language = data.get('language')
-            user.language = language
-            user.save()
-            response = JsonResponse({'redirect_url': '/dashboard/'}, status=302)
-            return response
-        except json.JSONDecodeError:
-            return JsonResponse({'error': 'Invalid request body'}, status=400)
-    return JsonResponse({'error': 'Invalid request method'}, status=405)
-
-@login_required
-def update_nickname(request):
-    user = token_user(request)
-    if request.method == "POST":
-        try:
-            data = json.loads(request.body)
-            nickname = data.get('nickname')
-            user.nickname = nickname
-            user.save()
-            response = JsonResponse({'redirect_url': '/dashboard/'}, status=302)
-            return response
-        except json.JSONDecodeError:
-            return JsonResponse({'error': 'Invalid request body'}, status=400)
-    return JsonResponse({'error': 'Invalid request method'}, status=405)
-
-@login_required
-def update_email(request):
-    user = token_user(request)
-    if request.method == "POST":
-        try:
-            data = json.loads(request.body)
-            email = data.get('email')
-            user.email = email
-            user.save()
-            response = JsonResponse({'redirect_url': '/dashboard/'}, status=302)
-            return response
-        except json.JSONDecodeError:
-            return JsonResponse({'error': 'Invalid request body'}, status=400)
-    return JsonResponse({'error': 'Invalid request method'}, status=405)
-
-@login_required
-def update_phone_number(request):
-    user = token_user(request)
-    if request.method == "POST":
-        try:
-            data = json.loads(request.body)
-            phone_number = data.get('phone_number')
-            user.phone_number = phone_number
-            user.save()
-            response = JsonResponse({'redirect_url': '/dashboard/'}, status=302)
-            return response
-        except json.JSONDecodeError:
-            return JsonResponse({'error': 'Invalid request body'}, status=400)
-    return JsonResponse({'error': 'Invalid request method'}, status=405)
-
-@login_required
-def update_profile_picture(request):
-    user = token_user(request)
-    if request.method == "POST":
-        try:
-            data = json.loads(request.body)
-            profile_picture = data.get('profile_picture')
-            user.profile_picture = profile_picture
-            user.save()
-            response = JsonResponse({'redirect_url': '/dashboard/'}, status=302)
-            return response
-        except json.JSONDecodeError:
-            return JsonResponse({'error': 'Invalid request body'}, status=400)
-    return JsonResponse({'error': 'Invalid request method'}, status=405)

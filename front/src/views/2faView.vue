@@ -1,99 +1,127 @@
 <script setup>
-import { ref } from 'vue';
-import Input from '../components/Input.vue';
-import Popup from '../components/Popup.vue';
-import CreateDropupButton from '../components/CreateDropupButton.vue';
-import CreateBackButton from '../components/CreateBackButton.vue';
-import { useRouter } from 'vue-router';
+    import Input from '../components/Input.vue';
+    import Popup from '../components/Popup.vue';
+    import CreateDropupButton from '../components/CreateDropupButton.vue';
+    import CreateBackButton from '../components/CreateBackButton.vue';
+    import { useRouter } from 'vue-router';
+    import { reactive, onMounted, ref } from 'vue';
 
-const showPhonePopup = ref(false);
-const showMailPopup = ref(false);
-const code = ref('');
-const router = useRouter();
+    const showPhonePopup = ref(false);
+    const showMailPopup = ref(false);
+    const code = ref('');
+    const router = useRouter();
 
+    const userAccount = reactive({
+        email_2fa_active:false,
+        sms_2fa_active:false,
+    });
 
-function __goTo(page) {
-    if (page == null)
-        return;
-    router.push(page);
-}
-
-function openPhonePopup() {
-    showPhonePopup.value = true;
-}
-
-function openMailPopup() {
-    showMailPopup.value = true;
-}
-
-function closePopup() {
-    showPhonePopup.value = false;
-    showMailPopup.value = false;
-}
-
-async function handleNext() {
-    try {
-        const response = await fetch('/api/player/otp/', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                'X-CSRFToken': getCsrfToken(),
-            },
-            body: JSON.stringify({ user_otp: code.value }) // Using method passed from the button click
-        });
-        console.log("POST OKOK")
-        if (response.status !== 302 && response.status !== 200)
-            __goTo('/2fa')
-
-        //if (!response.ok) {
-        //    throw new Error(`HTTP error! Status: ${response.status}`);
-        //}
-        else
-            __goTo('/dashboard')
-
-    } catch (error) {
-        console.error('Error during OTPPP setup:', error);
-        alert('An error occurred during OTPPP setup');
+    function __goTo(page) {
+        if (page == null)
+            return;
+        router.push(page);
     }
-}
 
-
-async function choose_tfa(method) {
-    try {
-        const response = await fetch('/api/player/tfa/', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                'X-CSRFToken': getCsrfToken(),
-            },
-            body: JSON.stringify({ otp_method: method }) // Using method passed from the button click
-        });
-        if (!response.ok) {
-            throw new Error(`HTTP error! Status: ${response.status}`);
-        }
-        // Open popup after successful API call
-        if (method === 'sms') {
-            openPhonePopup();
-        } else if (method === 'email') {
-            openMailPopup();
-        }
-    } catch (error) {
-        console.error('Error during TFA setup:', error);
-        alert('An error occurred during TFA setup');
+    function openPhonePopup() {
+        showPhonePopup.value = true;
     }
-}
 
-function getCsrfToken() {
-    const cookieValue = document.cookie
-        .split('; ')
-        .find(row => row.startsWith('csrftoken='))
-        ?.split('=')[1];
-    return cookieValue || '';
-}
+    function openMailPopup() {
+        showMailPopup.value = true;
+    }
 
-function resendCode() {
-    alert('Resend code!');
-}
+    function closePopup() {
+        showPhonePopup.value = false;
+        showMailPopup.value = false;
+    }
+    
+    async function getUser() {
+        try {
+            const response = await fetch(`http://localhost:8080/api/player/connected_user`, {
+                method: 'GET',
+            });
+            if (!response.ok) {
+                console.warn(`HTTP error! Status: ${response.status}`);
+                return;
+            }
+            const user = await response.json();
+            if (user && user.length > 0) {
+                userAccount.email_2fa_active = user[0].fields.username;  // Set the username here
+                userAccount.sms_2fa_active = user[0].fields.is_active;  
+            } else {
+                console.log('No user data retrieved.');
+            }
+        } catch (error) {
+            console.error('Error retrieving user data:', error);
+        }
+    }
+
+    async function handleNext() {
+        try {
+            const response = await fetch('/api/player/otp/', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRFToken': getCsrfToken(),
+                },
+                body: JSON.stringify({ user_otp: code.value }) // Using method passed from the button click
+            });
+            console.log("POST OKOK")
+            if (response.status !== 302 && response.status !== 200)
+                __goTo('/2fa')
+
+            //if (!response.ok) {
+            //    throw new Error(`HTTP error! Status: ${response.status}`);
+            //}
+            else
+                __goTo('/dashboard')
+
+        } catch (error) {
+            console.error('Error during OTPPP setup:', error);
+            alert('An error occurred during OTPPP setup');
+        }
+    }
+    async function choose_tfa(method) {
+        try {
+            const response = await fetch('/api/player/tfa/', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRFToken': getCsrfToken(),
+                },
+                body: JSON.stringify({ otp_method: method }) // Using method passed from the button click
+            });
+            if (!response.ok) {
+                throw new Error(`HTTP error! Status: ${response.status}`);
+            }
+            // Open popup after successful API call
+            if (method === 'sms') {
+                openPhonePopup();
+            } else if (method === 'email') {
+                openMailPopup();
+            }
+        } catch (error) {
+            console.error('Error during TFA setup:', error);
+            alert('An error occurred during TFA setup');
+        }
+    }
+
+    function getCsrfToken() {
+        const cookieValue = document.cookie
+            .split('; ')
+            .find(row => row.startsWith('csrftoken='))
+            ?.split('=')[1];
+        return cookieValue || '';
+    }
+
+    onMounted(async () => {
+        await getUser(); // Only call getUser if state.id is available
+    });
+
+    function resendCode() {
+        choose_tfa(method);
+        alert('Resend code!');
+    }
 </script>
 
 <template>

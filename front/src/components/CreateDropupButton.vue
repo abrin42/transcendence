@@ -13,92 +13,88 @@
 </template>
 
 <script setup>
-import { ref } from 'vue';
-import { useI18n } from 'vue-i18n';
-import { reactive, onMounted } from 'vue';
+	import { ref } from 'vue';
+	import { useI18n } from 'vue-i18n';
+	import { reactive, onMounted } from 'vue';
 
-const { locale } = useI18n();
+	const { locale } = useI18n();
 
+	const userAccount = reactive({
+		language: "EN",
+		flag: "🇬🇧",
+	});
 
-const userAccount = reactive({
-	language:"",
-	flag:"",
-});
+	const menuVisible = ref(false);
+	let timeoutId;
 
-const menuVisible = ref(false);
-let timeoutId;
+	async function getLanguage() {
+		try {
+			const response = await fetch(`http://localhost:8080/api/player/connected_user`, {
+				method: 'GET',
+			});
 
+			if (!response.ok) {
+				throw new Error(`HTTP error! Status: ${response.status}`);
+			}
 
-async function getLanguage() {
-  try {
-    //const response = await fetch(`http://localhost:8080/api/test-api/${state.id}`, {
-    const response = await fetch(`http://localhost:8080/api/player/connected_user`, {
-      method: 'GET',
-    });
+			const user = await response.json();
+			userAccount.language = user[0].fields.language;
+		} catch (error) {
+			console.error('Error retrieving user data:', error);
+		}
+	}
 
-    if (!response.ok) {
-      throw new Error(`HTTP error! Status: ${response.status}`);
-    }
+	async function setLanguage(new_language) {
+		try {
+			await fetch('/api/player/update_language/', {
+				method: 'POST',
+				headers: {
+					'Content-Type': 'application/json',
+					'X-CSRFToken': getCsrfToken() // Add your CSRF token retrieval here
+				},
+				body: JSON.stringify({
+					language: new_language,
+				})
+			});
+			userAccount.language = new_language;
+		} catch (error) {
+			console.error('Erreur lors du changement de langues:', error);
+		}
+	}
 
-    const user = await response.json();
-    userAccount.language = user[0].fields.language;
-  } catch (error) {
-    console.error('Error retrieving user data:', error);
-  }
-}
+	function getCsrfToken() {
+		const cookieValue = document.cookie
+			.split('; ')
+			.find(row => row.startsWith('csrftoken='))
+			?.split('=')[1];
+		return cookieValue || '';
+	}
 
-async function setLanguage(new_language) {
-    try {
-        await fetch('/api/player/update_language/', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                'X-CSRFToken': getCsrfToken() // Add your CSRF token retrieval here
-            },
-            body: JSON.stringify({
-                language: new_language,
-            })
-        });
-		userAccount.language = new_language;
-    } catch (error) {
-        console.error('Erreur lors du changement de langues:', error);
-    }
-}
+	function switchLang(lang) {
+		locale.value = lang;
+		const langs = ["EN", "FR", "ES", "DE", "IT", "MA"];
+		const flags = ["🇬🇧", "🇫🇷", "🇪🇸", "🇩🇪", "🇮🇹", "⚔️"];
+		for (let i = 0; i < 6; ++i)
+			if (lang == langs[i])
+				userAccount.flag = flags[i];
+		setLanguage(lang);
+	}
 
-function getCsrfToken() {
-    // Helper function to get the CSRF token from cookies
-    const cookieValue = document.cookie
-        .split('; ')
-        .find(row => row.startsWith('csrftoken='))
-        ?.split('=')[1];
-    return cookieValue || '';
-}
+	onMounted(async () => {
+		await getLanguage();
+		switchLang(userAccount.language);
+	});
 
-function switchLang(lang) {
-	locale.value = lang;
-	const langs = ["EN","FR","ES","DE","IT","MA"];
-	const flags = ["🇬🇧","🇫🇷","🇪🇸","🇩🇪","🇮🇹","⚔️"];
-	for (let i = 0; i < 6; ++i)
-		if (lang == langs[i])
-			userAccount.flag = flags[i];
-	setLanguage(lang);
-}
+	function showMenu() {
+		clearTimeout(timeoutId);
+		menuVisible.value = true;
+	}
 
-onMounted(async () => {
-  await getLanguage();
-  switchLang(userAccount.language);
-});
-
-function showMenu() {
-	clearTimeout(timeoutId);
-	menuVisible.value = true;
-}
-
-function hideMenu() {
-	timeoutId = setTimeout(() => {
-		menuVisible.value = false;
-	}, 300);
-}
+	function hideMenu() {
+		timeoutId = setTimeout(() => {
+			menuVisible.value = false;
+		}, 300);
+	}
 </script>
 
 <style scoped>
