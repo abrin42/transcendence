@@ -111,10 +111,10 @@ function connectWebSocket() {
     // }
     else if (data.type == 'info_back') //a enlever test
     {
-      console.log(data.type);
-      console.log(data.value_back1);
-      console.log(data.value_back2);
-      console.log(data.value_back3);
+      console.log(data.type + " : " + data.value_back1 + "; " + data.value_back2 + "; " + data.value_back3);
+      // console.log(data.value_back1);
+      // console.log(data.value_back2);
+      // console.log(data.value_back3);
     }
     // console.log("---END ON MESSAGE---");
   };

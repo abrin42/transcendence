@@ -175,7 +175,7 @@ class PongConsumer(AsyncWebsocketConsumer):
             self.begin_time = datetime.now().timestamp()
             self.ball_last_position = self.ball_y
             self.ball_last_angle = self.ball_angle
-            self.random_paddle_pos = random.random() * 1000 % self.paddle_height - self.paddle_height / 2
+            self.random_paddle_pos = random.random() * 1000 % self.paddle_height
             # await self.sendinfo_back("random_paddle_pos",self.random_paddle_pos, 0)
 
     async def ai_back_to_center(self):
@@ -187,10 +187,9 @@ class PongConsumer(AsyncWebsocketConsumer):
 
     async def ai_catch_ball(self):
         if (self.ball_last_angle <= 0 and self.ball_last_angle > -90):
-            await self.sendinfo_back("...",self.random_paddle_pos, 0)
             if (self.ball_last_position < self.posPad2 + self.random_paddle_pos):
                 await self.sendPadUp("mouvUp", 2)
-        elif (self.ball_last_angle > 0 and self.ball_last_angle < 90):
+        if (self.ball_last_angle >= 0 and self.ball_last_angle < 90):
             if (self.ball_last_position > self.posPad2 + self.random_paddle_pos):
                 await self.sendPadDown("mouvDown", 2)
 
