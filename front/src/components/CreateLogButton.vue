@@ -30,7 +30,6 @@
         router.push(page);
     }
 
-    //var nickname = 'Login'; // Nom d'utilisateur pour tester
     const button = ref(null);
     const dropdownVisible = ref(false);
     const friendsPopupVisible = ref(true);
