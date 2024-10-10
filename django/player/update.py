@@ -24,7 +24,7 @@ import json
 import logging
 from django.core import serializers
 
-#@login_required
+@login_required
 def update_language(request):
     user = token_user(request)
     if request.method == "POST":
