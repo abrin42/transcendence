@@ -5,7 +5,7 @@ from player.models import Player
 # Create your models here.
 
 class Game(models.Model):
-    #id cree par django
+    # id cree par django
     state = models.CharField(blank=True, null=True, max_length=30) # (waiting, pause, active, end)
     player1 = models.ForeignKey(Player, related_name='%(class)s_player1', on_delete=models.CASCADE, null=True, default=None) 
     player2 = models.ForeignKey(Player, related_name='%(class)s_player2', on_delete=models.CASCADE,  null=True, default=None) 

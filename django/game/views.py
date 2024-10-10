@@ -2,7 +2,7 @@ from django.shortcuts import render
 from player.jwt import token_user
 import json
 from django.http import JsonResponse, HttpResponse, HttpResponseForbidden
-from .models import Game, BlacklistedToken
+from .models import Game
 import asyncio
 from player.models import Player 
 
@@ -10,21 +10,21 @@ from player.models import Player
 def game(request):
     return render(request, 'game/game.html')
 
-# @login_required
-def creatgame(data):
+# # @login_required
+# def creatgame(data):
 
-    game = Game(
-        player1 = data.player1,
-        player2 = data.player2,
-        socketp1 = data.socketp1,
-        socketp2 = data.socketp2,
-        scorep1 = 0,
-        scorep2 = 0,
-        state = "active",
-    )
-    game.save()
+#     game = Game(
+#         player1 = data.player1,
+#         player2 = data.player2,
+#         socketp1 = data.socketp1,
+#         socketp2 = data.socketp2,
+#         scorep1 = 0,
+#         scorep2 = 0,
+#         state = "active",
+#     )
+#     game.save()
 
-    return (JsonResponse({'message': 'gameIDInfo', 'gameID': game.id}, status=200))
+#     return (JsonResponse({'message': 'gameIDInfo', 'gameID': game.id}, status=200))
 
 
 
