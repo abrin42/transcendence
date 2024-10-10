@@ -333,8 +333,8 @@ def quit_matchmaking(request):
 #quand les 2 sont trouvé on lance la partie sinon on attend 0.5s et relance la page matchma 
 async def get_match(request):
     if len(matchmaking) >= 2:
-        data = matchmaking.pop()
-        data.append(matchmaking.pop())
+        data = matchmaking[0]
+        data.append(matchmaking[1])
         #creatgame(data)
         data = serializers.serialize('json', data)
         return HttpResponse(data, content_type='application/json')
