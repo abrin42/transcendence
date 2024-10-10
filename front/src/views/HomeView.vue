@@ -1,33 +1,58 @@
-<script setup> 
+<script setup>
 // Imports
-    import CreateSoundButton from '../components/CreateSoundButton.vue';
-    import CreateDropupButton from '../components/CreateDropupButton.vue';
-    import CreateSettingsButton from '../components/CreateSettingsButton.vue';
-    import CreateLogButton from '../components/CreateLogButton.vue';
-    import CreateHomeButton from '../components/CreateHomeButton.vue';  
+  import CreateSoundButton from '../components/CreateSoundButton.vue';
+  import CreateDropupButton from '../components/CreateDropupButton.vue';
+  import CreateSettingsButton from '../components/CreateSettingsButton.vue';
+  import CreateLogButton from '../components/CreateLogButton.vue';
 
-    import { useRouter } from 'vue-router';
+  import { useRouter } from 'vue-router';
+  import { reactive, onMounted } from 'vue';
+  
+  //api user connected
+  const userAccount = reactive({
+    is_active:"",
+  });
+  
+  async function getUser() {
+  try {
+    const response = await fetch(`https://localhost:8443/api/player/connected_user`, {
+      method: 'GET',
+    });
+    if (!response.ok) {
+      console.warn(`HTTP error! Status: ${response.status}`);
+      return;
+    }
+    const user = await response.json();
+    if (user && user.length > 0) {
+      userAccount.is_active = user[0].fields.valid;
+    } else {
+      console.log('No user data retrieved.');
+    }
+  } catch (error) {
+    console.error('Error retrieving user data:', error);
+  }
+}
 
-// Routing functions
-const router = useRouter();
+  // Routing functions
+  const router = useRouter();
 
-var myVideo = document.getElementById('videoBG');
-myVideo.playbackRate = 1;
+  var myVideo = document.getElementById('videoBG');
+  myVideo.playbackRate = 1;
 
-function goToModeSelect() {
+  function goToModeSelect() {
     router.push('/modeselect');
-}
+  }
 
-function goToCredits() {
+  function goToCredits() {
     router.push('/credits');
-}
+  }
 
-function __goTo(page) {
+  function __goTo(page) {
     if (page == null) {
-        return;
+      return;
     }
     router.push(page);
-}
+  }
 </script>
 
 <template>
@@ -45,7 +70,7 @@ function __goTo(page) {
                     <CreateHomeButton />
                     <CreateSoundButton />
                     <CreateLogButton />
-                    <CreateSettingsButton  @click="__goTo('/settings')"/>
+                    <CreateSettingsButton @click="__goTo('/settings')" />
                     <CreateDropupButton />
                 </div>
             </div>

@@ -1,6 +1,8 @@
 <script setup>
 import { ref, onMounted, onUnmounted } from 'vue';
+import { useRouter } from 'vue-router';
 
+const router = useRouter();
 const socket = ref(null);
 // const message = ref('');
 const messages = ref([]);
@@ -11,8 +13,8 @@ let connection = 0;
 
 function  updatePoints(player, updatePts)
 {
-  console.log(player);
-  console.log(updatePts);
+  // console.log(player);
+  // console.log(updatePts);
   if (player == 1)
   {
     player1Score = updatePts;
@@ -44,14 +46,14 @@ function updateBaal(x, y)
 }
 
 function connectWebSocket() {
-  socket.value = new WebSocket('ws://localhost:8080/ws/websockets/');
+  socket.value = new WebSocket('wss://localhost:8443/ws/websockets/');
   socket.value.onopen = () => {
     console.log('WebSocket connecté');
   };
 
 
   socket.value.onmessage = (event) => {
-    console.log("---ON MESSAGE---");
+    // console.log("---ON MESSAGE---");
 
     const data = JSON.parse(event.data);
     // console.log(data.type);
@@ -67,7 +69,7 @@ function connectWebSocket() {
       // console.log(data.message);
       // connectionStatus.value = data.message;
 
-      console.log(data.type);
+      // console.log(data.type);
       const message =
       {
         type: "GameIA",
@@ -79,14 +81,14 @@ function connectWebSocket() {
     }
     else if (data.type == 'updatePts')
     {
-      console.log(data.type);
-      console.log(data.updatePts);
-      console.log(data.player);
+      // console.log(data.type);
+      // console.log(data.updatePts);
+      // console.log(data.player);
       updatePoints(data.player, data.updatePts);
     } 
     else if (data.type == 'mouvUp' || data.type == 'mouvDown')
     {
-      console.log(data.type);
+      // console.log(data.type);
       updatePadel(data.player, data.newY);
       // messages.value.push(data.type);
     }
@@ -99,19 +101,20 @@ function connectWebSocket() {
     else if (data.type == 'endGame')
     {
       connection = 0;
-      Router.push('home');
-      console.log(data.type);
+      router.push('/'); //========================================== Erreur
     }
-    else if (data.type == 'startGame')
-    {
-      console.log(data.type);
-    }
+    //   console.log(data.type);
+    // }
+    // else if (data.type == 'startGame')
+    // {
+    //   console.log(data.type);
+    // }
     else if (data.type == 'info_back') //a enlever test
     {
-      console.log(data.type);
-      console.log(data.value_back1);
-      console.log(data.value_back2);
-      console.log(data.value_back3);
+      console.log(data.type + " : " + data.value_back1 + "; " + data.value_back2 + "; " + data.value_back3);
+      // console.log(data.value_back1);
+      // console.log(data.value_back2);
+      // console.log(data.value_back3);
     }
     // console.log("---END ON MESSAGE---");
   };
@@ -134,8 +137,8 @@ function sendMessage(msg) {
   // console.log(msg);
   if (socket.value && socket.value.readyState === WebSocket.OPEN) 
   {
-    console.log("---SEND MESSAGE---");
-    console.log(msg.type);
+    // console.log("---SEND MESSAGE---");
+    // console.log(msg.type);
     // console.log(msg.player);
     // console.log(msg.posPad);
     socket.value.send(JSON.stringify({

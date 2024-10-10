@@ -15,6 +15,7 @@ const selectedKey = ref(null);
 const changeKey = (action) => {
     selectedKey.value = action;
     window.addEventListener('keydown', setKey);
+
 };
 
 const setKey = (event) => {

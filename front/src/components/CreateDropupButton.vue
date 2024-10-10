@@ -1,55 +1,99 @@
 <template>
 	<div class="dropup" @mouseleave="hideMenu" @mouseenter="showMenu">
-		<button id="p0" class="dropbtn">{{ currentFlag }}</button>
+		<button id="p0" class="dropbtn">{{ userAccount.flag }}</button>
 		<div class="dropup-content locale-changer" v-show="menuVisible">
-			<a v-if="currentLang !== 'ES'" @click="switchLang('ES')">🇪🇸</a>
-			<a v-if="currentLang !== 'FR'" @click="switchLang('FR')">🇫🇷</a>
-			<a v-if="currentLang !== 'EN'" @click="switchLang('EN')">🇬🇧</a>
-			<a v-if="currentLang !== 'DE'" @click="switchLang('DE')">🇩🇪</a>
-			<a v-if="currentLang !== 'IT'" @click="switchLang('IT')">🇮🇹</a>
-			<a v-if="currentLang !== 'MA'" @click="switchLang('MA')">⚔️</a>
+			<a v-if="userAccount.language !== 'ES'" @click="switchLang('ES')">🇪🇸</a>
+			<a v-if="userAccount.language !== 'FR'" @click="switchLang('FR')">🇫🇷</a>
+			<a v-if="userAccount.language !== 'EN'" @click="switchLang('EN')">🇬🇧</a>
+			<a v-if="userAccount.language !== 'DE'" @click="switchLang('DE')">🇩🇪</a>
+			<a v-if="userAccount.language !== 'IT'" @click="switchLang('IT')">🇮🇹</a>
+			<a v-if="userAccount.language !== 'MA'" @click="switchLang('MA')">⚔️</a>
 		</div>
 	</div>
 </template>
 
 <script setup>
-import { ref } from 'vue';
-import { useI18n } from 'vue-i18n';
+	import { ref } from 'vue';
+	import { useI18n } from 'vue-i18n';
+	import { reactive, onMounted } from 'vue';
 
-const { locale } = useI18n();
+	const { locale } = useI18n();
 
-const currentLang = ref('EN');
-const currentFlag = ref('🇬🇧');
-const menuVisible = ref(false);
-let timeoutId;
+	const userAccount = reactive({
+		language: "",
+		flag: "",
+	});
 
-function switchLang(lang) {
-	currentLang.value = lang;
-	locale.value = lang;
-	if (lang === 'EN')
-		currentFlag.value = '🇬🇧';
-	else if (lang === 'FR')
-		currentFlag.value = '🇫🇷';
-	else if (lang === 'ES')
-		currentFlag.value = '🇪🇸';
-	else if (lang === 'DE')
-		currentFlag.value = '🇩🇪';
-	else if (lang === 'IT')
-		currentFlag.value = '🇮🇹';
-	else if (lang === 'MA')
-		currentFlag.value = '⚔️';
-}
+	const menuVisible = ref(false);
+	let timeoutId;
 
-function showMenu() {
-	clearTimeout(timeoutId);
-	menuVisible.value = true;
-}
+	async function getLanguage() {
+		try {
+			const response = await fetch(`https://localhost:8443/api/player/connected_user`, {
+				method: 'GET',
+			});
 
-function hideMenu() {
-	timeoutId = setTimeout(() => {
-		menuVisible.value = false;
-	}, 300);
-}
+			if (!response.ok) {
+				throw new Error(`HTTP error! Status: ${response.status}`);
+			}
+			const user = await response.json();
+			userAccount.language = user[0].fields.language;
+		} catch (error) {
+			console.error('Error retrieving user data:', error);
+		}
+	}
+
+	async function setLanguage(new_language) {
+		try {
+			await fetch('/api/player/update_language/', {
+				method: 'POST',
+				headers: {
+					'Content-Type': 'application/json',
+					'X-CSRFToken': getCsrfToken() // Add your CSRF token retrieval here
+				},
+				body: JSON.stringify({
+					language: new_language,
+				})
+			});
+			userAccount.language = new_language;
+		} catch (error) {
+			console.error('Erreur lors du changement de langues:', error);
+		}
+	}
+
+	function getCsrfToken() {
+		const cookieValue = document.cookie
+			.split('; ')
+			.find(row => row.startsWith('csrftoken='))
+			?.split('=')[1];
+		return cookieValue || '';
+	}
+
+	function switchLang(lang) {
+		locale.value = lang;
+		const langs = ["EN", "FR", "ES", "DE", "IT", "MA"];
+		const flags = ["🇬🇧", "🇫🇷", "🇪🇸", "🇩🇪", "🇮🇹", "⚔️"];
+		for (let i = 0; i < 6; ++i)
+			if (lang == langs[i])
+				userAccount.flag = flags[i];
+		setLanguage(lang);
+	}
+
+	onMounted(async () => {
+		await getLanguage();
+		switchLang(userAccount.language);
+	});
+
+	function showMenu() {
+		clearTimeout(timeoutId);
+		menuVisible.value = true;
+	}
+
+	function hideMenu() {
+		timeoutId = setTimeout(() => {
+			menuVisible.value = false;
+		}, 300);
+	}
 </script>
 
 <style scoped>

@@ -12,6 +12,10 @@
     var myVideo = document.getElementById('videoBG');
     myVideo.playbackRate = 1.3;
 
+    function goToMatchmaking() {
+        router.push('/matchmaking');
+    }
+
     function goToLegacy() {
         router.push('/legacy');
     }
@@ -29,7 +33,7 @@
     <main>
         <div id="wrapper">
             <div class="buttonContainer">
-                <button class="button" @click="goToLegacy">
+                <button class="button" @click="goToMatchmaking">
                     <i class="fas fa-play" style="margin-right: 8px;"></i>
                     <span class="buttonText buttonTextSize">Legacy</span>
                 </button>
@@ -62,4 +66,5 @@
 </template>
 
 <style>
+
 </style>

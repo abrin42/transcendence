@@ -23,8 +23,12 @@ import jwt
 import json
 import logging
 from django.core import serializers
+from collections import deque
+import asyncio
 
+matchmaking = deque()
 
+@csrf_exempt
 def register_view(request):
     if request.method == 'POST':
         try:
@@ -56,7 +60,7 @@ def register_view(request):
 
     return JsonResponse({'error': 'Invalid request method'}, status=405)
 
-
+@csrf_exempt
 def login_view(request):
     if request.method == "POST":
         try:
@@ -67,9 +71,6 @@ def login_view(request):
                 'username': f"_{username}", 
                 'password': password
             }
-            print(f'username: {username}')
-            print(f'password: {password}')
-            #post_data = username_underscore(request)
             form = AuthenticationForm(data=post_data)
             if form.is_valid():
                 user = form.get_user()
@@ -78,21 +79,21 @@ def login_view(request):
                 if user is not None:
                     user = get_object_or_404(Player, username=user.username)
 
-                    if not user.email_2fa_active and not user.sms_2fa_active:
-                        token = generate_jwt(user)
-                        user = decode_jwt(token)
-                        print(user)
-                        
-                        if not user.nickname:
-                            user.nickname = user.username[1:]
-                            user.save()
+                    #if not user.email_2fa_active and not user.sms_2fa_active:
+                    #    token = generate_jwt(user)
+                    #    user = decode_jwt(token)
+                    #    print(user)
+                    #    
+                    #    if not user.nickname:
+                    #        user.nickname = user.username[1:]
+                    #        user.save()
 
-                        response = JsonResponse({'redirect_url': '/dashboard/'}, status=302)
-                        set_jwt_token(response, token)
+                    #    response = JsonResponse({'redirect_url': '/dashboard'}, status=302)
+                    #    set_jwt_token(response, token)
 
-                        return response
+                    #    return response
                     
-                    response = JsonResponse({'redirect_url': '/api/player/tfa/'}, status=302)
+                    response = JsonResponse({'redirect_url': '/2fa'}, status=302)
                     return response
             return JsonResponse({'error': 'Invalid username or password'}, status=400)
         
@@ -111,53 +112,68 @@ def login42_view(request):
 
 
 @login_required
+@csrf_exempt
 def tfa_view(request):
     ########################### Here I use the user from request and call its Player object. I apply the JWT token only when the 2FA/OTP is valid
     user = verify_user(request)
     ###########################
 
     if request.method == "POST":
-        if 'tfa' in request.POST:
-            create_otp(request, user)
-            return redirect('/api/player/otp/')
-    return render(request, 'player/tfa.html', {'user': user})
+        create_otp(request, user)
+        response = JsonResponse({'message': 'Code sent successfully', 'redirect_url': '/2fa'}, status=200)
+        return response
+    return JsonResponse({'error': 'Invalid request method'}, status=405)
 
 @login_required
+@csrf_exempt
 def otp_view(request):
     ########################### Here I use the user from request and call its Player object. I apply the JWT token only when the 2FA/OTP is valid
     user = verify_user(request)
     ###########################
-
     if request.method == "POST":
-        if 'otp' in request.POST:
-            user_otp = request.POST.get('otp')
+        try:
+            data = json.loads(request.body)
+            user_otp = data.get('user_otp')
             otp_secret_key = request.session.get('otp_secret_key')
             otp_valid_date = request.session.get('otp_valid_date')
+         
+            print(f'user_otp: {user_otp}')
+            print(f'otp_secret_key: {otp_secret_key}')
+            print(f'otp_valid_date: {otp_valid_date}')
 
             if otp_secret_key and otp_valid_date:
                 valid_until = datetime.fromisoformat(otp_valid_date)
+                print(f'valid_until: {valid_until}')
+
                 if valid_until > datetime.now():
                     totp = pyotp.TOTP(otp_secret_key, interval=60)
+                    print(f'totp: {totp}')
+
                     if totp.verify(user_otp):
                         token = generate_jwt(user)
-                        response = HttpResponse(status=302)  # 302 redirect to another page
-                        response = redirect('/api/player/account/')
-                        set_jwt_token(response, token)
+                        print(f'token: {token}')
+
+                        response = JsonResponse({'redirect_url': '/2fa'}, status=302)
+                        set_jwt_token(response, token)                        
+                        print("JWT OK")
                         
                         del request.session['otp_secret_key']
                         del request.session['otp_valid_date']
                         del request.session['username']
                         del request.session['otp_method']
 
+                        print("OKOKOK")
                         return response
-                else:
-                    return render(request, 'player/otp.html', {'error': 'OTP has expired'})
-            return render(request, 'player/otp.html', {'error': 'Invalid OTP'})
+                    
+                    return JsonResponse({'error': 'Invalid OTP'}, status=400)
+                return JsonResponse({'error': 'Your OTP code has expired'}, status=400)
+            
+            return JsonResponse({'error': 'No OTP session found. Please request a new code.'}, status=400)
         
-        elif 'resend_otp' in request.POST:
-            create_otp(request, user)
+        except json.JSONDecodeError:
+            return JsonResponse({'error': 'Invalid request body'}, status=400)
 
-    return render(request, 'player/otp.html')
+    return JsonResponse({'error': 'Invalid request method'}, status=405)
 
 
 def auth_42_callback(request):
@@ -219,6 +235,10 @@ def auth_42_callback(request):
 
     return redirect('/dashboard/')
 
+
+
+
+
 @login_required
 def account_view(request):
     user = token_user(request)
@@ -267,8 +287,11 @@ def update_password_view(request):
         form = ChangePasswordForm(user)
         return render(request, 'player/update_password.html', {"form": form})
 
+
+
 #@login_required
 def logout_view(request):
+   # if request.method == "POST":
     token = request.COOKIES.get('jwt')
     response = redirect('/log/')
     if token:
@@ -276,6 +299,8 @@ def logout_view(request):
         response.delete_cookie('jwt')
     logout(request)
     return response
+  #  return JsonResponse({'error': 'Invalid request method'}, status=405)
+
 
 @login_required
 def delete_account_view(request):
@@ -285,28 +310,45 @@ def delete_account_view(request):
         # return redirect(reverse('player:login'))
     # return render(request, 'player/delete_account.html')
 
+
 @login_required
 def connected_user(request):
     user = token_user(request)
-    data = serializers.serialize('json', [user])
+    if user:        
+        data = serializers.serialize('json', [user])
+    else:
+        data = json.dumps({'error': 'User not found'})
     return HttpResponse(data, content_type='application/json')
 
-@login_required
-def update_language(request):
-    user = token_user(request)
-    if request.method == "POST":
-        try:
-            data = json.loads(request.body)
-            language = data.get('language')
-            user.language = language
-            user.save()
-            response = JsonResponse({'redirect_url': '/dashboard/'}, status=302)
-            return response
-        except json.JSONDecodeError:
-            return JsonResponse({'error': 'Invalid request body'}, status=400)
-    return JsonResponse({'error': 'Invalid request method'}, status=405)
 
 def get_all_user(request):
     data = Player.objects.all()
-    data =serializers.serialize('json', data)
+    data = serializers.serialize('json', data)
     return HttpResponse(data, content_type='application/json')
+
+
+def enter_matchmaking(request):
+    user = token_user(request)
+    if user in matchmaking:
+        return JsonResponse({'error': 'Already in matchmaking'}, status=403)
+    matchmaking.append(user)
+    return JsonResponse({'redirect_url': '/matchmaking'}, status=302) #dans matchmaking il faut fetch get get_match
+
+def quit_matchmaking(request):
+    user = token_user(request)
+    if user not in matchmaking:
+        return JsonResponse({'error': 'Already left matchmaking'}, status=403)
+    matchmaking.remove(user)
+    return JsonResponse({'redirect_url': '/'}, status=302)
+
+
+#quand les 2 sont trouvé on lance la partie sinon on attend 0.5s et relance la page matchma 
+async def get_match(request):
+    if len(matchmaking) >= 2:
+        data = matchmaking[0]
+        data.append(matchmaking[1])
+        #creatgame(data)
+        data = serializers.serialize('json', data)
+        return HttpResponse(data, content_type='application/json')
+    await asyncio.sleep(0.5)
+    return JsonResponse({'redirect_url': '/matchmaking'}, status=302)

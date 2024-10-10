@@ -10,8 +10,8 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/5.0/ref/settings/
 """
 import os
+from django.http import HttpResponseBadRequest
 from pathlib import Path
-
 
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -25,15 +25,14 @@ SECRET_KEY = os.environ.get('secret_key')
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
-ALLOWED_HOSTS = ['api']
-#ALLOWED_HOSTS = ['localhost', '127.0.0.1', 'yourdomain.com']
+# ALLOWED_HOSTS = ['api']
+ALLOWED_HOSTS = ["*"]
 
 
 # CSRF settings
-CSRF_TRUSTED_ORIGINS = ['http://localhost:8080']
+CSRF_TRUSTED_ORIGINS = ['https://localhost:8080']
 
 # Application definition
-
 INSTALLED_APPS = [
     'django.contrib.admin',
     'django.contrib.auth',
@@ -45,12 +44,13 @@ INSTALLED_APPS = [
     'friend',
     'player',
     'game',
-
+    # 'corsheaders',
     'api',
-    'rest_framework',
+    # 'rest_framework',
 ]
 
 MIDDLEWARE = [
+    'corsheaders.middleware.CorsMiddleware',
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
@@ -79,33 +79,27 @@ TEMPLATES = [
 ]
 
 WSGI_APPLICATION = 'pong.wsgi.application'
-
-
+        
 # Database
 # https://docs.djangoproject.com/en/5.0/ref/settings/#databases
+POSTGRES_NAME = os.environ.get('POSTGRES_NAME')
+POSTGRES_USER = os.environ.get('POSTGRES_USER')
+POSTGRES_PASSWORD = os.environ.get('POSTGRES_PASSWORD')
+POSTGRES_HOST = os.environ.get('POSTGRES_HOST')
+POSTGRES_PORT = os.environ.get('POSTGRES_PORT')
 
 DATABASES = {
-
     'default': {
-
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
-
-        'NAME': "django",
-
-        'USER': "django",
-
-        'PASSWORD': "django",
-
-        'HOST': "postgresql",
-
-        'PORT': "5432",
-
+        'NAME': POSTGRES_NAME,
+        'USER': POSTGRES_USER,
+        'PASSWORD': POSTGRES_PASSWORD,
+        'HOST': POSTGRES_HOST,
+        'PORT': POSTGRES_PORT,
     }
-
 }
 # Password validation
 # https://docs.djangoproject.com/en/5.0/ref/settings/#auth-password-validators
-
 AUTH_PASSWORD_VALIDATORS = [
     {
         'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator',
@@ -121,18 +115,12 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
-
 # Internationalization
 # https://docs.djangoproject.com/en/5.0/topics/i18n/
-
 LANGUAGE_CODE = 'en-us'
-
 TIME_ZONE = 'UTC'
-
 USE_I18N = True
-
 USE_TZ = True
-
 AUTH_USER_MODEL = 'player.Player'
 
 # Static files (CSS, JavaScript, Images)
@@ -150,18 +138,13 @@ STATICFILES_DIRS = [
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media/')
 MEDIA_URL = '/media/'
 
-#Custom user model
-#     raise Exception("Missing FT42_REDIRECT_URI env var")
+# FT42
 FT42_CLIENT_ID = os.environ.get('FT42_client_id')
 FT42_CLIENT_SECRET = os.environ.get('FT42_client_secret')
 FT42_REDIRECT_URI = os.environ.get('FT42_redirect_uri')
-# if FT42_REDIRECT_URI is None:
-#     raise Exception("Missing FT42_REDIRECT_URI env var")
-# FT42_REDIRECT_URI = os.environ.get('FT42_redirect_uri')
 FT42_OAUTH_URL = os.environ.get('FT42_0auth_url')
 
 # Vonage API
@@ -169,10 +152,18 @@ VONAGE_API_KEY = os.environ.get('vonage_api_key')
 VONAGE_SECRET_KEY = os.environ.get('vonage_secret_key')
 
 # SMTP Server Configuration
-SMTP_SERVER = os.environ.get('smtp_server')
-SMTP_PORT = os.environ.get('smtp_port')
-SMTP_USERNAME = os.environ.get('smtp_username')
-SMTP_PASSWORD = os.environ.get('smtp_password')
+#SMTP_SERVER = os.environ.get('smtp_server')
+#SMTP_PORT = os.environ.get('smtp_port')
+#SMTP_USERNAME = os.environ.get('smtp_username')
+#SMTP_PASSWORD = os.environ.get('smtp_password')
+
+# EMAIL Configuration
+EMAIL_BACKEND = os.environ.get('EMAIL_BACKEND')
+EMAIL_HOST = os.environ.get('EMAIL_HOST')
+EMAIL_PORT = os.environ.get('EMAIL_PORT')
+EMAIL_USE_TLS = os.environ.get('EMAIL_USE_TLS')
+EMAIL_HOST_USER = os.environ.get('EMAIL_HOST_USER')
+EMAIL_HOST_PASSWORD = os.environ.get('EMAIL_HOST_PASSWORD')
 
 # JWT
 JWT_SECRET_KEY = os.environ.get('jwt_secret_key')
@@ -180,14 +171,15 @@ JWT_ALGORITHM = os.environ.get('jwt_algo')
 JWT_EXP_DELTA_SECONDS = os.environ.get('jwt_exp')
 
 
-
 ASGI_APPLICATION = 'pong.asgi.application'
 
+
+#maybe enlever 8080
 CORS_ALLOWED_ORIGINS = [
-    "http://localhost:8080",
+    "http://localhost:8080", 
+    "https://localhost:8443",
 ]
 
-CORS_ALLOW_ALL_ORIGINS = True
 
 # WEBSOCKET_URL = '/ws/'
 # WEBSOCKET_REDIS_BROKER_URL = 'redis://localhost:6379/0'

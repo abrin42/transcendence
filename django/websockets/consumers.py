@@ -3,6 +3,7 @@ import json
 import asyncio
 import math
 import random
+from datetime import datetime
 
 class PongConsumer(AsyncWebsocketConsumer):
 
@@ -102,6 +103,7 @@ class PongConsumer(AsyncWebsocketConsumer):
         self.future_y = self.ball_y
         await self.sendBall(self.ball_x, self.ball_y)
         await self.sendPadInit()
+        await asyncio.sleep(1)
         #         self.posPad1 = 280
         # self.posPad2 = 280
         # draw_board(left_paddle_current_y, right_paddle_current_y) pour l'instant pas de reste des pad quand point 
@@ -167,23 +169,67 @@ class PongConsumer(AsyncWebsocketConsumer):
                 await asyncio.sleep(self.tick_back)
             await asyncio.sleep(0.5)
 
-    async def ia_loop_game(self):
-        await self.sendinfo_back("test", 100 ,100)
+    async def ai_get_infos_every_second(self):
+        self.current_time = datetime.now().timestamp()
+        if (self.current_time - self.begin_time >= 1):
+            self.begin_time = datetime.now().timestamp()
+            self.ball_last_position = self.ball_y
+            self.ball_last_angle = self.ball_angle
+
+            velocity_x = math.cos(self.ball_angle * math.pi / 180) * self.ball_speed * (self.boardWidth + self.boardHeight) / 2000
+            velocity_y = math.sin(self.ball_angle * math.pi / 180) * self.ball_speed * (self.boardWidth + self.boardHeight) / 2000
+            self.ball_future_position = (self.xPad2 - self.ball_x - self.ball_radius) / velocity_x * velocity_y + self.ball_y
+            rebound_count = int(self.ball_future_position / self.boardHeight)
+            if (rebound_count % 2 == 1):
+                self.ball_future_position  = self.boardHeight - self.ball_future_position
+            self.ball_future_position  = self.ball_future_position % self.boardHeight
+            await self.sendinfo_back("future_pos",self.ball_future_position, 0)
+
+            self.random_paddle_pos = random.random() * 1000 % self.paddle_height
+            # await self.sendinfo_back("random_paddle_pos",self.random_paddle_pos, 0)
+
+    async def ai_back_to_center(self):
+        if (self.ball_last_angle > 90 or self.ball_last_angle < -90):
+            if (self.posPad2 < self.init_pad - 5):
+                await self.sendPadDown("mouvDown", 2)
+            elif (self.posPad2 > self.init_pad + 5):
+                await self.sendPadUp("mouvUp", 2)
+
+    async def ai_catch_ball(self):
+        if (self.ball_last_angle < 90 and self.ball_last_angle > -90):
+            if (self.ball_future_position < self.posPad2):
+                await self.sendPadUp("mouvUp", 2)
+            else:
+                await self.sendPadDown("mouvDown", 2)
+        # if (self.ball_last_angle <= 0 and self.ball_last_angle > -90):
+        #     await self.sendinfo_back("detect ball haut",self.ball_future_position, self.posPad2)
+        #     # if (self.ball_future_position < self.posPad2 + self.random_paddle_pos):
+        #     if (self.ball_future_position < self.posPad2):
+        #         await self.sendPadUp("mouvUp", 2)
+        #     else:
+        #         await self.sendPadDown("mouvDown", 2)
+        # if (self.ball_last_angle >= 0 and self.ball_last_angle < 90):
+        #     await self.sendinfo_back("detect ball bas",self.ball_future_position, self.posPad2)
+        #     # if (self.ball_future_position > self.posPad2 + self.random_paddle_pos):
+        #     if (self.ball_future_position > self.posPad2):
+        #         await self.sendPadDown("mouvDown", 2)
+        #     else:
+        #         await self.sendPadUp("mouvUp", 2)
+
+    async def ai_loop_game(self):
         while self.P1Ready == 0:
-            await asyncio.sleep(0.5) #a def en fonction du sujet 
+            await asyncio.sleep(0.5)
+        self.begin_time = datetime.now().timestamp()
         while True and self.P1Ready == 1:
-            # await self.sendinfo_back("test", 100 ,100)
-            # await self.sendPadUp("mouvUp", "2")
-            await self.sendPadDown("mouvDown", 2)
-            await asyncio.sleep(0.5) #a def en fonction du sujet 
-
-
-
+            await self.ai_get_infos_every_second()
+            await self.ai_back_to_center()
+            await self.ai_catch_ball()
+            await asyncio.sleep(self.tick_back)
 
     async def connect(self):
         self.boardWidth = 700
         self.boardHeight = 700
-        self.IA = 0
+        self.AI = 0
 
         self.init_ball_speed = 4
         self.tick_back = 0.01
@@ -217,9 +263,16 @@ class PongConsumer(AsyncWebsocketConsumer):
 
         self.board_y_max = 700
         self.board_x_max = 700
-        self.board_min = 3.88
+        # self.board_min = 3.88
         self.board_min = 0
-        self.win = 10
+
+        # ⊱━━━.⋅εïз⋅.━━━⊰   AI   ⊱━━━.⋅εïз⋅.━━━⊰ #
+        self.begin_time = datetime.now().timestamp()
+        self.current_time = datetime.now().timestamp()
+        self.ball_last_position = self.ball_y
+        self.ball_last_angle = self.ball_angle
+        self.random_paddle_pos = random.random() * 1000 % self.paddle_height
+        self.ball_future_position = 0
 
         await self.accept()
         await self.send(text_data=json.dumps({
@@ -297,7 +350,7 @@ class PongConsumer(AsyncWebsocketConsumer):
                 'player': player,
             }))
         if player == 2:
-            await self.sendinfo_back("je passe dans 2 laaa", type ,player)
+            # await self.sendinfo_back("je passe dans 2 laaa", type ,player)
             self.P2Ready = 1
             self.posPad2 += 5
             if self.posPad2 > 560:
@@ -332,9 +385,9 @@ class PongConsumer(AsyncWebsocketConsumer):
                 elif type == "mouvDown":
                     await self.sendPadDown(type, player)
                 elif type == "GameIA":
-                    self.IA = 1
+                    self.AI = 1
                     self.P2Ready = 1
-                    asyncio.ensure_future(self.ia_loop_game())
+                    asyncio.ensure_future(self.ai_loop_game())
 
             if self.P1Ready == 1 and self.P2Ready == 1 and self.Game_on == 0:
                 await self.sendStart()

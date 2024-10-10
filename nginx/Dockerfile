@@ -12,7 +12,11 @@ RUN rm -rf /var/www/html
 RUN mkdir -p /etc/nginx/ssl
 COPY --from=build /app/front/dist /var/www/html
 COPY ./nginx/nginx.conf /etc/nginx/nginx.conf
+RUN mkdir -p /etc/nginx/ssl
+COPY certificat/nginx-selfsigned.crt /etc/nginx/ssl/
+COPY certificat/nginx-selfsigned.key /etc/nginx/ssl/
 EXPOSE 8000
+EXPOSE 8443
 
 # COPY --from=build /app/front/dist /var/www/html
 

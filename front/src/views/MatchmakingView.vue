@@ -3,8 +3,11 @@
     import CreateDropupButton from '../components/CreateDropupButton.vue';
     import CreateBackButton from '../components/CreateBackButton.vue';
     import CreateSoundButton from '../components/CreateSoundButton.vue';
+    import { reactive, onMounted } from 'vue';
+    import { useRouter } from 'vue-router';
 
     var myVideo = document.getElementById('videoBG');
+    
     myVideo.playbackRate = 2;
     let player1;
     let player2;
@@ -13,6 +16,27 @@
     let playerName2 = "Chachou2";
     let playerRank1 = "noob";
     let playerRank2 = "beginner";
+    const router = useRouter();
+
+    const userAccount = reactive({
+        nickname:"", 
+        // profilePicture: profilePicture,
+        rank:0,
+    });
+
+
+    function goToLegacy(id) {
+    router.push(`/legacy/${id}`);
+}
+
+
+    
+
+
+
+    onMounted(async () => {
+        // await postUser();
+    });
 
     //dynamic loading dots 
     if (document.getElementById("loading") != null)
