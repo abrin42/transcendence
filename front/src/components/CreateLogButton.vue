@@ -4,9 +4,9 @@
             <span class="buttonText">{{ isConnect ? username : $t('login') }}</span>
         </button>
 
-        <div v-if="dropdownVisible" class="dropdown">
+        <!-- Afficher le dropdown seulement si la popup d'amis n'est pas visible -->
+        <div v-if="dropdownVisible && !friendsPopupVisible" class="dropdown">
             <button class="button buttonText buttondropdown" @click="__goTo('/dashboard')">My Account</button>
-            <!-- Appel à la méthode toggleFriendsPopup pour afficher la popup -->
             <button class="button buttonText buttondropdown" @click="toggleFriendsPopup">Friends</button>
             <button class="button buttonText buttondropdown" @click="__logout">Logout</button>
         </div>
@@ -15,6 +15,7 @@
         <FriendsPopup v-if="friendsPopupVisible" @close="toggleFriendsPopup" />
     </div>
 </template>
+
 
 <script setup>
 import { ref, onMounted, watch } from 'vue';
@@ -67,6 +68,7 @@ function __logout() {
 
 function toggleFriendsPopup() {
     friendsPopupVisible.value = !friendsPopupVisible.value;
+    dropdownVisible.value = false; // Masquer le dropdown lorsque la popup est ouverte
 }
 </script>
 
