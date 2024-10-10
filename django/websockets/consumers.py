@@ -296,7 +296,7 @@ class PongConsumer(AsyncWebsocketConsumer):
                 'player': player,
             }))
         if player == 2:
-            await self.sendinfo_back("je passe dans 2 laaa", type ,player)
+            # await self.sendinfo_back("je passe dans 2 laaa", type ,player)
             self.P2Ready = 1
             self.posPad2 += 5
             if self.posPad2 > 560:

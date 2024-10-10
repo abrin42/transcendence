@@ -4,6 +4,7 @@ import ModeSelectView from '../views/ModeSelectView.vue'
 import CreditsView from '../views/CreditsView.vue'
 import GameSelectView from '../views/GameSelectView.vue'
 import LegacyPongView from '../views/LegacyPongView.vue'
+import legacy_remote from '../views/LegacyPongRemoteView.vue'
 import CyberPongView from '../views/CyberPongView.vue'
 import ThreePongView from '../views/ThreePongView.vue'
 import TourneyModeView from '../views/TourneyModeView.vue'
@@ -13,6 +14,7 @@ import RegisterView from '../views/RegisterView.vue'
 import DashboardView from '../views/DashboardView.vue'
 import IAPongView from '../views/IAPongView.vue'
 import TwoFaView from '../views/2faView.vue'
+import MatchmakingView from '../views/MatchmakingView.vue'
 
 
 const router = createRouter({
@@ -69,9 +71,14 @@ const router = createRouter({
       component: CyberPongView
     },
     {
-      path: '/legacy',
+      path: '/legacy/',
       name: 'legacy',
       component: LegacyPongView
+    },
+    {
+      path: '/legacy_remote/:id',
+      name: 'legacy_remote',
+      component: legacy_remote
     },
     {
       path: '/IA',
@@ -82,6 +89,11 @@ const router = createRouter({
 			path: '/2fa',
 			name: '2fa',
 			component: TwoFaView
+		},
+    {
+			path: '/matchmaking',
+			name: 'matchmaking',
+			component: MatchmakingView
 		},
   ]
 })

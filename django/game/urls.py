@@ -5,4 +5,7 @@ app_name = "game"
 
 urlpatterns = [
     path('', views.game, name="game"),
+    path('postplayer/', views.postplayer, name="postplayer"),
+    path('getgameid/', views.getgameid, name="getgameid"),
+
 ]

@@ -24,7 +24,7 @@
     
     async function getUser() {
       try {
-          const response = await fetch(`http://localhost:8080/api/player/connected_user`, {
+          const response = await fetch(`https://localhost:8443/api/player/connected_user`, {
             method: 'GET',
           });
           
