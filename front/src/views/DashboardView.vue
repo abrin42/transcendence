@@ -24,20 +24,16 @@ const userAccount = reactive({
 });
 
 async function getUser() {
-
-  try {
-    //const response = await fetch(`http://localhost:8080/api/test-api/${state.id}`, {
-    const response = await fetch(`https://localhost:8443/api/player/connected_user`, {
-      method: 'GET',
-    });
-
+    try {
+        const response = await fetch(`https://localhost:8443/api/player/connected_user`, {
+            method: 'GET',
+        });
         const user = await response.json();
         userAccount.nickname = user[0].fields.nickname;
         userAccount.username = user[0].fields.username;
         userAccount.email = user[0].fields.email;
         userAccount.password = user[0].fields.password;
         userAccount.phone_number = user[0].fields.phone_number;
-
 
     } catch (error) {
         console.log('Error retrieving user data:', error);
@@ -305,6 +301,22 @@ h1,
     /* margin: 1vw 1vw; */
     min-width: 200px;
     text-align: center;
+}
+
+/* Pour chaque bloc de texte */
+.TextContainer div:nth-child(2n+1) {
+    /* Ceci pour rendre le premier texte visuellement distinct si nécessaire */
+}
+
+.___btn-click {
+    color: white;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    white-space: nowrap;
+    flex: 1 1 calc(30% - 20px);
+    margin: 1vw;
+    gap: 10px;
 }
 
 /* Pour chaque bloc de texte */

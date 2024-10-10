@@ -1,4 +1,4 @@
-<script setup> 
+<script setup>
 // Imports
   import CreateSoundButton from '../components/CreateSoundButton.vue';
   import CreateDropupButton from '../components/CreateDropupButton.vue';
@@ -13,15 +13,11 @@
     is_active:"",
   });
   
-
-    
-    async function getUser() {
-      try {
-          const response = await fetch(`https://localhost:8443/api/player/connected_user`, {
-            method: 'GET',
-          });
-          
-
+  async function getUser() {
+  try {
+    const response = await fetch(`https://localhost:8443/api/player/connected_user`, {
+      method: 'GET',
+    });
     if (!response.ok) {
       console.warn(`HTTP error! Status: ${response.status}`);
       return;
@@ -37,9 +33,6 @@
   }
 }
 
-onMounted(async () => {
-  await getUser(); // Only call getUser if state.id is available
-});
   // Routing functions
   const router = useRouter();
 
@@ -74,9 +67,10 @@ onMounted(async () => {
                     <span class="buttonText">{{ $t('credits') }}</span>
                 </button>
                 <div>
-                    <CreateSoundButton />
+                    <CreateHomeButton />
+                    <!-- <CreateSoundButton /> -->
                     <CreateLogButton />
-                    <CreateSettingsButton  @click="__goTo('/settings')"/>
+                    <CreateSettingsButton @click="__goTo('/settings')" />
                     <CreateDropupButton />
                 </div>
             </div>

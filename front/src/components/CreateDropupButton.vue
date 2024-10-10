@@ -20,8 +20,8 @@
 	const { locale } = useI18n();
 
 	const userAccount = reactive({
-		language: "EN",
-		flag: "🇬🇧",
+		language: "",
+		flag: "",
 	});
 
 	const menuVisible = ref(false);
@@ -36,8 +36,6 @@
 			if (!response.ok) {
 				throw new Error(`HTTP error! Status: ${response.status}`);
 			}
-
-
 			const user = await response.json();
 			userAccount.language = user[0].fields.language;
 		} catch (error) {
