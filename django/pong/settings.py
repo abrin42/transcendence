@@ -30,7 +30,7 @@ ALLOWED_HOSTS = ["*"]
 
 
 # CSRF settings
-CSRF_TRUSTED_ORIGINS = ['https://localhost:8080']
+CSRF_TRUSTED_ORIGINS = ['https://localhost:8443']
 
 # Application definition
 INSTALLED_APPS = [
@@ -46,7 +46,7 @@ INSTALLED_APPS = [
     'game',
     # 'corsheaders',
     'api',
-    # 'rest_framework',
+    'rest_framework',
 ]
 
 MIDDLEWARE = [

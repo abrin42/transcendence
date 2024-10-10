@@ -79,19 +79,18 @@ def login_view(request):
                 if user is not None:
                     user = get_object_or_404(Player, username=user.username)
 
-                    #if not user.email_2fa_active and not user.sms_2fa_active:
-                    #    token = generate_jwt(user)
-                    #    user = decode_jwt(token)
-                    #    print(user)
-                    #    
-                    #    if not user.nickname:
-                    #        user.nickname = user.username[1:]
-                    #        user.save()
+                    if not user.email_2fa_active and not user.sms_2fa_active:
+                        token = generate_jwt(user)
+                        user = decode_jwt(token)
+                        print(user)
+                        
+                        if not user.nickname:
+                            user.nickname = user.username[1:]
+                            user.save()
 
-                    #    response = JsonResponse({'redirect_url': '/dashboard'}, status=302)
-                    #    set_jwt_token(response, token)
-
-                    #    return response
+                        response = JsonResponse({'redirect_url': '/dashboard'}, status=302)
+                        set_jwt_token(response, token)
+                        return response
                     
                     response = JsonResponse({'redirect_url': '/2fa'}, status=302)
                     return response

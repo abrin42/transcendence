@@ -11,7 +11,8 @@ import json
 from django.core import serializers
 import requests
 from django.http import JsonResponse, HttpResponse, HttpResponseForbidden
-
+from datetime import datetime, timedelta
+from .serialize import FriendSerializer
 @login_required
 def index(request):
     user = token_user(request)
@@ -86,8 +87,10 @@ def list(request):
     you.last_login = timezone.now()
     you.save()
     #return render(request, "friend/list.html", {'friends':friends, 'you':you})
-    data = serializers.serialize('json', friends)
-    return HttpResponse(data, content_type='application/json')
+    #data = serializers.serialize('json', friends, use_natural_foreign_keys=True, use_natural_primary_keys=True)
+    serializer = FriendSerializer(friends)
+    return JsonResponse(serializer.data, safe=False) 
+    #return HttpResponse(friend_list, content_type='application/json')
 
 @login_required
 def pending(request):
@@ -95,9 +98,9 @@ def pending(request):
     friends = Friendship.objects.filter(Q(friend=you, status='pending'))
     you.last_login = timezone.now()
     you.save()
-    #return render(request, "friend/pending.html", {'friends':friends, 'you':you})
-    data = serializers.serialize('json', friends)
-    return HttpResponse(data, content_type='application/json')
+    return render(request, "friend/pending.html", {'friends':friends, 'you':you})
+    #data = serializers.serialize('json', friends)
+    #return HttpResponse(data, content_type='application/json')
 
 @login_required
 def refused(request):
@@ -106,5 +109,5 @@ def refused(request):
     you.last_login = timezone.now()
     you.save()
     #return render(request, "friend/refused.html", {'friends':friends, 'you':you})
-    data = serializers.serialize('json', friends)
+    data = serializers.serialize('json', friends, use_natural_foreign_keys=True, use_natural_primary_keys=True)
     return HttpResponse(data, content_type='application/json')
