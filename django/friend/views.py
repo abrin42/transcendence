@@ -91,22 +91,20 @@ def list(request):
 
 @login_required
 def pending(request):
-    user = token_user(request)
-    if user is None: 
-        return redirect(reverse('player:login'))
-    you = request.user
+    you = token_user(request)
     friends = Friendship.objects.filter(Q(friend=you, status='pending'))
     you.last_login = timezone.now()
     you.save()
-    return render(request, "friend/pending.html", {'friends':friends, 'you':you})
+    #return render(request, "friend/pending.html", {'friends':friends, 'you':you})
+    data = serializers.serialize('json', friends)
+    return HttpResponse(data, content_type='application/json')
 
 @login_required
 def refused(request):
-    user = token_user(request)
-    if user is None: 
-        return redirect(reverse('player:login'))
-    you = request.user
+    you = token_user(request)
     friends = Friendship.objects.filter(Q(friend=you, status='refused'))
     you.last_login = timezone.now()
     you.save()
-    return render(request, "friend/refused.html", {'friends':friends, 'you':you})
+    #return render(request, "friend/refused.html", {'friends':friends, 'you':you})
+    data = serializers.serialize('json', friends)
+    return HttpResponse(data, content_type='application/json')

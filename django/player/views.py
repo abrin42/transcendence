@@ -23,6 +23,10 @@ import jwt
 import json
 import logging
 from django.core import serializers
+from collections import deque
+import asyncio
+
+matchmaking = deque()
 
 @csrf_exempt
 def register_view(request):
@@ -321,3 +325,30 @@ def get_all_user(request):
     data = Player.objects.all()
     data = serializers.serialize('json', data)
     return HttpResponse(data, content_type='application/json')
+
+
+def enter_matchmaking(request):
+    user = token_user(request)
+    if user in matchmaking:
+        return JsonResponse({'error': 'Already in matchmaking'}, status=403)
+    matchmaking.append(user)
+    return JsonResponse({'redirect_url': '/matchmaking'}, status=302) #dans matchmaking il faut fetch get get_match
+
+def quit_matchmaking(request):
+    user = token_user(request)
+    if user not in matchmaking:
+        return JsonResponse({'error': 'Already left matchmaking'}, status=403)
+    matchmaking.remove(user)
+    return JsonResponse({'redirect_url': '/'}, status=302)
+
+
+#quand les 2 sont trouvé on lance la partie sinon on attend 0.5s et relance la page matchma 
+async def get_match(request):
+    if len(matchmaking) >= 2:
+        data = matchmaking[0]
+        data.append(matchmaking[1])
+        #creatgame(data)
+        data = serializers.serialize('json', data)
+        return HttpResponse(data, content_type='application/json')
+    await asyncio.sleep(0.5)
+    return JsonResponse({'redirect_url': '/matchmaking'}, status=302)
