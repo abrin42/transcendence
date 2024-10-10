@@ -25,12 +25,12 @@ SECRET_KEY = os.environ.get('secret_key')
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
-ALLOWED_HOSTS = ['api']
-#ALLOWED_HOSTS = ['localhost', '127.0.0.1', 'yourdomain.com']
+# ALLOWED_HOSTS = ['api']
+ALLOWED_HOSTS = ["*"]
 
 
 # CSRF settings
-CSRF_TRUSTED_ORIGINS = ['http://localhost:8080']
+CSRF_TRUSTED_ORIGINS = ['https://localhost:8080']
 
 # Application definition
 INSTALLED_APPS = [
@@ -44,11 +44,13 @@ INSTALLED_APPS = [
     'friend',
     'player',
     'game',
+    # 'corsheaders',
     'api',
-    'rest_framework',
+    # 'rest_framework',
 ]
 
 MIDDLEWARE = [
+    'corsheaders.middleware.CorsMiddleware',
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
@@ -171,11 +173,13 @@ JWT_EXP_DELTA_SECONDS = os.environ.get('jwt_exp')
 
 ASGI_APPLICATION = 'pong.asgi.application'
 
+
+#maybe enlever 8080
 CORS_ALLOWED_ORIGINS = [
-    "http://localhost:8080",
+    "http://localhost:8080", 
+    "https://localhost:8443",
 ]
 
-CORS_ALLOW_ALL_ORIGINS = True
 
 # WEBSOCKET_URL = '/ws/'
 # WEBSOCKET_REDIS_BROKER_URL = 'redis://localhost:6379/0'

@@ -10,24 +10,29 @@
     var myVideo = document.getElementById('videoBG');
     myVideo.playbackRate = 1.3;
 
-    function goToSolo() {
+    function goToGameSelect() {
     router.push('/gameselect');
     }
 
     function goToMulti() {
-    router.push('/gameselect');
+    router.push('/multimode');
     }
 
     function goToTournoi() {
-    router.push('/gameselect');
+    router.push('/tourney');
     }
 </script>
-
 
 <template>
     <main>
         <div id="wrapper">
             <div class="buttonContainer">
+                <button class="button button-credits" @click="goToGameSelect()">
+                    <span class="buttonText">{{ $t('solo') }}</span>
+                </button>
+                <button class="button button-credits" @click="goToMulti()">
+                    <span class="buttonText">{{ $t('multiplayer') }}</span>
+                </button>
                 <CreateSoundButton />
                 <CreateDropupButton />
                 <CreateBackButton />

@@ -29,14 +29,13 @@
 
 	async function getLanguage() {
 		try {
-			const response = await fetch(`http://localhost:8080/api/player/connected_user`, {
+			const response = await fetch(`https://localhost:8443/api/player/connected_user`, {
 				method: 'GET',
 			});
 
 			if (!response.ok) {
 				throw new Error(`HTTP error! Status: ${response.status}`);
 			}
-
 			const user = await response.json();
 			userAccount.language = user[0].fields.language;
 		} catch (error) {

@@ -7,6 +7,8 @@ const messages = ref([]);
 const connectionStatus = ref('');
 let connection = 0;
 
+let idp1 = 0;
+let idp2 = 0;
 
 
 function  updatePoints(player, updatePts)

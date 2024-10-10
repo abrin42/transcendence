@@ -219,7 +219,6 @@ class PongConsumer(AsyncWebsocketConsumer):
         self.board_x_max = 700
         self.board_min = 3.88
         self.board_min = 0
-        self.win = 10
 
         await self.accept()
         await self.send(text_data=json.dumps({
@@ -297,7 +296,7 @@ class PongConsumer(AsyncWebsocketConsumer):
                 'player': player,
             }))
         if player == 2:
-            await self.sendinfo_back("je passe dans 2 laaa", type ,player)
+            # await self.sendinfo_back("je passe dans 2 laaa", type ,player)
             self.P2Ready = 1
             self.posPad2 += 5
             if self.posPad2 > 560:
