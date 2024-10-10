@@ -5,8 +5,49 @@ import math
 import random
 from datetime import datetime
 
-class PongConsumer(AsyncWebsocketConsumer):
+def create_new_game(game_id):
+    return {
+        "gameID": game_id,
+        "wsj1": 0,
+        "wsj2": 0,
+        "boardWidth": 700,
+        "boardHeight": 700,
+        "AI": 0,
+        "init_ball_speed": 4,
+        "tick_back": 0.01,
+        "Game_on": 0,
+        "nb_pts_for_win": 10,
+        "P1Ready": 0,
+        "P2Ready": 0,
+        "PTSp1": 0,
+        "PTSp2": 0,
+        "xPad1": 10,
+        "xPad2": 700 - 30,  # -10 écart du bord et -20 largeur padel 
+        "paddle_width": 20,
+        "paddle_height": 140,
+        "position_in_paddle": 0,
+        "init_pad": 700 / 2 - 140 / 2,
+        "posPad1": 700 / 2 - 140 / 2,
+        "posPad2": 700 / 2 - 140 / 2,
+        "startXBall": 350,
+        "startYBall": 350,
+        "ball_x": 350,
+        "ball_y": 350,
+        "future_x": 350,
+        "future_y": 350,
+        "ball_angle": 180 if random.random() > 0.5 else 0,
+        "ball_radius": 7.18,
+        "ball_speed": 4,
+        "board_y_max": 700,
+        "board_x_max": 700,
+        "board_min": 0,
+    }
 
+lstgame = []
+
+connected_websockets = []
+class PongConsumer(AsyncWebsocketConsumer):
+    players = set()
                     #        elif type == "updatePts":
                     # await self.sendPts(type, player)
 
@@ -55,11 +96,12 @@ class PongConsumer(AsyncWebsocketConsumer):
             
 
     async def sendBall(self, x, y):
-        await self.send(text_data=json.dumps({
-            'type': "updateBaal",
-            'x': x,
-            'y': y,
-        }))
+        for websocket in connected_websockets:
+            await websocket.send(text_data=json.dumps({
+                'type': "updateBaal",
+                'x': x,
+                'y': y,
+            }))
 
 
     async def sendinfo_back(self, value_back1, value_back2 ,value_back3):
@@ -274,6 +316,7 @@ class PongConsumer(AsyncWebsocketConsumer):
         self.random_paddle_pos = random.random() * 1000 % self.paddle_height
         self.ball_future_position = 0
 
+        connected_websockets.append(self)
         await self.accept()
         await self.send(text_data=json.dumps({
             'type': 'connection_success',
@@ -284,8 +327,10 @@ class PongConsumer(AsyncWebsocketConsumer):
 
 
     async def disconnect(self, close_code):
-        if (close_code == 1000): #fin de partie normal 
-                    await self.send(text_data=json.dumps({
+        if (close_code == 1000):     #fin de partie normal
+                if self in connected_websockets:
+                    connected_websockets.remove(self) 
+                await self.send(text_data=json.dumps({
                 'type': 'disconnect',
                 'close_code': close_code
             }))

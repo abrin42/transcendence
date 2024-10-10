@@ -14,7 +14,7 @@ const userAccount = reactive({
 
 async function getUser() {
     try {
-        const response = await fetch(`http://localhost:8080/api/player/connected_user`, {
+        const response = await fetch(`api/player/connected_user/`, {
             method: 'GET',
         });
         if (!response.ok) 

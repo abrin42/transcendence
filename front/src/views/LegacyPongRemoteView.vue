@@ -79,8 +79,8 @@ function connectWebSocket() {
     }
     else if (data.type == 'updateBaal')
     {
-      // console.log(data.x);
-      // console.log(data.y);
+      console.log(data.x);
+      console.log(data.y);
       updateBaal(data.x, data.y);
     }
     else if (data.type == 'endGame')

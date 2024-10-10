@@ -3,7 +3,7 @@
     import CreateDropupButton from '../components/CreateDropupButton.vue';
     import CreateBackButton from '../components/CreateBackButton.vue';
     import CreateSoundButton from '../components/CreateSoundButton.vue';
-    import { reactive, onMounted } from 'vue';
+    import { reactive, onMounted, ref } from 'vue';
     import { useRouter } from 'vue-router';
 
     var myVideo = document.getElementById('videoBG');
@@ -12,31 +12,76 @@
     const router = useRouter();
 
     const userAccount = reactive({
-        nickname:"", 
-        // profilePicture: profilePicture,
+        username:"",
         rank:0,
     });
+
+    
 
 
     function goToLegacy(id) {
     router.push(`/legacy/${id}`);
 }
 
-
-    function setWebsocket()
-    {
-        socket.valuep1 = new WebSocket('wss://localhost:8443/ws/websockets/');
-        socket.valuep2 = new WebSocket('wss://localhost:8443/ws/websockets/');
-
+async function getUser() {
+  try {
+    const response = await fetch(`api/player/connected_user`, {
+      method: 'GET',
+    });
+    if (!response.ok) {
+      console.warn(`HTTP error! Status: ${response.status}`);
+      return;
     }
-
-    function creatGame(player1, player2)
-    {
-
+    const user = await response.json();
+    if (user ) {
+      userAccount.username = user[0].fields.username;
+      userAccount.rank = user[0].fields.rank;
+      console.log(userAccount.username)
+    } else {
+      console.log('No user data retrieved.');
     }
+  } catch (error) {
+    console.error('Error retrieving user data:', error);
+  }
+}
+
+async function insertPlayer() {
+        
+    try {
+        const response = await fetch('api/game/insertplayer/', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRFToken': getCsrfToken() // Assuming you have CSRF protection enabled
+            },
+            body: JSON.stringify({
+                username: userAccount.username,
+            })
+        });
+        if (response.ok) {
+            const data = await response.json();
+            console.log(data);
+        }
+    } catch (error) {
+        console.error('Erreur lors de la connexion:', error);
+        alert('An error occurred during login2222');
+    }
+}
+
+function getCsrfToken() {
+    const cookieValue = document.cookie
+        .split('; ')
+        .find(row => row.startsWith('csrftoken='))
+        ?.split('=')[1];
+    return cookieValue || '';
+}
+
 
     onMounted(async () => {
         // await postUser();
+        await getUser();
+        await insertPlayer();
+        console.log(userAccount.id);
 
     });
 

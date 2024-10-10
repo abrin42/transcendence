@@ -29,7 +29,7 @@
 
 	async function getLanguage() {
 		try {
-			const response = await fetch(`https://localhost:8443/api/player/connected_user`, {
+			const response = await fetch(`api/player/connected_user`, {
 				method: 'GET',
 			});
 
@@ -45,7 +45,7 @@
 
 	async function setLanguage(new_language) {
 		try {
-			await fetch('/api/player/update_language/', {
+			await fetch('api/player/update_language/', {
 				method: 'POST',
 				headers: {
 					'Content-Type': 'application/json',
