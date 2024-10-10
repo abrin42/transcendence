@@ -46,7 +46,7 @@ function updateBaal(x, y)
 }
 
 function connectWebSocket() {
-  socket.value = new WebSocket('ws://localhost:8080/ws/websockets/');
+  socket.value = new WebSocket('wss://localhost:8443/ws/websockets/');
   socket.value.onopen = () => {
     console.log('WebSocket connecté');
   };
