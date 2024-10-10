@@ -53,6 +53,25 @@
 import { ref, computed } from 'vue';
 import { defineEmits } from 'vue';
 import Input from './Input.vue';
+import { onMounted } from 'vue';
+
+async function getAllUsers() {
+		try {
+			const response = await fetch(`https://localhost:8443/api/player/get_all_user`, {
+				method: 'GET',
+			});
+
+			if (!response.ok) {
+				throw new Error(`HTTP error! Status: ${response.status}`);
+			}
+			const users = await response.json();
+			console.log("all users: ", users);
+		} catch (error) {
+			console.error('Error retrieving user data:', error);
+		}
+}
+
+
 
 const emit = defineEmits(['close']);
 
@@ -111,6 +130,10 @@ const filteredPlayers = computed(() => {
         player.name.toLowerCase().includes(searchQuery.value.toLowerCase())
     );
 });
+
+onMounted(async () => {
+		await getAllUsers();
+	});
 </script>
 
 <style scoped>
