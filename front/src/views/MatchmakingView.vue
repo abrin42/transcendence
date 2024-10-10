@@ -23,12 +23,21 @@
 }
 
 
-    
+    function setWebsocket()
+    {
+        socket.valuep1 = new WebSocket('wss://localhost:8443/ws/websockets/');
+        socket.valuep2 = new WebSocket('wss://localhost:8443/ws/websockets/');
 
+    }
 
+    function creatGame(player1, player2)
+    {
+
+    }
 
     onMounted(async () => {
         // await postUser();
+
     });
 </script>
 
