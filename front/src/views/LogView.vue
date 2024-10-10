@@ -1,14 +1,34 @@
 <script setup>
-import { ref } from 'vue';
 import CreateDropupButton from '../components/CreateDropupButton.vue';
 import CreateBackButton from '../components/CreateBackButton.vue';
 import Input from '../components/Input.vue';
 import { useRouter } from 'vue-router';
+import { ref, reactive, onMounted } from 'vue';
 
 const router = useRouter();
 const username = ref('');
 const password = ref('');
-const is2FA = ref(false); // 2FA = Two-Factor Authentication
+const userAccount = reactive({
+    is2FA:ref(false),
+});
+
+async function getUser() {
+    try {
+        const response = await fetch(`http://localhost:8080/api/player/connected_user`, {
+            method: 'GET',
+        });
+        if (!response.ok) 
+            throw new Error(`HTTP error! Status: ${response.status}`);
+        const user = await response.json();
+        userAccount.is2FA = user[0].fields.is2FA;
+    } catch (error) {
+        console.error('Error retrieving user data:', error);
+    }
+}
+
+onMounted(async () => {
+    await getUser();
+});
 
 function __goTo(page) {
     if (page == null) {
@@ -22,7 +42,6 @@ async function login() {
         alert('Veuillez entrer un email et un mot de passe.');
         return;
     }
-
     try {
         const response = await fetch('/api/player/login/', {
             method: 'POST',
@@ -45,15 +64,14 @@ async function login() {
                 alert('Login successful');
             }
         }
-        // todo: __goTo('/2fa');
-        __goTo('/dashboard')
+        __goTo('/2fa')
     } catch (error) {
         console.error('Erreur lors de la connexion:', error);
         alert('An error occurred during login2222');
     }
 }
 
-async function getUrl() {
+async function login42() {
     try {
         const response = await fetch('/api/player/login42/', {
             method: 'POST', // Change to POST to match the Django view
@@ -96,7 +114,7 @@ function getCsrfToken() {
         <div id="wrapper">
             <h1>LOGIN</h1>
             <div class="logContainer">
-                <button class="button button-log42" @click="getUrl">
+                <button class="button button-log42" @click="login42">
                     <img class="img-42" src="../assets/img/42_Logob.png" alt="Logo 42" />
                 </button>
                 <button class="button button-register" @click="__goTo('/register')">

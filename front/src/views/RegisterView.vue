@@ -27,7 +27,6 @@ function __goTo(page) {
     router.push(page);
 }
 
-
 async function createAccount() {
     if (password1.value !== password2.value) {
         alert('Les mots de passe ne correspondent pas.');
@@ -41,7 +40,7 @@ async function createAccount() {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
-                'X-CSRFToken': getCsrfToken() // Add your CSRF token retrieval here
+                'X-CSRFToken': getCsrfToken()
             },
             body: JSON.stringify({
                 username: username.value,
@@ -67,7 +66,6 @@ async function createAccount() {
 }
 
 function getCsrfToken() {
-    // Helper function to get the CSRF token from cookies
     const cookieValue = document.cookie
         .split('; ')
         .find(row => row.startsWith('csrftoken='))

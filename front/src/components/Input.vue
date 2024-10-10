@@ -75,6 +75,9 @@ const emit = defineEmits(['update:modelValue']);
 }
 
 .textInput::placeholder {
+    position: fixed;
+    top: 1.5vh;
+    font-size: 0.7rem;
     color: rgba(255, 255, 255, 0.5);
 }
 

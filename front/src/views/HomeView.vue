@@ -1,26 +1,19 @@
 <script setup> 
 // Imports
-    import CreateSoundButton from '../components/CreateSoundButton.vue';
-    import CreateDropupButton from '../components/CreateDropupButton.vue';
-    import CreateSettingsButton from '../components/CreateSettingsButton.vue';
-    import CreateLogButton from '../components/CreateLogButton.vue';
+  import CreateSoundButton from '../components/CreateSoundButton.vue';
+  import CreateDropupButton from '../components/CreateDropupButton.vue';
+  import CreateSettingsButton from '../components/CreateSettingsButton.vue';
+  import CreateLogButton from '../components/CreateLogButton.vue';
 
-    import { useRouter } from 'vue-router';
-    import { reactive, onMounted } from 'vue';
-    //api user connected
-    const userAccount = reactive({
-      date_joined:"",
-      email:"",
-      email_2fa_active:false,
-      lose:0,
-      nickname:"",
-      password:"",
-      phone_number:"",
-      profilePicture:"",
-      rank:0,
-      username:"",
-      win:0,
-    });
+  import { useRouter } from 'vue-router';
+  import { reactive, onMounted } from 'vue';
+  
+  //api user connected
+  const userAccount = reactive({
+    is_active:"",
+  });
+  
+
     
     async function getUser() {
       try {
@@ -28,50 +21,45 @@
             method: 'GET',
           });
           
-          if (!response.ok) {
-            throw new Error(`HTTP error! Status: ${response.status}`);
-          }
-          
+
+    if (!response.ok) {
+      console.warn(`HTTP error! Status: ${response.status}`);
+      return;
+    }
     const user = await response.json();
-    console.log('User data:', user);
-    console.log('player data', user[0].fields)
-    userAccount.nickname = user[0].fields.nickname;
-    userAccount.username = user[0].fields.username;  // Set the username here
-    userAccount.email = user[0].fields.email;
-    userAccount.password = user[0].fields.password;
-    console.log('nickname: ' ,userAccount.nickname)
+    if (user && user.length > 0) {
+      userAccount.is_active = user[0].fields.valid;
+    } else {
+      console.log('No user data retrieved.');
+    }
   } catch (error) {
     console.error('Error retrieving user data:', error);
   }
 }
 
-
-
-
-// Routing functions
-const router = useRouter();
-
-var myVideo = document.getElementById('videoBG');
-myVideo.playbackRate = 1;
-
-function goToModeSelect() {
-  router.push('/modeselect');
-}
-
-function goToCredits() {
-  router.push('/credits');
-}
-
-function __goTo(page) {
-  if (page == null) {
-    return;
-  }
-  router.push(page);
-}
 onMounted(async () => {
   await getUser(); // Only call getUser if state.id is available
 });
+  // Routing functions
+  const router = useRouter();
 
+  var myVideo = document.getElementById('videoBG');
+  myVideo.playbackRate = 1;
+
+  function goToModeSelect() {
+    router.push('/modeselect');
+  }
+
+  function goToCredits() {
+    router.push('/credits');
+  }
+
+  function __goTo(page) {
+    if (page == null) {
+      return;
+    }
+    router.push(page);
+  }
 </script>
 
 <template>
