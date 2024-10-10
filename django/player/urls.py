@@ -20,4 +20,8 @@ urlpatterns = [
     path('connected_user/', views.connected_user, name='connected_user'),
     path('update_language/', views.update_language, name='update_language'),
     path('get_all_user/', views.get_all_user, name='get_all_user'),
+    path('enter_matchmaking/', views.enter_matchmaking, name='enter_matchmaking'),
+    path('quit_matchmaking/', views.quit_matchmaking, name='quit_matchmaking'),
+    path('get_match/', views.get_match, name='get_match'),
+    
 ]

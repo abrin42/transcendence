@@ -335,8 +335,8 @@ async def get_match(request):
     if len(matchmaking) >= 2:
         data = matchmaking.pop()
         data.append(matchmaking.pop())
-        data =serializers.serialize('json', data)
+        #creatgame(data)
+        data = serializers.serialize('json', data)
         return HttpResponse(data, content_type='application/json')
     await asyncio.sleep(0.5)
     return JsonResponse({'redirect_url': '/matchmaking'}, status=302)
-    
