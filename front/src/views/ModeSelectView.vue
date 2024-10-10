@@ -3,6 +3,7 @@
     import CreateDropupButton from '../components/CreateDropupButton.vue';
     import CreateBackButton from '../components/CreateBackButton.vue';
     import CreateSoundButton from '../components/CreateSoundButton.vue';
+    import CreateHomeButton from '../components/CreateHomeButton.vue';
     import { useRouter } from 'vue-router';
 
     const router = useRouter();
@@ -27,14 +28,15 @@
     <main>
         <div id="wrapper">
             <div class="buttonContainer">
+                <CreateHomeButton />
                 <button class="button button-credits" @click="goToGameSelect()">
                     <span class="buttonText">{{ $t('solo') }}</span>
                 </button>
                 <button class="button button-credits" @click="goToMulti()">
                     <span class="buttonText">{{ $t('multiplayer') }}</span>
                 </button>
-                <CreateSoundButton />
-                <CreateDropupButton />
+                <!-- <CreateSoundButton /> -->
+                <!-- <CreateDropupButton /> -->
                 <CreateBackButton />
             </div>
         </div>
@@ -43,4 +45,6 @@
 
 <style scoped>
 @import './../assets/main.scss';
+
+
 </style>

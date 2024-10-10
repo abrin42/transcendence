@@ -1,4 +1,4 @@
-<script setup> 
+<script setup>
 // Imports
   import CreateSoundButton from '../components/CreateSoundButton.vue';
   import CreateDropupButton from '../components/CreateDropupButton.vue';
@@ -33,9 +33,6 @@
   }
 }
 
-onMounted(async () => {
-  await getUser(); // Only call getUser if state.id is available
-});
   // Routing functions
   const router = useRouter();
 
@@ -62,7 +59,7 @@ onMounted(async () => {
     <main>
         <div id="wrapper">
             <div class="buttonContainer">
-                <button class="button" @click="goToCredits()">
+                <button class="button" @click="goToModeSelect()">
                     <i class="fas fa-play" style="margin-right: 1vw;"></i>
                     <span class="buttonText buttonTextSize">{{ $t('play') }}</span>
                 </button>
@@ -70,9 +67,10 @@ onMounted(async () => {
                     <span class="buttonText">{{ $t('credits') }}</span>
                 </button>
                 <div>
-                    <CreateSoundButton />
+                    <CreateHomeButton />
+                    <!-- <CreateSoundButton /> -->
                     <CreateLogButton />
-                    <CreateSettingsButton  @click="__goTo('/settings')"/>
+                    <CreateSettingsButton @click="__goTo('/settings')" />
                     <CreateDropupButton />
                 </div>
             </div>

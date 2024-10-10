@@ -20,8 +20,8 @@
 	const { locale } = useI18n();
 
 	const userAccount = reactive({
-		language: "EN",
-		flag: "🇬🇧",
+		language: "",
+		flag: "",
 	});
 
 	const menuVisible = ref(false);

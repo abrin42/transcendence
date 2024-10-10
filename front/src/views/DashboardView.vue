@@ -318,4 +318,20 @@ h1,
     margin: 1vw;
     gap: 10px;
 }
+
+/* Pour chaque bloc de texte */
+.TextContainer div:nth-child(2n+1) {
+    /* Ceci pour rendre le premier texte visuellement distinct si nécessaire */
+}
+
+.___btn-click {
+    color: white;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    white-space: nowrap;
+    flex: 1 1 calc(30% - 20px);
+    margin: 1vw;
+    gap: 10px;
+}
 </style>

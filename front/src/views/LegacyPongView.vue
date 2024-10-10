@@ -1,6 +1,8 @@
 <script setup>
 import { ref, onMounted, onUnmounted } from 'vue';
+import { useRouter } from 'vue-router';
 
+const router = useRouter();
 const socket = ref(null);
 // const message = ref('');
 const messages = ref([]);
@@ -84,7 +86,7 @@ function connectWebSocket() {
     else if (data.type == 'endGame')
     {
       connection = 0;
-      Router.push('home');
+      router.push('/legacyrecap');
       console.log(data.type);
     }
     else if (data.type == 'startGame')
@@ -135,7 +137,6 @@ function sendMessage(msg) {
   }
 }
 
-
 onUnmounted(() => {
   if (socket.value) {
     socket.value.close();
@@ -145,7 +146,6 @@ onUnmounted(() => {
 onMounted(() => {
   connectWebSocket();
 });
-
 
     //board properties
     let board;
@@ -198,7 +198,7 @@ onMounted(() => {
         //draw player1
         context.fillStyle = "white";
         context.fillRect(player1.x, player1.y, player1.width, player1.height);
-
+        context.fillText("[P] to pause", boardWidth/5*4, 100);
         requestAnimationFrame(update); // Gameloop
         document.addEventListener("keydown", movePlayer1up);
         document.addEventListener("keydown", movePlayer1down);

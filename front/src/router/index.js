@@ -5,17 +5,26 @@ import CreditsView from '../views/CreditsView.vue'
 import GameSelectView from '../views/GameSelectView.vue'
 import LegacyPongView from '../views/LegacyPongView.vue'
 import legacy_remote from '../views/LegacyPongRemoteView.vue'
+import LegacyRecapView from '../views/LegacyRecapView.vue'
 import CyberPongView from '../views/CyberPongView.vue'
+import CyberRecapView from '../views/CyberRecapView.vue'
+
 import ThreePongView from '../views/ThreePongView.vue'
-import TourneyModeView from '../views/TourneyModeView.vue'
+import LeaderboardView from '../views/LeaderboardView.vue'
+import LoginView from '../views/LoginView.vue'
+import MatchmakingView from '../views/MatchmakingView.vue'
+import MyAccountView from '../views/MyAccountView.vue'
+import TourneyView from '../views/TourneyView.vue'
+import MultiModeView from '../views/MultiModeView.vue'
+
 import SettingsView from '../views/SettingsView.vue'
+import CreateLobbyView from '../views/CreateLobbyView.vue'
+import JoinLobbyView from '../views/JoinLobbyView.vue'
 import LogView from '../views/LogView.vue'
 import RegisterView from '../views/RegisterView.vue'
 import DashboardView from '../views/DashboardView.vue'
 import IAPongView from '../views/IAPongView.vue'
 import TwoFaView from '../views/2faView.vue'
-import MatchmakingView from '../views/MatchmakingView.vue'
-
 
 const router = createRouter({
   history: createWebHistory(),
@@ -61,9 +70,29 @@ const router = createRouter({
       component: DashboardView
     },
     {
-      path: '/tourneymode',
-      name: 'tourneymode',
-      component: TourneyModeView
+      path: '/multimode',
+      name: 'multimode',
+      component: MultiModeView
+    },
+    {
+      path: '/tourney',
+      name: 'tourney',
+      component: TourneyView
+    },
+    {
+      path: '/createlobby',
+      name: 'createlobby',
+      component: CreateLobbyView
+    },
+    {
+      path: '/joinlobby',
+      name: 'joinlobby',
+      component: JoinLobbyView
+    },
+    {
+      path: '/matchmaking',
+      name: 'matchmaking',
+      component: MatchmakingView
     },
     {
       path: '/cyberpong',
@@ -71,7 +100,12 @@ const router = createRouter({
       component: CyberPongView
     },
     {
-      path: '/legacy/',
+      path: '/cyberrecap',
+      name: 'cyberrecap',
+      component: CyberRecapView
+    },
+    {
+      path: '/legacy',
       name: 'legacy',
       component: LegacyPongView
     },
@@ -79,6 +113,11 @@ const router = createRouter({
       path: '/legacy_remote/:id',
       name: 'legacy_remote',
       component: legacy_remote
+    },
+    {
+      path: '/legacyrecap',
+      name: 'legacyrecap',
+      component: LegacyRecapView
     },
     {
       path: '/IA',
