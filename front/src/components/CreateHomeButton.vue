@@ -8,7 +8,7 @@
     router.push('/');
     }
 </script>
-
+``
 <template>
     <main>
         <div id="wrapper">

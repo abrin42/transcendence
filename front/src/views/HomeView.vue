@@ -43,10 +43,10 @@ function __goTo(page) {
                 </button>
                 <div>
                     <CreateHomeButton />
-                    <CreateSoundButton />
+                    <!-- <CreateSoundButton /> -->
                     <CreateLogButton />
                     <CreateSettingsButton  @click="__goTo('/settings')"/>
-                    <CreateDropupButton />
+                    <!-- <CreateDropupButton /> -->
                 </div>
             </div>
         </div>

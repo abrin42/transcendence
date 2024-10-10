@@ -35,8 +35,8 @@
                 <button class="button button-credits" @click="goToMulti()">
                     <span class="buttonText">{{ $t('multiplayer') }}</span>
                 </button>
-                <CreateSoundButton />
-                <CreateDropupButton />
+                <!-- <CreateSoundButton /> -->
+                <!-- <CreateDropupButton /> -->
                 <CreateBackButton />
             </div>
         </div>

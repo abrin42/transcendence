@@ -6,6 +6,39 @@
 
     var myVideo = document.getElementById('videoBG');
     myVideo.playbackRate = 2;
+
+    // let waiting = "waiting for opponent";
+    // let player1;
+    // let player2;
+    // const i = 0;
+
+    // //"waiting" text updating with "..."
+    // setTimeout(updateText(), 1000);
+    // function updateText(){
+    //     i += 1;
+    //     if (i >= 3)
+    //         i = 0;
+    //     if(i == 0)
+    //         waiting = "waiting for opponent";
+    //     if (i == 1)
+    //         waiting = "waiting for opponent.";
+    //     else if (i == 2)
+    //         waiting = "waiting for opponent..";
+    //     else if ( i == 3)
+    //         waiting = "waiting for opponent...";
+    // }
+
+    //when 2nd player is found, we hide "waiting for player" and show opponent
+    // if(2nd player found)
+    // {
+    //     document.getElementbyID('right-side').style.display = show;
+    // }
+    // else
+    // {
+    //     document.getElementbyID('right-side').style.display = block;
+    //     document.getElementbyID('waiting-text').style.display = show;
+    // }
+    
 </script>
 
 <template>
@@ -15,10 +48,11 @@
         <div id="wrapper-matchmaking">
             <section class="left">
                 <h1 id="game-type">Legacy Pong</h1>
-                <h1 class="profile-text-left">Chachou1</h1>
-                <h1 class="profile-text-right">Chachou2</h1>
-                <h1 class="rank-text-left">Newbie</h1>
-                <h1 class="rank-text-right">Beginner</h1>
+                <h1 class="profile-text-left">{{player1}}</h1>
+                <h1 class="profile-text-right">{{player2}}</h1>
+                <h1 class="rank-text-left">{{rank1}}</h1>
+                <h1 class="rank-text-right">{{rank2}}</h1>
+                <h1 class="waiting-text">{{waiting}}</h1>
                 <div class="buttonContainer">
                     <div>
                         <CreateSoundButton />
@@ -32,7 +66,7 @@
                 </div>
             </section>
             <div class="separation"></div>
-            <section class="right">
+            <section id="righ-side" class="right">
                 <div>
                     <div class="left-player">
                     </div>
@@ -95,6 +129,14 @@
     position: fixed;
     font-size: 25px;
     top: 38vw;
+    right: 22vw;
+    color: white;
+}
+
+.waiting-text {
+    position: fixed;
+    font-size: 25px;
+    top: 45vw;
     right: 22vw;
     color: white;
 }
