@@ -1,4 +1,4 @@
-<script setup>
+<script setup type="text/javascript">
 //imports
     import CreateDropupButton from '../components/CreateDropupButton.vue';
     import CreateBackButton from '../components/CreateBackButton.vue';
@@ -6,72 +6,61 @@
 
     var myVideo = document.getElementById('videoBG');
     myVideo.playbackRate = 2;
+    let player1;
+    let player2;
+    let gamemode = "Legacy Pong";
+    let playerName1 = "Chachou";
+    let playerName2 = "Chachou2";
+    let playerRank1 = "noob";
+    let playerRank2 = "beginner";
 
-    // let waiting = "waiting for opponent";
-    // let player1;
-    // let player2;
-    // const i = 0;
-
-    // //"waiting" text updating with "..."
-    // setTimeout(updateText(), 1000);
-    // function updateText(){
-    //     i += 1;
-    //     if (i >= 3)
-    //         i = 0;
-    //     if(i == 0)
-    //         waiting = "waiting for opponent";
-    //     if (i == 1)
-    //         waiting = "waiting for opponent.";
-    //     else if (i == 2)
-    //         waiting = "waiting for opponent..";
-    //     else if ( i == 3)
-    //         waiting = "waiting for opponent...";
-    // }
+    //dynamic loading dots 
+    if (document.getElementById("loading") != null)
+    {
+        var dots = window.setInterval( function() {
+        var wait = document.getElementById("loading");
+            if ( Math.random() < .5 && wait.innerHTML.length <= 4)
+                    wait.innerHTML += ".";
+            else
+                    wait.innerHTML = wait.innerHTML.substring(1, wait.innerHTML.length);
+            }, 1000);
+    }
 
     //when 2nd player is found, we hide "waiting for player" and show opponent
-    // if(2nd player found)
-    // {
-    //     document.getElementbyID('right-side').style.display = show;
-    // }
-    // else
-    // {
-    //     document.getElementbyID('right-side').style.display = block;
-    //     document.getElementbyID('waiting-text').style.display = show;
-    // }
+    let playerfound = 1;
+    if(playerfound == 1)
+    {
+//document.getElementById('right-side').style.display = 'show';
+    }
+    else
+    {
+        document.getElementById('right-side').style.display = 'none';
+        document.getElementById('waiting-text').style.display = show;
+    }
     
 </script>
 
 <template>
     <main>
-        <img class="profile-picture-matchmaking-left" src="../assets/Chachou.png">
-        <img class="profile-picture-matchmaking-right" src="../assets/Chachou.png">
         <div id="wrapper-matchmaking">
-            <section class="left">
-                <h1 id="game-type">Legacy Pong</h1>
-                <h1 class="profile-text-left">{{player1}}</h1>
-                <h1 class="profile-text-right">{{player2}}</h1>
-                <h1 class="rank-text-left">{{rank1}}</h1>
-                <h1 class="rank-text-right">{{rank2}}</h1>
-                <h1 class="waiting-text">{{waiting}}</h1>
-                <div class="buttonContainer">
-                    <div>
-                        <CreateSoundButton />
-                    </div>
-                    <div>
-                        <CreateDropupButton />
-                    </div>
-                    <div>
-                        <CreateBackButton />
-                    </div>
+            <CreateSoundButton />
+            <!-- <CreateDropupButton /> -->
+            <CreateBackButton />
+            <h1 id="matchmaking">Matchmaking</h1>
+            <h1 id="game-type">{{gamemode}}</h1>
+            <img class="profile-picture-matchmaking-left" src="../assets/Chachou.png">
+            <img class="profile-picture-matchmaking-right" src="../assets/Chachou.png">
+            <div class="buttonContainer">
+                <div class="left">
+                    <h1 class="profile-text-left">{{playerName1}}</h1>
+                    <h1 class="profile-text-right">{{playerName2}}</h1>
+                    <h1 class="rank-text-left">{{playerRank1}}</h1>
+                    <h1 class="rank-text-right">{{playerRank2}}</h1>
                 </div>
-            </section>
-            <div class="separation"></div>
-            <section id="righ-side" class="right">
-                <div>
-                    <div class="left-player">
-                    </div>
-                </div>
-            </section>
+            </div>
+            <div id="left">
+                <span id="loading" class="waiting-text">.</span>
+            </div>
         </div>
     </main>
 </template>
@@ -80,16 +69,26 @@
 @import './../assets/main.scss';
 
 #wrapper-matchmaking {
-    box-shadow: inset 0 0 0 1000px rgba(0,0,0,.2);
+    box-shadow: inset 0 0 0 1000px rgba(0, 0, 0, 0.398);
 }
 
-#game-type{
+#matchmaking {
     position: fixed;
     text-align: center;
     left: 38vw;
     text-align: center;
     font-size: 55px;
     top: 5vh;
+    color: white;   
+}
+
+#game-type{
+    position: fixed;
+    text-align: center;
+    left: 42vw;
+    text-align: center;
+    font-size: 35px;
+    top: 11vh;
     color: white;
 }
 
@@ -129,19 +128,18 @@
     position: fixed;
     font-size: 25px;
     top: 38vw;
-    right: 22vw;
+    left:75vw;
     color: white;
 }
 
 .waiting-text {
     position: fixed;
-    font-size: 25px;
-    top: 45vw;
-    right: 22vw;
+    z-index: 5;
+    font-size: 80px;
+    top: 38vw;
+    left: 70vw;
     color: white;
 }
-
-
 
 .profile-picture-matchmaking-right {
     position: fixed;
