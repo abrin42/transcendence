@@ -1,13 +1,13 @@
 <template>
 	<div class="dropup" @mouseleave="hideMenu" @mouseenter="showMenu">
-		<button id="p0" class="dropbtn">{{ userAccount.flag }}</button>
+		<button id="p0" class="dropbtn">{{ currentFlag }}</button>
 		<div class="dropup-content locale-changer" v-show="menuVisible">
-			<a v-if="userAccount.language !== 'ES'" @click="switchLang('ES')">🇪🇸</a>
-			<a v-if="userAccount.language !== 'FR'" @click="switchLang('FR')">🇫🇷</a>
-			<a v-if="userAccount.language !== 'EN'" @click="switchLang('EN')">🇬🇧</a>
-			<a v-if="userAccount.language !== 'DE'" @click="switchLang('DE')">🇩🇪</a>
-			<a v-if="userAccount.language !== 'IT'" @click="switchLang('IT')">🇮🇹</a>
-			<a v-if="userAccount.language !== 'MA'" @click="switchLang('MA')">⚔️</a>
+			<a v-if="currentLang !== 'ES'" @click="switchLang('ES')">🇪🇸</a>
+			<a v-if="currentLang !== 'FR'" @click="switchLang('FR')">🇫🇷</a>
+			<a v-if="currentLang !== 'EN'" @click="switchLang('EN')">🇬🇧</a>
+			<a v-if="currentLang !== 'DE'" @click="switchLang('DE')">🇩🇪</a>
+			<a v-if="currentLang !== 'IT'" @click="switchLang('IT')">🇮🇹</a>
+			<a v-if="currentLang !== 'MA'" @click="switchLang('MA')">⚔️</a>
 		</div>
 	</div>
 </template>
@@ -15,7 +15,6 @@
 <script setup>
 import { ref } from 'vue';
 import { useI18n } from 'vue-i18n';
-import { reactive, onMounted } from 'vue';
 
 const { locale } = useI18n();
 
@@ -75,6 +74,7 @@ function getCsrfToken() {
 }
 
 function switchLang(lang) {
+	currentLang.value = lang;
 	locale.value = lang;
 	const langs = ["EN", "FR", "ES", "DE", "IT", "MA"];
 	const flags = ["🇬🇧", "🇫🇷", "🇪🇸", "🇩🇪", "🇮🇹", "⚔️"];

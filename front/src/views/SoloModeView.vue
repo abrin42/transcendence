@@ -28,15 +28,18 @@
     <main>
         <div id="wrapper">
             <div class="buttonContainer">
-                <CreateHomeButton />
-                <button class="button button-credits" @click="goToGameSelect()">
+                <button class="button button-credits" @click="__goToGameSelect()">
                     <span class="buttonText">{{ $t('solo') }}</span>
                 </button>
-                <button class="button button-credits" @click="goToMulti()">
+                <button class="button button-credits" @click="__goToMulti()">
                     <span class="buttonText">{{ $t('multiplayer') }}</span>
                 </button>
-                <!-- <CreateSoundButton /> -->
-                <!-- <CreateDropupButton /> -->
+                <button class="button button-credits" @click="__goToTournoi()">
+                    <span class="buttonText">{{ $t('tourney') }}</span>
+                </button>
+                <CreateHomeButton />
+                <CreateSoundButton />
+                <CreateDropupButton />
                 <CreateBackButton />
             </div>
         </div>
@@ -45,6 +48,4 @@
 
 <style scoped>
 @import './../assets/main.scss';
-
-
 </style>

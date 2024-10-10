@@ -3,8 +3,6 @@
     import CreateDropupButton from '../components/CreateDropupButton.vue';
     import CreateBackButton from '../components/CreateBackButton.vue';
     import CreateSoundButton from '../components/CreateSoundButton.vue';
-    import CreateHomeButton from '../components/CreateHomeButton.vue';
-
     import { useRouter } from 'vue-router';
 
     const router = useRouter();
@@ -41,9 +39,6 @@
                 <button class="button button-three" @click="goToThree">
                     <span class="buttonText">ThreePong</span>
                 </button>
-                <div>
-                    <CreateHomeButton />
-                </div>
 
                 <div>
                     <CreateSoundButton />

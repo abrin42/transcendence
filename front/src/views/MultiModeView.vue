@@ -15,11 +15,11 @@
     router.push('/gameselect');
     }
 
-    function goToMulti() {
-    router.push('/multimode');
+    function goToMatchmaking() {
+    router.push('/matchmaking');
     }
 
-    function goToTournoi() {
+    function goToTourney() {
     router.push('/tourney');
     }
 </script>
@@ -28,15 +28,18 @@
     <main>
         <div id="wrapper">
             <div class="buttonContainer">
-                <CreateHomeButton />
                 <button class="button button-credits" @click="goToGameSelect()">
-                    <span class="buttonText">{{ $t('solo') }}</span>
+                    <span class="buttonText">{{ $t('local') }}</span>
                 </button>
-                <button class="button button-credits" @click="goToMulti()">
-                    <span class="buttonText">{{ $t('multiplayer') }}</span>
+                <button class="button button-credits" @click="goToMatchmaking()">
+                    <span class="buttonText">{{ $t('online') }}</span>
                 </button>
-                <!-- <CreateSoundButton /> -->
-                <!-- <CreateDropupButton /> -->
+                <button class="button button-credits" @click="goToTourney()">
+                    <span class="buttonText">{{ $t('tourney') }}</span>
+                </button>
+                <CreateHomeButton />
+                <CreateSoundButton />
+                <CreateDropupButton />
                 <CreateBackButton />
             </div>
         </div>
@@ -45,6 +48,4 @@
 
 <style scoped>
 @import './../assets/main.scss';
-
-
 </style>

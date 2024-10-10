@@ -78,7 +78,7 @@ onMounted(async () => {
     <main>
         <div id="wrapper">
             <div class="buttonContainer">
-                <button class="button" @click="goToCredits()">
+                <button class="button" @click="goToModeSelect()">
                     <i class="fas fa-play" style="margin-right: 1vw;"></i>
                     <span class="buttonText buttonTextSize">{{ $t('play') }}</span>
                 </button>
@@ -86,7 +86,8 @@ onMounted(async () => {
                     <span class="buttonText">{{ $t('credits') }}</span>
                 </button>
                 <div>
-                    <CreateSoundButton />
+                    <CreateHomeButton />
+                    <!-- <CreateSoundButton /> -->
                     <CreateLogButton />
                     <CreateSettingsButton @click="__goTo('/settings')" />
                     <CreateDropupButton />

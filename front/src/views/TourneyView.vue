@@ -4,22 +4,16 @@
     import CreateBackButton from '../components/CreateBackButton.vue';
     import CreateSoundButton from '../components/CreateSoundButton.vue';
     import CreateHomeButton from '../components/CreateHomeButton.vue';
-    import { useRouter } from 'vue-router';
-
-    const router = useRouter();
-
     var myVideo = document.getElementById('videoBG');
     myVideo.playbackRate = 1.3;
 
-    function goToGameSelect() {
-    router.push('/gameselect');
+
+
+    function goToCreateLobby() {
+    router.push('/matchmaking');
     }
 
-    function goToMulti() {
-    router.push('/multimode');
-    }
-
-    function goToTournoi() {
+    function goToJoinLobby() {
     router.push('/tourney');
     }
 </script>
@@ -28,22 +22,22 @@
     <main>
         <div id="wrapper">
             <div class="buttonContainer">
+                <button class="button" @click="goToCreateLobby">
+                    <span class="buttonText">Create Lobby</span>
+                </button>
+                <button class="button" @click="goToJoinLobby">
+                    <span class="buttonText">Join Lobby</span>
+                </button>
                 <CreateHomeButton />
-                <button class="button button-credits" @click="goToGameSelect()">
-                    <span class="buttonText">{{ $t('solo') }}</span>
-                </button>
-                <button class="button button-credits" @click="goToMulti()">
-                    <span class="buttonText">{{ $t('multiplayer') }}</span>
-                </button>
-                <!-- <CreateSoundButton /> -->
-                <!-- <CreateDropupButton /> -->
+                <CreateSoundButton />
+                <CreateDropupButton />
                 <CreateBackButton />
             </div>
         </div>
     </main>
 </template>
 
-<style scoped>
+<style lang="scss">
 @import './../assets/main.scss';
 
 
