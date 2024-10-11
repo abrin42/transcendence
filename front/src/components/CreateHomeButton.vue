@@ -11,11 +11,9 @@
 ``
 <template>
     <main>
-        <div id="wrapper">
-            <button class="button button-transcendence" @click="goToHome()">
-                    <img class="img-ft_transcendence" src="../assets/CyberPong.png" alt="CyberPong" />
-                </button>
-        </div>
+        <button class="button button-transcendence" @click="goToHome()">
+                <img class="img-ft_transcendence" src="../assets/CyberPong.png" alt="CyberPong" />
+        </button>
     </main>
 </template>
 

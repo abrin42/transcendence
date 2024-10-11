@@ -145,7 +145,7 @@ function getCsrfToken() {
 h1 {
     position: fixed;
     left: auto;
-    top: 10%;
+    top: 15%;
     font-size: 4vw;
     color: #fff;
     text-shadow:

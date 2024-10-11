@@ -1,3 +1,20 @@
+<template>
+    <div class="button-container" @mouseenter="showDropdown" @mouseleave="hideDropdown">
+        <button ref="button" class="button button-log" @click="__goTo(userAccount.is_active ? '/dashboard' : '/log')">
+            <span class="buttonText">{{ userAccount.is_active ? userAccount.nickname : $t('login') }}</span>
+        </button>
+
+        <div v-if="dropdownVisible" class="dropdown">
+            <button class="button buttonText buttondropdown" @click="__goTo('/dashboard')">My Account</button>
+            <!-- Appel à la méthode toggleFriendsPopup pour afficher la popup -->
+            <button class="button buttonText buttondropdown" @click="toggleFriendsPopup">Friends</button>
+            <button class="button buttonText buttondropdown" @click="__goTo('/api/player/logout')">Logout</button>
+        </div>
+
+        <!-- Composant FriendsPopup, écoute l'événement 'close' pour masquer la popup -->
+        <FriendsPopup v-if="friendsPopupVisible" @close="toggleFriendsPopup" />
+    </div>
+</template>
 
 <script setup>
     import { ref, reactive, onMounted, watch } from 'vue';
@@ -5,6 +22,7 @@
     import FriendsPopup from './FriendsPopup.vue'; 
 
     const router = useRouter();
+
     function __goTo(page) {
         if (page == null) {
             return;
@@ -13,35 +31,18 @@
     }
 
     const button = ref(null);
-    const dropdownVisible = ref('');
+    const dropdownVisible = ref(false);
     const friendsPopupVisible = ref(true);
     let hoverTimeout = null;
-    
-    const logoutUrl = "api/player/logout/";
-    const handleLogout = async () => {
-        try {
-            await fetch(logoutUrl, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'X-CSRFToken': getCsrfToken()
-                },
-            });
-            router.push('/log');
-            location.reload();
-        } catch (error) {
-            console.error('Logout failed:', error);
-        }
-    };
-    
-    const is_connected = ref('');
     const userAccount = reactive({
         nickname:"",
+        is_active:"",
     });
+  
     async function getUser() {
         try {
-            const response = await fetch(`api/player/connected_user/`, {
-                method: 'GET',
+            const response = await fetch(`https://localhost:8443/api/player/connected_user`, {
+            method: 'GET',
             });
             if (!response.ok) {
                 console.warn(`HTTP error! Status: ${response.status}`);
@@ -49,12 +50,11 @@
             }
             const user = await response.json();
             if (user && user.length > 0) {
-                userAccount.nickname = user[0].fields.nickname;  // Set the nickname here
-                is_connected.value = true;
-                console.log(userAccount.nickname)
-                console.log(is_connected.value)
+                userAccount.username = user[0].fields.username;  // Set the username here
+                userAccount.is_active = user[0].fields.is_active;  
+                console.log(userAccount.username)
+                console.log(userAccount.is_active)
             } else {
-                is_connected.value = false;
                 console.log('No user data retrieved.');
             }
         } catch (error) {
@@ -62,31 +62,24 @@
         }
     }
 
-    function getCsrfToken() {
-        const cookieValue = document.cookie
-            .split('; ')
-            .find(row => row.startsWith('csrftoken='))
-            ?.split('=')[1];
-        return cookieValue || '';
-    }
-
     onMounted(async () => {
         await getUser(); // Only call getUser if state.id is available
     });
+    
     onMounted(() => {
         adjustButtonPosition();
     });
+
     watch(() => userAccount.nickname, adjustButtonPosition);
 
     function adjustButtonPosition() {
         const buttonWidth = button.value.offsetWidth;
-        button.value.style.left = `calc(100vw - ${buttonWidth + 85}px)`;
+        button.value.style.right = `calc(${buttonWidth -40}px)`;
     }
 
     function showDropdown() {
         hoverTimeout = setTimeout(() => {
-            dropdownVisible.value = false;
-            if (is_connected.value)
+            if (userAccount.is_active)
                 dropdownVisible.value = true;
         }, 5);
     }
@@ -101,34 +94,17 @@
     }
 </script>
 
-<template>
-    <div class="button-container" @mouseenter="showDropdown" @mouseleave="hideDropdown">
-        <button ref="button" class="button button-log" @click="__goTo(is_connected ? '/dashboard' : '/log')">
-            <span class="buttonText">{{ is_connected ? userAccount.nickname : $t('login') }}</span>
-        </button>
-
-        <div v-if="dropdownVisible" class="dropdown">
-            <button class="button buttonText buttondropdown" @click="__goTo('/dashboard')">My Account</button>
-            <!-- Appel à la méthode toggleFriendsPopup pour afficher la popup -->
-            <button class="button buttonText buttondropdown" @click="toggleFriendsPopup">Friends</button>
-            <button class="button buttonText buttondropdown" @click="handleLogout">Logout</button>
-        </div>
-
-        <!-- Composant FriendsPopup, écoute l'événement 'close' pour masquer la popup -->
-        <FriendsPopup v-if="friendsPopupVisible" @close="toggleFriendsPopup" />
-    </div>
-</template>
-
 <style>
     .button-container {
-         position: relative; 
-         display: inline-block; 
+        /* position: relative; */
+        /* display: inline-block; */
     }
-    
+
     .button-log {
         position: fixed;
         bottom: 93vh;
         height: 6vh;
+        right: 3vw;
         width: 7vw;
         min-width: fit-content;
         white-space: nowrap;

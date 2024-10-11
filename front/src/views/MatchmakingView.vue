@@ -1,10 +1,10 @@
-<script setup type="text/javascript">
+<script setup>
 //imports
     import CreateDropupButton from '../components/CreateDropupButton.vue';
     import CreateBackButton from '../components/CreateBackButton.vue';
     import CreateSoundButton from '../components/CreateSoundButton.vue';
     import CreateHomeButton from '../components/CreateHomeButton.vue';
-    import { reactive, onMounted } from 'vue';
+    import { ref, reactive, onMounted, watch } from 'vue';
     import { useRouter } from 'vue-router';
 
     var myVideo = document.getElementById('videoBG');
@@ -12,7 +12,7 @@
     myVideo.playbackRate = 2;
     let player1;
     let player2;
-    let gamemode = "Legacy Pong";
+    let gamemode = "legacy";
     let playerName1 = "Chachou";
     let playerName2 = "Chachou2";
     let playerRank1 = "noob";
@@ -71,11 +71,13 @@ async function insertPlayer() {
             console.log(data);
             if (data.player2 == null)
             {
+                waitingPlayer = 1;
                 await new Promise(resolve => setTimeout(resolve, 1000));
                 insertPlayer();
             }
             else
             {
+                waitingPlayer= 0;
                 console.log("lancement dans 3");
                 await new Promise(resolve => setTimeout(resolve, 1000));
                 console.log("lancement dans 2");
@@ -106,9 +108,12 @@ function getCsrfToken() {
         await getUser();
         await insertPlayer();
         console.log(userAccount.id);
-
     });
 
+
+    ///////////////////////////////////////////////
+    const rightplayervisible = ref(false);
+    const loadingmodule = ref(true);
 
     //dynamic "loading" dots 
     if(document.getElementById("loading") != null)
@@ -118,7 +123,6 @@ function getCsrfToken() {
         {
             var dots = window.setInterval( function() {
             var wait = document.getElementById("loading");
-            console.log(document.getElementById("loading"));
             if ( wait.innerHTML.length >= 3 ) 
                 wait.innerHTML = ".";
             else 
@@ -127,23 +131,25 @@ function getCsrfToken() {
         }
     }
 
-    // if(document.getElementById("right-side") != null &&
-    // document.getElementById("loading") != null )
-    // {
-    // //when 2nd player is found, we hide "waiting for player" and show opponent
-    //     let playerfound = true;
-    //     if(playerfound == true)
-    //     {
-    //         document.getElementById("right-side").style.display = block;
-    //         document.getElementById("loading").style.display = 'none';
-    //     }
-    //     else
-    //     {
-    //         document.getElementById("right-side").style.display = none;
-    //         document.getElementById("loading").style.display = block;
-    //     }
-    // }
-    
+    var tips = ['Tip: Reading your phone in the stairs might lead to severe injury.', 'Tip: Try pressing \'C\' while playing ;)', 
+    'Tip: Wash your cereal bowl right after eating', 'Don\'t forget to put your paddle back in the center!', 'Recipe for a lribette : one tchoukball ball, one kilo of pasta, and many many many many many Star Wars anecdotes.']
+    var tipdisplayed = tips[Math.floor(Math.random()*tips.length)];
+
+    //when 2nd player is found, we hide "waiting for player" and show opponent
+    if(rightplayervisible != null && loadingmodule != null )
+    {
+        let playerfound = true;
+        if(playerfound == true)
+        {
+            rightplayervisible.value != rightplayervisible.value;
+            loadingmodule.value != loadingmodule.value;
+        }
+        else
+        {
+            rightplayervisible.value != rightplayervisible.value;
+            loadingmodule.value != loadingmodule.value;
+        }
+    }
 </script>
 
 <template>
@@ -155,19 +161,19 @@ function getCsrfToken() {
                 <CreateHomeButton />
                 <CreateBackButton />
                 <h2 id="matchmaking-title">Matchmaking</h2>
-                <p id="game-type">{{gamemode}}</p>
-                <p id="game-advice">Advice: dont read your phone in the stairs</p>
-                <div class="buttonContainer">
+                <p id="game-type">game-mode: {{gamemode}}</p>
+                <p id="game-advice">{{tipdisplayed}}</p>
+                <div class="button-container-mm">
                     <div class="stuff-to-move">
                         <img class="profile-picture-matchmaking-left" src="../assets/Chachou.png">
                         <p class="profile-text-left">{{playerName1}}</p>
                         <p class="rank-text-left">{{playerRank1}}</p>
                     </div>
-                    <div id="stuff-to-hide">
+                    <div id="stuff-to-hide" v-if="loadingmodule">
                         <span id="loading" class="waiting-text">.</span>
-                        <p class="opponent-text">Looking for an opponent</p>
+                        <p class="opponent-text">Looking for an opponent...</p>
                     </div>
-                    <div id="stuff-to-show">
+                    <div id="stuff-to-show" v-if="rightplayervisible">
                         <p class="rank-text-right">{{playerRank2}}</p>
                         <p class="profile-text-right">{{playerName2}}</p>
                         <img class="profile-picture-matchmaking-right" src="../assets/Chachou.png">
@@ -180,6 +186,10 @@ function getCsrfToken() {
 
 <style scoped>
 @import './../assets/main.scss';
+.button-container-mm {
+    position: relative; 
+    display: inline-block; 
+}
 
 .wrapper {
     display: flex;
@@ -190,26 +200,39 @@ function getCsrfToken() {
 
 #wrapper-matchmaking {
     box-shadow: inset 0 0 0 1000px rgba(0, 0, 0, 0.398);
+    height: 100vh;
 }
 
 #matchmaking-title {
-    position: flex;
-    text-align: center;
-    left: 38vw;
-    text-align: center;
+    position: fixed;
+    display: none;
+    top: 15%;
+    left: 50%;
+    transform: translate(-50%, -50%);
     font-size: 55px;
-    top: 5vh;
+    font-weight: bold;
     color: white;   
+    filter: drop-shadow(5px 5px 4px #0000003b);
 }
 
 #game-type{
     position: fixed;
-    text-align: center;
-    left: 42vw;
-    text-align: center;
-    font-size: 35px;
-    top: 11vh;
+    top: 1%;
+    right: 1%;
+    font-size: 20px;
+    font-weight: bold;
+    color: rgb(208, 208, 208);
+}
+
+#game-advice{
+    position: fixed;
+    top: 87%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-size: 20px;
+    font-weight: bold;
     color: white;
+    filter: drop-shadow(5px 5px 4px #0000003b);
 }
 
 .profile-picture-matchmaking-left {
@@ -217,20 +240,27 @@ function getCsrfToken() {
     width: 250px;
     height: 250px;
     border-radius: 50%;
-    top: 30vh;
-    left: 20vw;
+    position: fixed;
+    top: 33%;
+    left: 41.5%;
+    text-align: center;
     border: 5px solid white;
     filter: drop-shadow(5px 5px 4px #0000003b);
 }
 
 .profile-text-left {
     position: fixed;
+    top: 90%;
+    left: 50%;
+    text-align: left;
+    font-weight: bold;
     top: 35vw;
     left: 22vw;
     color: white;
 }
 .profile-text-right {
     position: fixed;
+    font-weight: bold;
     top: 35vw;
     right: 22vw;
     color: white;
@@ -239,6 +269,7 @@ function getCsrfToken() {
 .rank-text-left {
     position: fixed;
     font-size: 25px;
+    font-weight: bold;
     top: 38vw;
     left: 22vw;
     color: white;
@@ -247,6 +278,7 @@ function getCsrfToken() {
 .rank-text-right {
     position: fixed;
     font-size: 25px;
+    font-weight: bold;
     top: 38vw;
     left:75vw;
     color: white;
@@ -256,9 +288,11 @@ function getCsrfToken() {
     position: fixed;
     z-index: 5;
     font-size: 80px;
-    top: 38vw;
-    left: 45vw;
+    font-weight: bold;
+    top: 35vw;
+    left: 48%;
     color: white;
+    filter: drop-shadow(5px 5px 4px #0000003b);
 }
 
 .profile-picture-matchmaking-right {
@@ -275,8 +309,11 @@ function getCsrfToken() {
     position: fixed;
     z-index: 5;
     font-size: 30px;
-    top: 36vw;
-    left: 38vw;
+    font-weight: bold;
+    top: 20%;
+    left: 38%;
     color: white;
+    filter: drop-shadow(5px 5px 4px #0000003b);
+
 }
 </style>
