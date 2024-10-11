@@ -307,12 +307,11 @@ def delete_account_view(request):
 
 def connected_user(request):
     user = token_user(request)
-    if user:        
+    if user:
         data = serializers.serialize('json', [user])
     else:
         data = json.dumps({'error': 'User not found'})
     return HttpResponse(data, content_type='application/json')
-
 
 def get_all_user(request):
     data = Player.objects.all()

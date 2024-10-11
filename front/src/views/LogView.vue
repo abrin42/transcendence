@@ -43,7 +43,7 @@ async function login() {
         return;
     }
     try {
-        const response = await fetch('/api/player/login/', {
+        const response = await fetch('api/player/login/', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -73,23 +73,26 @@ async function login() {
 
 async function login42() {
     try {
-        const response = await fetch('/api/player/login42/', {
-            method: 'POST',
+        const response = await fetch('api/player/login42/', {
+            method: 'POST', // Change to POST to match the Django view
             headers: {
                 'Content-Type': 'application/json',
                 'X-CSRFToken': getCsrfToken()
             },
         });
+
         if (!response.ok) {
             throw new Error(`HTTP error! Status: ${response.status}`);
         }
+
         const data = await response.json();
-        console.log(data);
         if (data.url) {
-            window.location.href = data.url;
+            // Use the URL returned from the backend
+            window.location.href = data.url; // Redirect to the URL
         } else {
             alert('Could not get URL for login');
         }
+
     } catch (error) {
         console.error('Error during login:', error);
         alert('An error occurred during login');

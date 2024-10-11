@@ -12,7 +12,7 @@
     const router = useRouter();
     const showAllInfo = ref(false);
 
-    const is_connected = ref(false);
+    const is_connected = ref('');
     const userAccount = reactive({
         date_joined:"",
         email:"",
@@ -37,7 +37,7 @@
                 return;
             }
             const user = await response.json();
-            if (user && user.length > 0) {
+            if (user) {
                 userAccount.nickname = user[0].fields.nickname;
                 userAccount.username = user[0].fields.username;
                 userAccount.email = user[0].fields.email;
