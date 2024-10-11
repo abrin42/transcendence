@@ -276,7 +276,6 @@ onMounted(() => {
           tickPadel);
         }
       }
-      // document.addEventListener('keyup', stopPlayer);
     }
     
     function movePlayer2up(e)

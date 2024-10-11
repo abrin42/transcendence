@@ -6,43 +6,6 @@ import random
 from datetime import datetime
 import urllib.parse
 
-def create_new_game(game_id):
-    return {
-        "gameID": game_id,
-        "wsj1": 0,
-        "wsj2": 0,
-        "boardWidth": 700,
-        "boardHeight": 700,
-        "AI": 0,
-        "init_ball_speed": 4,
-        "tick_back": 0.01,
-        "Game_on": 0,
-        "nb_pts_for_win": 10,
-        "P1Ready": 0,
-        "P2Ready": 0,
-        "PTSp1": 0,
-        "PTSp2": 0,
-        "xPad1": 10,
-        "xPad2": 700 - 30,  # -10 écart du bord et -20 largeur padel 
-        "paddle_width": 20,
-        "paddle_height": 140,
-        "position_in_paddle": 0,
-        "init_pad": 700 / 2 - 140 / 2,
-        "posPad1": 700 / 2 - 140 / 2,
-        "posPad2": 700 / 2 - 140 / 2,
-        "startXBall": 350,
-        "startYBall": 350,
-        "ball_x": 350,
-        "ball_y": 350,
-        "future_x": 350,
-        "future_y": 350,
-        "ball_angle": 180 if random.random() > 0.5 else 0,
-        "ball_radius": 7.18,
-        "ball_speed": 4,
-        "board_y_max": 700,
-        "board_x_max": 700,
-        "board_min": 0,
-    }
 
 lstgame = []
 
@@ -97,8 +60,8 @@ class PongConsumer(AsyncWebsocketConsumer):
             
 
     async def sendBall(self, x, y):
-        for websocket in connected_websockets:
-            await websocket.send(text_data=json.dumps({
+        if self.is_online == 0:
+            await self.send(text_data=json.dumps({
                 'type': "updateBaal",
                 'x': x,
                 'y': y,
@@ -308,6 +271,7 @@ class PongConsumer(AsyncWebsocketConsumer):
         self.board_x_max = 700
         # self.board_min = 3.88
         self.board_min = 0
+        self.is_online = 0
 
         # ⊱━━━.⋅εïз⋅.━━━⊰   AI   ⊱━━━.⋅εïз⋅.━━━⊰ #
         self.begin_time = datetime.now().timestamp()
@@ -315,10 +279,62 @@ class PongConsumer(AsyncWebsocketConsumer):
         self.ball_last_position = self.ball_y
         self.ball_last_angle = self.ball_angle
         self.random_paddle_pos = random.random() * 1000 % self.paddle_height
-        self.ball_future_position = 0
+        self.ball_future_position = self.ball_x
+        self.ball_last_direction = -1 if self.ball_angle == 180 else 1
+        self.time_to_get_future_position = True
         asyncio.ensure_future(self.loop_game())
 
-        
+
+
+    async def create_new_game(self, game_id):
+        return {
+            "gameID": game_id,
+            "wsj1": self,
+            "wsj2": 0,
+            "boardWidth": 700,
+            "boardHeight": 700,
+            "AI": 0,
+            "init_ball_speed": 4,
+            "tick_back": 0.01,
+            "Game_on": 0,
+            "nb_pts_for_win": 10,
+            "P1Ready": 0,
+            "P2Ready": 0,
+            "PTSp1": 0,
+            "PTSp2": 0,
+            "xPad1": 10,
+            "xPad2": 700 - 30,  # -10 écart du bord et -20 largeur padel 
+            "paddle_width": 20,
+            "paddle_height": 140,
+            "position_in_paddle": 0,
+            "init_pad": 700 / 2 - 140 / 2,
+            "posPad1": 700 / 2 - 140 / 2,
+            "posPad2": 700 / 2 - 140 / 2,
+            "startXBall": 350,
+            "startYBall": 350,
+            "ball_x": 350,
+            "ball_y": 350,
+            "future_x": 350,
+            "future_y": 350,
+            "ball_angle": 180 if random.random() > 0.5 else 0,
+            "ball_radius": 7.18,
+            "ball_speed": 4,
+            "board_y_max": 700,
+            "board_x_max": 700,
+            "board_min": 0,
+            "is_online": 1,
+        }
+
+    async def initRemote(self, id):
+        if not any(game['gameID'] == id for game in lstgame):
+            new_game = self.create_new_game(id)
+            lstgame.append(new_game)
+        else:
+            for game in lstgame:
+                if game['gameID'] == id:
+                    game['wsj2'] = self
+
+
 
     async def connect(self):
 
@@ -327,6 +343,9 @@ class PongConsumer(AsyncWebsocketConsumer):
         page_url = query_params.get('page', [''])[0]
         if (page_url == "legacy" or page_url == "ia"):
             await self.initForLocal()
+        elif(page_url.isdigit()):
+            await self.initRemote(page_url)
+
 
         # print(f"Le WebSocket est créé sur la page : {page_url}")
         # if (current_path == "I")
