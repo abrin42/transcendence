@@ -35,17 +35,18 @@ def insertPlayer(request):
             username = data.get('username')
 
             player = get_object_or_404(Player, username=username)
-
             latest_game = Game.objects.order_by('-id').first()
-            if latest_game is None:
-                latest_game = Game.objects.create(state='waiting', player1=player, scorep1=0)
-            elif latest_game.player2 is not None:
-                latest_game = Game.objects.create(state='waiting', player1=player, scorep1=0)
-            else:
-                latest_game.player2 = player
-                latest_game.state = 'active'  # Vous pouvez également changer l'état si nécessaire
-                latest_game.scorep2 = 0
-                latest_game.save()
+
+            if latest_game.player1 != player:
+                if latest_game is None:
+                    latest_game = Game.objects.create(state='waiting', player1=player, scorep1=0)
+                elif latest_game.player2 is not None:
+                    latest_game = Game.objects.create(state='waiting', player1=player, scorep1=0)
+                else:
+                    latest_game.player2 = player
+                    latest_game.state = 'active'  # Vous pouvez également changer l'état si nécessaire
+                    latest_game.scorep2 = 0
+                    latest_game.save()
 
             serializer = GameSerializer(latest_game)
             return JsonResponse(serializer.data, safe=False) 

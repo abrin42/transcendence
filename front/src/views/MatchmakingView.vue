@@ -17,10 +17,10 @@
     });
 
     
-
+    const waitingPlayer = 1;
 
     function goToLegacy(id) {
-    router.push(`/legacy/${id}`);
+    router.push(`/legacy_remote/${id}`);
 }
 
 async function getUser() {
@@ -61,6 +61,22 @@ async function insertPlayer() {
         if (response.ok) {
             const data = await response.json();
             console.log(data);
+            if (data.player2 == null)
+            {
+                await new Promise(resolve => setTimeout(resolve, 1000));
+                insertPlayer();
+            }
+            else
+            {
+                console.log("lancement dans 3");
+                await new Promise(resolve => setTimeout(resolve, 1000));
+                console.log("lancement dans 2");
+                await new Promise(resolve => setTimeout(resolve, 1000));
+                console.log("lancement dans 1");
+                await new Promise(resolve => setTimeout(resolve, 1000));
+                goToLegacy(data.id);
+            }
+
         }
     } catch (error) {
         console.error('Erreur lors de la connexion:', error);
