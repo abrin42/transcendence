@@ -2,6 +2,7 @@
 import { ref } from 'vue';
 import CreateDropupButton from '../components/CreateDropupButton.vue';
 import CreateBackButton from '../components/CreateBackButton.vue';
+import CreateHomeButton from '../components/CreateHomeButton.vue';
 import Input from '../components/Input.vue';
 import { useRouter } from 'vue-router';
 
@@ -97,6 +98,7 @@ function getCsrfToken() {
             </div>
 
             <div class="buttonContainer">
+                <CreateHomeButton />
                 <CreateBackButton />
                 <CreateDropupButton />
             </div>
@@ -174,9 +176,9 @@ h1 {
 
 .button-login {
     position: fixed;
-    width: 10vw;
+    width: 15vw;
     height: 6vh;
-    left: 47.5%;
+    left: 42.5%;
     top: 30%;
 
     background-color: rgba(0, 0, 0, 0.5);
@@ -200,5 +202,24 @@ h1 {
     border-color: rgba(255, 255, 255, 1);
     background-color: rgba(255, 255, 255, 0.4);
     transition: border-color, background-color 0.5s;
+}
+
+.button-createAccount:hover{
+    border-color: rgb(185, 248, 252);
+    text-decoration-color: rgb(185, 248, 252);
+    background-color: rgba(0, 204, 227, 0.247);
+    transition: border-color, background-color 0.5s;
+    filter: drop-shadow(5px 5px 4px #ff04d585);
+    transition: color 0.3s ease, font-size 0.3s ease;
+}
+
+.buttonText {
+    font-size: 22px;
+    color: rgb(255, 255, 255);
+}
+
+.button-createAccount:hover .buttonText {
+    font-size: 23px;
+    transition: color 0.3s ease, font-size 0.3s ease;
 }
 </style>

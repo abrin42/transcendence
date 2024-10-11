@@ -23,9 +23,9 @@
                 <div>
                     <CreateBackButton />
                 </div>
-                <!-- <div>
+                <div>
                     <CreateSoundButton />
-                </div> -->
+                </div>
             </div>
         </div>
     </main>

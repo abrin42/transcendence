@@ -101,7 +101,6 @@ def login_view(request):
 
     return JsonResponse({'error': 'Invalid request method'}, status=405)
 
-
 def login42_view(request):
     if request.method == "POST":
         oauth_url = f"{settings.FT42_OAUTH_URL}?client_id={settings.FT42_CLIENT_ID}&redirect_uri={settings.FT42_REDIRECT_URI}&response_type=code"
@@ -312,6 +311,8 @@ def connected_user(request):
     else:
         data = json.dumps({'error': 'User not found'})
     return HttpResponse(data, content_type='application/json')
+
+
 
 def get_all_user(request):
     data = Player.objects.all()

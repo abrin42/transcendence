@@ -1,119 +1,214 @@
-<script setup>
+<script setup type="text/javascript">
 //imports
     import CreateDropupButton from '../components/CreateDropupButton.vue';
     import CreateBackButton from '../components/CreateBackButton.vue';
     import CreateSoundButton from '../components/CreateSoundButton.vue';
+    import CreateHomeButton from '../components/CreateHomeButton.vue';
     import { reactive, onMounted } from 'vue';
     import { useRouter } from 'vue-router';
 
     var myVideo = document.getElementById('videoBG');
     
     myVideo.playbackRate = 2;
+    let player1;
+    let player2;
+    let gamemode = "Legacy Pong";
+    let playerName1 = "Chachou";
+    let playerName2 = "Chachou2";
+    let playerRank1 = "noob";
+    let playerRank2 = "beginner";
     const router = useRouter();
 
     const userAccount = reactive({
-        nickname:"", 
-        // profilePicture: profilePicture,
+        username:"",
         rank:0,
     });
 
+    
+    const waitingPlayer = 1;
 
     function goToLegacy(id) {
-    router.push(`/legacy/${id}`);
+    router.push(`/legacy_remote/${id}`);
 }
 
+async function getUser() {
+  try {
+    const response = await fetch(`api/player/connected_user/`, {
+      method: 'GET',
+    });
+    if (!response.ok) {
+      console.warn(`HTTP error! Status: ${response.status}`);
+      return;
+    }
+    const user = await response.json();
+    if (user ) {
+      userAccount.username = user[0].fields.username;
+      userAccount.rank = user[0].fields.rank;
+      console.log(userAccount.username)
+    } else {
+      console.log('No user data retrieved.');
+    }
+  } catch (error) {
+    console.error('Error retrieving user data:', error);
+  }
+}
 
-    
+async function insertPlayer() {
+        
+    try {
+        const response = await fetch('api/game/insertplayer/', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRFToken': getCsrfToken() // Assuming you have CSRF protection enabled
+            },
+            body: JSON.stringify({
+                username: userAccount.username,
+            })
+        });
+        if (response.ok) {
+            const data = await response.json();
+            console.log(data);
+            if (data.player2 == null)
+            {
+                await new Promise(resolve => setTimeout(resolve, 1000));
+                insertPlayer();
+            }
+            else
+            {
+                console.log("lancement dans 3");
+                await new Promise(resolve => setTimeout(resolve, 1000));
+                console.log("lancement dans 2");
+                await new Promise(resolve => setTimeout(resolve, 1000));
+                console.log("lancement dans 1");
+                await new Promise(resolve => setTimeout(resolve, 1000));
+                goToLegacy(data.id);
+            }
 
+        }
+    } catch (error) {
+        console.error('Erreur lors de la connexion:', error);
+        alert('An error occurred during login2222');
+    }
+}
+
+function getCsrfToken() {
+    const cookieValue = document.cookie
+        .split('; ')
+        .find(row => row.startsWith('csrftoken='))
+        ?.split('=')[1];
+    return cookieValue || '';
+}
 
 
     onMounted(async () => {
         // await postUser();
+        await getUser();
+        await insertPlayer();
+        console.log(userAccount.id);
+
     });
 
-    // let waiting = "waiting for opponent";
-    // let player1;
-    // let player2;
-    // const i = 0;
 
-    // //"waiting" text updating with "..."
-    // setTimeout(updateText(), 1000);
-    // function updateText(){
-    //     i += 1;
-    //     if (i >= 3)
-    //         i = 0;
-    //     if(i == 0)
-    //         waiting = "waiting for opponent";
-    //     if (i == 1)
-    //         waiting = "waiting for opponent.";
-    //     else if (i == 2)
-    //         waiting = "waiting for opponent..";
-    //     else if ( i == 3)
-    //         waiting = "waiting for opponent...";
-    // }
+    //dynamic "loading" dots 
+    if(document.getElementById("loading") != null)
+    {
+        //console.log(document.getElementById("loading"));
+        if (document.getElementById("loading") != false)
+        {
+            var dots = window.setInterval( function() {
+            var wait = document.getElementById("loading");
+            console.log(document.getElementById("loading"));
+            if ( wait.innerHTML.length >= 3 ) 
+                wait.innerHTML = ".";
+            else 
+                wait.innerHTML += ".";
+            }, 1000);
+        }
+    }
 
-    //when 2nd player is found, we hide "waiting for player" and show opponent
-    // if(2nd player found)
+    // if(document.getElementById("right-side") != null &&
+    // document.getElementById("loading") != null )
     // {
-    //     document.getElementbyID('right-side').style.display = show;
-    // }
-    // else
-    // {
-    //     document.getElementbyID('right-side').style.display = block;
-    //     document.getElementbyID('waiting-text').style.display = show;
+    // //when 2nd player is found, we hide "waiting for player" and show opponent
+    //     let playerfound = true;
+    //     if(playerfound == true)
+    //     {
+    //         document.getElementById("right-side").style.display = block;
+    //         document.getElementById("loading").style.display = 'none';
+    //     }
+    //     else
+    //     {
+    //         document.getElementById("right-side").style.display = none;
+    //         document.getElementById("loading").style.display = block;
+    //     }
     // }
     
 </script>
 
 <template>
     <main>
-        <img class="profile-picture-matchmaking-left" src="../assets/Chachou.png">
-        <img class="profile-picture-matchmaking-right" src="../assets/Chachou.png">
-        <div id="wrapper-matchmaking">
-            <section class="left">
-                <h1 id="game-type">Legacy Pong</h1>
-                <h1 class="profile-text-left">{{player1}}</h1>
-                <h1 class="profile-text-right">{{player2}}</h1>
-                <h1 class="rank-text-left">{{rank1}}</h1>
-                <h1 class="rank-text-right">{{rank2}}</h1>
-                <h1 class="waiting-text">{{waiting}}</h1>
+        <div>
+            <div id="wrapper-matchmaking">
+                <CreateSoundButton />
+                <CreateDropupButton />
+                <CreateHomeButton />
+                <CreateBackButton />
+                <h2 id="matchmaking-title">Matchmaking</h2>
+                <p id="game-type">{{gamemode}}</p>
+                <p id="game-advice">Advice: dont read your phone in the stairs</p>
                 <div class="buttonContainer">
-                    <div>
-                        <CreateSoundButton />
+                    <div class="stuff-to-move">
+                        <img class="profile-picture-matchmaking-left" src="../assets/Chachou.png">
+                        <p class="profile-text-left">{{playerName1}}</p>
+                        <p class="rank-text-left">{{playerRank1}}</p>
                     </div>
-                    <div>
-                        <CreateDropupButton />
+                    <div id="stuff-to-hide">
+                        <span id="loading" class="waiting-text">.</span>
+                        <p class="opponent-text">Looking for an opponent</p>
                     </div>
-                    <div>
-                        <CreateBackButton />
-                    </div>
-                </div>
-            </section>
-            <div class="separation"></div>
-            <section id="righ-side" class="right">
-                <div>
-                    <div class="left-player">
+                    <div id="stuff-to-show">
+                        <p class="rank-text-right">{{playerRank2}}</p>
+                        <p class="profile-text-right">{{playerName2}}</p>
+                        <img class="profile-picture-matchmaking-right" src="../assets/Chachou.png">
                     </div>
                 </div>
-            </section>
+            </div>
         </div>
     </main>
 </template>
 
-<style lang="scss">
+<style scoped>
 @import './../assets/main.scss';
 
-#wrapper-matchmaking {
-    box-shadow: inset 0 0 0 1000px rgba(0,0,0,.2);
+.wrapper {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
 }
 
-#game-type{
-    position: fixed;
+#wrapper-matchmaking {
+    box-shadow: inset 0 0 0 1000px rgba(0, 0, 0, 0.398);
+}
+
+#matchmaking-title {
+    position: flex;
     text-align: center;
     left: 38vw;
     text-align: center;
     font-size: 55px;
     top: 5vh;
+    color: white;   
+}
+
+#game-type{
+    position: fixed;
+    text-align: center;
+    left: 42vw;
+    text-align: center;
+    font-size: 35px;
+    top: 11vh;
     color: white;
 }
 
@@ -153,19 +248,18 @@
     position: fixed;
     font-size: 25px;
     top: 38vw;
-    right: 22vw;
+    left:75vw;
     color: white;
 }
 
-.waiting-text {
+#loading {
     position: fixed;
-    font-size: 25px;
-    top: 45vw;
-    right: 22vw;
+    z-index: 5;
+    font-size: 80px;
+    top: 38vw;
+    left: 45vw;
     color: white;
 }
-
-
 
 .profile-picture-matchmaking-right {
     position: fixed;
@@ -176,5 +270,13 @@
     right: 20vw;
     border: 5px solid white;
     filter: drop-shadow(5px 5px 4px #0000003b);
+}
+.opponent-text {
+    position: fixed;
+    z-index: 5;
+    font-size: 30px;
+    top: 36vw;
+    left: 38vw;
+    color: white;
 }
 </style>

@@ -20,8 +20,8 @@
 	const { locale } = useI18n();
 
 	const userAccount = reactive({
-		language: "",
-		flag: "",
+		language: "EN",
+		flag: "🇬🇧",
 	});
 
 	const menuVisible = ref(false);
@@ -90,7 +90,7 @@
 
 	onMounted(async () => {
 		await getLanguage();
-		//switchLang(userAccount.language);
+		switchLang(userAccount.language);
 	});
 
 	function showMenu() {

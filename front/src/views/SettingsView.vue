@@ -2,12 +2,15 @@
 import { reactive, ref, onMounted, onBeforeUnmount } from 'vue';
 import CreateBackButton from '../components/CreateBackButton.vue';
 import CreateDropupButton from '@/components/CreateDropupButton.vue';
+import CreateHomeButton from '@/components/CreateHomeButton.vue';
 
 const keys = reactive({
     player1Left: 'ArrowLeft',
     player1Right: 'ArrowRight',
     player2Left: 'A',
     player2Right: 'D',
+    pause: 'P',
+    mute: 'M',
 });
 
 const selectedKey = ref(null);
@@ -28,7 +31,9 @@ const setKey = (event) => {
         (selectedKey.value === 'player1Left' && newKey === keys.player1Right) ||
         (selectedKey.value === 'player1Right' && newKey === keys.player1Left) ||
         (selectedKey.value === 'player2Left' && newKey === keys.player2Right) ||
-        (selectedKey.value === 'player2Right' && newKey === keys.player2Left)
+        (selectedKey.value === 'player2Right' && newKey === keys.player2Left) ||
+        (selectedKey.value === 'pause' && newKey === keys.pause) ||
+        (selectedKey.value === 'mute' && newKey === keys.mute)
     ) {
         alert('Le meme joueur ne peut pas utiliser la meme touche pour gauche et droite.');
         return;
@@ -55,6 +60,7 @@ onBeforeUnmount(() => {
         <div id="wrapper">
             <CreateBackButton />
             <CreateDropupButton />
+            <CreateHomeButton />
             <div class="settingsBackground">
                 <span class="titleSettings">{{ $t('settings') }}</span>
                 <div class="settingsText">
@@ -62,6 +68,8 @@ onBeforeUnmount(() => {
                     <span>{{ $t('player') }} 1 - {{ $t('left') }}</span>
                     <span>{{ $t('player') }} 2 - {{ $t('right') }}</span>
                     <span>{{ $t('player') }} 2 - {{ $t('left') }}</span>
+                    <span>PAUSE GAME</span>
+                    <span>MUTE SOUND</span>
                 </div>
                 <div class="buttonContainer">
                     <button class="button" @click="changeKey('player1Right')">
@@ -76,6 +84,13 @@ onBeforeUnmount(() => {
                     <button class="button" @click="changeKey('player2Left')">
                         <span class="buttonText">{{ keys.player2Left }}</span>
                     </button>
+                    <button class="button" @click="changeKey('pause')">
+                        <span class="buttonText">{{ keys.pause }}</span>
+                    </button>
+                    <button class="button" @click="changeKey('mute')">
+                        <span class="buttonText">{{ keys.mute }}</span>
+                    </button>
+                    
                 </div>
             </div>
         </div>

@@ -46,7 +46,9 @@ function updateBaal(x, y)
 }
 
 function connectWebSocket() {
-  socket.value = new WebSocket('wss://localhost:8443/ws/websockets/');
+  const currentUrl = window.location.href; 
+  const lastSegment = currentUrl.split('/').filter(Boolean).pop();
+  socket.value = new WebSocket(`wss://localhost:8443/ws/websockets/?page=${encodeURIComponent(lastSegment)}`);
   socket.value.onopen = () => {
     console.log('WebSocket connecté');
   };
@@ -222,7 +224,9 @@ onMounted(() => {
         context.fillRect(player1.x, player1.y, player1.width, player1.height);
 
         requestAnimationFrame(update); // Gameloop
-        document.addEventListener("keydown", movePlayer);
+        document.addEventListener("keydown", movePlayer1up);
+        document.addEventListener("keydown", movePlayer1down);
+        document.addEventListener('keyup', stopPlayer);
         // document.addEventListener("keydown", leaveGame);
     }
 
@@ -249,50 +253,54 @@ onMounted(() => {
     }
 
     
-    let keysPressed = {};
     let moveInterval1up = null;
     let moveInterval1down = null;
     let tickPadel = 10;
 
 
-
-    function movePlayer(e) 
+    function movePlayer1up(e)
     {
-      keysPressed[e.code] = true;
-
-      if (keysPressed["KeyW"]) 
+      if (!moveInterval1up)
       {
-        if (!moveInterval1up)
+        if (e.code == "KeyW")
         {
-          moveInterval1up = setInterval(() => {
+          moveInterval1up = setInterval(() => 
+          {
             const message = 
             {
               type: "mouvUp",
               player: "1",
             };
             sendMessage(message);                    
-          }, tickPadel );
+            
+          },
+          tickPadel);
         }
-      } 
-      else if (keysPressed["KeyS"])
+      }
+    }
+
+    function movePlayer1down(e)
+    {
+      if (!moveInterval1down)
       {
-        if (!moveInterval1down)
+        if (e.code == "KeyS")
         {
-          moveInterval1down = setInterval(() => {
+          moveInterval1down = setInterval(() => 
+          {
             const message = 
             {
               type: "mouvDown",
               player: "1",
             };
             sendMessage(message);                    
-          }, tickPadel );
-        }                        
+          },
+          tickPadel);
+        }
       }
-        document.addEventListener('keyup', stopPlayer);
     }
 
+
     function stopPlayer(e) {
-      delete keysPressed[e.code];
       if (e.code == "KeyW")
       {  
         clearInterval(moveInterval1up);
