@@ -103,6 +103,8 @@ class PongConsumer(AsyncWebsocketConsumer):
         self.future_y = self.ball_y
         await self.sendBall(self.ball_x, self.ball_y)
         await self.sendPadInit()
+        self.ball_future_position = self.init_pad
+        self.time_to_get_future_position = 1
         await asyncio.sleep(1)
         #         self.posPad1 = 280
         # self.posPad2 = 280
@@ -169,37 +171,58 @@ class PongConsumer(AsyncWebsocketConsumer):
                 await asyncio.sleep(self.tick_back)
             await asyncio.sleep(0.5)
 
+    async def ai_get_future_position(self):
+        if (self.ball_last_direction == 1 and self.time_to_get_future_position == True):
+            self.time_to_get_future_position = False
+            
+            velocity_x = math.cos(self.ball_angle * math.pi / 180) * self.ball_speed * (self.boardWidth + self.boardHeight) / 2000
+            velocity_y = math.sin(self.ball_angle * math.pi / 180) * self.ball_speed * (self.boardWidth + self.boardHeight) / 2000
+            self.ball_future_position = (self.xPad2 - self.ball_x - self.ball_radius * 2) / velocity_x * velocity_y + self.ball_y
+            while (self.ball_future_position < self.board_min or self.ball_future_position > self.boardHeight):
+                if (self.ball_future_position < self.board_min):
+                    self.ball_future_position *= -1
+                if (self.ball_future_position > self.boardHeight):
+                    self.ball_future_position = self.boardHeight - self.ball_future_position % self.boardHeight
+            rebound_count = int(self.ball_future_position / self.boardHeight)
+            await self.sendinfo_back("velocity_x ; y",velocity_x,velocity_y)
+            await self.sendinfo_back("--------------------------------------------",0,0)
+            await self.sendinfo_back("rebound",rebound_count,self.ball_future_position)
+
     async def ai_get_infos_every_second(self):
         self.current_time = datetime.now().timestamp()
+        # await self.sendinfo_back("current / begin",self.current_time % 10, self.begin_time % 10)
         if (self.current_time - self.begin_time >= 1):
             self.begin_time = datetime.now().timestamp()
             self.ball_last_position = self.ball_y
+            await self.ai_get_future_position()
+            if (self.ball_last_direction == 1 and (self.ball_angle > 90 or self.ball_angle < -90)):
+                self.begin_time = datetime.now().timestamp()
+                await self.sendinfo_back("begin time reinitialized",self.begin_time, 0)
             self.ball_last_angle = self.ball_angle
-
-            velocity_x = math.cos(self.ball_angle * math.pi / 180) * self.ball_speed * (self.boardWidth + self.boardHeight) / 2000
-            velocity_y = math.sin(self.ball_angle * math.pi / 180) * self.ball_speed * (self.boardWidth + self.boardHeight) / 2000
-            self.ball_future_position = (self.xPad2 - self.ball_x - self.ball_radius) / velocity_x * velocity_y + self.ball_y
-            rebound_count = int(self.ball_future_position / self.boardHeight)
-            if (rebound_count % 2 == 1):
-                self.ball_future_position  = self.boardHeight - self.ball_future_position
-            self.ball_future_position  = self.ball_future_position % self.boardHeight
-            await self.sendinfo_back("future_pos",self.ball_future_position, 0)
+            if (self.ball_last_angle > 90 or self.ball_last_angle < -90):
+                self.ball_last_direction = -1
+                self.time_to_get_future_position = True
+            else:
+                self.ball_last_direction = 1
 
             self.random_paddle_pos = random.random() * 1000 % self.paddle_height
             # await self.sendinfo_back("random_paddle_pos",self.random_paddle_pos, 0)
 
     async def ai_back_to_center(self):
-        if (self.ball_last_angle > 90 or self.ball_last_angle < -90):
+        if (self.ball_last_direction == -1):
+            self.ball_future_position  = self.boardHeight / 2
             if (self.posPad2 < self.init_pad - 5):
                 await self.sendPadDown("mouvDown", 2)
             elif (self.posPad2 > self.init_pad + 5):
                 await self.sendPadUp("mouvUp", 2)
 
     async def ai_catch_ball(self):
-        if (self.ball_last_angle < 90 and self.ball_last_angle > -90):
-            if (self.ball_future_position < self.posPad2):
+        if (self.ball_last_direction == 1):
+            # if (self.ball_future_position < self.posPad2 + self.random_paddle_pos - 5):
+            if (self.ball_future_position < self.posPad2 + self.paddle_height / 2):
                 await self.sendPadUp("mouvUp", 2)
-            else:
+            # elif (self.ball_future_position > self.posPad2 + self.random_paddle_pos + 5):
+            elif (self.ball_future_position > self.posPad2 + self.paddle_height / 2):
                 await self.sendPadDown("mouvDown", 2)
         # if (self.ball_last_angle <= 0 and self.ball_last_angle > -90):
         #     await self.sendinfo_back("detect ball haut",self.ball_future_position, self.posPad2)
@@ -272,7 +295,9 @@ class PongConsumer(AsyncWebsocketConsumer):
         self.ball_last_position = self.ball_y
         self.ball_last_angle = self.ball_angle
         self.random_paddle_pos = random.random() * 1000 % self.paddle_height
-        self.ball_future_position = 0
+        self.ball_future_position = self.ball_x
+        self.ball_last_direction = -1 if self.ball_angle == 180 else 1
+        self.time_to_get_future_position = True
 
         await self.accept()
         await self.send(text_data=json.dumps({

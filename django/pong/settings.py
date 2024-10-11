@@ -30,7 +30,7 @@ ALLOWED_HOSTS = ["*"]
 
 
 # CSRF settings
-CSRF_TRUSTED_ORIGINS = ['https://localhost:8080']
+CSRF_TRUSTED_ORIGINS = ['https://localhost:8443']
 
 # Application definition
 INSTALLED_APPS = [
