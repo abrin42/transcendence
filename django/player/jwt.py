@@ -7,6 +7,7 @@ from django.urls import reverse
 from .models import BlacklistedToken, Player
 import jwt
 import datetime
+from django.utils import timezone
 
 User = get_user_model()
 
@@ -48,6 +49,8 @@ def token_user(request):
         return None
     print(user)
     print(f"(token_user) {user}")
+    user.last_login = timezone.now()
+    user.save()
     return user
 
 

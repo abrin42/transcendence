@@ -60,8 +60,8 @@ const userAccount = reactive({
     username:"",
 });
   
-var friends = ref([]);
-var allPlayers = ref([]);
+const friends = ref([]);
+const allPlayers = ref([]);
 
 
   async function getUser() {
@@ -96,17 +96,19 @@ async function getAllUsers() {
 				throw new Error(`HTTP error! Status: ${response.status}`);
 			}
 			const users = await response.json();
-		    console.log("all users: ", users);
             users.forEach((element) => {
                 var obj = {}
                 obj['username'] = element.fields.username;
                 obj['last_login'] =  element.fields.last_login;
                 allPlayers.value.push(obj);
+
             });
+            console.log("all user", allPlayers._rawValue)
 		} catch (error) {
 			console.error('Error retrieving user data:', error);
 		}
 }
+
 
 async function getFriends() {
 		try {
@@ -126,6 +128,14 @@ async function getFriends() {
                     obj['username'] = users_data[i].fields.user[0];
                 } else {
                     obj['username'] = users_data[i].fields.friend[0];
+                }
+                const result = allPlayers._rawValue.find(({ username }) => username === obj['username']);
+                var last_log = new Date(result.last_login).getTime();
+                var now = new Date().getTime()
+                if ((now - 600000) < last_log){
+                    obj['isOnline'] = true;
+                }else{
+                    obj['isOnline'] = false;
                 }
                 friends.value.push(obj);
             }
