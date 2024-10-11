@@ -4,9 +4,14 @@ import asyncio
 import math
 import random
 from datetime import datetime
+import urllib.parse
 
+
+lstgame = []
+
+connected_websockets = []
 class PongConsumer(AsyncWebsocketConsumer):
-
+    players = set()
                     #        elif type == "updatePts":
                     # await self.sendPts(type, player)
 
@@ -55,11 +60,12 @@ class PongConsumer(AsyncWebsocketConsumer):
             
 
     async def sendBall(self, x, y):
-        await self.send(text_data=json.dumps({
-            'type': "updateBaal",
-            'x': x,
-            'y': y,
-        }))
+        if self.is_online == 0:
+            await self.send(text_data=json.dumps({
+                'type': "updateBaal",
+                'x': x,
+                'y': y,
+            }))
 
 
     async def sendinfo_back(self, value_back1, value_back2 ,value_back3):
@@ -249,7 +255,7 @@ class PongConsumer(AsyncWebsocketConsumer):
             await self.ai_catch_ball()
             await asyncio.sleep(self.tick_back)
 
-    async def connect(self):
+    async def initForLocal(self):
         self.boardWidth = 700
         self.boardHeight = 700
         self.AI = 0
@@ -288,6 +294,7 @@ class PongConsumer(AsyncWebsocketConsumer):
         self.board_x_max = 700
         # self.board_min = 3.88
         self.board_min = 0
+        self.is_online = 0
 
         # ⊱━━━.⋅εïз⋅.━━━⊰   AI   ⊱━━━.⋅εïз⋅.━━━⊰ #
         self.begin_time = datetime.now().timestamp()
@@ -298,19 +305,88 @@ class PongConsumer(AsyncWebsocketConsumer):
         self.ball_future_position = self.ball_x
         self.ball_last_direction = -1 if self.ball_angle == 180 else 1
         self.time_to_get_future_position = True
+        asyncio.ensure_future(self.loop_game())
 
+
+
+    async def create_new_game(self, game_id):
+        return {
+            "gameID": game_id,
+            "wsj1": self,
+            "wsj2": 0,
+            "boardWidth": 700,
+            "boardHeight": 700,
+            "AI": 0,
+            "init_ball_speed": 4,
+            "tick_back": 0.01,
+            "Game_on": 0,
+            "nb_pts_for_win": 10,
+            "P1Ready": 0,
+            "P2Ready": 0,
+            "PTSp1": 0,
+            "PTSp2": 0,
+            "xPad1": 10,
+            "xPad2": 700 - 30,  # -10 écart du bord et -20 largeur padel 
+            "paddle_width": 20,
+            "paddle_height": 140,
+            "position_in_paddle": 0,
+            "init_pad": 700 / 2 - 140 / 2,
+            "posPad1": 700 / 2 - 140 / 2,
+            "posPad2": 700 / 2 - 140 / 2,
+            "startXBall": 350,
+            "startYBall": 350,
+            "ball_x": 350,
+            "ball_y": 350,
+            "future_x": 350,
+            "future_y": 350,
+            "ball_angle": 180 if random.random() > 0.5 else 0,
+            "ball_radius": 7.18,
+            "ball_speed": 4,
+            "board_y_max": 700,
+            "board_x_max": 700,
+            "board_min": 0,
+            "is_online": 1,
+        }
+
+    async def initRemote(self, id):
+        if not any(game['gameID'] == id for game in lstgame):
+            new_game = self.create_new_game(id)
+            lstgame.append(new_game)
+        else:
+            for game in lstgame:
+                if game['gameID'] == id:
+                    game['wsj2'] = self
+
+
+
+    async def connect(self):
+
+        query_string = self.scope['query_string'].decode('utf-8')
+        query_params = urllib.parse.parse_qs(query_string)        
+        page_url = query_params.get('page', [''])[0]
+        if (page_url == "legacy" or page_url == "ia"):
+            await self.initForLocal()
+        elif(page_url.isdigit()):
+            await self.initRemote(page_url)
+
+
+        # print(f"Le WebSocket est créé sur la page : {page_url}")
+        # if (current_path == "I")
+            
+        connected_websockets.append(self)
         await self.accept()
         await self.send(text_data=json.dumps({
             'type': 'connection_success',
             'message': 'Connexion réussie!'
         }))
-        asyncio.ensure_future(self.loop_game())
         
 
 
     async def disconnect(self, close_code):
-        if (close_code == 1000): #fin de partie normal 
-                    await self.send(text_data=json.dumps({
+        if (close_code == 1000):     #fin de partie normal
+                if self in connected_websockets:
+                    connected_websockets.remove(self) 
+                await self.send(text_data=json.dumps({
                 'type': 'disconnect',
                 'close_code': close_code
             }))
