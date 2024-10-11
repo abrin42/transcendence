@@ -14,4 +14,14 @@ class Friendship(models.Model):
     def __str__(self):
         return self.user.username + ' ' + self.friend.username + ' ' + self.status
     
-
+    def userInfo(self):
+        return {
+        "username": self.user.username,
+        "nickname": self.user.nickname,
+        }
+        
+    def friendInfo(self):
+        return {
+        "username": self.friend.username,
+        "nickname": self.friend.nickname,
+        }
