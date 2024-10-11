@@ -27,29 +27,37 @@
 	const menuVisible = ref(false);
 	let timeoutId;
 
-	async function getLanguage() {
-		try {
-			const response = await fetch(`https://localhost:8443/api/player/connected_user`, {
-				method: 'GET',
-			});
-
-			if (!response.ok) {
-				throw new Error(`HTTP error! Status: ${response.status}`);
-			}
-			const user = await response.json();
-			userAccount.language = user[0].fields.language;
-		} catch (error) {
-			console.error('Error retrieving user data:', error);
-		}
-	}
+	const is_connected = ref(false);
+    async function getLanguage() {
+        try {
+            const response = await fetch(`api/player/connected_user/`, {
+                method: 'GET',
+            });
+            if (!response) {
+                console.warn(`HTTP error! Status: ${response.status}`);
+                return;
+            }
+            const user = await response.json();
+            if (user && user.length > 0) {
+				userAccount.language = user[0].fields.language;
+                is_connected.value = true;
+                console.log(is_connected.value)
+            } else {
+                console.log('No user data retrieved.');
+				return;
+            }
+        } catch (error) {
+            console.error('Error retrieving user data:', error);
+        }
+    }
 
 	async function setLanguage(new_language) {
 		try {
-			await fetch('/api/player/update_language/', {
+			await fetch('api/player/update_language/', {
 				method: 'POST',
 				headers: {
 					'Content-Type': 'application/json',
-					'X-CSRFToken': getCsrfToken() // Add your CSRF token retrieval here
+					'X-CSRFToken': getCsrfToken()
 				},
 				body: JSON.stringify({
 					language: new_language,
@@ -70,18 +78,19 @@
 	}
 
 	function switchLang(lang) {
-		locale.value = lang;
-		const langs = ["EN", "FR", "ES", "DE", "IT", "MA"];
-		const flags = ["🇬🇧", "🇫🇷", "🇪🇸", "🇩🇪", "🇮🇹", "⚔️"];
-		for (let i = 0; i < 6; ++i)
-			if (lang == langs[i])
-				userAccount.flag = flags[i];
-		setLanguage(lang);
+		if (is_connected)
+			locale.value = lang;
+			const langs = ["EN", "FR", "ES", "DE", "IT", "MA"];
+			const flags = ["🇬🇧", "🇫🇷", "🇪🇸", "🇩🇪", "🇮🇹", "⚔️"];
+			for (let i = 0; i < 6; ++i)
+				if (lang == langs[i])
+					userAccount.flag = flags[i];
+			setLanguage(lang);
 	}
 
 	onMounted(async () => {
 		await getLanguage();
-		switchLang(userAccount.language);
+		//switchLang(userAccount.language);
 	});
 
 	function showMenu() {

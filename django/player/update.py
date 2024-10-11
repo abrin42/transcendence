@@ -98,3 +98,22 @@ def update_profile_picture(request):
         except json.JSONDecodeError:
             return JsonResponse({'error': 'Invalid request body'}, status=400)
     return JsonResponse({'error': 'Invalid request method'}, status=405)
+
+@login_required
+def update_2fa(request):
+    user = token_user(request)
+    if request.method == "POST":
+        try:
+            data = json.loads(request.body)
+            email_2fa_active = data.get('email_2fa_active')
+            sms_2fa_active = data.get('sms_2fa_active')
+            if email_2fa_active:
+                user.email_2fa_active = email_2fa_active
+            elif sms_2fa_active:
+                user.sms_2fa_active = sms_2fa_active
+            user.save()
+            response = JsonResponse({'redirect_url': '/dashboard/'}, status=302)
+            return response
+        except json.JSONDecodeError:
+            return JsonResponse({'error': 'Invalid request body'}, status=400)
+    return JsonResponse({'error': 'Invalid request method'}, status=405)

@@ -30,7 +30,7 @@ ALLOWED_HOSTS = ["*"]
 
 
 # CSRF settings
-CSRF_TRUSTED_ORIGINS = ['https://localhost:8080']
+CSRF_TRUSTED_ORIGINS = ['https://10.11.2.11:8443']
 
 # Application definition
 INSTALLED_APPS = [
@@ -179,6 +179,9 @@ CORS_ALLOWED_ORIGINS = [
     "http://localhost:8080", 
     "https://localhost:8443",
 ]
+
+# settings.py
+APPEND_SLASH = False
 
 
 # WEBSOCKET_URL = '/ws/'

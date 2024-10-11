@@ -60,7 +60,6 @@ def register_view(request):
 
     return JsonResponse({'error': 'Invalid request method'}, status=405)
 
-@csrf_exempt
 def login_view(request):
     if request.method == "POST":
         try:
@@ -79,19 +78,19 @@ def login_view(request):
                 if user is not None:
                     user = get_object_or_404(Player, username=user.username)
 
-                    #if not user.email_2fa_active and not user.sms_2fa_active:
-                    #    token = generate_jwt(user)
-                    #    user = decode_jwt(token)
-                    #    print(user)
-                    #    
-                    #    if not user.nickname:
-                    #        user.nickname = user.username[1:]
-                    #        user.save()
+                    if not user.email_2fa_active and not user.sms_2fa_active:
+                        token = generate_jwt(user)
+                        user = decode_jwt(token)
+                        print(user)
+                        
+                        if not user.nickname:
+                            user.nickname = user.username[1:]
+                            user.save()
 
-                    #    response = JsonResponse({'redirect_url': '/dashboard'}, status=302)
-                    #    set_jwt_token(response, token)
+                        response = JsonResponse({'redirect_url': '/dashboard'}, status=302)
+                        set_jwt_token(response, token)
 
-                    #    return response
+                        return response
                     
                     response = JsonResponse({'redirect_url': '/2fa'}, status=302)
                     return response
@@ -103,7 +102,6 @@ def login_view(request):
     return JsonResponse({'error': 'Invalid request method'}, status=405)
 
 
-@csrf_exempt  # For development only, better to use proper CSRF handling in production
 def login42_view(request):
     if request.method == "POST":
         oauth_url = f"{settings.FT42_OAUTH_URL}?client_id={settings.FT42_CLIENT_ID}&redirect_uri={settings.FT42_REDIRECT_URI}&response_type=code"
@@ -112,7 +110,6 @@ def login42_view(request):
 
 
 @login_required
-@csrf_exempt
 def tfa_view(request):
     ########################### Here I use the user from request and call its Player object. I apply the JWT token only when the 2FA/OTP is valid
     user = verify_user(request)
@@ -125,7 +122,6 @@ def tfa_view(request):
     return JsonResponse({'error': 'Invalid request method'}, status=405)
 
 @login_required
-@csrf_exempt
 def otp_view(request):
     ########################### Here I use the user from request and call its Player object. I apply the JWT token only when the 2FA/OTP is valid
     user = verify_user(request)
@@ -162,7 +158,6 @@ def otp_view(request):
                         del request.session['username']
                         del request.session['otp_method']
 
-                        print("OKOKOK")
                         return response
                     
                     return JsonResponse({'error': 'Invalid OTP'}, status=400)
@@ -287,19 +282,18 @@ def update_password_view(request):
         form = ChangePasswordForm(user)
         return render(request, 'player/update_password.html', {"form": form})
 
-
-
-#@login_required
+@login_required
 def logout_view(request):
-   # if request.method == "POST":
-    token = request.COOKIES.get('jwt')
-    response = redirect('/log/')
-    if token:
-        BlacklistedToken.objects.create(token=token)
-        response.delete_cookie('jwt')
-    logout(request)
-    return response
-  #  return JsonResponse({'error': 'Invalid request method'}, status=405)
+    if request.method == "POST":
+        token = request.COOKIES.get('jwt')
+        print(token)
+        response = redirect('/log')
+        if token:
+            BlacklistedToken.objects.create(token=token)
+            response.delete_cookie('jwt')
+        logout(request)
+        return response
+    return JsonResponse({'error': 'Invalid request method'}, status=405)
 
 
 @login_required
@@ -311,7 +305,6 @@ def delete_account_view(request):
     # return render(request, 'player/delete_account.html')
 
 
-@login_required
 def connected_user(request):
     user = token_user(request)
     if user:        

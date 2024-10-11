@@ -6,6 +6,7 @@ import Input from '../components/Input.vue';
 import { useRouter } from 'vue-router';
 
 const router = useRouter();
+
 const username = ref('');
 const email = ref('');
 const phone_number = ref('');
@@ -50,7 +51,6 @@ async function createAccount() {
                 password2: password2.value,
             })
         });
-
         if (response.ok) {
             const responseData = await response.json();
             alert('Compte créé avec succès !');
@@ -89,10 +89,11 @@ function getCsrfToken() {
             </div>
 
             <div class="__inputInfo">
-                <Input iconClass="fa-user" placeholderText="Username" v-model="username" />
-                <Input iconClass="fa-envelope" placeholderText="Email" v-model="email" />
-                <Input iconClass="fa-lock" placeholderText="Password" isPassword v-model="password1" />
-                <Input iconClass="fa-lock" placeholderText="Confirm password" isPassword v-model="password2" />
+                <Input iconClass="fa-user" placeholderText="*Username" v-model="username" />
+                <Input iconClass="fa-envelope" placeholderText="*Email" v-model="email" />
+                <Input iconClass="fa-phone" placeholderText="Phone Number" v-model="phone_number" />
+                <Input iconClass="fa-lock" placeholderText="*Password" isPassword v-model="password1" />
+                <Input iconClass="fa-lock" placeholderText="*Confirm password" isPassword v-model="password2" />
             </div>
 
             <div class="buttonContainer">

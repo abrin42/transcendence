@@ -8,19 +8,19 @@ import { ref, reactive, onMounted } from 'vue';
 const router = useRouter();
 const username = ref('');
 const password = ref('');
-const userAccount = reactive({
-    is2FA:ref(false),
-});
+//const userAccount = reactive({
+    //is2FA:"",
+//});
 
 async function getUser() {
     try {
-        const response = await fetch(`http://localhost:8080/api/player/connected_user`, {
+        const response = await fetch(`api/player/connected_user/`, {
             method: 'GET',
         });
         if (!response.ok) 
             throw new Error(`HTTP error! Status: ${response.status}`);
-        const user = await response.json();
-        userAccount.is2FA = user[0].fields.is2FA;
+        //const user = await response.json();
+        //userAccount.is2FA = user[0].fields.is2FA;
     } catch (error) {
         console.error('Error retrieving user data:', error);
     }
@@ -74,25 +74,22 @@ async function login() {
 async function login42() {
     try {
         const response = await fetch('/api/player/login42/', {
-            method: 'POST', // Change to POST to match the Django view
+            method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
-                //'X-CSRFToken': getCsrfToken()
+                'X-CSRFToken': getCsrfToken()
             },
         });
-
         if (!response.ok) {
             throw new Error(`HTTP error! Status: ${response.status}`);
         }
-
         const data = await response.json();
+        console.log(data);
         if (data.url) {
-            // Use the URL returned from the backend
-            window.location.href = data.url; // Redirect to the URL
+            window.location.href = data.url;
         } else {
             alert('Could not get URL for login');
         }
-
     } catch (error) {
         console.error('Error during login:', error);
         alert('An error occurred during login');
@@ -100,7 +97,6 @@ async function login42() {
 }
 
 function getCsrfToken() {
-    // Helper function to get the CSRF token from cookies
     const cookieValue = document.cookie
         .split('; ')
         .find(row => row.startsWith('csrftoken='))
@@ -127,7 +123,7 @@ function getCsrfToken() {
             </div>
 
             <div class="__inputInfo">
-                <Input iconClass="fa-envelope" placeholderText="Enter your email" v-model="username" />
+                <Input iconClass="fa-user" placeholderText="Enter your username" v-model="username" />
                 <Input iconClass="fa-lock" placeholderText="Enter your password" isPassword v-model="password" />
             </div>
 

@@ -1,69 +1,136 @@
 <script setup>
-import CreateBackButton from '@/components/CreateBackButton.vue';
-import CreateDropupButton from '@/components/CreateDropupButton.vue';
-import InputEdit from '@/components/InputEdit.vue';
-import Switch from '@/components/Switch.vue';
-import TextDisplay from './../components/TextDisplay.vue';
-import profilePicture from '@/assets/img/default-profile.png';
-import { ref } from 'vue';
-import { reactive, onMounted } from 'vue';
+    import CreateBackButton from '@/components/CreateBackButton.vue';
+    import CreateDropupButton from '@/components/CreateDropupButton.vue';
+    import InputEdit from '@/components/InputEdit.vue';
+    import Switch from '@/components/Switch.vue';
+    import TextDisplay from './../components/TextDisplay.vue';
+    import profilePicture from '@/assets/img/default-profile.png';
+    import { ref } from 'vue';
+    import { reactive, onMounted } from 'vue';
+    import { useRouter } from 'vue-router';
 
-const showAllInfo = ref(false);
-const userAccount = reactive({
-    date_joined:"",
-    email:"",
-    email_2fa_active:false,
-    lose:0,
-    nickname:"",
-    password:"",
-    phone_number:"",
-    profilePicture: profilePicture,
-    rank:0,
-    username:"",
-    win:0,
-});
+    const router = useRouter();
+    const showAllInfo = ref(false);
 
-async function getUser() {
-    try {
-        const response = await fetch(`https://localhost:8443/api/player/connected_user`, {
-            method: 'GET',
-        });
-        const user = await response.json();
-        userAccount.nickname = user[0].fields.nickname;
-        userAccount.username = user[0].fields.username;
-        userAccount.email = user[0].fields.email;
-        userAccount.password = user[0].fields.password;
-        userAccount.phone_number = user[0].fields.phone_number;
+    const is_connected = ref(false);
+    const userAccount = reactive({
+        date_joined:"",
+        email:"",
+        email_2fa_active:"",
+        sms_2fa_active:"",
+        lose:0,
+        nickname:"",
+        password:"",
+        phone_number:"",
+        profilePicture: profilePicture,
+        rank:0,
+        username:"",
+        win:0,
+    });
+    async function getUser() {
+        try {
+            const response = await fetch(`api/player/connected_user/`, {
+                method: 'GET',
+            });
+            if (!response.ok) {
+                console.warn(`HTTP error! Status: ${response.status}`);
+                return;
+            }
+            const user = await response.json();
+            if (user && user.length > 0) {
+                userAccount.nickname = user[0].fields.nickname;
+                userAccount.username = user[0].fields.username;
+                userAccount.email = user[0].fields.email;
+                userAccount.password = user[0].fields.password;
+                userAccount.phone_number = user[0].fields.phone_number;
+                userAccount.student = user[0].fields.student;
+                userAccount.email_2fa_active = user[0].fields.email_2fa_active;
+                userAccount.sms_2fa_active = user[0].fields.sms_2fa_active;
+                
+                is_connected.value = true;
 
-    } catch (error) {
-        console.log('Error retrieving user data:', error);
+                console.log(userAccount.student)
+                console.log(userAccount.nickname)
+                console.log(is_connected.value)
+            } else {
+                console.log('No user data retrieved.');
+                is_connected.value = false;
+                return;
+            }
+        } catch (error) {
+            console.error('Error retrieving user data:', error);
+        }
     }
-}
 
+    const email_2fa_active = ref('');
+    const sms_2fa_active = ref('');
+    async function postUser() {
+        try {
+            const response = await fetch('api/player/update_2fa/', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRFToken': getCsrfToken()
+                },
+                body: JSON.stringify({
+                    email_2fa_active: userAccount.email_2fa_active,
+                    sms_2fa_active: userAccount.sms_2fa_active,
+                })
+            });
+            console.log(email_2fa_active);
+            console.log(sms_2fa_active);
+        } catch (error) {
+            console.error('Erreur lors de la création du compte:', error);
+            alert('Une erreur est survenue pendant la création du compte.');
+        }
+    }
 
-function getAccountType() {
-    if (userAccount.email.search("@student.42") !== -1) {
-        return "42";
-    } else {
+    function getAccountType() {
+        if (userAccount.student === true)
+            return "42";
         return "normal";
     }
-}
+    
+    const logoutUrl = "api/player/logout/";
 
+    const handleLogout = async () => {
+        try {
+            await fetch(logoutUrl, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRFToken': getCsrfToken()
+                },
+            });
+            router.push('/log');
+        } catch (error) {
+            console.error('Logout failed:', error);
+        }
+    };
 
-onMounted(async () => {
-    await getUser(); // Only call getUser if state.id is available
-});
-
-const handleProfilePictureChange = (event) => {
-    const file = event.target.files[0];
-    if (file) {
-        const reader = new FileReader();
-        reader.onload = (e) => {
-            userAccount.profilePicture = e.target.result;
-        };
-        reader.readAsDataURL(file);
+    function getCsrfToken() {
+        const cookieValue = document.cookie
+            .split('; ')
+            .find(row => row.startsWith('csrftoken='))
+            ?.split('=')[1];
+        return cookieValue || '';
     }
-};
+
+    onMounted(async () => {
+        await getUser(); // Only call getUser if state.id is available
+        //postUser();
+    });
+
+    const handleProfilePictureChange = (event) => {
+        const file = event.target.files[0];
+        if (file) {
+            const reader = new FileReader();
+            reader.onload = (e) => {
+                userAccount.profilePicture = e.target.result;
+            };
+            reader.readAsDataURL(file);
+        }
+    };
 </script>
 
 <template>
@@ -127,7 +194,7 @@ const handleProfilePictureChange = (event) => {
                         </button>
 
                         <button class="button">
-                            <span class="buttonText buttonTextSize" style="font-size: medium;">Logout</span>
+                            <span class="buttonText buttonTextSize" @click="handleLogout" style="font-size: medium;">Logout</span>
                         </button>
 
                         <button class="button">
@@ -137,8 +204,10 @@ const handleProfilePictureChange = (event) => {
                 </div>
                 <div class="SwitchStyle" v-if="getAccountType() !== '42'">
                     <Switch buttonText="Activer 2FA (SMS)"
-                        :isDisabled="userAccount.phone_number === '' ? true : false" />
-                    <Switch buttonText="Activer 2FA (EMAIL)" />
+                        :isDisabled="userAccount.phone_number === '' ? false : true" 
+                        v-model="userAccount.sms_2fa_active" />
+                    <Switch buttonText="Activer 2FA (EMAIL)" 
+                        v-model="userAccount.email_2fa_active"/>
                 </div>
             </div>
         </div>

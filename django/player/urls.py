@@ -31,6 +31,8 @@ urlpatterns = [
     path('update_email/', update.update_email, name='update_email'),
     path('update_phone_number/', update.update_phone_number, name='update_phone_number'),
     path('update_profile_picture/', update.update_profile_picture, name='update_profile_picture'),
+    path('update_2fa/', update.update_2fa, name='update_2fa'),
+    
     path('enter_matchmaking/', views.enter_matchmaking, name='enter_matchmaking'),
     path('quit_matchmaking/', views.quit_matchmaking, name='quit_matchmaking'),
     path('get_match/', views.get_match, name='get_match'),
