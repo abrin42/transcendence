@@ -28,15 +28,15 @@
     <main>
         <div id="wrapper">
             <div class="buttonContainer">
-                <CreateHomeButton />
                 <button class="button button-credits" @click="goToGameSelect()">
                     <span class="buttonText">{{ $t('solo') }}</span>
                 </button>
                 <button class="button button-credits" @click="goToMulti()">
                     <span class="buttonText">{{ $t('multiplayer') }}</span>
                 </button>
-                <!-- <CreateSoundButton /> -->
-                <!-- <CreateDropupButton /> -->
+                <CreateHomeButton />
+                <CreateSoundButton />
+                <CreateDropupButton />
                 <CreateBackButton />
             </div>
         </div>

@@ -1,6 +1,7 @@
 <script setup>
 import CreateDropupButton from '../components/CreateDropupButton.vue';
 import CreateBackButton from '../components/CreateBackButton.vue';
+import CreateHomeButton from '../components/CreateHomeButton.vue';
 import Input from '../components/Input.vue';
 import { useRouter } from 'vue-router';
 import { ref, reactive, onMounted } from 'vue';
@@ -131,6 +132,7 @@ function getCsrfToken() {
             </div>
 
             <div class="buttonContainer">
+                <CreateHomeButton />
                 <CreateBackButton />
                 <CreateDropupButton />
             </div>
