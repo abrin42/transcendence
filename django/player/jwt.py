@@ -74,6 +74,6 @@ def verify_jwt(request):
     #    user_data = {
     #        'id': user.id,
     #    }
-        return JsonResponse({'valid': True, 'message': 'Token is valid', 'user': user_data}, content_type='application/json')
+        return JsonResponse({'valid': True, 'message': 'Token is valid', 'user': user}, content_type='application/json')
     else:
         return JsonResponse({'valid': False, 'message': 'Invalid or expired token', 'user': None}, status=401)
