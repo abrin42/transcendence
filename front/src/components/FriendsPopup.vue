@@ -66,7 +66,7 @@ const allPlayers = ref([]);
 
   async function getUser() {
   try {
-    const response = await fetch(`https://localhost:8443/api/player/connected_user`, {
+    const response = await fetch(`api/player/connected_user/`, {
       method: 'GET',
     });
     if (!response.ok) {
@@ -88,7 +88,7 @@ const allPlayers = ref([]);
 
 async function getAllUsers() {
 		try {
-			const response = await fetch(`https://localhost:8443/api/player/get_all_user`, {
+			const response = await fetch(`api/player/get_all_user/`, {
 				method: 'GET',
 			});
 
@@ -112,7 +112,7 @@ async function getAllUsers() {
 
 async function getFriends() {
 		try {
-			const response = await fetch(`https://localhost:8443/api/friend/list`, {
+			const response = await fetch(`api/friend/list/`, {
 				method: 'GET',
 			});
 
