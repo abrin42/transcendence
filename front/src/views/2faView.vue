@@ -74,7 +74,7 @@
             //    throw new Error(`HTTP error! Status: ${response.status}`);
             //}
             else
-                __goTo('/dashboard')
+                __goTo('/')
 
         } catch (error) {
             console.error('Error during OTPPP setup:', error);

@@ -87,7 +87,7 @@ def login_view(request):
                             user.nickname = user.username[1:]
                             user.save()
 
-                        response = JsonResponse({'redirect_url': '/dashboard'}, status=302)
+                        response = JsonResponse({'redirect_url': '/'}, status=302)
                         set_jwt_token(response, token)
 
                         return response
@@ -187,7 +187,7 @@ def auth_42_callback(request):
 
     response = requests.post(token_url, data=data)
     if response.status_code != 200: #if the HTTP request (get) is not successful 
-        return redirect('/api/player/login/')
+        return redirect('/log/')
 
     token_info = response.json()
     access_token = token_info.get('access_token')
@@ -222,13 +222,13 @@ def auth_42_callback(request):
         #if profile_picture: 
         #    set_picture_42(request, user, profile_picture)
         token = generate_jwt(user)
-        response = redirect('/dashboard/')
+        response = redirect('/')
         set_jwt_token(response, token)
         login(request, user)
         user = token_user(request)
         return response
 
-    return redirect('/dashboard/')
+    return redirect('/log/')
 
 
 
