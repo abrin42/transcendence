@@ -35,30 +35,37 @@
 
 
     //dynamic "loading" dots 
-    let foo = document.getElementById("loading");
-    console.log(foo);
-    if (document.getElementById("loading") != false)
+    if(document.getElementById("loading") != null)
     {
-        var dots = window.setInterval( function() {
-        var wait = document.getElementById("loading");
-        console.log(document.getElementById("loading"));
-        if ( wait.innerHTML.length >= 3 ) 
-            wait.innerHTML = ".";
-        else 
-            wait.innerHTML += ".";
-        }, 1000);
+        //console.log(document.getElementById("loading"));
+        if (document.getElementById("loading") != false)
+        {
+            var dots = window.setInterval( function() {
+            var wait = document.getElementById("loading");
+            console.log(document.getElementById("loading"));
+            if ( wait.innerHTML.length >= 3 ) 
+                wait.innerHTML = ".";
+            else 
+                wait.innerHTML += ".";
+            }, 1000);
+        }
     }
 
+    // if(document.getElementById("right-side") != null &&
+    // document.getElementById("loading") != null )
+    // {
     // //when 2nd player is found, we hide "waiting for player" and show opponent
-    // let playerfound = 0;
-    // if(playerfound == 1)
-    // {
-    //     document.getElementById("right-side").style.display = 'show';
-    // }
-    // else
-    // {
-    //     document.getElementById("right-side").style.display = 'none';
-    //     document.getElementById("loading").style.display = show;
+    //     let playerfound = true;
+    //     if(playerfound == true)
+    //     {
+    //         document.getElementById("right-side").style.display = block;
+    //         document.getElementById("loading").style.display = 'none';
+    //     }
+    //     else
+    //     {
+    //         document.getElementById("right-side").style.display = none;
+    //         document.getElementById("loading").style.display = block;
+    //     }
     // }
     
 </script>
@@ -73,19 +80,22 @@
                 <CreateBackButton />
                 <h2 id="matchmaking-title">Matchmaking</h2>
                 <p id="game-type">{{gamemode}}</p>
-                <img class="profile-picture-matchmaking-left" src="../assets/Chachou.png">
-                <img class="profile-picture-matchmaking-right" src="../assets/Chachou.png">
+                <p id="game-advice">Advice: dont read your phone in the stairs</p>
                 <div class="buttonContainer">
-                    <div class="left">
+                    <div class="stuff-to-move">
+                        <img class="profile-picture-matchmaking-left" src="../assets/Chachou.png">
                         <p class="profile-text-left">{{playerName1}}</p>
-                        <p class="profile-text-right">{{playerName2}}</p>
                         <p class="rank-text-left">{{playerRank1}}</p>
-                        <p class="rank-text-right">{{playerRank2}}</p>
                     </div>
-                </div>
-                <div id="left">
-                    <span id="loading" class="waiting-text">.</span>
-                    <p class="opponent-text">Looking for an opponent</p>
+                    <div id="stuff-to-hide">
+                        <span id="loading" class="waiting-text">.</span>
+                        <p class="opponent-text">Looking for an opponent</p>
+                    </div>
+                    <div id="stuff-to-show">
+                        <p class="rank-text-right">{{playerRank2}}</p>
+                        <p class="profile-text-right">{{playerName2}}</p>
+                        <img class="profile-picture-matchmaking-right" src="../assets/Chachou.png">
+                    </div>
                 </div>
             </div>
         </div>
