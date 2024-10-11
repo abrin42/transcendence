@@ -3,6 +3,7 @@
     import CreateDropupButton from '../components/CreateDropupButton.vue';
     import CreateBackButton from '../components/CreateBackButton.vue';
     import CreateSoundButton from '../components/CreateSoundButton.vue';
+    import CreateHomeButton from '../components/CreateHomeButton.vue';
     import { reactive, onMounted } from 'vue';
     import { useRouter } from 'vue-router';
 
@@ -24,80 +25,89 @@
         rank:0,
     });
 
-
     function goToLegacy(id) {
     router.push(`/legacy/${id}`);
 }
-
-
-    
-
-
 
     onMounted(async () => {
         // await postUser();
     });
 
-    //dynamic loading dots 
-    if (document.getElementById("loading") != null)
+
+    //dynamic "loading" dots 
+    let foo = document.getElementById("loading");
+    console.log(foo);
+    if (document.getElementById("loading") != false)
     {
         var dots = window.setInterval( function() {
         var wait = document.getElementById("loading");
-            if ( Math.random() < .5 && wait.innerHTML.length <= 4)
-                    wait.innerHTML += ".";
-            else
-                    wait.innerHTML = wait.innerHTML.substring(1, wait.innerHTML.length);
-            }, 1000);
+        console.log(document.getElementById("loading"));
+        if ( wait.innerHTML.length >= 3 ) 
+            wait.innerHTML = ".";
+        else 
+            wait.innerHTML += ".";
+        }, 1000);
     }
 
-    //when 2nd player is found, we hide "waiting for player" and show opponent
-    let playerfound = 1;
-    if(playerfound == 1)
-    {
-//document.getElementById('right-side').style.display = 'show';
-    }
-    else
-    {
-        document.getElementById('right-side').style.display = 'none';
-        document.getElementById('waiting-text').style.display = show;
-    }
+    // //when 2nd player is found, we hide "waiting for player" and show opponent
+    // let playerfound = 0;
+    // if(playerfound == 1)
+    // {
+    //     document.getElementById("right-side").style.display = 'show';
+    // }
+    // else
+    // {
+    //     document.getElementById("right-side").style.display = 'none';
+    //     document.getElementById("loading").style.display = show;
+    // }
     
 </script>
 
 <template>
     <main>
-        <div id="wrapper-matchmaking">
-            <CreateSoundButton />
-            <!-- <CreateDropupButton /> -->
-            <CreateBackButton />
-            <h1 id="matchmaking">Matchmaking</h1>
-            <h1 id="game-type">{{gamemode}}</h1>
-            <img class="profile-picture-matchmaking-left" src="../assets/Chachou.png">
-            <img class="profile-picture-matchmaking-right" src="../assets/Chachou.png">
-            <div class="buttonContainer">
-                <div class="left">
-                    <h1 class="profile-text-left">{{playerName1}}</h1>
-                    <h1 class="profile-text-right">{{playerName2}}</h1>
-                    <h1 class="rank-text-left">{{playerRank1}}</h1>
-                    <h1 class="rank-text-right">{{playerRank2}}</h1>
+        <div>
+            <div id="wrapper-matchmaking">
+                <CreateSoundButton />
+                <CreateDropupButton />
+                <CreateHomeButton />
+                <CreateBackButton />
+                <h2 id="matchmaking-title">Matchmaking</h2>
+                <p id="game-type">{{gamemode}}</p>
+                <img class="profile-picture-matchmaking-left" src="../assets/Chachou.png">
+                <img class="profile-picture-matchmaking-right" src="../assets/Chachou.png">
+                <div class="buttonContainer">
+                    <div class="left">
+                        <p class="profile-text-left">{{playerName1}}</p>
+                        <p class="profile-text-right">{{playerName2}}</p>
+                        <p class="rank-text-left">{{playerRank1}}</p>
+                        <p class="rank-text-right">{{playerRank2}}</p>
+                    </div>
                 </div>
-            </div>
-            <div id="left">
-                <span id="loading" class="waiting-text">.</span>
+                <div id="left">
+                    <span id="loading" class="waiting-text">.</span>
+                    <p class="opponent-text">Looking for an opponent</p>
+                </div>
             </div>
         </div>
     </main>
 </template>
 
-<style lang="scss">
+<style scoped>
 @import './../assets/main.scss';
+
+.wrapper {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+}
 
 #wrapper-matchmaking {
     box-shadow: inset 0 0 0 1000px rgba(0, 0, 0, 0.398);
 }
 
-#matchmaking {
-    position: fixed;
+#matchmaking-title {
+    position: flex;
     text-align: center;
     left: 38vw;
     text-align: center;
@@ -156,12 +166,12 @@
     color: white;
 }
 
-.waiting-text {
+#loading {
     position: fixed;
     z-index: 5;
     font-size: 80px;
     top: 38vw;
-    left: 70vw;
+    left: 45vw;
     color: white;
 }
 
@@ -174,5 +184,13 @@
     right: 20vw;
     border: 5px solid white;
     filter: drop-shadow(5px 5px 4px #0000003b);
+}
+.opponent-text {
+    position: fixed;
+    z-index: 5;
+    font-size: 30px;
+    top: 36vw;
+    left: 38vw;
+    color: white;
 }
 </style>
