@@ -37,10 +37,11 @@ def insertPlayer(request):
             player = get_object_or_404(Player, username=username)
             latest_game = Game.objects.order_by('-id').first()
 
-            if latest_game.player1 != player:
-                if latest_game is None:
+           
+            if latest_game is None:
                     latest_game = Game.objects.create(state='waiting', player1=player, scorep1=0)
-                elif latest_game.player2 is not None:
+            elif latest_game.player1 != player and (latest_game.player2 is None or latest_game.player2 != player):
+                if latest_game.player2 is not None:
                     latest_game = Game.objects.create(state='waiting', player1=player, scorep1=0)
                 else:
                     latest_game.player2 = player

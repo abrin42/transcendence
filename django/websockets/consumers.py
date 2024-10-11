@@ -5,7 +5,7 @@ import math
 import random
 from datetime import datetime
 import urllib.parse
-
+from . import remote 
 
 lstgame = []
 
@@ -154,7 +154,6 @@ class PongConsumer(AsyncWebsocketConsumer):
         self.future_x = self.ball_x + math.cos(self.ball_angle * math.pi / 180) * self.ball_speed * (self.boardWidth + self.boardHeight) / 2000
         self.future_y = self.ball_y + math.sin(self.ball_angle * math.pi / 180) * self.ball_speed * (self.boardWidth + self.boardHeight) / 2000
         # self.future_x += 3
-       
         if await self.wall_collisions() == 0:
             await self.paddle_collisions()
 
@@ -346,28 +345,211 @@ class PongConsumer(AsyncWebsocketConsumer):
             "board_x_max": 700,
             "board_min": 0,
             "is_online": 1,
+            # "thread_online": 0,
         }
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+# ==========================================================================================================================
+# ==========================================================================================================================
+#                                                 remote
+# ==========================================================================================================================
+# ==========================================================================================================================
+
+
+    async def speed_up_ball_remote(game):
+        if (game.ball_speed < 10):
+            return (0.2)
+        return (0)
+
+    async def paddle_collisions_remote(game):
+        if (game.future_x <= game.xPad1  + game.paddle_width + game.ball_radius and game.future_x >= game.xPad1  and game.future_y >= game.posPad1 - game.ball_radius and game.future_y <= game.posPad1 + game.paddle_height + game.ball_radius):
+            game.position_in_paddle = (2 * (game.ball_y + game.ball_radius - game.posPad1) / (game.paddle_height + game.ball_radius * 2)) - 1
+            game.ball_angle = 80 * game.position_in_paddle
+            game.ball_x += game.ball_radius / 10
+            game.ball_speed += await game.speed_up_ball_remote()
+
+        if (game.future_x >= game.xPad2 - game.ball_radius and game.future_x <= game.xPad2 + game.ball_radius / 2 and game.future_y >= game.posPad2 - game.ball_radius and game.future_y <= game.posPad2 + game.paddle_height + game.ball_radius):
+            game.position_in_paddle = (2 * (game.ball_y + game.ball_radius - game.posPad2) / (game.paddle_height + game.ball_radius * 2)) - 1
+            game.ball_angle = 180 - 80 * game.position_in_paddle
+            game.ball_x -= game.ball_radius / 10
+            game.ball_speed += await game.speed_up_ball_remote()
+
+
+    async def endGame_remote(game):
+        game.Game_on = -1
+        await game.disconnect(1000)
+        await game.send(text_data=json.dumps({
+            'type': "endGame",
+        }))
+
+
+    async def sendPts_remote(game, type, player):
+        if player == "1":
+            game.PTSp1 = game.PTSp1 + 1
+            await game.send(text_data=json.dumps({
+                'type': type,
+                'updatePts': game.PTSp1,
+                'player': player,
+            }))
+            if (game.PTSp1 == game.nb_pts_for_win):
+                await game.endGame_remote()
+
+        elif player == "2":
+            game.PTSp2 = game.PTSp2 + 1
+            await game.send(text_data=json.dumps({
+                'type': type,
+                'updatePts': game.PTSp2,
+                'player': player,
+            }))
+            if (game.PTSp2 == game.nb_pts_for_win):
+                await game.endGame_remote()
+
+
+
+    async def sendPadInit_remote(game):
+        await game.send(text_data=json.dumps({
+            'type': "mouvUp",
+            'newY': game.init_pad,
+            'player': "1",
+        }))
+        await game.send(text_data=json.dumps({
+            'type': "mouvUp",
+            'newY': game.init_pad,
+            'player': "2",
+        }))
+
+    async def begin_point_remote(game):
+        game.posPad1 = game.init_pad
+        game.posPad2 = game.init_pad
+        game.ball_speed = game.init_ball_speed 
+        game.ball_x = game.startXBall
+        game.ball_y = game.startYBall
+        game.future_x = game.ball_x
+        game.future_y = game.ball_y
+        await game.sendBall_remote(game.ball_x, game.ball_y)
+        await game.sendPadInit_remote()
+        game.ball_future_position = game.init_pad
+        game.time_to_get_future_position = 1
+        await asyncio.sleep(1)
+#good
+    async def  victory_remote(game):
+        # await self.sendinfo_back(self.future_x, 0, 0)
+        if (game.future_x < 6.983):
+            await game.sendPts_remote("updatePts", "2")
+            game.ball_angle = 180
+            await game.begin_point_remote()
+        else:
+            await game.sendPts_remote("updatePts", "1")
+            game.ball_angle = 0
+            await game.begin_point_remote()
+
+#good
+    async def wall_collisions_remote(game):
+        # await self.sendinfo_back(self.future_x + self.ball_radius, self.board_x_max, 85600)
+        if (game.future_x < game.board_min + game.ball_radius or game.future_x + game.ball_radius > game.board_x_max):
+            await game.victory_remote()
+            return (1)
+        if (game.future_y < game.board_min + game.ball_radius):
+            game.future_y = game.board_min + game.ball_radius
+            game.ball_angle *= -1
+            # game.ball_angle = -game.ball_angle
+        if (game.future_y > game.board_y_max - game.ball_radius):
+            game.future_y = game.board_y_max - game.ball_radius
+            game.ball_angle *= -1
+            # game.ball_angle = -game.ball_angle
+        game.ball_x = game.future_x
+        game.ball_y = game.future_y
+        return (0)
+
+#good
+    async def move_ball_remote(game):
+        game.future_x = game.ball_x + math.cos(game.ball_angle * math.pi / 180) * game.ball_speed * (game.boardWidth + game.boardHeight) / 2000
+        game.future_y = game.ball_y + math.sin(game.ball_angle * math.pi / 180) * game.ball_speed * (game.boardWidth + game.boardHeight) / 2000
+        # game.future_x += 3
+        if await game.wall_collisions_remote() == 0:
+            await game.paddle_collisions_remote()
+
+# wsj1
+# wsj2
+
+    async def sendBall_remote(game, x, y):
+        if game.is_online == 0:
+            await game.wsj1.send(text_data=json.dumps({
+                'type': "updateBaal",
+                'x': x,
+                'y': y,
+            }))
+            await game.wsj2.send(text_data=json.dumps({
+                'type': "updateBaal",
+                'x': x,
+                'y': y,
+            }))
+
+#good
+    async def loop_game_remote(game):
+        while True:
+            game.ball_x = game.ball_x + 6
+            await game.sendBall_remote()
+            await asyncio.sleep(0.5)
+
+        # while game.Game_on != -1:
+        #     while(game.Game_on == 1):
+        #         # await game.sendPts("updatePts", "1")
+        #         await game.move_ball_remote()
+        #         # game.ball_x = game.ball_x + 1
+        #         await game.sendBall_remote(game.ball_x, game.ball_y)
+        #         await asyncio.sleep(game.tick_back)
+        #     await asyncio.sleep(0.5)
+
+
+
     async def initRemote(self, id):
-        if not any(game['gameID'] == id for game in lstgame):
+        if not any(game['gameID'] == id for game in lstgame): #creat la game si pas cree
             new_game = self.create_new_game(id)
             lstgame.append(new_game)
+            print("new game is set")
+
         else:
+            print("else for seconde player")
             for game in lstgame:
                 if game['gameID'] == id:
                     game['wsj2'] = self
+                    game.is_online = 0
+                    print("go to thread")
+                    asyncio.ensure_future(self.loop_game_remote())
+
+        
 
 
 
     async def connect(self):
-
+        print("principale conect")
         query_string = self.scope['query_string'].decode('utf-8')
         query_params = urllib.parse.parse_qs(query_string)        
         page_url = query_params.get('page', [''])[0]
+        page_url.replace("game_", "")
         if (page_url == "legacy" or page_url == "ia"):
             await self.initForLocal()
         elif(page_url.isdigit()):
+            print("is a remote game")
             await self.initRemote(page_url)
+
+
+
 
 
         # print(f"Le WebSocket est créé sur la page : {page_url}")

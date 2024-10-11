@@ -48,7 +48,9 @@ function updateBaal(x, y)
 function connectWebSocket() {
   const currentUrl = window.location.href; 
   const lastSegment = currentUrl.split('/').filter(Boolean).pop();
-  socket.value = new WebSocket(`wss://localhost:8443/ws/websockets/?page=${encodeURIComponent(lastSegment)}`);  
+  const gamePage = `game_${lastSegment}`;
+  console.log(lastSegment);
+  socket.value = new WebSocket(`wss://localhost:8443/ws/websockets/?page=${encodeURIComponent(gamePage)}`);  
   socket.value.onopen = () => {
     console.log('WebSocket connecté');
     console.log(socket.value);
