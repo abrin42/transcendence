@@ -60,7 +60,7 @@ async function insertPlayer() {
         });
         if (response.ok) {
             const data = await response.json();
-            console.log(data);
+            // console.log(data);
             if (data.player2 == null)
             {
                 await new Promise(resolve => setTimeout(resolve, 1000));

@@ -4,6 +4,7 @@ import asyncio
 import math
 import random
 from datetime import datetime
+import urllib.parse
 
 def create_new_game(game_id):
     return {
@@ -268,7 +269,7 @@ class PongConsumer(AsyncWebsocketConsumer):
             await self.ai_catch_ball()
             await asyncio.sleep(self.tick_back)
 
-    async def connect(self):
+    async def initForLocal(self):
         self.boardWidth = 700
         self.boardHeight = 700
         self.AI = 0
@@ -315,14 +316,27 @@ class PongConsumer(AsyncWebsocketConsumer):
         self.ball_last_angle = self.ball_angle
         self.random_paddle_pos = random.random() * 1000 % self.paddle_height
         self.ball_future_position = 0
+        asyncio.ensure_future(self.loop_game())
 
+        
+
+    async def connect(self):
+
+        query_string = self.scope['query_string'].decode('utf-8')
+        query_params = urllib.parse.parse_qs(query_string)        
+        page_url = query_params.get('page', [''])[0]
+        if (page_url == "legacy" or page_url == "ia"):
+            await self.initForLocal()
+
+        # print(f"Le WebSocket est créé sur la page : {page_url}")
+        # if (current_path == "I")
+            
         connected_websockets.append(self)
         await self.accept()
         await self.send(text_data=json.dumps({
             'type': 'connection_success',
             'message': 'Connexion réussie!'
         }))
-        asyncio.ensure_future(self.loop_game())
         
 
 
