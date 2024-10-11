@@ -132,7 +132,9 @@ function getCsrfToken() {
     }
 
     var tips = ['Tip: Reading your phone in the stairs might lead to severe injury.', 'Tip: Try pressing \'C\' while playing ;)', 
-    'Tip: Wash your cereal bowl right after eating', 'Don\'t forget to put your paddle back in the center!', 'Recipe for a lribette : one tchoukball ball, one kilo of pasta, and many many many many many Star Wars anecdotes.']
+    'Tip: Wash your cereal bowl right after eating', 'Don\'t forget to put your paddle back in the center!', 
+    'Recipe for a lribette : one tchoukball ball, 50 kilos of pasta, and many many many many many Star Wars anecdotes.', 
+    'Tu es triste? Arrête.', 'Jeu de pain, jeu de vilain', 'Bois de l\'eau, dans 20, 30 ans y\'en aura plus'];
     var tipdisplayed = tips[Math.floor(Math.random()*tips.length)];
 
     //when 2nd player is found, we hide "waiting for player" and show opponent
@@ -226,7 +228,7 @@ function getCsrfToken() {
 
 #game-advice{
     position: fixed;
-    top: 87%;
+    top: 92%;
     left: 50%;
     transform: translate(-50%, -50%);
     font-size: 20px;
@@ -241,7 +243,7 @@ function getCsrfToken() {
     height: 250px;
     border-radius: 50%;
     position: fixed;
-    top: 33%;
+    top: 37%;
     left: 41.5%;
     text-align: center;
     border: 5px solid white;
@@ -289,7 +291,7 @@ function getCsrfToken() {
     z-index: 5;
     font-size: 80px;
     font-weight: bold;
-    top: 35vw;
+    top: 65%;
     left: 48%;
     color: white;
     filter: drop-shadow(5px 5px 4px #0000003b);
@@ -310,7 +312,7 @@ function getCsrfToken() {
     z-index: 5;
     font-size: 30px;
     font-weight: bold;
-    top: 20%;
+    top: 24%;
     left: 38%;
     color: white;
     filter: drop-shadow(5px 5px 4px #0000003b);

@@ -21,9 +21,10 @@
 @import './../assets/main.scss';
 
 .img-ft_transcendence {
-    display: fixed;
-    width: 30vw;
-    height: 12vh;
+    position: fixed;
+    top: 1%;
+    width: 35vw;
+    height: 14vh;
 }
 
 .button-transcendence {
