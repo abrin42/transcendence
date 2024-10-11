@@ -118,17 +118,17 @@ async function getFriends() {
 				throw new Error(`HTTP error! Status: ${response.status}`);
 			}
 			const users = await response.json();
-			console.log("all friends: ", users);
-            users.forEach((element) => {
+            let users_data = JSON.parse(users)
+			console.log("all friends: ", users_data);
+            for (let i = 0; i < users_data.length; i++) {
                 var obj = {}
-                if (element.fields.friend[0] == userAccount.username){
-                    obj['username'] = element.fields.user[0];
+                if (users_data[i].fields.friend[0] == userAccount.username){
+                    obj['username'] = users_data[i].fields.user[0];
                 } else {
-                    obj['username'] = element.fields.friend[0];
+                    obj['username'] = users_data[i].fields.friend[0];
                 }
-                obj['last_login'] =  element.fields.last_login;
                 friends.value.push(obj);
-            });
+            }
         } catch (error) {
 			console.error('Error retrieving user data:', error);
 		}

@@ -12,7 +12,7 @@ from django.core import serializers
 import requests
 from django.http import JsonResponse, HttpResponse, HttpResponseForbidden
 from datetime import datetime, timedelta
-from .serialize import FriendSerializer
+from .serialize import FriendshipSerializer
 @login_required
 def index(request):
     user = token_user(request)
@@ -87,9 +87,12 @@ def list(request):
     you.last_login = timezone.now()
     you.save()
     #return render(request, "friend/list.html", {'friends':friends, 'you':you})
-    #data = serializers.serialize('json', friends, use_natural_foreign_keys=True, use_natural_primary_keys=True)
-    serializer = FriendSerializer(friends)
-    return JsonResponse(serializer.data, safe=False) 
+    data = serializers.serialize('json', friends, use_natural_foreign_keys=True, use_natural_primary_keys=True)
+
+    #serializer = FriendshipSerializer(friends.values())
+    #if serializer.is_valid():
+    #        serializer.save()
+    return JsonResponse(data, safe=False, content_type='application/json')
     #return HttpResponse(friend_list, content_type='application/json')
 
 @login_required
