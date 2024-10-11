@@ -5,7 +5,7 @@ app_name = "friend"
 urlpatterns = [
     path('',  views.index, name='index'),
     path('add/',  views.add, name='add'),
-    path('delete/<int:id_friendship>',  views.delete_friend, name='del'),
+    path('delete/',  views.delete, name='delete'),
 
     path('pending/', views.pending, name='pending'),
     path('accept/<int:id_friendship>', views.accept, name='accept'),

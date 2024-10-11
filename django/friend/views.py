@@ -26,39 +26,42 @@ def add(request):
     if user is None: 
         return redirect(reverse('player:login'))
     if request.method == 'POST':
-        you = request.user
-        you.last_login = timezone.now()
-        you.save()
-        if request.POST.get('username') == you.username:
-            messages.add_message(request, messages.INFO, "can't add yourself")
-            return render(request, "friend/add.html")
-            #return JsonResponse({'error': "Can't add yourself"}, status=400)
-        users = Player.objects.filter(username=request.POST.get('username'))
+        data = json.loads(request.body)
+        username = data.get('username')
+        if username == user.username:
+            #messages.add_message(request, messages.INFO, "can't add userrself")
+            #return render(request, "friend/add.html")
+            return JsonResponse({'error': "Can't add userrself"}, status=400)
+        users = Player.objects.filter(username=username)
         if len(users) == 0:
-            messages.add_message(request, messages.INFO, ("user doesn't exist"))
-            return render(request, "friend/add.html")
-            #return JsonResponse({'error': "user doesn't exist"}, status=400)
-        new_friend = Friendship.objects.filter(Q(user=you, friend=users[0]) | Q(user=users[0], friend=you))
+            #messages.add_message(request, messages.INFO, ("user doesn't exist"))
+            #return render(request, "friend/add.html")
+            return JsonResponse({'error': "user doesn't exist"}, status=400)
+        new_friend = Friendship.objects.filter(Q(user=user, friend=users[0]) | Q(user=users[0], friend=user))
         if len(new_friend) != 0:
-            messages.add_message(request, messages.INFO, ("invitation already sent"))
-            return render(request, "friend/add.html")
-            #return JsonResponse({'error': "invitation already sent"}, status=400)
-        new_friend = Friendship(user=you, friend=users[0])
+            #messages.add_message(request, messages.INFO, ("invitation already sent"))
+            #return render(request, "friend/add.html")
+            return JsonResponse({'error': "invitation already sent"}, status=400)
+        new_friend = Friendship(user=user, friend=users[0])
+        new_friend.status = 'accepted'
         new_friend.save()
-        return render(request, "friend/work.html", {'friend':users[0], 'you':you}) #faire le changement vers les page front return JsonResponse({'redirect_url': '/......./'}, status=302)
-        # Handle the submitted username as needed
-        # For example, you can query the User model or process it in other ways
-    return render(request, "friend/add.html")
-    #return JsonResponse({'error': "Invalid request methode"}, status=405)
+        #return render(request, "friend/work.html", {'friend':users[0], 'user':user}) #faire le changement vers les page front return JsonResponse({'redirect_url': '/'}, status=302)
+        return JsonResponse({'redirect_url': '/'}, status=200)
+    #return render(request, "friend/add.html")
+    return JsonResponse({'error': "Invalid request methode"}, status=405)
 
 @login_required
-def delete_friend(request, id_friendship):
+def delete(request):
     user = token_user(request)
     if user is None: 
         return redirect(reverse('player:login'))
-    request = Friendship.objects.get(id=id_friendship)
+    data = json.loads(request.body)
+    username = data.get('username')
+    other = Player.objects.filter(username=username)
+    request = Friendship.objects.filter(Q(user=user, friend=other[0]) | Q(user=other[0], friend=user))
     request.delete()
-    return redirect("friend:list")
+    #return redirect("friend:list")
+    return JsonResponse({'redirect_url': '/'}, status=200)
 
 @login_required
 def accept(request, id_friendship):
