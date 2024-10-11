@@ -230,9 +230,6 @@ def auth_42_callback(request):
     return redirect('/log/')
 
 
-
-
-
 @login_required
 def account_view(request):
     user = token_user(request)
@@ -294,7 +291,6 @@ def logout_view(request):
         return response
     return JsonResponse({'error': 'Invalid request method'}, status=405)
 
-
 @login_required
 def delete_account_view(request):
     user = token_user(request)
@@ -303,7 +299,6 @@ def delete_account_view(request):
         # return redirect(reverse('player:login'))
     # return render(request, 'player/delete_account.html')
 
-
 def connected_user(request):
     user = token_user(request)
     if user:
@@ -311,8 +306,6 @@ def connected_user(request):
     else:
         data = json.dumps({'error': 'User not found'})
     return HttpResponse(data, content_type='application/json')
-
-
 
 def get_all_user(request):
     data = Player.objects.all()

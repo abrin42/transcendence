@@ -4,32 +4,14 @@ import CreateBackButton from '../components/CreateBackButton.vue';
 import CreateHomeButton from '../components/CreateHomeButton.vue';
 import Input from '../components/Input.vue';
 import { useRouter } from 'vue-router';
-import { ref, reactive, onMounted } from 'vue';
+import { ref, onMounted } from 'vue';
+import { useUser } from '../useUser.js'; 
 
 const router = useRouter();
+const { getUser, userAccount, is_connected } = useUser(); 
+
 const username = ref('');
 const password = ref('');
-//const userAccount = reactive({
-    //is2FA:"",
-//});
-
-async function getUser() {
-    try {
-        const response = await fetch(`api/player/connected_user/`, {
-            method: 'GET',
-        });
-        if (!response.ok) 
-            throw new Error(`HTTP error! Status: ${response.status}`);
-        //const user = await response.json();
-        //userAccount.is2FA = user[0].fields.is2FA;
-    } catch (error) {
-        console.error('Error retrieving user data:', error);
-    }
-}
-
-onMounted(async () => {
-    await getUser();
-});
 
 function __goTo(page) {
     if (page == null) {
@@ -37,6 +19,12 @@ function __goTo(page) {
     }
     router.push(page);
 }
+
+onMounted(async () => {
+    await getUser();  
+    console.log(is_connected.value);  
+    console.log(userAccount.username);
+});
 
 async function login() {
     if (!username.value || !password.value) {
@@ -48,15 +36,15 @@ async function login() {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
-                'X-CSRFToken': getCsrfToken() // Assuming you have CSRF protection enabled
+                'X-CSRFToken': getCsrfToken(), 
             },
             body: JSON.stringify({
                 username: username.value,
                 password: password.value
             })
         });
-        console.log(username);
-        console.log(password);
+        console.log(username.value);
+        console.log(password.value);
         if (response.ok) {
             const data = await response.json();
             if (data.redirect_url) {
@@ -65,35 +53,31 @@ async function login() {
                 alert('Login successful');
             }
         }
-        __goTo('/2fa')
     } catch (error) {
         console.error('Erreur lors de la connexion:', error);
-        alert('An error occurred during login2222');
+        alert('An error occurred during login');
     }
 }
 
 async function login42() {
     try {
         const response = await fetch('api/player/login42/', {
-            method: 'POST', // Change to POST to match the Django view
+            method: 'POST', 
             headers: {
                 'Content-Type': 'application/json',
                 'X-CSRFToken': getCsrfToken()
             },
         });
-
         if (!response.ok) {
             throw new Error(`HTTP error! Status: ${response.status}`);
         }
-
         const data = await response.json();
         if (data.url) {
-            // Use the URL returned from the backend
-            window.location.href = data.url; // Redirect to the URL
+            window.location.href = data.url;
         } else {
             alert('Could not get URL for login');
         }
-
+        
     } catch (error) {
         console.error('Error during login:', error);
         alert('An error occurred during login');
