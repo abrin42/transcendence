@@ -23,7 +23,7 @@
 .img-ft_transcendence {
     position: fixed;
     top: 1%;
-    width: 35vw;
+    width: 30vw;
     height: 14vh;
 }
 

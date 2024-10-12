@@ -72,22 +72,22 @@ onBeforeUnmount(() => {
                     <span>MUTE SOUND</span>
                 </div>
                 <div class="buttonContainer">
-                    <button class="button" @click="changeKey('player1Right')">
+                    <button id="bouton-touche" class="button" @click="changeKey('player1Right')">
                         <span class="buttonText">{{ keys.player1Right }}</span>
                     </button>
-                    <button class="button" @click="changeKey('player1Left')">
+                    <button id="bouton-touche" class="button" @click="changeKey('player1Left')">
                         <span class="buttonText">{{ keys.player1Left }}</span>
                     </button>
-                    <button class="button" @click="changeKey('player2Right')">
+                    <button id="bouton-touche" class="button" @click="changeKey('player2Right')">
                         <span class="buttonText">{{ keys.player2Right }}</span>
                     </button>
-                    <button class="button" @click="changeKey('player2Left')">
+                    <button id="bouton-touche" class="button" @click="changeKey('player2Left')">
                         <span class="buttonText">{{ keys.player2Left }}</span>
                     </button>
-                    <button class="button" @click="changeKey('pause')">
+                    <button id="bouton-touche" class="button" @click="changeKey('pause')">
                         <span class="buttonText">{{ keys.pause }}</span>
                     </button>
-                    <button class="button" @click="changeKey('mute')">
+                    <button id="bouton-touche" class="button" @click="changeKey('mute')">
                         <span class="buttonText">{{ keys.mute }}</span>
                     </button>
                     
@@ -110,6 +110,10 @@ onBeforeUnmount(() => {
     color: white;
     text-align: center;
     z-index: 1;
+}
+
+#bouton-touche{
+    width: 10vw;
 }
 
 #wrapper {
