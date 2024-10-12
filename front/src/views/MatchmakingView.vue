@@ -4,8 +4,41 @@
     import CreateBackButton from '../components/CreateBackButton.vue';
     import CreateSoundButton from '../components/CreateSoundButton.vue';
     import CreateHomeButton from '../components/CreateHomeButton.vue';
-    import { reactive, onMounted } from 'vue';
+    import { onMounted } from 'vue';
     import { useRouter } from 'vue-router';
+
+
+    ////////////////////////////////////////////////
+    /////// GET USER ///////////////////////////////
+    ////////////////////////////////////////////////
+
+    import { useUser } from '../useUser.js'; 
+    const { getUser, userAccount, is_connected } = useUser(); 
+
+    onMounted(async () => {
+        await getUser();
+        if (is_connected.value === false)
+            __goTo('/')
+        await insertPlayer();
+    });
+
+    ////////////////////////////////////////////////
+    ////////////////////////////////////////////////
+    ////////////////////////////////////////////////
+
+    function __goTo(page) {
+        if (page == null)
+            return;
+        router.push(page);
+    }
+    
+    function getCsrfToken() {
+        const cookieValue = document.cookie
+            .split('; ')
+            .find(row => row.startsWith('csrftoken='))
+            ?.split('=')[1];
+        return cookieValue || '';
+    }
 
     var myVideo = document.getElementById('videoBG');
     
@@ -19,95 +52,50 @@
     let playerRank2 = "beginner";
     const router = useRouter();
 
-    const userAccount = reactive({
-        username:"",
-        rank:0,
-    });
-
-    
     const waitingPlayer = 1;
 
     function goToLegacy(id) {
     router.push(`/legacy_remote/${id}`);
 }
 
-async function getUser() {
-  try {
-    const response = await fetch(`api/player/connected_user/`, {
-      method: 'GET',
-    });
-    if (!response.ok) {
-      console.warn(`HTTP error! Status: ${response.status}`);
-      return;
-    }
-    const user = await response.json();
-    if (user ) {
-      userAccount.username = user[0].fields.username;
-      userAccount.rank = user[0].fields.rank;
-      console.log(userAccount.username)
-    } else {
-      console.log('No user data retrieved.');
-    }
-  } catch (error) {
-    console.error('Error retrieving user data:', error);
-  }
-}
+    async function insertPlayer() {
+            
+        try {
+            const response = await fetch('api/game/insertplayer/', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRFToken': getCsrfToken() // Assuming you have CSRF protection enabled
+                },
+                body: JSON.stringify({
+                    username: userAccount.username,
+                })
+            });
+            if (response.ok) {
+                const data = await response.json();
+                console.log(data);
+                if (data.player2 == null)
+                {
+                    await new Promise(resolve => setTimeout(resolve, 1000));
+                    insertPlayer();
+                }
+                else
+                {
+                    console.log("lancement dans 3");
+                    await new Promise(resolve => setTimeout(resolve, 1000));
+                    console.log("lancement dans 2");
+                    await new Promise(resolve => setTimeout(resolve, 1000));
+                    console.log("lancement dans 1");
+                    await new Promise(resolve => setTimeout(resolve, 1000));
+                    goToLegacy(data.id);
+                }
 
-async function insertPlayer() {
-        
-    try {
-        const response = await fetch('api/game/insertplayer/', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                'X-CSRFToken': getCsrfToken() // Assuming you have CSRF protection enabled
-            },
-            body: JSON.stringify({
-                username: userAccount.username,
-            })
-        });
-        if (response.ok) {
-            const data = await response.json();
-            console.log(data);
-            if (data.player2 == null)
-            {
-                await new Promise(resolve => setTimeout(resolve, 1000));
-                insertPlayer();
             }
-            else
-            {
-                console.log("lancement dans 3");
-                await new Promise(resolve => setTimeout(resolve, 1000));
-                console.log("lancement dans 2");
-                await new Promise(resolve => setTimeout(resolve, 1000));
-                console.log("lancement dans 1");
-                await new Promise(resolve => setTimeout(resolve, 1000));
-                goToLegacy(data.id);
-            }
-
+        } catch (error) {
+            console.error('Erreur lors de la connexion:', error);
+            alert('An error occurred during login2222');
         }
-    } catch (error) {
-        console.error('Erreur lors de la connexion:', error);
-        alert('An error occurred during login2222');
     }
-}
-
-function getCsrfToken() {
-    const cookieValue = document.cookie
-        .split('; ')
-        .find(row => row.startsWith('csrftoken='))
-        ?.split('=')[1];
-    return cookieValue || '';
-}
-
-
-    onMounted(async () => {
-        // await postUser();
-        await getUser();
-        await insertPlayer();
-        console.log(userAccount.id);
-
-    });
 
 
     //dynamic "loading" dots 

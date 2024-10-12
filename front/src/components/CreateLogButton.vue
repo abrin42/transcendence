@@ -1,10 +1,28 @@
 
 <script setup>
-    import { ref, reactive, onMounted, watch } from 'vue';
+    import { ref, onMounted, watch } from 'vue';
     import { useRouter } from 'vue-router';
     import FriendsPopup from './FriendsPopup.vue'; 
 
+    ////////////////////////////////////////////////
+    /////// GET USER ///////////////////////////////
+    ////////////////////////////////////////////////
+
+    import { useUser } from '../useUser.js'; 
+    const { getUser, userAccount, is_connected } = useUser(); 
+
+    onMounted(async () => {
+        await getUser();
+        if (is_connected.value === false)
+            __goTo('/')
+    });
+
+    ////////////////////////////////////////////////
+    ////////////////////////////////////////////////
+    ////////////////////////////////////////////////
+
     const router = useRouter();
+
     function __goTo(page) {
         if (page == null) {
             return;
@@ -18,47 +36,20 @@
     let hoverTimeout = null;
     
     const handleLogout = async () => {
-    try {
-        await fetch("api/player/logout/", {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                'X-CSRFToken': getCsrfToken()
-            },
-        });
-        router.push('/log');
-    } catch (error) {
-        console.error('Logout failed:', error);
-    }
-};
-    
-    const is_connected = ref('');
-    const userAccount = reactive({
-        nickname:"",
-    });
-    async function getUser() {
         try {
-            const response = await fetch(`api/player/connected_user/`, {
-                method: 'GET',
+            await fetch("api/player/logout/", {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRFToken': getCsrfToken()
+                },
             });
-            if (!response.ok) {
-                console.warn(`HTTP error! Status: ${response.status}`);
-                return;
-            }
-            const user = await response.json();
-            if (user && user.length > 0) {
-                userAccount.nickname = user[0].fields.nickname;  // Set the nickname here
-                is_connected.value = true;
-                console.log(userAccount.nickname)
-                console.log(is_connected.value)
-            } else {
-                is_connected.value = false;
-                console.log('No user data retrieved.');
-            }
+            router.push('/log');
         } catch (error) {
-            console.error('Error retrieving user data:', error);
+            console.error('Logout failed:', error);
         }
-    }
+    };
+    
 
     function getCsrfToken() {
         const cookieValue = document.cookie
@@ -68,9 +59,6 @@
         return cookieValue || '';
     }
 
-    onMounted(async () => {
-        await getUser(); // Only call getUser if state.id is available
-    });
     onMounted(() => {
         adjustButtonPosition();
     });

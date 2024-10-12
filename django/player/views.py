@@ -5,6 +5,8 @@ from django.contrib.auth.forms import AuthenticationForm
 from django.contrib.auth.decorators import login_required
 from django.core.exceptions import ImproperlyConfigured
 from django.core.files.base import ContentFile
+from django.core import serializers
+from django.core.serializers import serialize
 from django.http import JsonResponse, HttpResponse, HttpResponseForbidden
 from django.middleware.csrf import get_token
 from django.conf import settings
@@ -22,9 +24,10 @@ import requests
 import jwt
 import json
 import logging
-from django.core import serializers
 from collections import deque
 import asyncio
+
+
 
 matchmaking = deque()
 
@@ -303,13 +306,14 @@ def delete_account_view(request):
         # return redirect(reverse('player:login'))
     # return render(request, 'player/delete_account.html')
 
+@login_required
 def connected_user(request):
     user = token_user(request)
     if user:
-        data = serializers.serialize('json', [user])
+        user_data = json.loads(serialize('json', [user]))[0]['fields']
+        return JsonResponse(user_data, safe=False) 
     else:
-        data = json.dumps({'error': 'User not found'})
-    return HttpResponse(data, content_type='application/json')
+        return JsonResponse({'error': 'User not found'}, status=404)
 
 def get_all_user(request):
     data = Player.objects.all()

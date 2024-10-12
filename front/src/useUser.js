@@ -18,15 +18,15 @@ export function useUser() {
         win: "",
     });
 
-    function updateUserAccount(fields) {
-        userAccount.nickname = fields.nickname;
-        userAccount.username = fields.username;
-        userAccount.email = fields.email;
-        userAccount.password = fields.password;
-        userAccount.phone_number = fields.phone_number;
-        userAccount.email_2fa_active = fields.email_2fa_active;
-        userAccount.sms_2fa_active = fields.sms_2fa_active;
-        userAccount.student = fields.student;
+    function updateUserAccount(user) {
+        userAccount.nickname = user.nickname;
+        userAccount.username = user.username;
+        userAccount.email = user.email;
+        userAccount.password = user.password;
+        userAccount.phone_number = user.phone_number;
+        userAccount.email_2fa_active = user.email_2fa_active;
+        userAccount.sms_2fa_active = user.sms_2fa_active;
+        userAccount.student = user.student;
 
         console.log("updateUserAccount.nickname: " + userAccount.nickname);
         console.log("updateUserAccount.username: " + userAccount.username);
@@ -42,30 +42,32 @@ export function useUser() {
         try {
             const response = await fetch(`api/player/connected_user/`, {
                 method: 'GET',
+                credentials: 'include',
             });
+    
             if (!response.ok) {
                 console.warn(`HTTP error! Status: ${response.status}`);
                 is_connected.value = false;
                 return;
             }
+    
             const user = await response.json();
-            if (user) {
-                updateUserAccount(user[0].fields);
+            if (user && !user.error) {
+                updateUserAccount(user);
                 is_connected.value = true;
-
-                console.log("getUser/nickname: " + userAccount.nickname);
-                console.log("getUser/is_connected: " + is_connected.value);
+    
+                //console.log(`getUser/nickname: ${userAccount.value.nickname}`);
+                //console.log(`getUser/is_connected: ${is_connected.value}`);
             } else {
                 console.log('No user data retrieved.');
                 is_connected.value = false;
-                console.log("getUser/is_connected: " + is_connected.value);
             }
         } catch (error) {
             console.error('Error retrieving user data:', error);
             is_connected.value = false;
         }
     }
-
+               
     return {
         is_connected,
         userAccount,

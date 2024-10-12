@@ -1,28 +1,28 @@
 <script setup>
-import { ref } from 'vue';
+    import { ref } from 'vue';
 
-// @params {String} textValue - The text to display
-// @params {String} nameContainer - The name of the container
-const props = defineProps({
-    textValue: {
-        type: String,
-        default: '',
-    },
-    nameContainer: {
-        type: String,
-        default: '',
-    },
-});
+    // @params {String} textValue - The text to display
+    // @params {String} nameContainer - The name of the container
+    const props = defineProps({
+        textValue: {
+            type: String,
+            default: '',
+        },
+        nameContainer: {
+            type: String,
+            default: '',
+        },
+    });
 
-const showPopup = ref(false);
+    const showPopup = ref(false);
 
-const openPopup = () => {
-    showPopup.value = true;
-};
+    const openPopup = () => {
+        showPopup.value = true;
+    };
 
-const closePopup = () => {
-    showPopup.value = false;
-};
+    const closePopup = () => {
+        showPopup.value = false;
+    };
 </script>
 
 <template>

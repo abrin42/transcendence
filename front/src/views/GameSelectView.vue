@@ -4,11 +4,34 @@
     import CreateBackButton from '../components/CreateBackButton.vue';
     import CreateSoundButton from '../components/CreateSoundButton.vue';
     import CreateHomeButton from '../components/CreateHomeButton.vue';
-
     import { useRouter } from 'vue-router';
+    import { onMounted } from 'vue';
 
     const router = useRouter();
 
+    ////////////////////////////////////////////////
+    /////// GET USER ///////////////////////////////
+    ////////////////////////////////////////////////
+    
+    import { useUser } from '../useUser.js'; 
+    const { getUser, is_connected } = useUser(); 
+    
+    onMounted(async () => {
+        await getUser();
+        if (is_connected.value === false)
+            __goTo('/')
+    });
+
+    ////////////////////////////////////////////////
+    ////////////////////////////////////////////////
+    ////////////////////////////////////////////////
+
+    function __goTo(page) {
+        if (page == null)
+            return;
+        router.push(page);
+    }
+    
     var myVideo = document.getElementById('videoBG');
     myVideo.playbackRate = 1.3;
 

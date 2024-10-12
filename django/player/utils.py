@@ -1,6 +1,7 @@
 from django.shortcuts import redirect, get_object_or_404
 from django.conf import settings
 from django.core import serializers
+from django.core.serializers import serialize
 from django.http import JsonResponse, HttpResponse, HttpResponseForbidden
 from .models import Player
 import os

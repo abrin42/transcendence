@@ -9,7 +9,7 @@
   const isPlaying = ref(false);
   provide('isPlaying', isPlaying);
   provide('togglePlay', () => {
-  isPlaying.value = !isPlaying.value;
+    isPlaying.value = !isPlaying.value;
   });
 
 </script>

@@ -1,79 +1,95 @@
 <script setup>
-import { ref } from 'vue';
-import CreateDropupButton from '../components/CreateDropupButton.vue';
-import CreateBackButton from '../components/CreateBackButton.vue';
-import CreateHomeButton from '../components/CreateHomeButton.vue';
-import Input from '../components/Input.vue';
-import { useRouter } from 'vue-router';
+    import CreateDropupButton from '../components/CreateDropupButton.vue';
+    import CreateBackButton from '../components/CreateBackButton.vue';
+    import CreateHomeButton from '../components/CreateHomeButton.vue';
+    import Input from '../components/Input.vue';
+    import { useRouter } from 'vue-router';
+    import { ref, onMounted } from 'vue';
 
-const router = useRouter();
+    ////////////////////////////////////////////////
+    /////// GET USER ///////////////////////////////
+    ////////////////////////////////////////////////
 
-const username = ref('');
-const email = ref('');
-const phone_number = ref('');
-const password1 = ref('');
-const password2 = ref('');
+    import { useUser } from '../useUser.js'; 
+    const { getUser, is_connected } = useUser(); 
 
-defineExpose({
-    username,
-    email,
-    phone_number,
-    password1,
-    password2
-});
+    onMounted(async () => {
+        await getUser();
+        if (is_connected.value === true)
+            __goTo('/')
+    });
 
-function __goTo(page) {
-    if (page == null) {
-        return;
-    }
-    router.push(page);
-}
+    ////////////////////////////////////////////////
+    ////////////////////////////////////////////////
+    ////////////////////////////////////////////////
 
-async function createAccount() {
-    if (password1.value !== password2.value) {
-        alert('Les mots de passe ne correspondent pas.');
-        return;
-    }
+    const router = useRouter();
 
-    console.log(password1.value)
-    console.log(password2.value)
-    try {
-        const response = await fetch('/api/player/register/', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                'X-CSRFToken': getCsrfToken()
-            },
-            body: JSON.stringify({
-                username: username.value,
-                email: email.value,
-                phone_number: phone_number.value,
-                password1: password1.value,
-                password2: password2.value,
-            })
-        });
-        if (response.ok) {
-            const responseData = await response.json();
-            alert('Compte créé avec succès !');
-            __goTo(responseData.redirect_url);
-        } else {
-            const errorData = await response.json();
-            alert('Erreur: ' + errorData.error);
+    const username = ref('');
+    const email = ref('');
+    const phone_number = ref('');
+    const password1 = ref('');
+    const password2 = ref('');
+
+    defineExpose({
+        username,
+        email,
+        phone_number,
+        password1,
+        password2
+    });
+
+    function __goTo(page) {
+        if (page == null) {
+            return;
         }
-    } catch (error) {
-        console.error('Erreur lors de la création du compte:', error);
-        alert('Une erreur est survenue pendant la création du compte.');
+        router.push(page);
     }
-}
 
-function getCsrfToken() {
-    const cookieValue = document.cookie
-        .split('; ')
-        .find(row => row.startsWith('csrftoken='))
-        ?.split('=')[1];
-    return cookieValue || '';
-}
+    async function createAccount() {
+        if (password1.value !== password2.value) {
+            alert('Les mots de passe ne correspondent pas.');
+            return;
+        }
 
+        console.log(password1.value)
+        console.log(password2.value)
+        try {
+            const response = await fetch('/api/player/register/', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRFToken': getCsrfToken()
+                },
+                body: JSON.stringify({
+                    username: username.value,
+                    email: email.value,
+                    phone_number: phone_number.value,
+                    password1: password1.value,
+                    password2: password2.value,
+                })
+            });
+            if (response.ok) {
+                const responseData = await response.json();
+                alert('Compte créé avec succès !');
+                __goTo(responseData.redirect_url);
+            } else {
+                const errorData = await response.json();
+                alert('Erreur: ' + errorData.error);
+            }
+        } catch (error) {
+            console.error('Erreur lors de la création du compte:', error);
+            alert('Une erreur est survenue pendant la création du compte.');
+        }
+    }
+
+    function getCsrfToken() {
+        const cookieValue = document.cookie
+            .split('; ')
+            .find(row => row.startsWith('csrftoken='))
+            ?.split('=')[1];
+        return cookieValue || '';
+    }
 </script>
 
 <template>

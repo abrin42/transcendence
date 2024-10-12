@@ -11,7 +11,7 @@
     ////////////////////////////////////////////////
 
     import { useUser } from '../useUser.js'; 
-
+    
     const { getUser, userAccount, is_connected } = useUser(); 
 
     onMounted(async () => {
@@ -115,30 +115,6 @@
     }
 }
 
-
-
-    /*
-    async function getUser() {
-        try {
-            const response = await fetch(`api/player/connected_user/`, {
-                method: 'GET',
-            });
-            if (!response.ok) {
-                console.warn(`HTTP error! Status: ${response.status}`);
-                return;
-            }
-            const user = await response.json();
-            if (user && user.length > 0) {
-                userAccount.email_2fa_active = user[0].fields.username;  // Set the username here
-                userAccount.sms_2fa_active = user[0].fields.is_active;  
-            } else {
-                console.log('No user data retrieved.');
-            }
-        } catch (error) {
-            console.error('Error retrieving user data:', error);
-        }
-    }
-*/
     async function handleNext() {
         try {
             const response = await fetch('/api/player/otp/', {

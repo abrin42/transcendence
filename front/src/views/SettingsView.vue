@@ -1,58 +1,58 @@
 <script setup>
-import { reactive, ref, onMounted, onBeforeUnmount } from 'vue';
-import CreateBackButton from '../components/CreateBackButton.vue';
-import CreateDropupButton from '@/components/CreateDropupButton.vue';
-import CreateHomeButton from '@/components/CreateHomeButton.vue';
+    import { reactive, ref, onBeforeUnmount } from 'vue';
+    import CreateBackButton from '../components/CreateBackButton.vue';
+    import CreateDropupButton from '@/components/CreateDropupButton.vue';
+    import CreateHomeButton from '@/components/CreateHomeButton.vue';
 
-const keys = reactive({
-    player1Left: 'ArrowLeft',
-    player1Right: 'ArrowRight',
-    player2Left: 'A',
-    player2Right: 'D',
-    pause: 'P',
-    mute: 'M',
-});
+    const keys = reactive({
+        player1Left: 'ArrowLeft',
+        player1Right: 'ArrowRight',
+        player2Left: 'A',
+        player2Right: 'D',
+        pause: 'P',
+        mute: 'M',
+    });
 
-const selectedKey = ref(null);
+    const selectedKey = ref(null);
 
-const changeKey = (action) => {
-    selectedKey.value = action;
-    window.addEventListener('keydown', setKey);
+    const changeKey = (action) => {
+        selectedKey.value = action;
+        window.addEventListener('keydown', setKey);
 
-};
+    };
 
-const setKey = (event) => {
-    const newKey = event.key.toUpperCase();
-    if (isKeyAlreadyUsed(newKey)) {
-        alert('Cette touche est déjà utilisée.');
-        return;
-    }
-    if (
-        (selectedKey.value === 'player1Left' && newKey === keys.player1Right) ||
-        (selectedKey.value === 'player1Right' && newKey === keys.player1Left) ||
-        (selectedKey.value === 'player2Left' && newKey === keys.player2Right) ||
-        (selectedKey.value === 'player2Right' && newKey === keys.player2Left) ||
-        (selectedKey.value === 'pause' && newKey === keys.pause) ||
-        (selectedKey.value === 'mute' && newKey === keys.mute)
-    ) {
-        alert('Le meme joueur ne peut pas utiliser la meme touche pour gauche et droite.');
-        return;
-    }
+    const setKey = (event) => {
+        const newKey = event.key.toUpperCase();
+        if (isKeyAlreadyUsed(newKey)) {
+            alert('Cette touche est déjà utilisée.');
+            return;
+        }
+        if (
+            (selectedKey.value === 'player1Left' && newKey === keys.player1Right) ||
+            (selectedKey.value === 'player1Right' && newKey === keys.player1Left) ||
+            (selectedKey.value === 'player2Left' && newKey === keys.player2Right) ||
+            (selectedKey.value === 'player2Right' && newKey === keys.player2Left) ||
+            (selectedKey.value === 'pause' && newKey === keys.pause) ||
+            (selectedKey.value === 'mute' && newKey === keys.mute)
+        ) {
+            alert('Le meme joueur ne peut pas utiliser la meme touche pour gauche et droite.');
+            return;
+        }
 
-    if (selectedKey.value) {
-        keys[selectedKey.value] = newKey;
-        selectedKey.value = null;
+        if (selectedKey.value) {
+            keys[selectedKey.value] = newKey;
+            selectedKey.value = null;
+            window.removeEventListener('keydown', setKey);
+        }
+    };
+
+    const isKeyAlreadyUsed = (newKey) => {
+        return Object.values(keys).includes(newKey);
+    };
+
+    onBeforeUnmount(() => {
         window.removeEventListener('keydown', setKey);
-    }
-};
-
-const isKeyAlreadyUsed = (newKey) => {
-    return Object.values(keys).includes(newKey);
-};
-
-onBeforeUnmount(() => {
-    window.removeEventListener('keydown', setKey);
-});
+    });
 </script>
 
 <template>

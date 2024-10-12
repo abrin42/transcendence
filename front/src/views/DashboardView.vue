@@ -1,92 +1,106 @@
 <script setup>
-import CreateBackButton from '@/components/CreateBackButton.vue';
-import CreateDropupButton from '@/components/CreateDropupButton.vue';
-import InputEdit from '@/components/InputEdit.vue';
-import Switch from '@/components/Switch.vue';
-import TextDisplay from './../components/TextDisplay.vue';
-import profilePicture from '@/assets/img/default-profile.png';
-import CreateHomeButton from '../components/CreateHomeButton.vue';
-import Input from '../components/Input.vue';
-import { useRouter } from 'vue-router';
-import { ref, onMounted } from 'vue';
-import { useUser } from '../useUser.js';
+    import CreateBackButton from '@/components/CreateBackButton.vue';
+    import CreateDropupButton from '@/components/CreateDropupButton.vue';
+    import InputEdit from '@/components/InputEdit.vue';
+    import Switch from '@/components/Switch.vue';
+    import TextDisplay from './../components/TextDisplay.vue';
+    import profilePicture from '@/assets/img/default-profile.png';
+    import CreateHomeButton from '../components/CreateHomeButton.vue';
+    import Input from '../components/Input.vue';
+    import { useRouter } from 'vue-router';
+    import { ref, onMounted } from 'vue';
+    
+    ////////////////////////////////////////////////
+    /////// GET USER ///////////////////////////////
+    ////////////////////////////////////////////////
+    
+    import { useUser } from '../useUser.js'; 
+    const { getUser, userAccount, is_connected } = useUser(); 
+    
+    onMounted(async () => {
+        await getUser();
+        if (is_connected.value === false)
+            __goTo('/')
+    });
 
-const router = useRouter();
-const { getUser, userAccount, is_connected } = useUser(); 
-const showAllInfo = ref(false);
+    ////////////////////////////////////////////////
+    ////////////////////////////////////////////////
+    ////////////////////////////////////////////////
 
-onMounted(async () => {
-    await getUser();
-    console.log(is_connected.value);  
-    console.log(userAccount.username);
-    console.log(userAccount.student);
-});
+    function __goTo(page) {
+        if (page == null)
+            return;
+        router.push(page);
+    }
 
-async function updateAccount() {
-    try {
-        const response = await fetch('api/player/update_user/', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                'X-CSRFToken': getCsrfToken(),
-            },
-            body: JSON.stringify({
-                nickname: userAccount.nickname, // Access directly from userAccount
-                email: userAccount.email,
-                phone_number: userAccount.phone_number,
-                password: userAccount.password,
+    const router = useRouter();
+    const showAllInfo = ref(false);
 
-                email_2fa_active: userAccount.email_2fa_active,
-                sms_2fa_active: userAccount.sms_2fa_active,
-            })
-        });
-        if (response.ok) {
-            console.log(userAccount.nickname);
-            const responseData = await response.json();
-            alert('Account updated successfully!');
-        } else {
-            const errorData = await response.json();
-            alert('Error: ' + errorData.error);
+    async function updateAccount() {
+        try {
+            const response = await fetch('api/player/update_user/', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRFToken': getCsrfToken(),
+                },
+                body: JSON.stringify({
+                    nickname: userAccount.nickname, // Access directly from userAccount
+                    email: userAccount.email,
+                    phone_number: userAccount.phone_number,
+                    password: userAccount.password,
+
+                    email_2fa_active: userAccount.email_2fa_active,
+                    sms_2fa_active: userAccount.sms_2fa_active,
+                })
+            });
+            if (response.ok) {
+                console.log(userAccount.nickname);
+                const responseData = await response.json();
+                alert('Account updated successfully!');
+            } else {
+                const errorData = await response.json();
+                alert('Error: ' + errorData.error);
+            }
+        } catch (error) {
+            console.error('Error updating account:', error);
+            alert('An error occurred during account update.');
         }
-    } catch (error) {
-        console.error('Error updating account:', error);
-        alert('An error occurred during account update.');
     }
-}
 
-function getCsrfToken() {
-    const cookieValue = document.cookie
-        .split('; ')
-        .find(row => row.startsWith('csrftoken='))
-        ?.split('=')[1];
-    return cookieValue || '';
-}
-
-const handleLogout = async () => {
-    try {
-        await fetch("api/player/logout/", {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                'X-CSRFToken': getCsrfToken()
-            },
-        });
-        router.push('/log');
-    } catch (error) {
-        console.error('Logout failed:', error);
+    function getCsrfToken() {
+        const cookieValue = document.cookie
+            .split('; ')
+            .find(row => row.startsWith('csrftoken='))
+            ?.split('=')[1];
+        return cookieValue || '';
     }
-};
 
-const handleProfilePictureChange = (event) => {
-    const file = event.target.files[0];
-    if (file) {
-        const reader = new FileReader();
-        reader.onload = (e) => {
-            userAccount.profilePicture = e.target.result;
-        };
-        reader.readAsDataURL(file);
-    }
-};
+    const handleLogout = async () => {
+        try {
+            await fetch("api/player/logout/", {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRFToken': getCsrfToken()
+                },
+            });
+            router.push('/log');
+        } catch (error) {
+            console.error('Logout failed:', error);
+        }
+    };
+
+    const handleProfilePictureChange = (event) => {
+        const file = event.target.files[0];
+        if (file) {
+            const reader = new FileReader();
+            reader.onload = (e) => {
+                userAccount.profilePicture = e.target.result;
+            };
+            reader.readAsDataURL(file);
+        }
+    };
 </script>
 
 <template>
