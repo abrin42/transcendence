@@ -6,10 +6,22 @@
   import { ref, provide } from 'vue';
 
   // provide to inject 'isPlaying' in CreateSoundButton component
-  const isPlaying = ref(false);
+  let isPlaying = ref(false);
   provide('isPlaying', isPlaying);
   provide('togglePlay', () => {
-  isPlaying.value = !isPlaying.value;
+    isPlaying.value = !isPlaying.value;
+  });
+
+  let current_flag = ref("🇬🇧");
+  provide('current_flag', current_flag);
+  provide('toggle_flag', (lang) => {
+    current_flag = lang;
+  });
+
+  let current_lang = ref("EN");
+  provide('current_lang', current_lang);
+  provide('toggle_lang', (lang) => {
+    current_lang = lang;
   });
 
 </script>

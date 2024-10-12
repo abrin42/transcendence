@@ -29,5 +29,11 @@
     
     "disabled_switch": "Lo switch è disattivato. Non è possibile eseguire questa azione.",
 
-    "no_text_to_display": "Nessun testo da visualizzare"
+    "no_text_to_display": "Nessun testo da visualizzare",
+
+
+
+    "send_code_question": "Inviare il codice per e-mail o SMS?",
+    "phone_authentication": "Autenticazione telefonica",
+    "enter_sms": "Inserire il codice ricevuto via SMS."
 }

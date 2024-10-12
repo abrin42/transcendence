@@ -128,7 +128,7 @@
     <main>
         <div id="wrapper">
             <div v-if="!showMailPopup && !showPhonePopup" class="TwoFAContainer">
-                <h1>Send code by e-mail or SMS?</h1>
+                <h1>{{ $t('send_code_question') }}</h1>
                 <!-- Correct assignment of otp_method -->
                 <button class="button button-fa __button-phone" @click="() => {choose_tfa('sms')}">
                     <i class="fas fa-mobile-button" style="margin: 0.1vw;"></i>
@@ -136,7 +136,7 @@
                 </button>
                 <button class="button button-fa __button-mail" @click="() => {choose_tfa('email')}">
                     <i class="fas fa-envelope" style="margin: 0.1vw;"></i>
-                    <span>Email</span>
+                    <span>{{ $t('email') }}</span>
                 </button>
             </div>
             <div class="buttonContainer">
@@ -146,7 +146,7 @@
         </div>
 
         <Popup v-if="showPhonePopup" @close="closePopup">
-            <h2 class="__title-popup">Telephone Authentication</h2>
+            <h2 class="__title-popup">{{  $t('phone_authentication') }}</h2>
             <p>Enter the code you received by SMS.</p>
             <Input iconClass="fa-shield" placeholderText="Enter your code" v-model="code" />
             <button class="button __button-send-code" @click="resendCode">

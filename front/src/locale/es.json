@@ -29,5 +29,11 @@
     
     "disabled_switch": "El conmutador está desactivado. No puede realizar esta acción.",
 
-    "no_text_to_display": "No hay texto que mostrar"
+    "no_text_to_display": "No hay texto que mostrar",
+
+
+
+    "send_code_question": "¿Enviar código por correo electrónico o SMS?",
+    "phone_authentication": "Autenticación telefónica",
+    "enter_sms": "Introduzca el código que ha recibido por SMS."
 }

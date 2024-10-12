@@ -29,5 +29,11 @@
     
     "disabled_switch": "Nu'gar lise narir ibic nari.",
 
-    "no_text_to_display": "Naas haa'taylyc"
+    "no_text_to_display": "Naas haa'taylyc",
+
+
+
+    "send_code_question": "Send code by email or SMS?----------------------------",
+    "phone_authentication": "Comlink buyacyc",
+    "enter_sms": "Miit'gaanar dadita gar parji by SMS."
 }

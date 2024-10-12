@@ -29,5 +29,11 @@
     
     "disabled_switch": "The switch is disabled. You cannot perform this action.",
 
-    "no_text_to_display": "No text to display"
+    "no_text_to_display": "No text to display",
+
+
+
+    "send_code_question": "Send code by email or SMS?",
+    "phone_authentication": "Phone authentication",
+    "enter_sms": "Enter the code you received by SMS."
 }

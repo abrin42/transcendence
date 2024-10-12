@@ -10,7 +10,7 @@
     "profile_picture": "Photo de Profil",
     "choose_file": "Choisir un Fichier",
     "username": "Nom d'Utilisateur",
-    "email": "Email",
+    "email": "Courriel",
     "password": "Mot de Passe",
 
     "my_account": "Mon compte",
@@ -29,5 +29,11 @@
     
     "disabled_switch": "Le commutateur est désactivé. Vous ne pouvez pas effectuer cette action.",
 
-    "no_text_to_display": "Aucun de texte à afficher"
+    "no_text_to_display": "Aucun de texte à afficher",
+
+
+
+    "send_code_question": "Envoyer le code par courriel ou par SMS ?",
+    "phone_authentication": "Authentification par téléphone",
+    "enter_sms": "Saisissez le code que vous avez reçu par SMS."
 }

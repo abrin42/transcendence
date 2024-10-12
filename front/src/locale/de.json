@@ -29,5 +29,11 @@
     
     "disabled_switch": "Der Schalter ist deaktiviert. Sie können diese Aktion nicht durchführen.",
 
-    "no_text_to_display": "Kein Text zum Anzeigen"
+    "no_text_to_display": "Kein Text zum Anzeigen",
+
+
+
+    "send_code_question": "Code per E-Mail oder SMS senden?",
+    "phone_authentication": "Telefonische Authentifizierung",
+    "enter_sms": "Geben Sie den Code ein, den Sie per SMS erhalten haben."
 }
