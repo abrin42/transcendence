@@ -60,47 +60,48 @@ def register_view(request):
 
     return JsonResponse({'error': 'Invalid request method'}, status=405)
 
-@csrf_exempt
 def login_view(request):
-    if request.method == "POST":
-        try:
-            data = json.loads(request.body)
-            username = data.get('username')
-            password = data.get('password')
-            post_data = {
-                'username': f"_{username}", 
-                'password': password
-            }
-            form = AuthenticationForm(data=post_data)
-            if form.is_valid():
-                user = form.get_user()
-                login(request, user)
+    if request.method != "POST":
+        return JsonResponse({'error': 'Invalid request method'}, status=405)
 
-                if user is not None:
-                    user = get_object_or_404(Player, username=user.username)
+    try:
+        data = json.loads(request.body)
+        username = data.get('username')
+        password = data.get('password')
 
-                    if not user.email_2fa_active and not user.sms_2fa_active:
-                        token = generate_jwt(user)
-                        user = decode_jwt(token)
-                        print(user)
-                        
-                        if not user.nickname:
-                            user.nickname = user.username[1:]
-                            user.save()
+        if not username or not password:
+            return JsonResponse({'error': 'Username and password required'}, status=400)
 
-                        response = JsonResponse({'redirect_url': '/'}, status=302)
-                        set_jwt_token(response, token)
+        post_data = {'username': f"_{username}", 'password': password}
+        form = AuthenticationForm(data=post_data)
 
-                        return response
-                    
-                    response = JsonResponse({'redirect_url': '/2fa/'}, status=302)
-                    return response
-            return JsonResponse({'error': 'Invalid username or password'}, status=400)
-        
-        except json.JSONDecodeError:
-            return JsonResponse({'error': 'Invalid request body'}, status=400)
+        if form.is_valid():
+            user = form.get_user()
+            login(request, user)
+            print(f'username: {user.username}')
+            player = get_object_or_404(Player, username=user.username)
+            print(f'email_2fa_active: {user.email_2fa_active}')
 
-    return JsonResponse({'error': 'Invalid request method'}, status=405)
+            if not player.email_2fa_active and not player.sms_2fa_active:
+                token = generate_jwt(player)
+                decoded_user = decode_jwt(token)
+
+                if not player.nickname:
+                    player.nickname = player.username[1:]
+                    player.save()
+
+                response = JsonResponse({'redirect_url': '/'}, status=302)
+                set_jwt_token(response, token)
+                return response
+
+            player_data = serializers.serialize('json', [player])
+            print(f'player_data: {player_data}')
+            return JsonResponse({'player_data': player_data}, content_type='application/json')
+
+        return JsonResponse({'error': 'Invalid username or password'}, status=400)
+
+    except json.JSONDecodeError:
+        return JsonResponse({'error': 'Invalid request body'}, status=400)
 
 def login42_view(request):
     if request.method == "POST":
@@ -108,23 +109,26 @@ def login42_view(request):
         return JsonResponse({'url': oauth_url}, status=200)
     return JsonResponse({'error': 'Invalid request method'}, status=405)
 
-
 @login_required
 def tfa_view(request):
-    ########################### Here I use the user from request and call its Player object. I apply the JWT token only when the 2FA/OTP is valid
-    user = verify_user(request)
-    ###########################
-
     if request.method == "POST":
-        create_otp(request, user)
-        response = JsonResponse({'message': 'Code sent successfully', 'redirect_url': '/2fa'}, status=200)
-        return response
+        try:
+            user = get_object_or_404(Player, username=request.user.username)
+            create_otp(request, user)
+            return JsonResponse({'message': 'Code sent successfully', 'redirect_url': '/2fa'}, status=200)
+        except Player.DoesNotExist:
+            return JsonResponse({'error': 'User not found'}, status=404)
     return JsonResponse({'error': 'Invalid request method'}, status=405)
 
 @login_required
 def otp_view(request):
     ########################### Here I use the user from request and call its Player object. I apply the JWT token only when the 2FA/OTP is valid
-    user = verify_user(request)
+    if not request.user.is_authenticated:
+        return None
+    try:
+        user = get_object_or_404(Player, username=request.user.username)
+    except Player.DoesNotExist:
+        return None
     ###########################
     if request.method == "POST":
         try:

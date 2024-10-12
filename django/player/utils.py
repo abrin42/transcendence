@@ -1,10 +1,13 @@
 from django.shortcuts import redirect, get_object_or_404
 from django.conf import settings
+from django.core import serializers
 from django.http import JsonResponse, HttpResponse, HttpResponseForbidden
 from .models import Player
 import os
 import json
 import requests
+from django.contrib.auth.decorators import login_required
+
 
 def username_underscore(request):
     post_data = request.POST.copy()
@@ -28,22 +31,23 @@ def set_picture_42(request, user, profile_picture):
         print(f"Failed to fetch profile picture, status code: {response.status_code}")
 
 def is_auth(request):
-    if not request.user.is_authenticated:
-        return JsonResponse({'valid': False, 'message': 'No token found'}, status=401)
-    user = get_object_or_404(Player, username=request.user.username)
-    if not user:
-        return JsonResponse({'valid': True, 'message': 'Token is valid', 'user': user_data}, content_type='application/json')
-    return JsonResponse({'valid': False, 'message': 'Invalid or expired token'}, status=401)
+    player = verify_user(request)
+    print(player)
+    if player:
+        player_data = serializers.serialize('json', [player])
+    player_data = json.dumps({'error': 'User not found'})
+    return JsonResponse({'player_data': player_data}, content_type='application/json')
 
-
+@login_required
 def verify_user(request):
-    if not request.user.is_authenticated:
-        return redirect('/api/player/login/')
     try:
         user = get_object_or_404(Player, username=request.user.username)
-    except Player.DoesNotExist:
-        return redirect('/api/player/login/')
+        player_data = serializers.serialize('json', [user])
 
-    print(f"username: {user.username}")
-    print(f"phone_number: {user.phone_number}")
-    return user
+        print(f"verify_user/username: {user.username}")
+        print(f"verify_user/phone_number: {user.phone_number}")
+        print(f"verify_user/email: {user.email}")
+
+        return JsonResponse({'player_data': player_data}, content_type='application/json', status=200)
+    except Player.DoesNotExist:
+        return JsonResponse({'error': 'User not found'}, status=404)

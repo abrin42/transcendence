@@ -19,6 +19,7 @@ onMounted(async () => {
     await getUser();
     console.log(is_connected.value);  
     console.log(userAccount.username);
+    console.log(userAccount.student);
 });
 
 async function updateAccount() {
@@ -119,7 +120,7 @@ const handleProfilePictureChange = (event) => {
 
                 <div class="editable-input-container">
                     <InputEdit v-model="userAccount.nickname" placeholderText="Change your nickname" inputIconClass="fa-user" inputPlaceholder="Enter your nickname" :isPassword="false" />
-                    <InputEdit v-model="userAccount.email" placeholderText="Change your email" inputIconClass="fa-user" inputPlaceholder="Enter your email" :isPassword="false" :isDisabled="userAccount.student === false" />
+                    <InputEdit v-model="userAccount.email" placeholderText="Change your email" inputIconClass="fa-user" inputPlaceholder="Enter your email" :isPassword="false" :isDisabled="userAccount.student === true" />
                     <InputEdit v-if="userAccount.student === false" v-model="userAccount.phone_number" placeholderText="Change your phone number" inputIconClass="fa-user" inputPlaceholder="Enter your phone number" :isPassword="false" />
                     <InputEdit v-if="userAccount.student === false" v-model="userAccount.password" placeholderText="Change your password" inputIconClass="fa-lock" inputPlaceholder="Enter your password" :isPassword="true" />
 
