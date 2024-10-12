@@ -1,14 +1,14 @@
 <template>
     <div class="button-container" @mouseenter="showDropdown" @mouseleave="hideDropdown">
-        <button ref="button" class="button button-log" @click="__goTo(userAccount.is_active ? '/dashboard' : '/log')">
-            <span class="buttonText">{{ userAccount.is_active ? userAccount.nickname : $t('login') }}</span>
+        <button ref="button" class="button button-log" @click="__goTo(is_connected ? '/dashboard' : '/log')">
+            <span class="buttonText">{{ is_connected ? userAccount.nickname : $t('login') }}</span>
         </button>
 
         <div v-if="dropdownVisible" class="dropdown">
-            <button class="button buttonText buttondropdown" @click="__goTo('/dashboard')">My Account</button>
+            <button class="button buttonText buttondropdown" @click="__goTo('/dashboard')">{{ $t('my_account') }}</button>
             <!-- Appel à la méthode toggleFriendsPopup pour afficher la popup -->
-            <button class="button buttonText buttondropdown" @click="toggleFriendsPopup">Friends</button>
-            <button class="button buttonText buttondropdown" @click="__goTo('/api/player/logout')">Logout</button>
+            <button class="button buttonText buttondropdown" @click="toggleFriendsPopup">{{ $t('friends') }}</button>
+            <button class="button buttonText buttondropdown" @click="handleLogout">{{ $t('logout') }}</button>
         </div>
 
         <!-- Composant FriendsPopup, écoute l'événement 'close' pour masquer la popup -->
@@ -89,7 +89,7 @@
 
     function showDropdown() {
         hoverTimeout = setTimeout(() => {
-            if (userAccount.is_active)
+            if (is_connected)
                 dropdownVisible.value = true;
         }, 5);
     }
@@ -103,24 +103,6 @@
         friendsPopupVisible.value = !friendsPopupVisible.value;
     }
 </script>
-
-<template>
-    <div class="button-container" @mouseenter="showDropdown" @mouseleave="hideDropdown">
-        <button ref="button" class="button button-log" @click="__goTo(is_connected ? '/dashboard' : '/log')">
-            <span class="buttonText">{{ is_connected ? userAccount.nickname : $t('login') }}</span>
-        </button>
-
-        <div v-if="dropdownVisible" class="dropdown">
-            <button class="button buttonText buttondropdown" @click="__goTo('/dashboard')">{{ $t('my_account') }}</button>
-            <!-- Appel à la méthode toggleFriendsPopup pour afficher la popup -->
-            <button class="button buttonText buttondropdown" @click="toggleFriendsPopup">{{ $t('friends') }}</button>
-            <button class="button buttonText buttondropdown" @click="handleLogout">{{ $t('logout') }}</button>
-        </div>
-
-        <!-- Composant FriendsPopup, écoute l'événement 'close' pour masquer la popup -->
-        <FriendsPopup v-if="friendsPopupVisible" @close="toggleFriendsPopup" />
-    </div>
-</template>
 
 <style>
     .button-container {
