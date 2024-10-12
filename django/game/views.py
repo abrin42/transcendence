@@ -28,6 +28,7 @@ def game(request):
 #     return (JsonResponse({'message': 'gameIDInfo', 'gameID': game.id}, status=200))
 
 
+
 def insertPlayer(request):
     if request.method == 'POST':
         try:

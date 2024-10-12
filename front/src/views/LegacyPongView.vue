@@ -69,7 +69,7 @@ function connectWebSocket() {
       // connectionStatus.value = data.message;
       connection = 1;
     }
-    else if (data.type == 'updatePts')
+    else if (data.type == 'updatePts') //sound
     {
       console.log(data.type);
       console.log(data.updatePts);
@@ -94,6 +94,14 @@ function connectWebSocket() {
       console.log(data.type);
     }
     else if (data.type == 'startGame')
+    {
+      console.log(data.type);
+    }
+    else if (data.type == 'paddleHit') //sound
+    {
+      console.log(data.type);
+    }
+    else if (data.type == 'wallHit')//sound
     { 
       console.log(data.type);
     }
