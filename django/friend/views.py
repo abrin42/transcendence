@@ -84,8 +84,8 @@ def refuse(request, id_friendship):
 def list(request):
     you = token_user(request)
     friends = Friendship.objects.filter(Q(user=you, status='accepted') | Q(friend=you, status='accepted'))
-    you.last_login = timezone.now()
-    you.save()
+    #you.last_login = timezone.now()
+    #you.save()
     #return render(request, "friend/list.html", {'friends':friends, 'you':you})
     data = serializers.serialize('json', friends, use_natural_foreign_keys=True, use_natural_primary_keys=True)
 

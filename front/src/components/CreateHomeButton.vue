@@ -1,14 +1,13 @@
 <script setup>
 //imports
     import { useRouter } from 'vue-router';
-
     const router = useRouter();
 
     function goToHome() {
-    router.push('/');
+        router.push('/');
     }
 </script>
-``
+
 <template>
     <main>
         <div id="wrapper">

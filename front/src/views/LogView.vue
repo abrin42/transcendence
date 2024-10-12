@@ -5,59 +5,102 @@ import CreateHomeButton from '../components/CreateHomeButton.vue';
 import Input from '../components/Input.vue';
 import { useRouter } from 'vue-router';
 import { ref, onMounted } from 'vue';
+
+////////////////////////////////////////////////
+/////// GET USER ///////////////////////////////
+////////////////////////////////////////////////
+
 import { useUser } from '../useUser.js'; 
 
-const router = useRouter();
-const { getUser, userAccount, is_connected } = useUser(); 
-
-const username = ref('');
-const password = ref('');
-
-function __goTo(page) {
-    if (page == null) {
-        return;
-    }
-    router.push(page);
-}
+const { getUser, updateUserAccount, userAccount, is_connected } = useUser(); 
 
 onMounted(async () => {
     await getUser();  
-    console.log(is_connected.value);  
-    console.log(userAccount.username);
+    console.log("onMounted/is_connected: " + is_connected.value);  
+    console.log("onMounted/username: " + userAccount.username);
+    if (is_connected.value === true)
+        __goTo('/')
 });
+
+////////////////////////////////////////////////
+////////////////////////////////////////////////
+////////////////////////////////////////////////
+
+const router = useRouter();
+
+function __goTo(page) {
+    if (page == null)
+        return;
+    router.push(page);
+}
+
+function getCsrfToken() {
+    const cookieValue = document.cookie
+        .split('; ')
+        .find(row => row.startsWith('csrftoken='))
+        ?.split('=')[1];
+    return cookieValue || '';
+}
+
+////////////////////////////////////////////////
+////////////////////////////////////////////////
+////////////////////////////////////////////////
+
+const username = ref('');
+const password = ref('');
 
 async function login() {
     if (!username.value || !password.value) {
         alert('Veuillez entrer un email et un mot de passe.');
         return;
     }
+
     try {
         const response = await fetch('api/player/login/', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
-                'X-CSRFToken': getCsrfToken(), 
+                'X-CSRFToken': getCsrfToken(), // Assuming CSRF protection is enabled
             },
             body: JSON.stringify({
                 username: username.value,
-                password: password.value
-            })
+                password: password.value,
+            }),
         });
-        console.log(username.value);
-        console.log(password.value);
-        if (response.ok) {
-            const data = await response.json();
-            if (data.redirect_url) {
-                router.push(data.redirect_url);
-            } else {
-                alert('Login successful');
-            }
+
+        if (!response.ok) {
+            throw new Error(`HTTP error! Status: ${response.status}`);
         }
+
+        const data = await response.json();
+        const playerData = JSON.parse(data.player_data);
+        if (playerData && playerData.length > 0) {
+            const user = playerData[0];
+            
+            console.log('user:', user);
+            console.log('user.fields:', user.fields);
+            updateUserAccount(user.fields);
+            
+            //const { fields: userAccount } = user;
+            //console.log('fields: ' + fields)
+            //console.log('userAccount: ' + userAccount)
+
+            if (user.fields.email_2fa_active === true || user.fields.sms_2fa_active === true)
+                __goTo('/2fa/');
+            else
+                __goTo('/');
+            alert('Login successful!');
+        } else
+            alert('User data not found!');
     } catch (error) {
-        console.error('Erreur lors de la connexion:', error);
-        alert('An error occurred during login');
+        console.error('Erreur lors de la connexion /login:', error);
+        alert('An error occurred during login.');
     }
 }
+
+
+
+
 
 async function login42() {
     try {
@@ -84,13 +127,6 @@ async function login42() {
     }
 }
 
-function getCsrfToken() {
-    const cookieValue = document.cookie
-        .split('; ')
-        .find(row => row.startsWith('csrftoken='))
-        ?.split('=')[1];
-    return cookieValue || '';
-}
 </script>
 
 <template>

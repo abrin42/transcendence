@@ -50,52 +50,49 @@
 </template>
 
 <script setup>
-import { ref, computed } from 'vue';
-import { defineEmits } from 'vue';
-import Input from './Input.vue';
-import { reactive , onMounted } from 'vue';
-
-const userAccount = reactive({
-    is_active:"",
-    username:"",
-});
-  
-const friends = ref([]);
-const allPlayers = ref([]);
-
-
-  async function getUser() {
-  try {
-    const response = await fetch(`api/player/connected_user/`, {
-      method: 'GET',
+    import { ref, computed, defineEmits, onMounted } from 'vue';
+    import { useRouter } from 'vue-router';
+    import Input from './Input.vue';
+    
+    ////////////////////////////////////////////////
+    /////// GET USER ///////////////////////////////
+    ////////////////////////////////////////////////
+    
+    import { useUser } from '../useUser.js'; 
+    const { getUser, userAccount, is_connected } = useUser(); 
+    
+    onMounted(async () => {
+        await getUser();
+        //if (is_connected.value === false)
+        //    __goTo('/')
+        await getAllUsers();
+        await getFriends();
     });
-    if (!response.ok) {
-      console.warn(`HTTP error! Status: ${response.status}`);
-      return;
+
+    ////////////////////////////////////////////////
+    ////////////////////////////////////////////////
+    ////////////////////////////////////////////////
+
+    function __goTo(page) {
+        if (page == null)
+        return;
+    router.push(page);
     }
-    const user = await response.json();
-    if (user && user.length > 0) {
-      userAccount.is_active = user[0].fields.valid;
-      userAccount.username = user[0].fields.username;
-    } else {
-      console.log('No user data retrieved.');
-    }
-  } catch (error) {
-    console.error('Error retrieving user data:', error);
-  }
-}
 
+    const router = useRouter();
+    const friends = ref([]);
+    const allPlayers = ref([]);
 
-async function getAllUsers() {
-		try {
-			const response = await fetch(`api/player/get_all_user/`, {
-				method: 'GET',
-			});
+    async function getAllUsers() {
+        try {
+            const response = await fetch(`api/player/get_all_user/`, {
+                method: 'GET',
+            });
 
-			if (!response.ok) {
-				throw new Error(`HTTP error! Status: ${response.status}`);
-			}
-			const users = await response.json();
+            if (!response.ok) {
+                throw new Error(`HTTP error! Status: ${response.status}`);
+            }
+            const users = await response.json();
             users.forEach((element) => {
                 var obj = {}
                 obj['username'] = element.fields.username;
@@ -104,24 +101,23 @@ async function getAllUsers() {
 
             });
             console.log("all user", allPlayers._rawValue)
-		} catch (error) {
-			console.error('Error retrieving user data:', error);
-		}
-}
+        } catch (error) {
+            console.error('Error retrieving user data:', error);
+        }
+    }
 
+    async function getFriends() {
+        try {
+            const response = await fetch(`api/friend/list/`, {
+                method: 'GET',
+            });
 
-async function getFriends() {
-		try {
-			const response = await fetch(`api/friend/list/`, {
-				method: 'GET',
-			});
-
-			if (!response.ok) {
-				throw new Error(`HTTP error! Status: ${response.status}`);
-			}
-			const users = await response.json();
+            if (!response.ok) {
+                throw new Error(`HTTP error! Status: ${response.status}`);
+            }
+            const users = await response.json();
             let users_data = JSON.parse(users)
-			console.log("all friends: ", users_data);
+            console.log("all friends: ", users_data);
             for (let i = 0; i < users_data.length; i++) {
                 var obj = {}
                 if (users_data[i].fields.friend[0] == userAccount.username){
@@ -140,200 +136,192 @@ async function getFriends() {
                 friends.value.push(obj);
             }
         } catch (error) {
-			console.error('Error retrieving user data:', error);
-		}
-
-}
-
-
-const emit = defineEmits(['close']);
-
-// Liste des amis actuels avec un booléen isOnline
-//const friends = ref(getFriends());
-
-// Liste des joueurs non amis
-// const allPlayers = ref([
-//     { id: 6, name: 'Lucie' },
-//     { id: 7, name: 'Caroline' },
-//     { id: 8, name: 'Lucas' },
-//     { id: 9, name: 'Isaac' },
-//     { id: 10, name: 'Tabata' },
-// ]);
-
-// Barre de recherche
-const searchQuery = ref('');
-
-// Fonction pour fermer le popup
-function closePopup() {
-    emit('close');
-}
-
-// Fonction pour inviter un joueur
-function invitePlayer(playerId) {
-    console.log('Inviting player with ID:', playerId);
-    // TODO: Code pour inviter le joueur non ami
-}
-
-// Fonction pour supprimer un ami
-function deleteFriend(friendId) {
-    console.log('Deleting friend with ID:', friendId);
-    // TODO: Code pour supprimer l'ami
-}
-
-// Fonction pour inviter un ami à jouer
-function inviteFriendToPlay(friendId) {
-    console.log('Inviting friend with ID:', friendId, 'to play');
-    alert(`Invitation envoyée à ${friends.value.find(friend => friend.id === friendId).name} pour jouer.`);
-}
-
-// Liste des joueurs non amis filtrée en fonction de la recherche
-const filteredPlayers = computed(() => {
-    if (searchQuery.value.trim() === '') {
-        return [];
+            console.error('Error retrieving user data:', error);
+        }
     }
-    return allPlayers.value.filter((player) =>
-        player.username.toLowerCase().includes(searchQuery.value.toLowerCase())
-    );
-});
 
-onMounted(async () => {
-    await getUser();
-	await getAllUsers();
-    await getFriends();
-	});
+    const emit = defineEmits(['close']);
+
+    // Liste des amis actuels avec un booléen isOnline
+    //const friends = ref(getFriends());
+
+    // Liste des joueurs non amis
+    // const allPlayers = ref([
+    //     { id: 6, name: 'Lucie' },
+    //     { id: 7, name: 'Caroline' },
+    //     { id: 8, name: 'Lucas' },
+    //     { id: 9, name: 'Isaac' },
+    //     { id: 10, name: 'Tabata' },
+    // ]);
+
+    // Barre de recherche
+    const searchQuery = ref('');
+
+    // Fonction pour fermer le popup
+    function closePopup() {
+        emit('close');
+    }
+
+    // Fonction pour inviter un joueur
+    function invitePlayer(playerId) {
+        console.log('Inviting player with ID:', playerId);
+        // TODO: Code pour inviter le joueur non ami
+    }
+
+    // Fonction pour supprimer un ami
+    function deleteFriend(friendId) {
+        console.log('Deleting friend with ID:', friendId);
+        // TODO: Code pour supprimer l'ami
+    }
+
+    // Fonction pour inviter un ami à jouer
+    function inviteFriendToPlay(friendId) {
+        console.log('Inviting friend with ID:', friendId, 'to play');
+        alert(`Invitation envoyée à ${friends.value.find(friend => friend.id === friendId).name} pour jouer.`);
+    }
+
+    // Liste des joueurs non amis filtrée en fonction de la recherche
+    const filteredPlayers = computed(() => {
+        if (searchQuery.value.trim() === '') {
+            return [];
+        }
+        return allPlayers.value.filter((player) =>
+            player.username.toLowerCase().includes(searchQuery.value.toLowerCase())
+        );
+    });
 </script>
 
 <style scoped>
-.friends-popup {
-    position: fixed;
-    bottom: 15%;
-    right: 1%;
-    width: 20vw;
-    height: 50vh;
-    background-color: rgba(0, 0, 0, 0.5);
-    color: white;
-    border: 0.15vw solid rgba(0, 0, 0, 0.25);
-    border-radius: 0.4vw;
-    transition: background-color 0.3s ease;
-    padding: 15px;
-    z-index: 1000;
-    display: flex;
-    flex-direction: column;
-}
+    .friends-popup {
+        position: fixed;
+        bottom: 15%;
+        right: 1%;
+        width: 20vw;
+        height: 50vh;
+        background-color: rgba(0, 0, 0, 0.5);
+        color: white;
+        border: 0.15vw solid rgba(0, 0, 0, 0.25);
+        border-radius: 0.4vw;
+        transition: background-color 0.3s ease;
+        padding: 15px;
+        z-index: 1000;
+        display: flex;
+        flex-direction: column;
+    }
 
-.friends-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-}
+    .friends-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
 
-.friends-list,
-.search-results {
-    flex: 1;
-    margin-top: 10px;
-    overflow-y: auto;
-    padding-right: 10px;
-}
+    .friends-list,
+    .search-results {
+        flex: 1;
+        margin-top: 10px;
+        overflow-y: auto;
+        padding-right: 10px;
+    }
 
-.search-bar {
-    margin-top: 10px;
-}
+    .search-bar {
+        margin-top: 10px;
+    }
 
-.search-input {
-    width: 100%;
-    padding: 8px;
-    border-radius: 5px;
-    border: 1px solid #ccc;
-    font-size: 14px;
-}
+    .search-input {
+        width: 100%;
+        padding: 8px;
+        border-radius: 5px;
+        border: 1px solid #ccc;
+        font-size: 14px;
+    }
 
-.friend-item {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 8px;
-    border-bottom: 1px solid white;
-}
+    .friend-item {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 8px;
+        border-bottom: 1px solid white;
+    }
 
-.friend-info {
-    display: flex;
-    align-items: center;
-}
+    .friend-info {
+        display: flex;
+        align-items: center;
+    }
 
-.friend-name {
-    margin-left: 10px;
-}
+    .friend-name {
+        margin-left: 10px;
+    }
 
-.friend-actions {
-    display: flex;
-    gap: 10px;
-}
+    .friend-actions {
+        display: flex;
+        gap: 10px;
+    }
 
-.friend-connect {
-    display: flex;
-    gap: 1px;
-}
+    .friend-connect {
+        display: flex;
+        gap: 1px;
+    }
 
-.icon-items {
-    cursor: pointer;
-    font-size: 16px;
-    color: white;
-}
+    .icon-items {
+        cursor: pointer;
+        font-size: 16px;
+        color: white;
+    }
 
-.icon-items.online {
-    color: rgb(66, 138, 66);
-}
+    .icon-items.online {
+        color: rgb(66, 138, 66);
+    }
 
-.icon-items.offline {
-    color: rgb(174, 70, 70);
-}
+    .icon-items.offline {
+        color: rgb(174, 70, 70);
+    }
 
-.icon-items:hover {
-    color: rgba(255, 255, 255, 0.5);
-}
+    .icon-items:hover {
+        color: rgba(255, 255, 255, 0.5);
+    }
 
-button {
-    background: none;
-    border: none;
-    padding: 0;
-    cursor: pointer;
-}
+    button {
+        background: none;
+        border: none;
+        padding: 0;
+        cursor: pointer;
+    }
 
-.close-button {
-    position: absolute;
-    top: 10px;
-    right: 10px;
-    background: none;
-    border: none;
-    font-size: 16px;
-    color: white;
-    cursor: pointer;
-}
+    .close-button {
+        position: absolute;
+        top: 10px;
+        right: 10px;
+        background: none;
+        border: none;
+        font-size: 16px;
+        color: white;
+        cursor: pointer;
+    }
 
-.close-button:hover {
-    color: rgb(164, 9, 9);
-}
+    .close-button:hover {
+        color: rgb(164, 9, 9);
+    }
 
-.friends-list::-webkit-scrollbar,
-.search-results::-webkit-scrollbar {
-    width: 0.6vw;
-}
+    .friends-list::-webkit-scrollbar,
+    .search-results::-webkit-scrollbar {
+        width: 0.6vw;
+    }
 
-.friends-list::-webkit-scrollbar-track,
-.search-results::-webkit-scrollbar-track {
-    background: rgba(0, 0, 0, 0.1);
-    border-radius: 1vw;
-}
+    .friends-list::-webkit-scrollbar-track,
+    .search-results::-webkit-scrollbar-track {
+        background: rgba(0, 0, 0, 0.1);
+        border-radius: 1vw;
+    }
 
-.friends-list::-webkit-scrollbar-thumb,
-.search-results::-webkit-scrollbar-thumb {
-    background-color: rgba(0, 0, 0, 0.25);
-    border-radius: 1vw;
-}
+    .friends-list::-webkit-scrollbar-thumb,
+    .search-results::-webkit-scrollbar-thumb {
+        background-color: rgba(0, 0, 0, 0.25);
+        border-radius: 1vw;
+    }
 
-.no-results {
-    color: white;
-    text-align: center;
-    margin-top: 20px;
-}
+    .no-results {
+        color: white;
+        text-align: center;
+        margin-top: 20px;
+    }
 </style>

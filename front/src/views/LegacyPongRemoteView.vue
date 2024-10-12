@@ -1,44 +1,147 @@
 <script setup>
 import { ref, onMounted, onUnmounted } from 'vue';
 import { compileScript } from 'vue/compiler-sfc';
+import { useRouter } from 'vue-router';
 
-const socket = ref(null);
-// const message = ref('');
-const messages = ref([]);
-const connectionStatus = ref('');
-let connection = 0;
+  ////////////////////////////////////////////////
+  /////// GET USER ///////////////////////////////
+  ////////////////////////////////////////////////
 
-let idp1 = 0;
-let idp2 = 0;
+  import { useUser } from '../useUser.js'; 
+  const { getUser, userAccount, is_connected } = useUser(); 
 
+  onMounted(async () => {
+    await getUser();
+    if (is_connected.value === false)
+    __goTo('/')
+  });
 
-function  updatePoints(player, updatePts)
-{
-  console.log(player);
-  console.log(updatePts);
-  if (player == 1)
-  {
-    player1Score = updatePts;
+  ////////////////////////////////////////////////
+  ////////////////////////////////////////////////
+  ////////////////////////////////////////////////
+
+  function __goTo(page) {
+    if (page == null)
+      return;
+  	router.push(page);
   }
-  else if (player == 2)
-  {
-    player2Score = updatePts;
-  }
-}
 
-function  updatePadel(player, newY)
-{
-  // console.log(player);
-  // console.log(newY);
-  if (player == 1)
+  const router = useRouter();
+  const socket = ref(null);
+  // const message = ref('');
+  const messages = ref([]);
+  const connectionStatus = ref('');
+  let connection = 0;
+
+  let idp1 = 0;
+  let idp2 = 0;
+
+
+  function  updatePoints(player, updatePts)
   {
-    player1.y = newY;
+    console.log(player);
+    console.log(updatePts);
+    if (player == 1)
+    {
+      player1Score = updatePts;
+    }
+    else if (player == 2)
+    {
+      player2Score = updatePts;
+    }
   }
-  else if (player == 2)
+
+  function  updatePadel(player, newY)
   {
-    player2.y = newY;
+    // console.log(player);
+    // console.log(newY);
+    if (player == 1)
+    {
+      player1.y = newY;
+    }
+    else if (player == 2)
+    {
+      player2.y = newY;
+    }
   }
-}
+
+  function updateBaal(x, y)
+  {
+    ball.x = x;
+    ball.y = y;
+  }
+
+  function connectWebSocket() {
+    socket.value = new WebSocket('wss://localhost:8443/ws/websockets/');
+    socket.value.onopen = () => {
+      console.log('WebSocket connecté');
+      console.log(socket.value);
+    };
+
+
+    socket.value.onmessage = (event) => {
+      // console.log("---ON MESSAGE---");
+
+      const data = JSON.parse(event.data);
+
+      if (data.type == 'connection_success') 
+      {
+        // console.log(data.type);
+        // console.log(data.message);
+        // connectionStatus.value = data.message;
+        connection = 1;
+      }
+      else if (data.type == 'updatePts')
+      {
+        console.log(data.type);
+        console.log(data.updatePts);
+        console.log(data.player);
+        updatePoints(data.player, data.updatePts);
+      } 
+      else if (data.type == 'mouvUp' || data.type == 'mouvDown')
+      {
+        updatePadel(data.player, data.newY);
+        // messages.value.push(data.type);
+      }
+      else if (data.type == 'updateBaal')
+      {
+        console.log(data.x);
+        console.log(data.y);
+        updateBaal(data.x, data.y);
+      }
+      else if (data.type == 'endGame')
+      {
+        connection = 0;
+        Router.push('home');
+        console.log(data.type);
+      }
+      else if (data.type == 'startGame')
+      { 
+        console.log(data.type);
+      }
+      else if (data.type == 'info_back') //a enlever test
+      {
+        console.log(data.type);
+        console.log(data.value_back1);
+        console.log(data.value_back2);
+        console.log(data.value_back3);
+      }
+      // console.log("---END ON MESSAGE---");
+    };
+
+    socket.value.onerror = (error) => {
+      console.error('Erreur WebSocket:', error);
+    };
+
+    socket.value.onclose = () => {
+      console.log('WebSocket déconnecté, tentative de reconnexion...');
+      setTimeout(() => 
+      {
+        if (connection != 0)
+          connectWebSocket();
+      }, 3000);
+    };
+  }
 
 function updateBaal(x, y)
 {
@@ -157,10 +260,6 @@ function sendMessage(msg) {
       'gameID': msg.gameID,
     }));
     // console.log("---END SEND MESSAGE---");
-  }
-  else 
-  {
-    console.error('WebSocket non connecté');
   }
 }
 

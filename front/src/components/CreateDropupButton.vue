@@ -36,7 +36,7 @@
 	const menuVisible = ref(false);
 	let timeoutId;
 
-	const is_connected = ref(false);
+	const is_connected = ref('');
     async function getLanguage() {
         try {
             const response = await fetch(`api/player/connected_user/`, {

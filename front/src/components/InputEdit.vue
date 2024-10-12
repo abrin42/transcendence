@@ -1,61 +1,61 @@
 <script setup>
-import { ref } from 'vue';
-import Input from './Input.vue';
-import Popup from './Popup.vue';
+    import { ref } from 'vue';
+    import Input from './Input.vue';
+    import Popup from './Popup.vue';
 
-const props = defineProps({
-    modelValue: {
-        type: String,
-        default: '',
-    },
-    placeholderText: {
-        type: String,
-        default: 'Cliquez pour modifier',
-    },
-    type: {
-        type: String,
-        default: 'text',
-    },
-    inputIconClass: {
-        type: String,
-        default: 'fa-solid fa-pen',
-    },
-    inputPlaceholder: {
-        type: String,
-        default: 'Modifier la valeur',
-    },
-    isPassword: {
-        type: Boolean,
-        default: false,
-    },
-    isDisabled: {
-        type: Boolean,
-        default: false,
-    },
-});
+    const props = defineProps({
+        modelValue: {
+            type: String,
+            default: '',
+        },
+        placeholderText: {
+            type: String,
+            default: 'Cliquez pour modifier',
+        },
+        type: {
+            type: String,
+            default: 'text',
+        },
+        inputIconClass: {
+            type: String,
+            default: 'fa-solid fa-pen',
+        },
+        inputPlaceholder: {
+            type: String,
+            default: 'Modifier la valeur',
+        },
+        isPassword: {
+            type: Boolean,
+            default: false,
+        },
+        isDisabled: {
+            type: Boolean,
+            default: false,
+        },
+    });
 
-const emit = defineEmits(['update:modelValue']);
-const showPopup = ref(false);
-const showErrorPopup = ref(false);
-const localValue = ref(props.modelValue);
+    const emit = defineEmits(['update:modelValue']);
+    const showPopup = ref(false);
+    const showErrorPopup = ref(false);
+    const localValue = ref(props.modelValue);
 
-const openPopup = () => {
-    if (props.isDisabled) {
-        showErrorPopup.value = true;
-    } else {
-        showPopup.value = true;
-    }
-};
+    const openPopup = () => {
+        if (props.isDisabled) {
+            showErrorPopup.value = true;
+        } else {
+            showPopup.value = true;
+        }
+    };
 
-const closePopup = () => {
-    showPopup.value = false;
-    showErrorPopup.value = false;
-};
+    const closePopup = () => {
+        showPopup.value = false;
+        showErrorPopup.value = false;
+    };
 
-const saveEdit = () => {
-    emit('update:modelValue', localValue.value);
-    closePopup();
-};
+    const saveEdit = () => {
+        emit('update:modelValue', localValue.value);
+        closePopup();
+    };
 </script>
 
 <template>

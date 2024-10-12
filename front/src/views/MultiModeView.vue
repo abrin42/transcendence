@@ -5,22 +5,46 @@
     import CreateSoundButton from '../components/CreateSoundButton.vue';
     import CreateHomeButton from '../components/CreateHomeButton.vue';
     import { useRouter } from 'vue-router';
+    import { onMounted } from 'vue';
+
+    ////////////////////////////////////////////////
+    /////// GET USER ///////////////////////////////
+    ////////////////////////////////////////////////
+
+    import { useUser } from '../useUser.js'; 
+    const { getUser, userAccount, is_connected } = useUser(); 
+
+    onMounted(async () => {
+        await getUser();
+        if (is_connected.value === false)
+            __goTo('/')
+    });
+
+    ////////////////////////////////////////////////
+    ////////////////////////////////////////////////
+    ////////////////////////////////////////////////
 
     const router = useRouter();
 
     var myVideo = document.getElementById('videoBG');
     myVideo.playbackRate = 1.3;
 
+    function __goTo(page) {
+        if (page == null)
+            return;
+        router.push(page);
+    }
+
     function goToGameSelect() {
-    router.push('/gameselect');
+        router.push('/gameselect');
     }
 
     function goToMatchmaking() {
-    router.push('/matchmaking');
+        router.push('/matchmaking');
     }
 
     function goToTourney() {
-    router.push('/tourney');
+        router.push('/tourney');
     }
 </script>
 

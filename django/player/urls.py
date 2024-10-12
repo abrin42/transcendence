@@ -27,7 +27,8 @@ urlpatterns = [
     path('get_all_user/', views.get_all_user, name='get_all_user'),
 
     path('update_language/', update.update_language, name='update_language'),
-    path('update_nickname/', update.update_nickname, name='update_nickname'),
+    #path('update_nickname/', update.update_nickname, name='update_nickname'),
+    path('update_user/', update.update_user, name='update_user'),
     path('update_email/', update.update_email, name='update_email'),
     path('update_phone_number/', update.update_phone_number, name='update_phone_number'),
     path('update_profile_picture/', update.update_profile_picture, name='update_profile_picture'),

@@ -9,7 +9,28 @@ const messages = ref([]);
 const connectionStatus = ref('');
 let connection = 0;
 
+////////////////////////////////////////////////
+/////// GET USER ///////////////////////////////
+////////////////////////////////////////////////
 
+import { useUser } from '../useUser.js'; 
+const { getUser, userAccount, is_connected } = useUser(); 
+
+onMounted(async () => {
+    await getUser();
+    if (is_connected.value === false)
+      __goTo('/')
+});
+
+////////////////////////////////////////////////
+////////////////////////////////////////////////
+////////////////////////////////////////////////
+
+function __goTo(page) {
+  if (page == null)
+      return;
+  router.push(page);
+}
 
 function  updatePoints(player, updatePts)
 {
