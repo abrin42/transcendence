@@ -11,7 +11,7 @@
             <p id="game-advice">{{tipdisplayed}}</p>
             <div class="button-container-mm">
                 <div class="stuff-to-move">
-                    <img class="profile-picture-matchmaking-left" src="../assets/Chachou.png"/>
+                    <img id="player1-picture" class="profile-picture-matchmaking-left" src="../assets/Chachou.png"/>
                     <p class="profile-text-left">{{playerName1}}</p>
                     <p class="rank-text-left">{{playerRank1}}</p>
                 </div>
@@ -145,7 +145,7 @@ function getCsrfToken() {
 
     ///////////////////////////////////////////////
     let rightplayervisible = ref(false);
-    let loadingmodule = ref(true);
+    let loadingmodulevisible = ref(true);
 
     //dynamic "loading" dots 
     if (document.getElementById("loading") != false)
@@ -166,22 +166,18 @@ function getCsrfToken() {
     var tipdisplayed = tips[Math.floor(Math.random()*tips.length)];
 
     //when 2nd player is found, we hide "waiting for player" and show opponent
-    if(rightplayervisible != null && loadingmodule != null )
+    let playerfound = true;
+    if(playerfound == true)
     {
-        let playerfound = true;
-        if(playerfound == true)
-        {
-
-            //$(".stuff-to-move").classList.addClass(".slide-left");
-        }
-        else
-        {
-            
-        }
+        //onTriggerMovePlayer1ProfilePicture();
+        rightplayervisible = !rightplayervisible;
+        loadingmodulevisible = !loadingmodulevisible;
     }
 
-    function showHide() {
-        divElem.classList.toggle("showing");
+
+    function onTriggerMovePlayer1ProfilePicture() {
+        const player1_pic = document.getElementById('player1-picture');
+        player1_pic.classList.add(...[to-anim]);
     }
 </script>
 
@@ -198,6 +194,27 @@ function getCsrfToken() {
     justify-content: center;
     align-items: center;
     height: 100vh;
+}
+
+.to-anim {
+    position: relative;
+
+    animation-duration: .4s;
+    animation-name: my_anim;
+}
+
+@keyframes my_anim {
+    0% {
+        left: 0;
+    }
+
+    .5% {
+        left: 100px;
+    }
+
+    100% {
+        left: 0px;
+    }
 }
 
 #wrapper-matchmaking {
