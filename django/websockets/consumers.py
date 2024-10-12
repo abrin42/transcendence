@@ -45,16 +45,16 @@ class PongConsumer(AsyncWebsocketConsumer):
     async def ai_back_to_center(self):
         if (self.ball_last_direction == -1):
             if (self.posPad2 < self.init_pad - 5):
-                await self.sendPadDown("mouvDown", 2)
+                await self.sendPadDown("mouvDown", 2, '-1')
             elif (self.posPad2 > self.init_pad + 5):
-                await self.sendPadUp("mouvUp", 2)
+                await self.sendPadUp("mouvUp", 2, '-1')
 
     async def ai_catch_ball(self):
         if (self.ball_last_direction == 1):
             if (self.ball_future_position < self.posPad2 + self.random_paddle_pos - 5):
-                await self.sendPadUp("mouvUp", 2)
+                await self.sendPadUp("mouvUp", 2, '-1')
             elif (self.ball_future_position > self.posPad2 + self.random_paddle_pos + 5):
-                await self.sendPadDown("mouvDown", 2)
+                await self.sendPadDown("mouvDown", 2, '-1')
 
     async def ai_loop_game(self):
         while self.P1Ready == 0:
