@@ -27,7 +27,7 @@
 	const menuVisible = ref(false);
 	let timeoutId;
 
-	const is_connected = ref(false);
+	const is_connected = ref('');
     async function getLanguage() {
         try {
             const response = await fetch(`api/player/connected_user/`, {
@@ -44,6 +44,7 @@
                 console.log(is_connected.value)
             } else {
                 console.log('No user data retrieved.');
+                is_connected.value = false;
 				return;
             }
         } catch (error) {
@@ -63,7 +64,8 @@
 					language: new_language,
 				})
 			});
-			userAccount.language = new_language;
+			if (is_connected)
+				userAccount.language = new_language;
 		} catch (error) {
 			console.error('Erreur lors du changement de langues:', error);
 		}

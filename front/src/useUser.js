@@ -6,13 +6,15 @@ export function useUser() {
         date_joined: "",
         email: "",
         email_2fa_active: "",
-        lose: "",
+        sms_2fa_active: "",
         nickname: "",
         password: "",
+        student:"",
         phone_number: "",
         profilePicture: "",
         rank: "",
         username: "",
+        lose: "",
         win: "",
     });
 
@@ -24,6 +26,7 @@ export function useUser() {
         userAccount.phone_number = fields.phone_number;
         userAccount.email_2fa_active = fields.email_2fa_active;
         userAccount.sms_2fa_active = fields.sms_2fa_active;
+        userAccount.student = fields.student;
     }
 
     async function getUser() {
@@ -53,31 +56,9 @@ export function useUser() {
         }
     }
 
-    async function postUser() {
-        try {
-            const response = await fetch('api/player/update_2fa/', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'X-CSRFToken': getCsrfToken()
-                },
-                body: JSON.stringify({
-                    email_2fa_active: userAccount.email_2fa_active,
-                    sms_2fa_active: userAccount.sms_2fa_active,
-                })
-            });
-            console.log(email_2fa_active);
-            console.log(sms_2fa_active);
-        } catch (error) {
-            console.error('Erreur lors de la création du compte:', error);
-            alert('Une erreur est survenue pendant la création du compte.');
-        }
-    }
-
     return {
         is_connected,
         userAccount,
         getUser,
-        postUser,
     };
 }

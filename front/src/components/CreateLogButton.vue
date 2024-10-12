@@ -17,22 +17,20 @@
     const friendsPopupVisible = ref(true);
     let hoverTimeout = null;
     
-    const logoutUrl = "api/player/logout/";
     const handleLogout = async () => {
-        try {
-            await fetch(logoutUrl, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'X-CSRFToken': getCsrfToken()
-                },
-            });
-            router.push('/log');
-            location.reload();
-        } catch (error) {
-            console.error('Logout failed:', error);
-        }
-    };
+    try {
+        await fetch("api/player/logout/", {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRFToken': getCsrfToken()
+            },
+        });
+        router.push('/log');
+    } catch (error) {
+        console.error('Logout failed:', error);
+    }
+};
     
     const is_connected = ref('');
     const userAccount = reactive({

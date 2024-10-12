@@ -60,6 +60,7 @@ def register_view(request):
 
     return JsonResponse({'error': 'Invalid request method'}, status=405)
 
+@csrf_exempt
 def login_view(request):
     if request.method == "POST":
         try:
@@ -92,7 +93,7 @@ def login_view(request):
 
                         return response
                     
-                    response = JsonResponse({'redirect_url': '/2fa'}, status=302)
+                    response = JsonResponse({'redirect_url': '/2fa/'}, status=302)
                     return response
             return JsonResponse({'error': 'Invalid username or password'}, status=400)
         
@@ -226,7 +227,6 @@ def auth_42_callback(request):
         login(request, user)
         user = token_user(request)
         return response
-
     return redirect('/log/')
 
 
@@ -311,7 +311,6 @@ def get_all_user(request):
     data = Player.objects.all()
     data = serializers.serialize('json', data)
     return HttpResponse(data, content_type='application/json')
-
 
 def enter_matchmaking(request):
     user = token_user(request)
