@@ -10,6 +10,30 @@
     "profile_picture": "Photo de Profil",
     "choose_file": "Choisir un Fichier",
     "username": "Nom d'Utilisateur",
-    "email": "Email",
-    "password": "Mot de Passe"
+    "email": "Courriel",
+    "password": "Mot de Passe",
+
+    "my_account": "Mon compte",
+    "friends": "Amis",
+    "logout": "Déconnexion",
+
+    "my_friends": "Mes Amis",
+    "search_for_a_player": "Rechercher un joueur ...",
+    "no_players_found": "Aucun joueur trouvé.",
+
+    "modify_the_value": "Modifier la valeur:",
+    "save": "Sauvegarder",
+    "prohibited_action": "Action interdite",
+    "disabled_button": "Le bouton est désactivé. Vous ne pouvez pas effectuer cette action.",
+    "close": "Fermer",
+    
+    "disabled_switch": "Le commutateur est désactivé. Vous ne pouvez pas effectuer cette action.",
+
+    "no_text_to_display": "Aucun de texte à afficher",
+
+
+
+    "send_code_question": "Envoyer le code par courriel ou par SMS ?",
+    "phone_authentication": "Authentification par téléphone",
+    "enter_sms": "Saisissez le code que vous avez reçu par SMS."
 }

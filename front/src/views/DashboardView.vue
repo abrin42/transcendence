@@ -1,73 +1,106 @@
 <script setup>
-import { ref } from 'vue';
-import CreateBackButton from '@/components/CreateBackButton.vue';
-import CreateDropupButton from '@/components/CreateDropupButton.vue';
-import InputEdit from '@/components/InputEdit.vue';
-import Switch from '@/components/Switch.vue';
-import TextDisplay from './../components/TextDisplay.vue';
-import profilePicture from '@/assets/img/default-profile.png';
-import { reactive, onMounted } from 'vue';
+    import CreateBackButton from '@/components/CreateBackButton.vue';
+    import CreateDropupButton from '@/components/CreateDropupButton.vue';
+    import InputEdit from '@/components/InputEdit.vue';
+    import Switch from '@/components/Switch.vue';
+    import TextDisplay from './../components/TextDisplay.vue';
+    import profilePicture from '@/assets/img/default-profile.png';
+    import CreateHomeButton from '../components/CreateHomeButton.vue';
+    import Input from '../components/Input.vue';
+    import { useRouter } from 'vue-router';
+    import { ref, onMounted } from 'vue';
+    
+    ////////////////////////////////////////////////
+    /////// GET USER ///////////////////////////////
+    ////////////////////////////////////////////////
+    
+    import { useUser } from '../useUser.js'; 
+    const { getUser, userAccount, is_connected } = useUser(); 
+    
+    onMounted(async () => {
+        await getUser();
+        if (is_connected.value === false)
+            __goTo('/')
+    });
 
-const showAllInfo = ref(false);
-const userAccount = reactive({
-    date_joined: "",
-    email: "",
-    email_2fa_active: false,
-    lose: 0,
-    nickname: "",
-    password: "",
-    phone_number: "",
-    profilePicture: profilePicture,
-    rank: 0,
-    username: "",
-    win: 0,
-});
+    ////////////////////////////////////////////////
+    ////////////////////////////////////////////////
+    ////////////////////////////////////////////////
 
-async function getUser() {
-    try {
-        //const response = await fetch(`http://localhost:8080/api/test-api/${state.id}`, {
-        const response = await fetch(`http://localhost:8080/api/player/connected_user`, {
-            method: 'GET',
-        });
+    function __goTo(page) {
+        if (page == null)
+            return;
+        router.push(page);
+    }
 
-        if (!response.ok) {
-            throw new Error(`HTTP error! Status: ${response.status}`);
+    const router = useRouter();
+    const showAllInfo = ref(false);
+
+    async function updateAccount() {
+        try {
+            const response = await fetch('api/player/update_user/', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRFToken': getCsrfToken(),
+                },
+                body: JSON.stringify({
+                    nickname: userAccount.nickname, // Access directly from userAccount
+                    email: userAccount.email,
+                    phone_number: userAccount.phone_number,
+                    password: userAccount.password,
+
+                    email_2fa_active: userAccount.email_2fa_active,
+                    sms_2fa_active: userAccount.sms_2fa_active,
+                })
+            });
+            if (response.ok) {
+                console.log(userAccount.nickname);
+                const responseData = await response.json();
+                alert('Account updated successfully!');
+            } else {
+                const errorData = await response.json();
+                alert('Error: ' + errorData.error);
+            }
+        } catch (error) {
+            console.error('Error updating account:', error);
+            alert('An error occurred during account update.');
         }
-
-        const user = await response.json();
-        console.log('User data:', user);
-        console.log('player data', user[0].fields)
-        userAccount.nickname = user[0].fields.nickname;
-        userAccount.username = user[0].fields.username;  // Set the username here
-        userAccount.email = user[0].fields.email;
-        userAccount.password = user[0].fields.password;
-    } catch (error) {
-        console.error('Error retrieving user data:', error);
     }
-}
 
-function getAccountType() {
-    if (userAccount.email.search("@student.42") !== -1) {
-        return "42";
-    } else {
-        return "normal";
+    function getCsrfToken() {
+        const cookieValue = document.cookie
+            .split('; ')
+            .find(row => row.startsWith('csrftoken='))
+            ?.split('=')[1];
+        return cookieValue || '';
     }
-}
 
-onMounted(async () => {
-    await getUser();
-});
+    const handleLogout = async () => {
+        try {
+            await fetch("api/player/logout/", {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRFToken': getCsrfToken()
+                },
+            });
+            router.push('/log');
+        } catch (error) {
+            console.error('Logout failed:', error);
+        }
+    };
 
-const handleProfilePictureChange = (event) => {
-    const file = event.target.files[0];
-    if (file) {
-        const reader = new FileReader();
-        reader.onload = (e) => {
-            userAccount.profilePicture = e.target.result;
-        };
-        reader.readAsDataURL(file);
-    }
-};
+    const handleProfilePictureChange = (event) => {
+        const file = event.target.files[0];
+        if (file) {
+            const reader = new FileReader();
+            reader.onload = (e) => {
+                userAccount.profilePicture = e.target.result;
+            };
+            reader.readAsDataURL(file);
+        }
+    };
 </script>
 
 <template>
@@ -78,28 +111,21 @@ const handleProfilePictureChange = (event) => {
             <div class="containerDashboard">
                 <div class="input-section profile-picture-section">
                     <h2 class="category-title">{{ $t('profile_picture') }}</h2>
-                    <img :src="userAccount.profilePicture || 'default-profile.png'" alt="Profile Picture"
-                        class="profile-picture" />
+                    <img :src="userAccount.profilePicture || 'default-profile.png'" alt="Profile Picture" class="profile-picture" />
                     <label for="file-upload" class="custom-file-upload">
                         <i class="fas fa-upload"></i> {{ $t('choose_file') }}
                     </label>
-                    <input id="file-upload" type="file" @change="handleProfilePictureChange" accept="image/*"
-                        class="hidden-file-input" />
+                    <input id="file-upload" type="file" @change="handleProfilePictureChange" accept="image/*" class="hidden-file-input" />
                 </div>
 
                 <Switch class="infoGlobal" buttonText="See all information" v-model="showAllInfo" />
 
                 <div class="TextContainer">
-                    <TextDisplay v-if="showAllInfo || !showAllInfo" :textValue="userAccount.email"
-                        nameContainer="Email" />
-                    <TextDisplay v-if="showAllInfo || !showAllInfo" :textValue="userAccount.nickname"
-                        nameContainer="Nickname" />
-                    <TextDisplay v-if="showAllInfo || !showAllInfo" :textValue="userAccount.phone_number"
-                        nameContainer="Phone number" />
-
+                    <TextDisplay v-if="showAllInfo || !showAllInfo" :textValue="userAccount.email" nameContainer="Email" />
+                    <TextDisplay v-if="showAllInfo || !showAllInfo" :textValue="userAccount.nickname" nameContainer="Nickname" />
+                    <TextDisplay v-if="showAllInfo || !showAllInfo" :textValue="userAccount.phone_number" nameContainer="Phone number" />
                     <TextDisplay v-if="showAllInfo" :textValue="userAccount.username" nameContainer="Username" />
                     <TextDisplay v-if="showAllInfo" :textValue="userAccount.password" nameContainer="Password" />
-                    <!-- Faire en sorte que le password puisse etre afficher vie un oeil -->
                     <TextDisplay v-if="showAllInfo" :textValue="userAccount.date_joined" nameContainer="Date joined" />
                     <TextDisplay v-if="showAllInfo" :textValue="userAccount.win" nameContainer="Number of win" />
                     <TextDisplay v-if="showAllInfo" :textValue="userAccount.lose" nameContainer="Number of lose" />
@@ -107,47 +133,36 @@ const handleProfilePictureChange = (event) => {
                 </div>
 
                 <div class="editable-input-container">
-
-                    <InputEdit v-model="userAccount.nickname" placeholderText="Change your nickname"
-                        inputIconClass="fa-user" inputPlaceholder="Enter your nickname" :isPassword="false" />
-
-                    <InputEdit v-model="userAccount.email" placeholderText="Change your email" inputIconClass="fa-user"
-                        inputPlaceholder="Enter your email" :isPassword="false"
-                        :isDisabled="getAccountType() === '42'" />
-
-                    <!-- Utilisation de v-if pour retirer complètement du DOM les champs non nécessaires pour un compte 42 -->
-                    <InputEdit v-if="getAccountType() !== '42'" v-model="userAccount.phone_number"
-                        placeholderText="Change your phone number" inputIconClass="fa-user"
-                        inputPlaceholder="Enter your phone number" :isPassword="false" />
-
-                    <InputEdit v-if="getAccountType() !== '42'" v-model="userAccount.password"
-                        placeholderText="Change your password" inputIconClass="fa-lock"
-                        inputPlaceholder="Enter your password" :isPassword="true" />
-
+                    <InputEdit v-model="userAccount.nickname" placeholderText="Change your nickname" inputIconClass="fa-user" inputPlaceholder="Enter your nickname" :isPassword="false" />
+                    <InputEdit v-model="userAccount.email" placeholderText="Change your email" inputIconClass="fa-user" inputPlaceholder="Enter your email" :isPassword="false" :isDisabled="userAccount.student === true" />
+                    <InputEdit v-if="userAccount.student === false" v-model="userAccount.phone_number" placeholderText="Change your phone number" inputIconClass="fa-user" inputPlaceholder="Enter your phone number" :isPassword="false" />
+                    <InputEdit v-if="userAccount.student === false" v-model="userAccount.password" placeholderText="Change your password" inputIconClass="fa-lock" inputPlaceholder="Enter your password" :isPassword="true" />
 
                     <div class="___btn-click">
+                        <button class="button" @click="updateAccount">
+                            <span class="buttonText buttonTextSize" style="font-size: medium;">{{ $t('Update your account') }}</span>
+                        </button>
                         <button class="button">
                             <span class="buttonText buttonTextSize" style="font-size: medium;">Friends</span>
                         </button>
-
-                        <button class="button">
+                        <button class="button" @click="handleLogout">
                             <span class="buttonText buttonTextSize" style="font-size: medium;">Logout</span>
                         </button>
-
                         <button class="button">
                             <span class="buttonText buttonTextSize" style="font-size: medium;">Delete account</span>
                         </button>
                     </div>
                 </div>
-                <div class="SwitchStyle" v-if="getAccountType() !== '42'">
-                    <Switch buttonText="Activer 2FA (SMS)"
-                        :isDisabled="userAccount.phone_number === '' ? true : false" />
-                    <Switch buttonText="Activer 2FA (EMAIL)" />
+
+                <div class="SwitchStyle" v-if="userAccount.student === false">
+                    <Switch buttonText="Activer 2FA (SMS)" :isDisabled="userAccount.phone_number === '' ? false : true" v-model="userAccount.sms_2fa_active" />
+                    <Switch buttonText="Activer 2FA (EMAIL)" v-model="userAccount.email_2fa_active" />
                 </div>
             </div>
         </div>
     </main>
 </template>
+
 
 <style scoped>
 h1,
@@ -305,6 +320,22 @@ h1,
     /* margin: 1vw 1vw; */
     min-width: 200px;
     text-align: center;
+}
+
+/* Pour chaque bloc de texte */
+.TextContainer div:nth-child(2n+1) {
+    /* Ceci pour rendre le premier texte visuellement distinct si nécessaire */
+}
+
+.___btn-click {
+    color: white;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    white-space: nowrap;
+    flex: 1 1 calc(30% - 20px);
+    margin: 1vw;
+    gap: 10px;
 }
 
 /* Pour chaque bloc de texte */

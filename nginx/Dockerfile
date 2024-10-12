@@ -12,7 +12,14 @@ RUN rm -rf /var/www/html
 RUN mkdir -p /etc/nginx/ssl
 COPY --from=build /app/front/dist /var/www/html
 COPY ./nginx/nginx.conf /etc/nginx/nginx.conf
+RUN mkdir -p /etc/nginx/ssl
+COPY certificat/certificate.crt /etc/nginx/ssl/certificate.crt
+COPY certificat/privatekey.pem /etc/nginx/ssl/privatekey.pem
+WORKDIR /etc/nginx/ssl
+RUN chmod 644 certificate.crt
+RUN chmod 644 privatekey.pem
 EXPOSE 8000
+EXPOSE 8443
 
 # COPY --from=build /app/front/dist /var/www/html
 

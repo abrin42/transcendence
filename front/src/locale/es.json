@@ -4,12 +4,36 @@
     "login": "Conexión",
     "back": "Atrás",
     "settings": "Parámetros",
-    "player": "Jugador",
+    "player": "J.",
     "right": "DERECHA",
     "left": "IZQUIERDA",
     "profile_picture": "Foto de perfil",
     "choose_file": "Elegir Archivo",
     "username": "Nombre de Usuario",
     "email": "Correo Electrónico",
-    "password": "Contraseña"
+    "password": "Contraseña",
+
+    "my_account": "Mi Cuenta",
+    "friends": "Amigos",
+    "logout": "Cerrar Sesión",
+
+    "my_friends": "Mis Amigos",
+    "search_for_a_player": "Buscar un jugador ...",
+    "no_players_found": "No se han encontrado jugadores.",
+
+    "modify_the_value": "Modificar el valor:",
+    "save": "Guardar",
+    "prohibited_action": "Acción prohibida",
+    "disabled_button": "El botón está desactivado. No puede realizar esta acción.",
+    "close": "Cerrar",
+    
+    "disabled_switch": "El conmutador está desactivado. No puede realizar esta acción.",
+
+    "no_text_to_display": "No hay texto que mostrar",
+
+
+
+    "send_code_question": "¿Enviar código por correo electrónico o SMS?",
+    "phone_authentication": "Autenticación telefónica",
+    "enter_sms": "Introduzca el código que ha recibido por SMS."
 }

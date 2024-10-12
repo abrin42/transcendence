@@ -1,18 +1,41 @@
 <script setup>
 import { ref, onMounted, onUnmounted } from 'vue';
+import { useRouter } from 'vue-router';
 
+const router = useRouter();
 const socket = ref(null);
 // const message = ref('');
 const messages = ref([]);
 const connectionStatus = ref('');
 let connection = 0;
 
+////////////////////////////////////////////////
+/////// GET USER ///////////////////////////////
+////////////////////////////////////////////////
 
+import { useUser } from '../useUser.js'; 
+const { getUser, userAccount, is_connected } = useUser(); 
+
+onMounted(async () => {
+    await getUser();
+    if (is_connected.value === false)
+      __goTo('/')
+});
+
+////////////////////////////////////////////////
+////////////////////////////////////////////////
+////////////////////////////////////////////////
+
+function __goTo(page) {
+  if (page == null)
+      return;
+  router.push(page);
+}
 
 function  updatePoints(player, updatePts)
 {
-  console.log(player);
-  console.log(updatePts);
+  // console.log(player);
+  // console.log(updatePts);
   if (player == 1)
   {
     player1Score = updatePts;
@@ -44,14 +67,16 @@ function updateBaal(x, y)
 }
 
 function connectWebSocket() {
-  socket.value = new WebSocket('ws://localhost:8080/ws/websockets/');
+  const currentUrl = window.location.href; 
+  const lastSegment = currentUrl.split('/').filter(Boolean).pop();
+  socket.value = new WebSocket(`wss://localhost:8443/ws/websockets/?page=${encodeURIComponent(lastSegment)}`);
   socket.value.onopen = () => {
     console.log('WebSocket connecté');
   };
 
 
   socket.value.onmessage = (event) => {
-    console.log("---ON MESSAGE---");
+    // console.log("---ON MESSAGE---");
 
     const data = JSON.parse(event.data);
     // console.log(data.type);
@@ -67,7 +92,7 @@ function connectWebSocket() {
       // console.log(data.message);
       // connectionStatus.value = data.message;
 
-      console.log(data.type);
+      // console.log(data.type);
       const message =
       {
         type: "GameIA",
@@ -79,14 +104,14 @@ function connectWebSocket() {
     }
     else if (data.type == 'updatePts')
     {
-      console.log(data.type);
-      console.log(data.updatePts);
-      console.log(data.player);
+      // console.log(data.type);
+      // console.log(data.updatePts);
+      // console.log(data.player);
       updatePoints(data.player, data.updatePts);
     } 
     else if (data.type == 'mouvUp' || data.type == 'mouvDown')
     {
-      console.log(data.type);
+      // console.log(data.type);
       updatePadel(data.player, data.newY);
       // messages.value.push(data.type);
     }
@@ -99,19 +124,28 @@ function connectWebSocket() {
     else if (data.type == 'endGame')
     {
       connection = 0;
-      Router.push('home');
+      router.push('/'); //========================================== Erreur
+    }
+    //   console.log(data.type);
+    // }
+    // else if (data.type == 'startGame')
+    // {
+    //   console.log(data.type);
+    // }
+    else if (data.type == 'paddleHit') //sound
+    {
       console.log(data.type);
     }
-    else if (data.type == 'startGame')
-    {
+    else if (data.type == 'wallHit')//sound
+    { 
       console.log(data.type);
     }
     else if (data.type == 'info_back') //a enlever test
     {
-      console.log(data.type);
-      console.log(data.value_back1);
-      console.log(data.value_back2);
-      console.log(data.value_back3);
+      console.log(data.type + " : " + data.value_back1 + "; " + data.value_back2 + "; " + data.value_back3);
+      // console.log(data.value_back1);
+      // console.log(data.value_back2);
+      // console.log(data.value_back3);
     }
     // console.log("---END ON MESSAGE---");
   };
@@ -134,8 +168,8 @@ function sendMessage(msg) {
   // console.log(msg);
   if (socket.value && socket.value.readyState === WebSocket.OPEN) 
   {
-    console.log("---SEND MESSAGE---");
-    console.log(msg.type);
+    // console.log("---SEND MESSAGE---");
+    // console.log(msg.type);
     // console.log(msg.player);
     // console.log(msg.posPad);
     socket.value.send(JSON.stringify({
@@ -219,7 +253,9 @@ onMounted(() => {
         context.fillRect(player1.x, player1.y, player1.width, player1.height);
 
         requestAnimationFrame(update); // Gameloop
-        document.addEventListener("keydown", movePlayer);
+        document.addEventListener("keydown", movePlayer1up);
+        document.addEventListener("keydown", movePlayer1down);
+        document.addEventListener('keyup', stopPlayer);
         // document.addEventListener("keydown", leaveGame);
     }
 
@@ -246,50 +282,54 @@ onMounted(() => {
     }
 
     
-    let keysPressed = {};
     let moveInterval1up = null;
     let moveInterval1down = null;
     let tickPadel = 10;
 
 
-
-    function movePlayer(e) 
+    function movePlayer1up(e)
     {
-      keysPressed[e.code] = true;
-
-      if (keysPressed["KeyW"]) 
+      if (!moveInterval1up)
       {
-        if (!moveInterval1up)
+        if (e.code == "KeyW")
         {
-          moveInterval1up = setInterval(() => {
+          moveInterval1up = setInterval(() => 
+          {
             const message = 
             {
               type: "mouvUp",
               player: "1",
             };
             sendMessage(message);                    
-          }, tickPadel );
+            
+          },
+          tickPadel);
         }
-      } 
-      else if (keysPressed["KeyS"])
+      }
+    }
+
+    function movePlayer1down(e)
+    {
+      if (!moveInterval1down)
       {
-        if (!moveInterval1down)
+        if (e.code == "KeyS")
         {
-          moveInterval1down = setInterval(() => {
+          moveInterval1down = setInterval(() => 
+          {
             const message = 
             {
               type: "mouvDown",
               player: "1",
             };
             sendMessage(message);                    
-          }, tickPadel );
-        }                        
+          },
+          tickPadel);
+        }
       }
-        document.addEventListener('keyup', stopPlayer);
     }
 
+
     function stopPlayer(e) {
-      delete keysPressed[e.code];
       if (e.code == "KeyW")
       {  
         clearInterval(moveInterval1up);

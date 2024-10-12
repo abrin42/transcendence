@@ -1,35 +1,35 @@
 <script setup>
-import { ref, computed } from 'vue';
+    import { ref, computed } from 'vue';
 
-const props = defineProps({
-    modelValue: {
-        type: String,
-        default: '',
-    },
-    iconClass: {
-        type: String,
-        default: 'fa-user'
-    },
-    placeholderText: {
-        type: String,
-        default: 'Enter your text'
-    },
-    isPassword: {
-        type: Boolean,
-        default: false
-    }
-});
+    const props = defineProps({
+        modelValue: {
+            type: String,
+            default: '',
+        },
+        iconClass: {
+            type: String,
+            default: 'fa-user'
+        },
+        placeholderText: {
+            type: String,
+            default: 'Enter your text'
+        },
+        isPassword: {
+            type: Boolean,
+            default: false
+        }
+    });
 
-const isPasswordVisible = ref(false);
-const inputType = computed(() => {
-    return props.isPassword && !isPasswordVisible.value ? 'password' : 'text';
-});
+    const isPasswordVisible = ref(false);
+    const inputType = computed(() => {
+        return props.isPassword && !isPasswordVisible.value ? 'password' : 'text';
+    });
 
-const togglePasswordVisibility = () => {
-    isPasswordVisible.value = !isPasswordVisible.value;
-};
+    const togglePasswordVisibility = () => {
+        isPasswordVisible.value = !isPasswordVisible.value;
+    };
 
-const emit = defineEmits(['update:modelValue']);
+    const emit = defineEmits(['update:modelValue']);
 </script>
 
 <template>

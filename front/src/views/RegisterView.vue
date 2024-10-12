@@ -1,80 +1,95 @@
 <script setup>
-import { ref } from 'vue';
-import CreateDropupButton from '../components/CreateDropupButton.vue';
-import CreateBackButton from '../components/CreateBackButton.vue';
-import Input from '../components/Input.vue';
-import { useRouter } from 'vue-router';
+    import CreateDropupButton from '../components/CreateDropupButton.vue';
+    import CreateBackButton from '../components/CreateBackButton.vue';
+    import CreateHomeButton from '../components/CreateHomeButton.vue';
+    import Input from '../components/Input.vue';
+    import { useRouter } from 'vue-router';
+    import { ref, onMounted } from 'vue';
 
-const router = useRouter();
-const username = ref('');
-const email = ref('');
-const phone_number = ref('');
-const password1 = ref('');
-const password2 = ref('');
+    ////////////////////////////////////////////////
+    /////// GET USER ///////////////////////////////
+    ////////////////////////////////////////////////
 
-defineExpose({
-    username,
-    email,
-    phone_number,
-    password1,
-    password2
-});
+    import { useUser } from '../useUser.js'; 
+    const { getUser, is_connected } = useUser(); 
 
-function __goTo(page) {
-    if (page == null) {
-        return;
-    }
-    router.push(page);
-}
+    onMounted(async () => {
+        await getUser();
+        if (is_connected.value === true)
+            __goTo('/')
+    });
 
+    ////////////////////////////////////////////////
+    ////////////////////////////////////////////////
+    ////////////////////////////////////////////////
 
-async function createAccount() {
-    if (password1.value !== password2.value) {
-        alert('Les mots de passe ne correspondent pas.');
-        return;
-    }
+    const router = useRouter();
 
-    console.log(password1.value)
-    console.log(password2.value)
-    try {
-        const response = await fetch('/api/player/register/', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                'X-CSRFToken': getCsrfToken() // Add your CSRF token retrieval here
-            },
-            body: JSON.stringify({
-                username: username.value,
-                email: email.value,
-                phone_number: phone_number.value,
-                password1: password1.value,
-                password2: password2.value,
-            })
-        });
+    const username = ref('');
+    const email = ref('');
+    const phone_number = ref('');
+    const password1 = ref('');
+    const password2 = ref('');
 
-        if (response.ok) {
-            const responseData = await response.json();
-            alert('Compte créé avec succès !');
-            __goTo(responseData.redirect_url);
-        } else {
-            const errorData = await response.json();
-            alert('Erreur: ' + errorData.error);
+    defineExpose({
+        username,
+        email,
+        phone_number,
+        password1,
+        password2
+    });
+
+    function __goTo(page) {
+        if (page == null) {
+            return;
         }
-    } catch (error) {
-        console.error('Erreur lors de la création du compte:', error);
-        alert('Une erreur est survenue pendant la création du compte.');
+        router.push(page);
     }
-}
 
-function getCsrfToken() {
-    // Helper function to get the CSRF token from cookies
-    const cookieValue = document.cookie
-        .split('; ')
-        .find(row => row.startsWith('csrftoken='))
-        ?.split('=')[1];
-    return cookieValue || '';
-}
+    async function createAccount() {
+        if (password1.value !== password2.value) {
+            alert('Les mots de passe ne correspondent pas.');
+            return;
+        }
 
+        console.log(password1.value)
+        console.log(password2.value)
+        try {
+            const response = await fetch('/api/player/register/', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRFToken': getCsrfToken()
+                },
+                body: JSON.stringify({
+                    username: username.value,
+                    email: email.value,
+                    phone_number: phone_number.value,
+                    password1: password1.value,
+                    password2: password2.value,
+                })
+            });
+            if (response.ok) {
+                const responseData = await response.json();
+                alert('Compte créé avec succès !');
+                __goTo(responseData.redirect_url);
+            } else {
+                const errorData = await response.json();
+                alert('Erreur: ' + errorData.error);
+            }
+        } catch (error) {
+            console.error('Erreur lors de la création du compte:', error);
+            alert('Une erreur est survenue pendant la création du compte.');
+        }
+    }
+
+    function getCsrfToken() {
+        const cookieValue = document.cookie
+            .split('; ')
+            .find(row => row.startsWith('csrftoken='))
+            ?.split('=')[1];
+        return cookieValue || '';
+    }
 </script>
 
 <template>
@@ -91,13 +106,15 @@ function getCsrfToken() {
             </div>
 
             <div class="__inputInfo">
-                <Input iconClass="fa-user" placeholderText="Username" v-model="username" />
-                <Input iconClass="fa-envelope" placeholderText="Email" v-model="email" />
-                <Input iconClass="fa-lock" placeholderText="Password" isPassword v-model="password1" />
-                <Input iconClass="fa-lock" placeholderText="Confirm password" isPassword v-model="password2" />
+                <Input iconClass="fa-user" placeholderText="*Username" v-model="username" />
+                <Input iconClass="fa-envelope" placeholderText="*Email" v-model="email" />
+                <Input iconClass="fa-phone" placeholderText="Phone Number" v-model="phone_number" />
+                <Input iconClass="fa-lock" placeholderText="*Password" isPassword v-model="password1" />
+                <Input iconClass="fa-lock" placeholderText="*Confirm password" isPassword v-model="password2" />
             </div>
 
             <div class="buttonContainer">
+                <CreateHomeButton />
                 <CreateBackButton />
                 <CreateDropupButton />
             </div>
@@ -109,7 +126,7 @@ function getCsrfToken() {
 h1 {
     position: fixed;
     left: auto;
-    top: 10%;
+    top: 15%;
     font-size: 4vw;
     color: #fff;
     text-shadow:
@@ -150,7 +167,7 @@ h1 {
 .logContainer {
     position: fixed;
     width: 25vw;
-    height: 52.5vh;
+    height: 59vh;
     left: auto;
     top: 25%;
 
@@ -165,19 +182,19 @@ h1 {
     width: 15vw;
     height: 6vh;
     left: 42.5%;
-    top: 65%;
+    top: 72%;
 
     background-color: rgba(202, 149, 128, 0.5);
-    border: 0.15vw solid rgba(202, 149, 128, 0.25);
+    border: 0.15vw solid rgba(237, 230, 228, 0.25);
     border-radius: 0.4vw;
     transition: background-color 0.3s ease;
 }
 
 .button-login {
     position: fixed;
-    width: 10vw;
+    width: 15vw;
     height: 6vh;
-    left: 47.5%;
+    left: 42.5%;
     top: 30%;
 
     background-color: rgba(0, 0, 0, 0.5);
@@ -201,5 +218,24 @@ h1 {
     border-color: rgba(255, 255, 255, 1);
     background-color: rgba(255, 255, 255, 0.4);
     transition: border-color, background-color 0.5s;
+}
+
+.button-createAccount:hover{
+    border-color: rgb(185, 248, 252);
+    text-decoration-color: rgb(185, 248, 252);
+    background-color: rgba(0, 204, 227, 0.247);
+    transition: border-color, background-color 0.5s;
+    filter: drop-shadow(5px 5px 4px #ff04d585);
+    transition: color 0.3s ease, font-size 0.3s ease;
+}
+
+.buttonText {
+    font-size: 22px;
+    color: rgb(255, 255, 255);
+}
+
+.button-createAccount:hover .buttonText {
+    font-size: 23px;
+    transition: color 0.3s ease, font-size 0.3s ease;
 }
 </style>

@@ -32,5 +32,4 @@
 </template>
 
 <style>
-
 </style>

@@ -1,25 +1,14 @@
 <template>
     <div class="button-container" @mouseenter="showDropdown" @mouseleave="hideDropdown">
-        <button ref="button" class="button button-log" @click="__goTo(isConnect ? '/' : '/log')">
-            <span class="buttonText">{{ isConnect ? username : $t('login') }}</span>
+        <button ref="button" class="button button-log" @click="__goTo(is_connected ? '/dashboard' : '/log')">
+            <span class="buttonText">{{ is_connected ? userAccount.nickname : $t('login') }}</span>
         </button>
 
-        <!-- Afficher le dropdown seulement si la popup d'amis n'est pas visible -->
-        <div v-if="dropdownVisible && !friendsPopupVisible" class="dropdown">
-            <button ref="dropdownButtons" class="button buttondropdown" @click="__goTo('/dashboard')">
-                <i class="fa-solid fa-user" style="margin-right: 0.25vw;"></i>
-                <span class="buttonText buttonTextSize">My account</span>
-            </button>
-
-            <button ref="dropdownButtons" class="button buttondropdown" @click="toggleFriendsPopup">
-                <i class="fa-solid fa-user-group" style="margin-right: 0.25vw;"></i>
-                <span class="buttonText buttonTextSize">Friends</span>
-            </button>
-
-            <button ref="dropdownButtons" class="button buttondropdown" @click="__logout">
-                <i class="fa-solid fa-right-from-bracket" style="margin-right: 0.25vw;"></i>
-                <span class="buttonText buttonTextSize">Logout</span>
-            </button>
+        <div v-if="dropdownVisible" class="dropdown">
+            <button class="button buttonText buttondropdown" @click="__goTo('/dashboard')">{{ $t('my_account') }}</button>
+            <!-- Appel à la méthode toggleFriendsPopup pour afficher la popup -->
+            <button class="button buttonText buttondropdown" @click="toggleFriendsPopup">{{ $t('friends') }}</button>
+            <button class="button buttonText buttondropdown" @click="handleLogout">{{ $t('logout') }}</button>
         </div>
 
         <!-- Composant FriendsPopup, écoute l'événement 'close' pour masquer la popup -->
@@ -28,133 +17,146 @@
 </template>
 
 <script setup>
-import { ref, onMounted, watch } from 'vue';
-import { useRouter } from 'vue-router';
-import FriendsPopup from './FriendsPopup.vue';
+    import { ref, onMounted, watch } from 'vue';
+    import { useRouter } from 'vue-router';
+    import FriendsPopup from './FriendsPopup.vue'; 
 
-const router = useRouter();
+    ////////////////////////////////////////////////
+    /////// GET USER ///////////////////////////////
+    ////////////////////////////////////////////////
 
-function __goTo(page) {
-    if (page == null) {
-        return;
-    }
-    router.push(page);
-}
+    import { useUser } from '../useUser.js'; 
+    const { getUser, userAccount, is_connected } = useUser(); 
 
-const isConnect = ref(true); // Changer quand le player est connecté
-var username = 'username'; // Nom d'utilisateur pour tester
-
-const button = ref(null);
-const dropdownVisible = ref(false);
-const friendsPopupVisible = ref(false);
-const dropdownButtons = ref([]);
-let hoverTimeout = null;
-
-function adjustButtonPosition() {
-    const buttonWidth = (button.value.offsetWidth / window.innerWidth) * 100; // Convertir en vw
-    button.value.style.left = `calc(100vw - ${buttonWidth + 5}vw)`; // Ajuster la position à droite
-}
-
-function adjustDropdownButtonsWidth() {
-    const buttonWidthVW = (button.value.offsetWidth / window.innerWidth) * 100;  // Convertir la largeur en vw
-    const buttonFontSize = window.getComputedStyle(button.value).fontSize;  // Récupérer la taille de la police
-
-    dropdownButtons.value.forEach((dropdownButton) => {
-        dropdownButton.style.width = `${buttonWidthVW}vw`;  // Appliquer la largeur en vw
-        dropdownButton.style.fontSize = buttonFontSize;  // Appliquer la taille du texte du bouton principal
+    onMounted(async () => {
+        await getUser();
+        if (is_connected.value === false)
+            __goTo('/')
     });
-}
 
-onMounted(() => {
-    adjustButtonPosition();
-    dropdownButtons.value = Array.from(document.querySelectorAll('.buttondropdown'));
-    adjustDropdownButtonsWidth();  // Ajuster la largeur et la taille du texte des boutons du dropdown après le montage
-});
+    ////////////////////////////////////////////////
+    ////////////////////////////////////////////////
+    ////////////////////////////////////////////////
 
-watch([() => username, () => dropdownVisible.value], adjustDropdownButtonsWidth);
+    const router = useRouter();
 
-function showDropdown() {
-    hoverTimeout = setTimeout(() => {
-        dropdownVisible.value = true;
-    }, 5);
-}
+    function __goTo(page) {
+        if (page == null) {
+            return;
+        }
+        router.push(page);
+    }
 
-function hideDropdown() {
-    clearTimeout(hoverTimeout);
-    dropdownVisible.value = false;
-}
+    const button = ref(null);
+    const dropdownVisible = ref(false);
+    const friendsPopupVisible = ref(true);
+    let hoverTimeout = null;
+    
+    const handleLogout = async () => {
+        try {
+            await fetch("api/player/logout/", {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRFToken': getCsrfToken()
+                },
+            });
+            router.push('/log');
+        } catch (error) {
+            console.error('Logout failed:', error);
+        }
+    };
+    
 
-function __logout() {
-    console.log('Logging out...');
-    __goTo('/log');
-}
+    function getCsrfToken() {
+        const cookieValue = document.cookie
+            .split('; ')
+            .find(row => row.startsWith('csrftoken='))
+            ?.split('=')[1];
+        return cookieValue || '';
+    }
 
-function toggleFriendsPopup() {
-    friendsPopupVisible.value = !friendsPopupVisible.value;
-    dropdownVisible.value = false; // Masquer le dropdown lorsque la popup est ouverte
-}
+    onMounted(() => {
+        adjustButtonPosition();
+    });
+
+    watch(() => userAccount.nickname, adjustButtonPosition);
+
+    function adjustButtonPosition() {
+        const buttonWidth = button.value.offsetWidth;
+        button.value.style.right = `calc(${buttonWidth -40}px)`;
+    }
+
+    function showDropdown() {
+        hoverTimeout = setTimeout(() => {
+            if (is_connected)
+                dropdownVisible.value = true;
+        }, 5);
+    }
+
+    function hideDropdown() {
+        clearTimeout(hoverTimeout);
+        dropdownVisible.value = false;
+    }
+
+    function toggleFriendsPopup() {
+        friendsPopupVisible.value = !friendsPopupVisible.value;
+    }
 </script>
 
 <style>
-.button-log {
-    position: fixed;
-    bottom: 93vh;
-    height: 6vh;
-    width: 7vw;
-    min-width: fit-content;
-    white-space: nowrap;
-    transition: width 0.3s ease, left 0.3s ease;
-}
+    .button-container {
+        /* position: relative; */
+        /* display: inline-block; */
+    }
 
-.dropdown {
-    position: fixed;
-    bottom: 87%;
-    left: 83.2%;
-    height: 6%;
-    width: 11vw;
-    min-width: fit-content;
-    white-space: nowrap;
-    border-radius: 2vw;
-    z-index: 1000;
-    display: flex;
-    flex-direction: column;
-}
+    .button-log {
+        position: fixed;
+        bottom: 93vh;
+        height: 6vh;
+        right: 3vw;
+        width: 7vw;
+        min-width: fit-content;
+        white-space: nowrap;
+        transition: width 0.3s ease, left 0.3s ease;
+    }
 
-.dropdown button {
-    padding: 10px;
-    background-color: rgba(0, 0, 0, 0.25);
-    border: 0.15vw solid rgba(0, 0, 0, 0.25);
-    border-radius: 0.4vw;
-    transition: border-color 0.5s;
-    margin-top: 0.1vh;
-    display: flex;
-    align-items: left;
-    justify-content: flex-start;
-    gap: 0.5vw;
-    width: 100%;
-    box-sizing: border-box;
-}
+    .dropdown {
+        position: fixed;
+        bottom: 87%;
+        left: 83.2%;
+        height: 6%;
+        width: 11vw;
+        min-width: fit-content;
+        white-space: nowrap;
+        border-radius: 2vw;
+        z-index: 1000;
+        display: flex;
+        flex-direction: column;
+    }
 
-.buttondropdown {
-    height: 6vh;
-    display: flex;
-    align-items: center;
-    justify-content: flex-start;
-}
+    .dropdown button {
+        padding: 10px;
+        background-color: rgba(0, 0, 0, 0.25);
+        padding: 2vh 2vw;
+        border: 0.15vw solid rgba(0, 0, 0, 0.25);
+        border-radius: 0.4vw;
+        transition: border-color 0.5s;
+        margin-top: 0.1vh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        box-sizing: border-box;
+    }
 
-.buttondropdown i {
-    margin-right: 0.5vw;
-}
+    .buttondropdown {
+        width: 11vw;
+        height: 6vh;
+    }
 
-.buttonTextSize {
-    left: 0.5vw;
-    white-space: nowrap;
-    font-size: 0.1rem;
-}
-
-.dropdown button:hover {
-    border-color: rgba(255, 255, 255, 1);
-    background-color: rgba(255, 255, 255, 0.4);
-    transition: border-color, background-color 0.5s;
-}
+    .dropdown button:hover {
+        border-color: rgba(255, 255, 255, 1);
+        background-color: rgba(255, 255, 255, 0.4);
+        transition: border-color, background-color 0.5s;
+    }
 </style>

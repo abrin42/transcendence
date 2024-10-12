@@ -11,7 +11,8 @@ import json
 from django.core import serializers
 import requests
 from django.http import JsonResponse, HttpResponse, HttpResponseForbidden
-
+from datetime import datetime, timedelta
+from .serialize import FriendshipSerializer
 @login_required
 def index(request):
     user = token_user(request)
@@ -83,30 +84,33 @@ def refuse(request, id_friendship):
 def list(request):
     you = token_user(request)
     friends = Friendship.objects.filter(Q(user=you, status='accepted') | Q(friend=you, status='accepted'))
-    you.last_login = timezone.now()
-    you.save()
+    #you.last_login = timezone.now()
+    #you.save()
     #return render(request, "friend/list.html", {'friends':friends, 'you':you})
-    data = serializers.serialize('json', friends)
-    return HttpResponse(data, content_type='application/json')
+    data = serializers.serialize('json', friends, use_natural_foreign_keys=True, use_natural_primary_keys=True)
+
+    #serializer = FriendshipSerializer(friends.values())
+    #if serializer.is_valid():
+    #        serializer.save()
+    return JsonResponse(data, safe=False, content_type='application/json')
+    #return HttpResponse(friend_list, content_type='application/json')
 
 @login_required
 def pending(request):
-    user = token_user(request)
-    if user is None: 
-        return redirect(reverse('player:login'))
-    you = request.user
+    you = token_user(request)
     friends = Friendship.objects.filter(Q(friend=you, status='pending'))
     you.last_login = timezone.now()
     you.save()
     return render(request, "friend/pending.html", {'friends':friends, 'you':you})
+    #data = serializers.serialize('json', friends)
+    #return HttpResponse(data, content_type='application/json')
 
 @login_required
 def refused(request):
-    user = token_user(request)
-    if user is None: 
-        return redirect(reverse('player:login'))
-    you = request.user
+    you = token_user(request)
     friends = Friendship.objects.filter(Q(friend=you, status='refused'))
     you.last_login = timezone.now()
     you.save()
-    return render(request, "friend/refused.html", {'friends':friends, 'you':you})
+    #return render(request, "friend/refused.html", {'friends':friends, 'you':you})
+    data = serializers.serialize('json', friends, use_natural_foreign_keys=True, use_natural_primary_keys=True)
+    return HttpResponse(data, content_type='application/json')

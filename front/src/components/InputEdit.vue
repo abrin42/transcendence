@@ -1,61 +1,61 @@
 <script setup>
-import { ref } from 'vue';
-import Input from './Input.vue';
-import Popup from './Popup.vue';
+    import { ref } from 'vue';
+    import Input from './Input.vue';
+    import Popup from './Popup.vue';
 
-const props = defineProps({
-    modelValue: {
-        type: String,
-        default: '',
-    },
-    placeholderText: {
-        type: String,
-        default: 'Cliquez pour modifier',
-    },
-    type: {
-        type: String,
-        default: 'text',
-    },
-    inputIconClass: {
-        type: String,
-        default: 'fa-solid fa-pen',
-    },
-    inputPlaceholder: {
-        type: String,
-        default: 'Modifier la valeur',
-    },
-    isPassword: {
-        type: Boolean,
-        default: false,
-    },
-    isDisabled: {
-        type: Boolean,
-        default: false,
-    },
-});
+    const props = defineProps({
+        modelValue: {
+            type: String,
+            default: '',
+        },
+        placeholderText: {
+            type: String,
+            default: 'Cliquez pour modifier',
+        },
+        type: {
+            type: String,
+            default: 'text',
+        },
+        inputIconClass: {
+            type: String,
+            default: 'fa-solid fa-pen',
+        },
+        inputPlaceholder: {
+            type: String,
+            default: 'Modifier la valeur',
+        },
+        isPassword: {
+            type: Boolean,
+            default: false,
+        },
+        isDisabled: {
+            type: Boolean,
+            default: false,
+        },
+    });
 
-const emit = defineEmits(['update:modelValue']);
-const showPopup = ref(false);
-const showErrorPopup = ref(false);
-const localValue = ref(props.modelValue);
+    const emit = defineEmits(['update:modelValue']);
+    const showPopup = ref(false);
+    const showErrorPopup = ref(false);
+    const localValue = ref(props.modelValue);
 
-const openPopup = () => {
-    if (props.isDisabled) {
-        showErrorPopup.value = true;
-    } else {
-        showPopup.value = true;
-    }
-};
+    const openPopup = () => {
+        if (props.isDisabled) {
+            showErrorPopup.value = true;
+        } else {
+            showPopup.value = true;
+        }
+    };
 
-const closePopup = () => {
-    showPopup.value = false;
-    showErrorPopup.value = false;
-};
+    const closePopup = () => {
+        showPopup.value = false;
+        showErrorPopup.value = false;
+    };
 
-const saveEdit = () => {
-    emit('update:modelValue', localValue.value);
-    closePopup();
-};
+    const saveEdit = () => {
+        emit('update:modelValue', localValue.value);
+        closePopup();
+    };
 </script>
 
 <template>
@@ -70,17 +70,17 @@ const saveEdit = () => {
 
         <!-- Popup d'édition -->
         <Popup v-if="showPopup" @close="closePopup" class="popup-position">
-            <label for="editInput">Modifiez la valeur :</label>
+            <label for="editInput">{{ $t('modify_the_value') }}</label>
             <Input :iconClass="inputIconClass" :placeholderText="inputPlaceholder" :isPassword="isPassword"
                 v-model="localValue" />
-            <button @click="saveEdit" class="save-button">Enregistrer</button>
+            <button @click="saveEdit" class="save-button">{{ $t('save') }}</button>
         </Popup>
 
         <!-- Popup d'erreur -->
         <Popup v-if="showErrorPopup" @close="closePopup" class="popup-position">
-            <label>Action interdite</label>
-            <p>Le bouton est désactivé. Vous ne pouvez pas effectuer cette action.</p>
-            <button @click="closePopup" class="save-button">Fermer</button>
+            <label>{{ $t('prohibited_action') }}</label>
+            <p>{{ $t('disabled_button') }}</p>
+            <button @click="closePopup" class="save-button">{{ $t('close') }}</button>
         </Popup>
     </div>
 </template>

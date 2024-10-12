@@ -7,6 +7,7 @@ from django.urls import reverse
 from .models import BlacklistedToken, Player
 import jwt
 import datetime
+from django.utils import timezone
 
 User = get_user_model()
 
@@ -48,8 +49,9 @@ def token_user(request):
         return None
     print(user)
     print(f"(token_user) {user}")
+    # user.last_login = timezone.now()
+    # user.save()
     return user
-
 
 def set_jwt_token(response, token):
     response.set_cookie(
@@ -63,15 +65,10 @@ def set_jwt_token(response, token):
 def verify_jwt(request):
     token = request.COOKIES.get('jwt')
     if not token:
-        return JsonResponse({'valid': False, 'message': 'No token found'}, status=401)
+        return JsonResponse({'valid': False, 'message': 'No token found', 'user': None}, status=401)
     
     user = decode_jwt(token)
     if isinstance(user, Player):
-        print(f"(verify_jwt)user: {user}")
-        user_data = {
-            'id': user.id,
-        }
-    
-        return JsonResponse({'valid': True, 'message': 'Token is valid', 'user': user_data}, content_type='application/json')
+        return JsonResponse({'valid': True, 'message': 'Token is valid', 'user': user}, content_type='application/json')
     else:
-        return JsonResponse({'valid': False, 'message': 'Invalid or expired token'}, status=401)
+        return JsonResponse({'valid': False, 'message': 'Invalid or expired token', 'user': None}, status=401)
