@@ -25,7 +25,7 @@
     });
 
     
-    const waitingPlayer = 1;
+    let waitingPlayer = 1;
 
     function goToLegacy(id) {
     router.push(`/legacy_remote/${id}`);
@@ -71,11 +71,13 @@ async function insertPlayer() {
             console.log(data);
             if (data.player2 == null)
             {
+                waitingPlayer = 1;
                 await new Promise(resolve => setTimeout(resolve, 1000));
                 insertPlayer();
             }
             else
             {
+                waitingPlayer = 0;
                 console.log("lancement dans 3");
                 await new Promise(resolve => setTimeout(resolve, 1000));
                 console.log("lancement dans 2");

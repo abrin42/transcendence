@@ -111,6 +111,14 @@ function connectWebSocket() {
     // {
     //   console.log(data.type);
     // }
+    else if (data.type == 'paddleHit') //sound
+    {
+      console.log(data.type);
+    }
+    else if (data.type == 'wallHit')//sound
+    { 
+      console.log(data.type);
+    }
     else if (data.type == 'info_back') //a enlever test
     {
       console.log(data.type + " : " + data.value_back1 + "; " + data.value_back2 + "; " + data.value_back3);

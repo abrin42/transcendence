@@ -48,7 +48,9 @@ function updateBaal(x, y)
 function connectWebSocket() {
   const currentUrl = window.location.href; 
   const lastSegment = currentUrl.split('/').filter(Boolean).pop();
-  socket.value = new WebSocket(`wss://localhost:8443/ws/websockets/?page=${encodeURIComponent(lastSegment)}`);  
+  const gamePage = `game_${lastSegment}`;
+  console.log(lastSegment);
+  socket.value = new WebSocket(`wss://localhost:8443/ws/websockets/?page=${encodeURIComponent(gamePage)}`);  
   socket.value.onopen = () => {
     console.log('WebSocket connecté');
     console.log(socket.value);
@@ -67,7 +69,7 @@ function connectWebSocket() {
       // connectionStatus.value = data.message;
       connection = 1;
     }
-    else if (data.type == 'updatePts')
+    else if (data.type == 'updatePts') //sound
     {
       console.log(data.type);
       console.log(data.updatePts);
@@ -92,6 +94,14 @@ function connectWebSocket() {
       console.log(data.type);
     }
     else if (data.type == 'startGame')
+    {
+      console.log(data.type);
+    }
+    else if (data.type == 'paddleHit') //sound
+    {
+      console.log(data.type);
+    }
+    else if (data.type == 'wallHit')//sound
     { 
       console.log(data.type);
     }

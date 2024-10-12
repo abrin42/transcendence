@@ -49,8 +49,8 @@ def token_user(request):
         return None
     print(user)
     print(f"(token_user) {user}")
-    #user.last_login = timezone.now()
-    #user.save()
+    # user.last_login = timezone.now()
+    # user.save()
     return user
 
 
