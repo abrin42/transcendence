@@ -112,7 +112,6 @@ class PongConsumer(AsyncWebsocketConsumer):
         await self.sendBall(self.ball_x, self.ball_y)
         await self.sendPadInit()
         self.ball_future_position = self.init_pad
-        self.time_to_get_future_position = 1
         await asyncio.sleep(1)
         #         self.posPad1 = 280
         # self.posPad2 = 280
@@ -181,8 +180,8 @@ class PongConsumer(AsyncWebsocketConsumer):
 
     async def ai_get_future_position(self):
         if (self.ball_last_direction == 1):
-            velocity_x = math.cos(self.ball_last_angle * math.pi / 180) * self.ball_last_speed * (self.boardWidth + self.boardHeight) / 2000
-            velocity_y = math.sin(self.ball_last_angle * math.pi / 180) * self.ball_last_speed * (self.boardWidth + self.boardHeight) / 2000
+            velocity_x = math.cos(self.ball_angle * math.pi / 180) * self.ball_speed * (self.boardWidth + self.boardHeight) / 2000
+            velocity_y = math.sin(self.ball_angle * math.pi / 180) * self.ball_speed * (self.boardWidth + self.boardHeight) / 2000
             self.ball_future_position = (self.xPad2 - self.ball_x - self.ball_radius * 2) / velocity_x * velocity_y + self.ball_y
             while (self.ball_future_position < self.board_min or self.ball_future_position > self.boardHeight):
                 if (self.ball_future_position < self.board_min):
@@ -194,10 +193,7 @@ class PongConsumer(AsyncWebsocketConsumer):
         self.current_time = datetime.now().timestamp()
         if (self.current_time - self.begin_time >= 1):
             self.begin_time = datetime.now().timestamp()
-            self.ball_last_position = self.ball_y
-            self.ball_last_speed = self.ball_speed
-            self.ball_last_angle = self.ball_angle
-            if (self.ball_last_angle > 90 or self.ball_last_angle < -90):
+            if (self.ball_angle > 90 or self.ball_angle < -90):
                 self.ball_last_direction = -1
             else:
                 self.ball_last_direction = 1
@@ -207,7 +203,6 @@ class PongConsumer(AsyncWebsocketConsumer):
 
     async def ai_back_to_center(self):
         if (self.ball_last_direction == -1):
-            self.ball_future_position  = self.boardHeight / 2
             if (self.posPad2 < self.init_pad - 5):
                 await self.sendPadDown("mouvDown", 2)
             elif (self.posPad2 > self.init_pad + 5):
@@ -274,13 +269,9 @@ class PongConsumer(AsyncWebsocketConsumer):
         # ⊱━━━.⋅εïз⋅.━━━⊰   AI   ⊱━━━.⋅εïз⋅.━━━⊰ #
         self.begin_time = datetime.now().timestamp()
         self.current_time = datetime.now().timestamp()
-        self.ball_last_position = self.ball_y
-        self.ball_last_angle = self.ball_angle
         self.random_paddle_pos = random.random() * 1000 % self.paddle_height
         self.ball_future_position = self.ball_x
         self.ball_last_direction = -1 if self.ball_angle == 180 else 1
-        self.ball_last_speed = self.ball_speed
-        self.time_to_get_future_position = True
         asyncio.ensure_future(self.loop_game())
 
 
