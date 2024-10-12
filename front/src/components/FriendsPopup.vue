@@ -71,8 +71,6 @@ async function getAllUsers() {
 		}
 }
 
-
-
 const emit = defineEmits(['close']);
 
 // Liste des amis actuels avec un booléen isOnline
@@ -87,13 +85,7 @@ const friends = ref([
 ]);
 
 // Liste des joueurs non amis
-const allPlayers = ref([
-    { id: 6, name: 'Lucie' },
-    { id: 7, name: 'Caroline' },
-    { id: 8, name: 'Lucas' },
-    { id: 9, name: 'Isaac' },
-    { id: 10, name: 'Tabata' },
-]);
+const allPlayers = getAllUsers()
 
 // Barre de recherche
 const searchQuery = ref('');
