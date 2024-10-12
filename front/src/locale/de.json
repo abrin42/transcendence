@@ -11,5 +11,23 @@
     "choose_file": "Datei Auswählen",
     "username": "Benutzername",
     "email": "E-mail",
-    "password": "Passwort"
+    "password": "Passwort",
+
+    "my_account": "Mein Konto",
+    "friends": "Freunde",
+    "logout": "Sich Abmelden",
+
+    "my_friends": "Meine Freunde",
+    "search_for_a_player": "Nach einem Spieler suchen ...",
+    "no_players_found": "Keine Spieler gefunden.",
+
+    "modify_the_value": "Ändern Sie den Wert:",
+    "save": "Speichern",
+    "prohibited_action": "Verbotene Handlung",
+    "disabled_button": "Die Schaltfläche ist deaktiviert. Sie können diese Aktion nicht durchführen.",
+    "close": "Zugehen",
+    
+    "disabled_switch": "Der Schalter ist deaktiviert. Sie können diese Aktion nicht durchführen.",
+
+    "no_text_to_display": "Kein Text zum Anzeigen"
 }

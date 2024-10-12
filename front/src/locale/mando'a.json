@@ -11,5 +11,23 @@
     "choose_file": "Gaanader Sur'gaan",
     "username": "Gai",
     "email": "Lenedat",
-    "password": "Miit Ranov'la"
+    "password": "Miit Ranov'la",
+
+    "my_account": "Ner Account-------------------------------------------------", 
+    "friends": "Burc'yase",
+    "logout": "Ba'slanar",
+
+    "my_friends": "Ner Burc'yase",
+    "search_for_a_player": "Echoylir verd ...",
+    "no_players_found": "Naasad beroya mar'ey'la",
+
+    "modify_the_value": "Modify the value:-----------------------------------",
+    "save": "Hibirar",
+    "prohibited_action": "Nari grati'la",
+    "disabled_button": "Nu'gar lise narir ibic nari.",
+    "close": "Ba'slanar",
+    
+    "disabled_switch": "Nu'gar lise narir ibic nari.",
+
+    "no_text_to_display": "Naas haa'taylyc"
 }

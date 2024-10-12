@@ -70,17 +70,17 @@ const saveEdit = () => {
 
         <!-- Popup d'édition -->
         <Popup v-if="showPopup" @close="closePopup" class="popup-position">
-            <label for="editInput">Modifiez la valeur :</label>
+            <label for="editInput">{{ $t('modify_the_value') }}</label>
             <Input :iconClass="inputIconClass" :placeholderText="inputPlaceholder" :isPassword="isPassword"
                 v-model="localValue" />
-            <button @click="saveEdit" class="save-button">Enregistrer</button>
+            <button @click="saveEdit" class="save-button">{{ $t('save') }}</button>
         </Popup>
 
         <!-- Popup d'erreur -->
         <Popup v-if="showErrorPopup" @close="closePopup" class="popup-position">
-            <label>Action interdite</label>
-            <p>Le bouton est désactivé. Vous ne pouvez pas effectuer cette action.</p>
-            <button @click="closePopup" class="save-button">Fermer</button>
+            <label>{{ $t('prohibited_action') }}</label>
+            <p>{{ $t('disabled_button') }}</p>
+            <button @click="closePopup" class="save-button">{{ $t('close') }}</button>
         </Popup>
     </div>
 </template>

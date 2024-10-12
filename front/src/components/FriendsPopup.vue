@@ -1,7 +1,7 @@
 <template>
     <div class="friends-popup">
         <div class="friends-header">
-            <h3>My Friends</h3>
+            <h3>{{ $t('my_friends') }}</h3>
             <button class="close-button" @click="closePopup" aria-label="Close friends list">
                 <i class="fas fa-times"></i>
             </button>
@@ -9,7 +9,7 @@
 
         <!-- Barre de recherche -->
         <div class="search-bar">
-            <Input type="text" v-model="searchQuery" placeholderText="Rechercher joueur..." />
+            <Input type="text" v-model="searchQuery" :placeholderText="$t('search_for_a_player')" />
         </div>
 
         <!-- Liste des résultats de recherche (non amis) -->
@@ -44,7 +44,7 @@
 
         <!-- Message si aucune recherche ne donne de résultats -->
         <div v-if="searchQuery.length > 0 && filteredPlayers.length === 0" class="no-results">
-            <p>Aucun joueur trouvé.</p>
+            <p>{{ $t('no_players_found') }}</p>
         </div>
     </div>
 </template>

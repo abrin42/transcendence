@@ -108,10 +108,10 @@
         </button>
 
         <div v-if="dropdownVisible" class="dropdown">
-            <button class="button buttonText buttondropdown" @click="__goTo('/dashboard')">My Account</button>
+            <button class="button buttonText buttondropdown" @click="__goTo('/dashboard')">{{ $t('my_account') }}</button>
             <!-- Appel à la méthode toggleFriendsPopup pour afficher la popup -->
-            <button class="button buttonText buttondropdown" @click="toggleFriendsPopup">Friends</button>
-            <button class="button buttonText buttondropdown" @click="handleLogout">Logout</button>
+            <button class="button buttonText buttondropdown" @click="toggleFriendsPopup">{{ $t('friends') }}</button>
+            <button class="button buttonText buttondropdown" @click="handleLogout">{{ $t('logout') }}</button>
         </div>
 
         <!-- Composant FriendsPopup, écoute l'événement 'close' pour masquer la popup -->
