@@ -9,9 +9,9 @@
 
     <!-- Popup d'erreur conditionnelle -->
     <Popup v-if="showError" @close="closeError" class="popup-position">
-        <label>Action interdite</label>
-        <p>Le switch est désactivé. Vous ne pouvez pas effectuer cette action.</p>
-        <button @click="closeError" class="save-button">Fermer</button>
+        <label>{{ $t('prohibited_action') }}</label>
+        <p>{{ $t('disabled_switch') }}</p>
+        <button @click="closeError" class="save-button">{{ $t('close') }}</button>
     </Popup>
 </template>
 

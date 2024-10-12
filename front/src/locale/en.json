@@ -11,5 +11,29 @@
     "choose_file": "Choose File",
     "username": "Username",
     "email": "Email",
-    "password": "Password"
+    "password": "Password",
+
+    "my_account": "My Account",
+    "friends": "Friends",
+    "logout": "Logout",
+
+    "my_friends": "My Friends",
+    "search_for_a_player": "Search for a player ...",
+    "no_players_found": "No players found.",
+
+    "modify_the_value": "Modify the value:",
+    "save": "Save",
+    "prohibited_action": "Prohibited action",
+    "disabled_button": "The button is disabled. You cannot perform this action.",
+    "close": "Close",
+    
+    "disabled_switch": "The switch is disabled. You cannot perform this action.",
+
+    "no_text_to_display": "No text to display",
+
+
+
+    "send_code_question": "Send code by email or SMS?",
+    "phone_authentication": "Phone authentication",
+    "enter_sms": "Enter the code you received by SMS."
 }

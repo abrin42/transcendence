@@ -29,7 +29,7 @@ const closePopup = () => {
     <div class="textDisplayContainer">
         <div class="containerName">{{ nameContainer || 'Nom du container' }}</div>
         <div class="textDisplay">
-            <span class="displayedText">{{ textValue || 'Aucun texte à afficher' }}</span>
+            <span class="displayedText">{{ textValue || $t('no_text_to_display') }}</span>
         </div>
     </div>
 </template>

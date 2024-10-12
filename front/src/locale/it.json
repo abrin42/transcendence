@@ -11,5 +11,29 @@
     "choose_file": "Scegliere il File",
     "username": "Nome Utente",
     "email": "E-mail",
-    "password": "Password"
+    "password": "Password",
+
+    "my_account": "Il Mio Conto",
+    "friends": "Gli Amici",
+    "logout": "Disconnessione",
+
+    "my_friends": "I Miei Amici",
+    "search_for_a_player": "Ricerca di un giocatore ...",
+    "no_players_found": "Nessun giocatore trovato.",
+
+    "modify_the_value": "Modificare il valore:",
+    "save": "Salvare",
+    "prohibited_action": "Azione vietata",
+    "disabled_button": "Il pulsante è disattivato. Non è possibile eseguire questa azione.",
+    "close": "Chiudere",
+    
+    "disabled_switch": "Lo switch è disattivato. Non è possibile eseguire questa azione.",
+
+    "no_text_to_display": "Nessun testo da visualizzare",
+
+
+
+    "send_code_question": "Inviare il codice per e-mail o SMS?",
+    "phone_authentication": "Autenticazione telefonica",
+    "enter_sms": "Inserire il codice ricevuto via SMS."
 }
