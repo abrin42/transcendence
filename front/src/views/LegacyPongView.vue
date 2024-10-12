@@ -1,3 +1,32 @@
+<template>
+  <main>
+    <div id="black-background">
+      <div id>
+          <canvas id ="board"></canvas>
+      </div>
+    </div>
+  </main>
+</template>
+
+<style lang="scss">
+body {
+  text-align: center;
+}
+
+#black-background{
+  height: 100vh;
+  width: 100vw;
+  background-color: black;
+}
+
+#board {
+  background-color: black;
+  border: 5px solid white;
+  width: 700px;
+  height: 700px;
+}
+</style>
+
 <script setup>
 import { ref, onMounted, onUnmounted } from 'vue';
 import { useRouter } from 'vue-router';
@@ -31,6 +60,47 @@ function __goTo(page) {
       return;
   router.push(page);
 }
+    //board properties
+    let board;
+    let boardWidth = 700;
+    let boardHeight = 700;
+    let context;
+
+    //players properties
+    let playerWidth = 20;
+    let playerHeight = boardHeight/5;
+    let playerSpeed = 0;
+
+    let player1 = {
+        x : 10,
+        y: boardHeight/5*2,
+        width : playerWidth,
+        height : playerHeight,
+        speed : playerSpeed
+    }
+
+    let player2 = {
+        x : boardWidth - playerWidth - 10,
+        y: boardHeight/5*2, 
+        width : playerWidth,
+        height : playerHeight,
+        speed: playerSpeed
+    }
+
+    //ball properties
+    let ballSize = 10;
+    let ball = {
+      x : boardWidth / 2,
+      y : boardHeight / 2,
+      width : ballSize,
+      height : ballSize,
+      speedX: 1, speedY: 2
+    }
+    
+    //score
+    let player1Score = 0;
+    let player2Score = 0;
+    
 
 function  updatePoints(player, updatePts)
 {
@@ -178,77 +248,31 @@ onUnmounted(() => {
 
 onMounted(() => {
   connectWebSocket();
+  board = document.getElementById("board"); //link board element in template to board variable
+  board.height = boardHeight;
+  board.width = boardWidth;
+  context = board.getContext("2d"); //Drawing on board
+
+  context.fillStyle = "white";
+  context.fillRect(player1.x, player1.y, player1.width, player1.height);
+  context.fillText("[P] to pause", boardWidth/5*4, 100);
+  requestAnimationFrame(update); // Gameloop
+  document.addEventListener("keydown", movePlayer1up);
+  document.addEventListener("keydown", movePlayer1down);
+  document.addEventListener("keydown", movePlayer2up);
+  document.addEventListener("keydown", movePlayer2down);
+  document.addEventListener('keyup', stopPlayer);
 });
-
-    //board properties
-    let board;
-    let boardWidth = 700;
-    let boardHeight = 700;
-    let context;
-
-    //players properties
-    let playerWidth = 20;
-    let playerHeight = boardHeight/5;
-    let playerSpeed = 0;
-
-    let player1 = {
-        x : 10,
-        y: boardHeight/5*2,
-        width : playerWidth,
-        height : playerHeight,
-        speed : playerSpeed
-    }
-
-    let player2 = {
-        x : boardWidth - playerWidth - 10,
-        y: boardHeight/5*2, 
-        width : playerWidth,
-        height : playerHeight,
-        speed: playerSpeed
-    }
-
-    //ball properties
-    let ballSize = 10;
-    let ball = {
-      x : boardWidth / 2,
-      y : boardHeight / 2,
-      width : ballSize,
-      height : ballSize,
-      speedX: 1, speedY: 2
-    }
-
-    
-    //score
-    let player1Score = 0;
-    let player2Score = 0;
-
-    window.onload = function() {
-        board = document.getElementById("board"); //link board element in template to board variable
-        board.height = boardHeight;
-        board.width = boardWidth;
-        context = board.getContext("2d"); //Drawing on board
-
-        //draw player1
-        context.fillStyle = "white";
-        context.fillRect(player1.x, player1.y, player1.width, player1.height);
-        context.fillText("[P] to pause", boardWidth/5*4, 100);
-        requestAnimationFrame(update); // Gameloop
-        document.addEventListener("keydown", movePlayer1up);
-        document.addEventListener("keydown", movePlayer1down);
-        document.addEventListener("keydown", movePlayer2up);
-        document.addEventListener("keydown", movePlayer2down);
-        document.addEventListener('keyup', stopPlayer);
-    }
 
     function update() 
     {
         requestAnimationFrame(update);
-        
+        console.log();
         context.clearRect(0, 0, board.width, board.height); // clear rectangle after movement (remove previous paddle position)
         context.fillRect(player1.x, player1.y, player1.width, player1.height); 
         context.fillRect(player2.x, player2.y, player2.width, player2.height);
         context.fillStyle = "white";
-        context.fillRect(ball.x, ball.y, ball.width, ball.height);
+        context.fillRect(ball.x- (ball.width/2), ball.y, ball.width, ball.height);
 
         //draw score
         context.font = "100px Arial";
@@ -258,7 +282,7 @@ onMounted(() => {
         //draw middle line
         for (let i = 10; i < board.height; i += 25)
         {
-            context.fillRect(board.width / 2 - 10, i, 2, 15);
+            context.fillRect(board.width / 2 - 1, i, 2, 15);
         }
     }
     
@@ -336,6 +360,7 @@ onMounted(() => {
       {
         if (e.code == "ArrowDown")
         {
+            
           moveInterval2down = setInterval(() => 
           {
             const message = 
@@ -372,24 +397,5 @@ onMounted(() => {
         moveInterval2down = null;
       }
     }
-
 </script>
 
-<template>
-  <main>
-      <div id>
-          <canvas id ="board"></canvas>
-      </div>
-  </main>
-</template>
-
-<style lang="scss">
-body {
-  text-align: center;
-}
-
-#board {
-  background-color: black;
-  border: 5px solid white;
-}
-</style>

@@ -1,3 +1,20 @@
+<template>
+    <div class="button-container" @mouseenter="showDropdown" @mouseleave="hideDropdown">
+        <button ref="button" class="button button-log" @click="__goTo(userAccount.is_active ? '/dashboard' : '/log')">
+            <span class="buttonText">{{ userAccount.is_active ? userAccount.nickname : $t('login') }}</span>
+        </button>
+
+        <div v-if="dropdownVisible" class="dropdown">
+            <button class="button buttonText buttondropdown" @click="__goTo('/dashboard')">My Account</button>
+            <!-- Appel à la méthode toggleFriendsPopup pour afficher la popup -->
+            <button class="button buttonText buttondropdown" @click="toggleFriendsPopup">Friends</button>
+            <button class="button buttonText buttondropdown" @click="__goTo('/api/player/logout')">Logout</button>
+        </div>
+
+        <!-- Composant FriendsPopup, écoute l'événement 'close' pour masquer la popup -->
+        <FriendsPopup v-if="friendsPopupVisible" @close="toggleFriendsPopup" />
+    </div>
+</template>
 
 <script setup>
     import { ref, onMounted, watch } from 'vue';
@@ -31,7 +48,7 @@
     }
 
     const button = ref(null);
-    const dropdownVisible = ref('');
+    const dropdownVisible = ref(false);
     const friendsPopupVisible = ref(true);
     let hoverTimeout = null;
     
@@ -62,17 +79,17 @@
     onMounted(() => {
         adjustButtonPosition();
     });
+
     watch(() => userAccount.nickname, adjustButtonPosition);
 
     function adjustButtonPosition() {
         const buttonWidth = button.value.offsetWidth;
-        button.value.style.left = `calc(100vw - ${buttonWidth + 85}px)`;
+        button.value.style.right = `calc(${buttonWidth -40}px)`;
     }
 
     function showDropdown() {
         hoverTimeout = setTimeout(() => {
-            dropdownVisible.value = false;
-            if (is_connected.value)
+            if (userAccount.is_active)
                 dropdownVisible.value = true;
         }, 5);
     }
@@ -107,14 +124,15 @@
 
 <style>
     .button-container {
-         position: relative; 
-         display: inline-block; 
+        /* position: relative; */
+        /* display: inline-block; */
     }
-    
+
     .button-log {
         position: fixed;
         bottom: 93vh;
         height: 6vh;
+        right: 3vw;
         width: 7vw;
         min-width: fit-content;
         white-space: nowrap;

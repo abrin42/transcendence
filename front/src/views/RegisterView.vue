@@ -126,7 +126,7 @@
 h1 {
     position: fixed;
     left: auto;
-    top: 10%;
+    top: 15%;
     font-size: 4vw;
     color: #fff;
     text-shadow:
@@ -167,7 +167,7 @@ h1 {
 .logContainer {
     position: fixed;
     width: 25vw;
-    height: 52.5vh;
+    height: 59vh;
     left: auto;
     top: 25%;
 
@@ -182,10 +182,10 @@ h1 {
     width: 15vw;
     height: 6vh;
     left: 42.5%;
-    top: 65%;
+    top: 72%;
 
     background-color: rgba(202, 149, 128, 0.5);
-    border: 0.15vw solid rgba(202, 149, 128, 0.25);
+    border: 0.15vw solid rgba(237, 230, 228, 0.25);
     border-radius: 0.4vw;
     transition: background-color 0.3s ease;
 }

@@ -380,8 +380,10 @@ function stopPlayer(e) {
 
 <template>
   <main>
-      <div id>
-          <canvas id ="board"></canvas>
+      <div>
+        <div id="black-background">
+            <canvas id ="board"></canvas>
+        </div>
       </div>
   </main>
 </template>
@@ -389,6 +391,12 @@ function stopPlayer(e) {
 <style lang="scss">
 body {
   text-align: center;
+}
+
+#black-background{
+  height: 100vh;
+  width: 100vw;
+  background-color: black;
 }
 
 #board {

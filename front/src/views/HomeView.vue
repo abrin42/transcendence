@@ -41,7 +41,6 @@
                 </button>
                 <div>
                     <CreateHomeButton />
-                    <!-- <CreateSoundButton /> -->
                     <CreateSoundButton />
                     <CreateLogButton />
                     <CreateSettingsButton @click="__goTo('/settings')" />
