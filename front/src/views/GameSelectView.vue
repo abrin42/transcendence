@@ -33,7 +33,7 @@
     <main>
         <div id="wrapper">
             <div class="buttonContainer">
-                <button class="button" @click="goToMatchmaking">
+                <button class="button" @click="goToLegacy">
                     <i class="fas fa-play" style="margin-right: 8px;"></i>
                     <span class="buttonText buttonTextSize">Legacy</span>
                 </button>

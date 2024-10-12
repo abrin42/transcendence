@@ -1,5 +1,6 @@
 <template>
     <main>                        
+        <p id="loading" class="waiting-text">.</p>
         <div id="wrapper-matchmaking">
             <CreateSoundButton />
             <CreateDropupButton />
@@ -15,7 +16,6 @@
                     <p class="rank-text-left">{{playerRank1}}</p>
                 </div>
                 <div id="stuff-to-hide" v-if="loadingmodule">
-                        <span id="loading" class="waiting-text">.</span>
                         <p class="opponent-text">Looking for an opponent...</p>
                     </div>
                     <div id="stuff-to-show" v-if="rightplayervisible">
@@ -36,6 +36,7 @@
     import CreateSoundButton from '../components/CreateSoundButton.vue';
     import CreateHomeButton from '../components/CreateHomeButton.vue';
     import { ref, reactive, onMounted, watch } from 'vue';
+    import $ from 'jquery';
     import { useRouter } from 'vue-router';
 
     var myVideo = document.getElementById('videoBG');
@@ -143,14 +144,14 @@ function getCsrfToken() {
 
 
     ///////////////////////////////////////////////
-    const rightplayervisible = ref(false);
-    const loadingmodule = ref(true);
+    let rightplayervisible = ref(false);
+    let loadingmodule = ref(true);
 
     //dynamic "loading" dots 
     if (document.getElementById("loading") != false)
     {
         var dots = window.setInterval( function() {
-        var wait = document.getElementById("loading");
+        var wait = document.getElementById('loading');
         if ( wait.innerHTML.length >= 3 ) 
             wait.innerHTML = ".";
         else 
@@ -161,7 +162,7 @@ function getCsrfToken() {
     var tips = ['Tip: Reading your phone in the stairs might lead to severe injury.', 'Tip: Try pressing \'C\' while playing ;)', 
     'Tip: Wash your cereal bowl right after eating', 'Don\'t forget to put your paddle back in the center!', 
     'Recipe for a lribette : one tchoukball ball (?), 50 kilos of pasta, and many many many many many Star Wars anecdotes.', 
-    'Tu es triste? Arrête.', 'Jeu de pain, jeu de vilain', 'Bois de l\'eau, dans 20, 30 ans y\'en aura plus'];
+    'Tu es triste? Arrête.', '"Jeu de pain, jeu de vilain" - Miro', 'Bois de l\'eau. Dans 20, 30 ans y\'en aura plus.'];
     var tipdisplayed = tips[Math.floor(Math.random()*tips.length)];
 
     //when 2nd player is found, we hide "waiting for player" and show opponent
@@ -170,15 +171,17 @@ function getCsrfToken() {
         let playerfound = true;
         if(playerfound == true)
         {
-            rightplayervisible.value != rightplayervisible.value;
-            loadingmodule.value != loadingmodule.value;
 
+            //$(".stuff-to-move").classList.addClass(".slide-left");
         }
         else
         {
-            rightplayervisible.value != rightplayervisible.value;
-            loadingmodule.value != loadingmodule.value;
+            
         }
+    }
+
+    function showHide() {
+        divElem.classList.toggle("showing");
     }
 </script>
 
@@ -248,29 +251,15 @@ function getCsrfToken() {
     filter: drop-shadow(5px 5px 4px #0000003b);
 }
 
-.slide-left {
-	-webkit-animation: slide-left 0.5s cubic-bezier(0.250, 0.460, 0.450, 0.940) both;
-	        animation: slide-left 0.5s cubic-bezier(0.250, 0.460, 0.450, 0.940) both;
-}
-
- @-webkit-keyframes slide-left {
-  0% {
-    -webkit-transform: translateX(0);
-            transform: translateX(0);
-  }
-  100% {
-    -webkit-transform: translateX(-100px);
-            transform: translateX(-100px);
-  }
+.profile-picture-matchmaking-left.slide-left {
+	animation: slide-left 0.5s cubic-bezier(0.250, 0.460, 0.450, 0.940) both;
 }
 
 @keyframes slide-left {
   0% {
-    -webkit-transform: translateX(0);
             transform: translateX(0);
   }
   100% {
-    -webkit-transform: translateX(-100px);
             transform: translateX(-100px);
   }
 }
