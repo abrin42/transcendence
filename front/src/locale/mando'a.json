@@ -4,7 +4,7 @@
     "login": "To",
     "back": "Norac",
 
-    "my_account": "Ner Account-------------------------------------------------", 
+    "my_account": "Ner Solegot", 
     "friends": "Burc'yase",
     "logout": "Ba'slanar",
 
@@ -12,7 +12,7 @@
     "search_for_a_player": "Echoylir verd ...",
     "no_players_found": "Naasad beroya mar'ey'la",
 
-    "modify_the_value": "Naritir value:-----------------------------------",
+    "modify_the_value": "Naritir ibic:",
     "save": "Hibirar",
     "prohibited_action": "Nari grati'la",
     "disabled_button": "Nu'gar lise narir ibic nari.",
@@ -53,9 +53,9 @@
     "enter_phone_number": "Ke miit'gaanar gar comlink to",
     "change_password": "Naritir gar miit'ranov'la",
     "enter_password": "Ke miit'gaanar gar miit'ranov'la",
-    "update_account": "Update your account----------------------------",
-    "delete_account": "Delete account---------------------------------",
-    "activate": "Activate---------------------------------------------",
+    "update_account": "Gotal'ur tug'yc gar solegot",
+    "delete_account": "Kyr'amur solegot",
+    "activate": "Nau'ur",
 
     "home": "Yaim",
     "play_again": "Geroya tug'yc",
@@ -63,7 +63,7 @@
     "wasted": "K'ATINI!",
 
     "LOGIN": "TO",
-    "sign_up": "Sign up------------------------------------------------",
+    "sign_up": "Tion'cuy",
     "enter_username": "Ke miit'gaanar gar gai",
     
     "solo": "Solus",
@@ -76,8 +76,8 @@
     "password_do_not_match": "The passwords do not match.",
     "error_account_creation": "An error occurred during account creation.",
     "account_created_successfully": "Account created successfully!",
-    "SIGN_UP": "SIGN UP--------------------------------------------------",
-    "create_account": "Gotal'ur gar account------------------------------",
+    "SIGN_UP": "TION'CUY",
+    "create_account": "Gotal'ur gar solegot",
     "confirm_password": "Jor'lekir miit'ranov'la",
 
     "settings": "Jatne emuurire",
