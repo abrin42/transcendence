@@ -7,11 +7,6 @@
     "player": "Joueur",
     "right": "DROITE",
     "left": "GAUCHE",
-    "profile_picture": "Photo de Profil",
-    "choose_file": "Choisir un Fichier",
-    "username": "Nom d'Utilisateur",
-    "email": "Courriel",
-    "password": "Mot de Passe",
 
     "my_account": "Mon compte",
     "friends": "Amis",
@@ -40,5 +35,11 @@
     "resend_the_code": "Renvoyer le code",
     "next": "Suivant",
     "email_authentication": "Authentification par courriel",
-    "enter_mail": "Saisissez le code que vous avez reçu par courriel."
+    "enter_mail": "Saisissez le code que vous avez reçu par courriel.",
+    
+    "profile_picture": "Photo de Profil",
+    "choose_file": "Choisir un Fichier",
+    "username": "Nom d'Utilisateur",
+    "email": "Courriel",
+    "password": "Mot de Passe"
 }

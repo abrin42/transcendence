@@ -7,11 +7,6 @@
     "player": "J.",
     "right": "DERECHA",
     "left": "IZQUIERDA",
-    "profile_picture": "Foto de perfil",
-    "choose_file": "Elegir Archivo",
-    "username": "Nombre de Usuario",
-    "email": "Correo Electrónico",
-    "password": "Contraseña",
 
     "my_account": "Mi Cuenta",
     "friends": "Amigos",
@@ -40,5 +35,11 @@
     "resend_the_code": "Reenviar el código",
     "next": "Siguiente",
     "email_authentication": "Autenticación del correo electrónico",
-    "enter_mail": "Introduzca el código que ha recibido por correo electrónico."
+    "enter_mail": "Introduzca el código que ha recibido por correo electrónico.",
+    
+    "profile_picture": "Foto de perfil",
+    "choose_file": "Elegir Archivo",
+    "username": "Nombre de Usuario",
+    "email": "Correo Electrónico",
+    "password": "Contraseña"
 }

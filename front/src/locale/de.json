@@ -7,11 +7,6 @@
     "player": "Spieler",
     "right": "RECHTE",
     "left": "LINKE",
-    "profile_picture": "Profilbild",
-    "choose_file": "Datei Auswählen",
-    "username": "Benutzername",
-    "email": "E-mail",
-    "password": "Passwort",
 
     "my_account": "Mein Konto",
     "friends": "Freunde",
@@ -40,5 +35,11 @@
     "resend_the_code": "Senden Sie den Code erneut",
     "next": "Weiter",
     "email_authentication": "E-Mail-Authentifizierung",
-    "enter_mail": "Geben Sie den Code ein, den Sie per E-Mail erhalten haben."
+    "enter_mail": "Geben Sie den Code ein, den Sie per E-Mail erhalten haben.",
+    
+    "profile_picture": "Profilbild",
+    "choose_file": "Datei Auswählen",
+    "username": "Benutzername",
+    "email": "E-mail",
+    "password": "Passwort"
 }

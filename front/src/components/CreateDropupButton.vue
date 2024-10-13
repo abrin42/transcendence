@@ -36,7 +36,8 @@
 	const menuVisible = ref(false);
 	let timeoutId;
 
-	const is_connected = ref('');
+	const is_connected = ref(false);
+
     async function getLanguage() {
         try {
             const response = await fetch(`api/player/connected_user/`, {
@@ -47,8 +48,9 @@
                 return;
             }
             const user = await response.json();
-            if (user && user.length > 0) {
-				current_lang.value = user[0].fields.language;
+			// if (user && user.length > 0) {
+            if (user) {
+				current_lang.value = user.language;
                 is_connected.value = true;
 			} else {
 				console.log('No user data retrieved.');

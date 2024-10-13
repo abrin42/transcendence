@@ -7,11 +7,6 @@
     "player": "Verd",
     "right": "STAABI",
     "left": "PAYT",
-    "profile_picture": "Ner Sur'gaan",
-    "choose_file": "Gaanader Sur'gaan",
-    "username": "Gai",
-    "email": "Lenedat",
-    "password": "Miit Ranov'la",
 
     "my_account": "Ner Account-------------------------------------------------", 
     "friends": "Burc'yase",
@@ -40,5 +35,11 @@
     "resend_the_code": "Parjir tug'yc dadita",
     "next": "Projor",
     "email_authentication": "Lenedat buyacyc",
-    "enter_mail": "Ke miit'gaanar dadita gar parji de lenedat."
+    "enter_mail": "Ke miit'gaanar dadita gar parji de lenedat.",
+    
+    "profile_picture": "Ner Sur'gaan",
+    "choose_file": "Gaanader Sur'gaan",
+    "username": "Gai",
+    "email": "Lenedat",
+    "password": "Miit Ranov'la"
 }
