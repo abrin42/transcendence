@@ -16,7 +16,7 @@
     "search_for_a_player": "Echoylir verd ...",
     "no_players_found": "Naasad beroya mar'ey'la",
 
-    "modify_the_value": "Modify the value:-----------------------------------",
+    "modify_the_value": "Naritir value:-----------------------------------",
     "save": "Hibirar",
     "prohibited_action": "Nari grati'la",
     "disabled_button": "Nu'gar lise narir ibic nari.",
@@ -36,10 +36,27 @@
     "next": "Projor",
     "email_authentication": "Lenedat buyacyc",
     "enter_mail": "Ke miit'gaanar dadita gar parji de lenedat.",
-    
+
     "profile_picture": "Ner Sur'gaan",
     "choose_file": "Gaanader Sur'gaan",
-    "username": "Gai",
+    "see_all_information": "Haa'taylir an",
     "email": "Lenedat",
-    "password": "Miit Ranov'la"
+    "nickname": "Ika",
+    "phone_number": "Comlink to",
+    "username": "Gai",
+    "password": "Miit'ranov'la",
+    "date_joined": "Ca'nara tomyc",
+    "number_of_wins": "Parjise",
+    "number_of_defeats": "Rohake",
+    "rank": "Verd gai",
+    "change_nickname": "Naritir gar ika",
+    "enter_nickname": "Ke miit'gaanar gar ika",
+    "change_email": "Naritir gar lenedat",
+    "enter_email": "Ke miit'gaanar gar lenedat",
+    "change_phone_number": "Naritir gar comlink to",
+    "enter_phone_number": "Ke miit'gaanar gar comlink to",
+    "change_password": "Naritir gar miit'ranov'la",
+    "enter_password": "Ke miit'gaanar gar miit'ranov'la",
+    "update_account": "Update your account----------------------------",
+    "delete_account": "Delete account---------------------------------"
 }

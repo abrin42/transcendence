@@ -24,7 +24,7 @@
     
     "disabled_switch": "Le commutateur est désactivé. Vous ne pouvez pas effectuer cette action.",
 
-    "no_text_to_display": "Aucun de texte à afficher",
+    "no_text_to_display": "Aucun texte à afficher",
 
 
 
@@ -36,10 +36,27 @@
     "next": "Suivant",
     "email_authentication": "Authentification par courriel",
     "enter_mail": "Saisissez le code que vous avez reçu par courriel.",
-    
+
     "profile_picture": "Photo de Profil",
     "choose_file": "Choisir un Fichier",
-    "username": "Nom d'Utilisateur",
+    "see_all_information": "Voir toutes les informations",
     "email": "Courriel",
-    "password": "Mot de Passe"
+    "nickname": "Pseudonyme",
+    "phone_number": "Numéro de téléphone",
+    "username": "Nom d'Utilisateur",
+    "password": "Mot de Passe",
+    "date_joined": "Date d'adhésion",
+    "number_of_wins": "Nombre de victoires",
+    "number_of_defeats": "Nombre de défaites",
+    "rank": "Rang",
+    "change_nickname": "Changez votre pseudonyme",
+    "enter_nickname": "Saisissez votre pseudonyme",
+    "change_email": "Modifiez votre courriel",
+    "enter_email": "Saisissez votre courriel",
+    "change_phone_number": "Modifiez votre numéro de téléphone",
+    "enter_phone_number": "Saisissez votre numéro de téléphone",
+    "change_password": "Modifiez votre mot de passe",
+    "enter_password": "Entrez votre mot de passe",
+    "update_account": "Mettre à jour votre compte",
+    "delete_account": "Supprimer le compte"
 }

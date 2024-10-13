@@ -36,10 +36,27 @@
     "next": "Weiter",
     "email_authentication": "E-Mail-Authentifizierung",
     "enter_mail": "Geben Sie den Code ein, den Sie per E-Mail erhalten haben.",
-    
+
     "profile_picture": "Profilbild",
     "choose_file": "Datei Auswählen",
-    "username": "Benutzername",
+    "see_all_information": "Alle Informationen anzeigen",
     "email": "E-mail",
-    "password": "Passwort"
+    "nickname": "Spitzname",
+    "phone_number": "Rufnummer",
+    "username": "Benutzername",
+    "password": "Passwort",
+    "date_joined": "Datum des Beitritts",
+    "number_of_wins": "Anzahl der Siege",
+    "number_of_defeats": "Anzahl der Niederlagen",
+    "rank": "Rang",
+    "change_nickname": "Ändern Sie Ihren Spitznamen",
+    "enter_nickname": "Geben Sie Ihren Spitznamen ein",
+    "change_email": "Ändern Sie Ihre E-Mail",
+    "enter_email": "Geben Sie Ihre E-Mail ein",
+    "change_phone_number": "Ändern Sie Ihre Rufnummer",
+    "enter_phone_number": "Geben Sie Ihre Rufnummer ein",
+    "change_password": "Ändern Sie Ihr Passwort",
+    "enter_password": "Geben Sie Ihr Passwort ein",
+    "update_account": "Aktualisieren Sie Ihr Konto",
+    "delete_account": "Konto löschen"
 }

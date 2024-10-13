@@ -39,7 +39,24 @@
 
     "profile_picture": "Profile Picture",
     "choose_file": "Choose File",
-    "username": "Username",
+    "see_all_information": "See all information",
     "email": "Email",
-    "password": "Password"
+    "nickname": "Nickname",
+    "phone_number": "Phone number",
+    "username": "Username",
+    "password": "Password",
+    "date_joined": "Date joined",
+    "number_of_wins": "Number of wins",
+    "number_of_defeats": "Number of defeats",
+    "rank": "Rank",
+    "change_nickname": "Change your nickname",
+    "enter_nickname": "Enter your nickname",
+    "change_email": "Change your email",
+    "enter_email": "Enter your email",
+    "change_phone_number": "Change your phone number",
+    "enter_phone_number": "Enter your phone number",
+    "change_password": "Change your password",
+    "enter_password": "Enter your password",
+    "update_account": "Update your account",
+    "delete_account": "Delete account"
 }

@@ -8,7 +8,7 @@
     "right": "DESTRA",
     "left": "SINISTRA",
 
-    "my_account": "Il Mio Conto",
+    "my_account": "Il Mio Account",
     "friends": "Gli Amici",
     "logout": "Disconnessione",
 
@@ -36,10 +36,27 @@
     "next": "Avanti",
     "email_authentication": "Autenticazione e-mail",
     "enter_mail": "Inserite il codice ricevuto via e-mail.",
-    
+
     "profile_picture": "Immagine del Profilo",
     "choose_file": "Scegliere il File",
-    "username": "Nome Utente",
+    "see_all_information": "Vedi tutte le informazioni",
     "email": "E-mail",
-    "password": "Password"
+    "nickname": "Soprannome",
+    "phone_number": "Numero di telefono",
+    "username": "Nome Utente",
+    "password": "Password",
+    "date_joined": "Data di adesione",
+    "number_of_wins": "Numero di vittorie",
+    "number_of_defeats": "Numero di sconfitte",
+    "rank": "Classifica",
+    "change_nickname": "Cambia il tuo soprannome",
+    "enter_nickname": "Inserire il proprio soprannome",
+    "change_email": "Cambiare l'e-mail",
+    "enter_email": "Inserisci il tuo indirizzo e-mail",
+    "change_phone_number": "Cambiare il numero di telefono",
+    "enter_phone_number": "Inserire il numero di telefono",
+    "change_password": "Cambiare la password",
+    "enter_password": "Inserire la password",
+    "update_account": "Aggiornare l'account",
+    "delete_account": "Cancellare l'account"
 }

@@ -118,38 +118,38 @@
                     <input id="file-upload" type="file" @change="handleProfilePictureChange" accept="image/*" class="hidden-file-input" />
                 </div>
 
-                <Switch class="infoGlobal" buttonText="See all information" v-model="showAllInfo" />
+                <Switch class="infoGlobal" :buttonText="$t('see_all_information')" v-model="showAllInfo" />
 
                 <div class="TextContainer">
-                    <TextDisplay v-if="showAllInfo || !showAllInfo" :textValue="userAccount.email" nameContainer="Email" />
-                    <TextDisplay v-if="showAllInfo || !showAllInfo" :textValue="userAccount.nickname" nameContainer="Nickname" />
-                    <TextDisplay v-if="showAllInfo || !showAllInfo" :textValue="userAccount.phone_number" nameContainer="Phone number" />
-                    <TextDisplay v-if="showAllInfo" :textValue="userAccount.username" nameContainer="Username" />
-                    <TextDisplay v-if="showAllInfo" :textValue="userAccount.password" nameContainer="Password" />
-                    <TextDisplay v-if="showAllInfo" :textValue="userAccount.date_joined" nameContainer="Date joined" />
-                    <TextDisplay v-if="showAllInfo" :textValue="userAccount.win" nameContainer="Number of win" />
-                    <TextDisplay v-if="showAllInfo" :textValue="userAccount.lose" nameContainer="Number of lose" />
-                    <TextDisplay v-if="showAllInfo" :textValue="userAccount.rank" nameContainer="Rank" />
+                    <TextDisplay v-if="showAllInfo || !showAllInfo" :textValue="userAccount.email" :nameContainer="$t('email')" />
+                    <TextDisplay v-if="showAllInfo || !showAllInfo" :textValue="userAccount.nickname" :nameContainer="$t('nickname')" />
+                    <TextDisplay v-if="showAllInfo || !showAllInfo" :textValue="userAccount.phone_number" :nameContainer="$t('phone_number')" />
+                    <TextDisplay v-if="showAllInfo" :textValue="userAccount.username" :nameContainer="$t('username')" />
+                    <TextDisplay v-if="showAllInfo" :textValue="userAccount.password" :nameContainer="$t('password')" />
+                    <TextDisplay v-if="showAllInfo" :textValue="userAccount.date_joined" :nameContainer="$t('date_joined')" />
+                    <TextDisplay v-if="showAllInfo" :textValue="userAccount.win" :nameContainer="$t('number_of_wins')" />
+                    <TextDisplay v-if="showAllInfo" :textValue="userAccount.lose" :nameContainer="$t('number_of_defeats')" />
+                    <TextDisplay v-if="showAllInfo" :textValue="userAccount.rank" :nameContainer="$t('rank')" />
                 </div>
 
                 <div class="editable-input-container">
-                    <InputEdit v-model="userAccount.nickname" placeholderText="Change your nickname" inputIconClass="fa-user" inputPlaceholder="Enter your nickname" :isPassword="false" />
-                    <InputEdit v-model="userAccount.email" placeholderText="Change your email" inputIconClass="fa-user" inputPlaceholder="Enter your email" :isPassword="false" :isDisabled="userAccount.student === true" />
-                    <InputEdit v-if="userAccount.student === false" v-model="userAccount.phone_number" placeholderText="Change your phone number" inputIconClass="fa-user" inputPlaceholder="Enter your phone number" :isPassword="false" />
-                    <InputEdit v-if="userAccount.student === false" v-model="userAccount.password" placeholderText="Change your password" inputIconClass="fa-lock" inputPlaceholder="Enter your password" :isPassword="true" />
+                    <InputEdit v-model="userAccount.nickname" :placeholderText="$t('change_nickname')" inputIconClass="fa-user" :inputPlaceholder="$t('enter_nickname')" :isPassword="false" />
+                    <InputEdit v-model="userAccount.email" :placeholderText="$t('change_email')" inputIconClass="fa-user" :inputPlaceholder="$t('enter_email')" :isPassword="false" :isDisabled="userAccount.student === true" />
+                    <InputEdit v-if="userAccount.student === false" v-model="userAccount.phone_number" :placeholderText="$t('change_phone_number')" inputIconClass="fa-user" :inputPlaceholder="$t('enter_phone_number')" :isPassword="false" />
+                    <InputEdit v-if="userAccount.student === false" v-model="userAccount.password" :placeholderText="$t('change_password')" inputIconClass="fa-lock" :inputPlaceholder="$t('enter_password')" :isPassword="true" />
 
                     <div class="___btn-click">
                         <button class="button" @click="updateAccount">
-                            <span class="buttonText buttonTextSize" style="font-size: medium;">{{ $t('Update your account') }}</span>
+                            <span class="buttonText buttonTextSize" style="font-size: medium;">{{ $t('update_account') }}</span>
                         </button>
                         <button class="button">
-                            <span class="buttonText buttonTextSize" style="font-size: medium;">Friends</span>
+                            <span class="buttonText buttonTextSize" style="font-size: medium;">{{ $t('friends') }}</span>
                         </button>
                         <button class="button" @click="handleLogout">
-                            <span class="buttonText buttonTextSize" style="font-size: medium;">Logout</span>
+                            <span class="buttonText buttonTextSize" style="font-size: medium;">{{ $t('logout') }}</span>
                         </button>
                         <button class="button">
-                            <span class="buttonText buttonTextSize" style="font-size: medium;">Delete account</span>
+                            <span class="buttonText buttonTextSize" style="font-size: medium;">{{ $t('delete_account') }}</span>
                         </button>
                     </div>
                 </div>
