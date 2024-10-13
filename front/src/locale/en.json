@@ -35,5 +35,10 @@
 
     "send_code_question": "Send code by email or SMS?",
     "phone_authentication": "Phone authentication",
-    "enter_sms": "Enter the code you received by SMS."
+    "enter_sms": "Enter the code you received by SMS.",
+    "enter_your_code": "Enter your code",
+    "resend_the_code": "Resend the code",
+    "next": "Next",
+    "email_authentication": "Email authentication",
+    "enter_mail": "Enter the code you received by e-mail."
 }

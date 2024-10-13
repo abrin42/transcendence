@@ -35,5 +35,10 @@
 
     "send_code_question": "Envoyer le code par courriel ou par SMS ?",
     "phone_authentication": "Authentification par téléphone",
-    "enter_sms": "Saisissez le code que vous avez reçu par SMS."
+    "enter_sms": "Saisissez le code que vous avez reçu par SMS.",
+    "enter_your_code": "Entrez votre code",
+    "resend_the_code": "Renvoyer le code",
+    "next": "Suivant",
+    "email_authentication": "Authentification par courriel",
+    "enter_mail": "Saisissez le code que vous avez reçu par courriel."
 }

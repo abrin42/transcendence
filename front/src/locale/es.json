@@ -35,5 +35,10 @@
 
     "send_code_question": "¿Enviar código por correo electrónico o SMS?",
     "phone_authentication": "Autenticación telefónica",
-    "enter_sms": "Introduzca el código que ha recibido por SMS."
+    "enter_sms": "Introduzca el código que ha recibido por SMS.",
+    "enter_your_code": "Introduzca su código",
+    "resend_the_code": "Reenviar el código",
+    "next": "Siguiente",
+    "email_authentication": "Autenticación del correo electrónico",
+    "enter_mail": "Introduzca el código que ha recibido por correo electrónico."
 }

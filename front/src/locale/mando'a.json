@@ -33,7 +33,12 @@
 
 
 
-    "send_code_question": "Send code by email or SMS?----------------------------",
+    "send_code_question": "Parjir dadita de lenedat ra SMS?",
     "phone_authentication": "Comlink buyacyc",
-    "enter_sms": "Miit'gaanar dadita gar parji by SMS."
+    "enter_sms": "Ke miit'gaanar dadita gar parji de SMS.",
+    "enter_your_code": "Ke miit'gaanar gar dadita",
+    "resend_the_code": "Parjir tug'yc dadita",
+    "next": "Projor",
+    "email_authentication": "Lenedat buyacyc",
+    "enter_mail": "Ke miit'gaanar dadita gar parji de lenedat."
 }
