@@ -13,11 +13,11 @@ RUN mkdir -p /etc/nginx/ssl
 COPY --from=build /app/front/dist /var/www/html
 COPY ./nginx/nginx.conf /etc/nginx/nginx.conf
 RUN mkdir -p /etc/nginx/ssl
-COPY certificat/certificate.crt /etc/nginx/ssl/certificate.crt
-COPY certificat/privatekey.pem /etc/nginx/ssl/privatekey.pem
+COPY certificat/server.crt /etc/nginx/ssl/server.crt
+COPY certificat/server.key /etc/nginx/ssl/server.key
 WORKDIR /etc/nginx/ssl
-RUN chmod 644 certificate.crt
-RUN chmod 644 privatekey.pem
+RUN chmod 644 server.crt
+RUN chmod 600 server.key
 EXPOSE 8000
 EXPOSE 8443
 

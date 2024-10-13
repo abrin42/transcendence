@@ -606,6 +606,9 @@ class PongConsumer(AsyncWebsocketConsumer):
         )
         self.isRemote = 1
         await self.accept()
+        await self.sendinfo_back("room_id","channel_name", "wsj1")
+        await self.sendinfo_back(self.room_id,self.channel_name, lstgame[self.room_id]['wsj1'])
+
         if not lstgame[self.room_id]['wsj1']:
             print("+++++++++++++++++++j1 join+++++++++++++++")
             lstgame[self.room_id]['wsj1'] = self.channel_name

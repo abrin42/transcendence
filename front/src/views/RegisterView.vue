@@ -52,8 +52,8 @@
             return;
         }
 
-        console.log(password1.value)
-        console.log(password2.value)
+        // console.log(password1.value)
+        // console.log(password2.value)
         try {
             const response = await fetch('/api/player/register/', {
                 method: 'POST',
