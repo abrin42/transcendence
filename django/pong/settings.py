@@ -187,7 +187,7 @@ CORS_ALLOWED_ORIGINS = [
     "https://10.11.1.11:8443" 
 ]
 
-# settings.py
+# settings.py test
 APPEND_SLASH = False
 
 
