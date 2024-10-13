@@ -538,6 +538,7 @@ class PongConsumer(AsyncWebsocketConsumer):
             # }))
 
     async def loop_game_remote(self):
+        print("*-*-*-*-*-*-*thread remote ball*-*-*-*-*-**")
         while True:
             await self.move_ball_remote()
             await self.sendBall_remote(lstgame[self.room_id]['ball_x'], lstgame[self.room_id]['ball_y'])
@@ -559,6 +560,8 @@ class PongConsumer(AsyncWebsocketConsumer):
         self.P1Ready = 0
         self.P2Ready = 0
         self.Game_on = 0
+        print("l'id est :")
+        print(self.room_id)
         if self.room_id not in lstgame:
             lstgame[self.room_id] = {
                 'wsj1': None,
@@ -604,9 +607,13 @@ class PongConsumer(AsyncWebsocketConsumer):
         self.isRemote = 1
         await self.accept()
         if not lstgame[self.room_id]['wsj1']:
+            print("+++++++++++++++++++j1 join+++++++++++++++")
             lstgame[self.room_id]['wsj1'] = self.channel_name
+            print("+++++++++++++++++++j1 join+++++++++++++++")
         elif not lstgame[self.room_id]['wsj2']:
+            print("+++++++++++++++++++j2 join+++++++++++++++")
             lstgame[self.room_id]['wsj2'] = self.channel_name
+            print("+++++++++++++++++++j2 join+++++++++++++++")
             asyncio.ensure_future(self.loop_game_remote())
 
 # ==========================================================================================================================
@@ -617,7 +624,7 @@ class PongConsumer(AsyncWebsocketConsumer):
 
 
     async def connect(self):
-        print("conncet start")
+        print("---------------conncet start---------------")
         query_string = self.scope['query_string'].decode('utf-8')
         query_params = urllib.parse.parse_qs(query_string)        
         page_url = query_params.get('page', [''])[0]

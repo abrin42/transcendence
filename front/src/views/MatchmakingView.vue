@@ -84,7 +84,7 @@
     let playerRank2 = "Beginner";
     const router = useRouter();
 
-    const waitingPlayer = 1;
+    let waitingPlayer = 1;
 
     function goToLegacy(id) {
     router.push(`/legacy_remote/${id}`);
