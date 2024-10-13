@@ -58,5 +58,14 @@
     "change_password": "Ändern Sie Ihr Passwort",
     "enter_password": "Geben Sie Ihr Passwort ein",
     "update_account": "Aktualisieren Sie Ihr Konto",
-    "delete_account": "Konto löschen"
+    "delete_account": "Konto löschen",
+    "activate": "Aktivieren Sie",
+
+    "home": "Startseite",
+    "play_again": "Erneut spielen",
+    "congratulations": "Herzlichen Glückwunsch!",
+    "wasted": "WASTED",
+
+    "sign_up": "Einschreiben",
+    "enter_username": "Geben Sie Ihren Benutzernamen ein"
 }

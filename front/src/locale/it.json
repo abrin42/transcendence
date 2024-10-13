@@ -58,5 +58,14 @@
     "change_password": "Cambiare la password",
     "enter_password": "Inserire la password",
     "update_account": "Aggiornare l'account",
-    "delete_account": "Cancellare l'account"
+    "delete_account": "Cancellare l'account",
+    "activate": "Attivare",
+
+    "home": "Casa",
+    "play_again": "Riproduzione",
+    "congratulations": "Congratulazioni!",
+    "wasted": "WASTED",
+
+    "sign_up": "Iscriviti",
+    "enter_username": "Inserire il nome utente"
 }

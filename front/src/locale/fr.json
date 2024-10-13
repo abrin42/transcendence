@@ -43,7 +43,7 @@
     "email": "Courriel",
     "nickname": "Pseudonyme",
     "phone_number": "Numéro de téléphone",
-    "username": "Nom d'Utilisateur",
+    "username": "Nom d'utilisateur",
     "password": "Mot de Passe",
     "date_joined": "Date d'adhésion",
     "number_of_wins": "Nombre de victoires",
@@ -58,5 +58,14 @@
     "change_password": "Modifiez votre mot de passe",
     "enter_password": "Entrez votre mot de passe",
     "update_account": "Mettre à jour votre compte",
-    "delete_account": "Supprimer le compte"
+    "delete_account": "Supprimer le compte",
+    "activate": "Activer",
+
+    "home": "Accueil",
+    "play_again": "Rejouer",
+    "congratulations": "Félicitations !",
+    "wasted": "WASTED",
+
+    "sign_up": "S'inscrire",
+    "enter_username": "Entrez votre nom d'utilisateur"
 }

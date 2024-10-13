@@ -48,9 +48,8 @@
                 return;
             }
             const user = await response.json();
-			// if (user && user.length > 0) {
-            if (user) {
-				current_lang.value = user.language;
+			if (user && user.length > 0) {
+				current_lang.value = user[0].fields.language;
                 is_connected.value = true;
 			} else {
 				console.log('No user data retrieved.');

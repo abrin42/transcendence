@@ -58,5 +58,14 @@
     "change_password": "Change your password",
     "enter_password": "Enter your password",
     "update_account": "Update your account",
-    "delete_account": "Delete account"
+    "delete_account": "Delete account",
+    "activate": "Activate",
+
+    "home": "Home",
+    "play_again": "Play again",
+    "congratulations": "Congratulations!",
+    "wasted": "WASTED",
+
+    "sign_up": "Sign up",
+    "enter_username": "Enter your username"
 }

@@ -155,8 +155,8 @@
                 </div>
 
                 <div class="SwitchStyle" v-if="userAccount.student === false">
-                    <Switch buttonText="Activer 2FA (SMS)" :isDisabled="userAccount.phone_number === '' ? false : true" v-model="userAccount.sms_2fa_active" />
-                    <Switch buttonText="Activer 2FA (EMAIL)" v-model="userAccount.email_2fa_active" />
+                    <Switch :buttonText="`${$t('activate')} 2FA (SMS)`" :isDisabled="userAccount.phone_number === '' ? false : true" v-model="userAccount.sms_2fa_active" />
+                    <Switch :buttonText="`${$t('activate')} 2FA (${$t('email')})`" v-model="userAccount.email_2fa_active" />
                 </div>
             </div>
         </div>

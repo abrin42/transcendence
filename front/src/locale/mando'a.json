@@ -58,5 +58,14 @@
     "change_password": "Naritir gar miit'ranov'la",
     "enter_password": "Ke miit'gaanar gar miit'ranov'la",
     "update_account": "Update your account----------------------------",
-    "delete_account": "Delete account---------------------------------"
+    "delete_account": "Delete account---------------------------------",
+    "activate": "Activate---------------------------------------------",
+
+    "home": "Yaim",
+    "play_again": "Geroya tug'yc",
+    "congratulations": "K'oyacyi!",
+    "wasted": "K'ATINI!",
+
+    "sign_up": "Sign up------------------------------------------------",
+    "enter_username": "Ke miit'gaanar gar gai"
 }
