@@ -1,8 +1,14 @@
 <template>
   <main>
-    <div id="black-background">
-      <div id>
+    <div id="wrapper">
+      <div id="black-background">
+        <div>
           <canvas id ="board"></canvas>
+        </div>
+        <div>
+          <h2 id="pause">[P] to Pause/Unpause</h2>
+          <h2 id="mute">[M] to Mute/Unmute</h2>
+        </div>
       </div>
     </div>
   </main>
@@ -11,6 +17,20 @@
 <style lang="scss">
 body {
   text-align: center;
+}
+
+#pause {
+  color: rgb(114, 114, 114);
+  font-size: 25px;
+  left: 20%;
+  top: 70%;
+}
+
+#mute {
+  color: rgb(114, 114, 114);
+  font-size: 25px;
+  left: 20%;
+  top: 67%;
 }
 
 #black-background{
@@ -30,6 +50,9 @@ body {
 <script setup>
 import { ref, onMounted, onUnmounted } from 'vue';
 import { useRouter } from 'vue-router';
+import paddleHitSound from '../assets/paddle_hit.mp3'
+import pointScoredSound from '../assets/point_scored.mp3'
+import wallHitSound from '../assets/wall_hit.mp3'
 
 ////////////////////////////////////////////////
 /////// GET USER ///////////////////////////////
@@ -54,6 +77,12 @@ const socket = ref(null);
 const messages = ref([]);
 const connectionStatus = ref('');
 let connection = 0;
+
+////////////Audio Variables///////////////
+const wallHitAudio = new Audio(wallHitSound);
+const paddleHitAudio = new Audio(paddleHitSound);
+const pointScoredAudio = new Audio(pointScoredSound);
+let soundOnOff = true;
 
 function __goTo(page) {
   if (page == null)
@@ -166,6 +195,8 @@ function connectWebSocket() {
       console.log(data.updatePts);
       console.log(data.player);
       updatePoints(data.player, data.updatePts);
+      if (soundOnOff == true)
+        pointScoredAudio.play();
     } 
     else if (data.type == 'mouvUp' || data.type == 'mouvDown')
     {
@@ -188,13 +219,17 @@ function connectWebSocket() {
     {
       console.log(data.type);
     }
-    else if (data.type == 'paddleHit') //sound
+    else if (data.type == 'paddleHit')
     {
       console.log(data.type);
+      if (soundOnOff == true)
+        paddleHitAudio.play();
     }
-    else if (data.type == 'wallHit')//sound
+    else if (data.type == 'wallHit')
     { 
       console.log(data.type);
+      if (soundOnOff == true)
+        wallHitAudio.play();
     }
     else if (data.type == 'info_back') //a enlever test
     {
@@ -255,12 +290,14 @@ onMounted(() => {
 
   context.fillStyle = "white";
   context.fillRect(player1.x, player1.y, player1.width, player1.height);
-  context.fillText("[P] to pause", boardWidth/5*4, 100);
   requestAnimationFrame(update); // Gameloop
   document.addEventListener("keydown", movePlayer1up);
   document.addEventListener("keydown", movePlayer1down);
   document.addEventListener("keydown", movePlayer2up);
   document.addEventListener("keydown", movePlayer2down);
+  document.addEventListener("keydown", muteSound);
+  document.addEventListener("keydown", pauseGame);
+  //document.addEventListener("keydown", surpriiise);
   document.addEventListener('keyup', stopPlayer);
 });
 
@@ -273,11 +310,10 @@ onMounted(() => {
         context.fillRect(player2.x, player2.y, player2.width, player2.height);
         context.fillStyle = "white";
         context.fillRect(ball.x- (ball.width/2), ball.y, ball.width, ball.height);
-
         //draw score
         context.font = "100px Arial";
         context.fillText(player1Score, boardWidth/5, 100);
-        context.fillText(player2Score, boardWidth*4/5 -50 , 100); //subtract -45 for width of text
+        context.fillText(player2Score, boardWidth*4/5 -50 , 100); //subtract -45 for width of tex
         
         //draw middle line
         for (let i = 10; i < board.height; i += 25)
@@ -291,7 +327,6 @@ onMounted(() => {
     let moveInterval2up = null;
     let moveInterval2down = null;
     let tickPadel = 10;
-
     function movePlayer1up(e)
     {
       if (!moveInterval1up)
@@ -360,7 +395,6 @@ onMounted(() => {
       {
         if (e.code == "ArrowDown")
         {
-            
           moveInterval2down = setInterval(() => 
           {
             const message = 
@@ -372,6 +406,32 @@ onMounted(() => {
           },
           tickPadel);
         }
+      }
+    }
+
+    function pauseGame(e)
+    {
+      if (e.code == "KeyP")
+      {
+        //force Axel <3
+      }
+    }
+
+    function muteSound(e)
+    {
+      if (e.code == "KeyM")
+      {
+        console.log(soundOnOff);
+        soundOnOff = !soundOnOff;
+        console.log(soundOnOff);
+      }
+    }
+
+    function surpriiise(e)
+    {
+      if (e.code == "KeyC")
+      {
+        // A faire plus tard
       }
     }
 

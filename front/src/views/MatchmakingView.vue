@@ -84,7 +84,7 @@
     let playerRank2 = "Beginner";
     const router = useRouter();
 
-    const waitingPlayer = 1;
+    let waitingPlayer = 1;
 
     function goToLegacy(id) {
     router.push(`/legacy_remote/${id}`);
@@ -117,13 +117,17 @@ async function insertPlayer() {
             else
             {
                 waitingPlayer = 0;
+
+                const player1_pic = document.getElementById('player1-picture');
+                player1_pic.classList.add(...['to-anim']);
+
                 console.log("lancement dans 3");
                 await new Promise(resolve => setTimeout(resolve, 1000));
                 console.log("lancement dans 2");
                 await new Promise(resolve => setTimeout(resolve, 1000));
                 console.log("lancement dans 1");
                 await new Promise(resolve => setTimeout(resolve, 1000));
-                goToLegacy(data.id);
+                //goToLegacy(data.id);
             }
 
             }
@@ -154,23 +158,9 @@ async function insertPlayer() {
     var tips = ['Tip: Reading your phone in the stairs might lead to severe injury.', 'Tip: Try pressing \'C\' while playing ;)', 
     'Tip: Wash your cereal bowl right after eating', 'Don\'t forget to put your paddle back in the center!', 
     'Recipe for a lribette : one tchoukball ball (?), 50 kilos of pasta, and many many many many many Star Wars anecdotes.', 
-    'Tu es triste? Arrête.', '"Jeu de pain, jeu de vilain" - Miro', 'Bois de l\'eau. Dans 20, 30 ans y\'en aura plus.'];
+    'Tu es triste? Arrête.', '"Jeu de pain, jeu de vilain" - Miro', 'Bois de l\'eau. Dans 20, 30 ans y\'en aura plus.', 
+    'Tu ne pousseras point.',];
     var tipdisplayed = tips[Math.floor(Math.random()*tips.length)];
-
-    //when 2nd player is found, we hide "waiting for player" and show opponent
-    let playerfound = true;
-    if(playerfound == true)
-    {
-        //onTriggerMovePlayer1ProfilePicture();
-        rightplayervisible = !rightplayervisible;
-        loadingmodulevisible = !loadingmodulevisible;
-    }
-
-
-    function onTriggerMovePlayer1ProfilePicture() {
-        const player1_pic = document.getElementById('player1-picture');
-        player1_pic.classList.add(...[to-anim]);
-    }
 </script>
 
 
@@ -260,7 +250,7 @@ async function insertPlayer() {
     filter: drop-shadow(5px 5px 4px #0000003b);
 }
 
-.profile-picture-matchmaking-left.slide-left {
+.slide-left {
 	animation: slide-left 0.5s cubic-bezier(0.250, 0.460, 0.450, 0.940) both;
 }
 

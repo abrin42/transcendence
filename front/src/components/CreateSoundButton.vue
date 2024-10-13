@@ -11,7 +11,7 @@
     const togglePlay = inject('togglePlay');
 
     function togglePlayAndSound() {
-    togglePlay(); // appelle fonction dans App.vue
+        togglePlay(); // appelle fonction dans App.vue
     const audioElement = document.getElementById('background_audio');
 
     if (isPlaying.value) {
