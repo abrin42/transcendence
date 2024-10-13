@@ -3,10 +3,6 @@
     "credits": "Crédits",
     "login": "Connexion",
     "back": "Retour",
-    "settings": "Paramètres",
-    "player": "Joueur",
-    "right": "DROITE",
-    "left": "GAUCHE",
 
     "my_account": "Mon compte",
     "friends": "Amis",
@@ -66,6 +62,28 @@
     "congratulations": "Félicitations !",
     "wasted": "WASTED",
 
+    "LOGIN": "CONNEXION",
     "sign_up": "S'inscrire",
-    "enter_username": "Entrez votre nom d'utilisateur"
+    "enter_username": "Entrez votre nom d'utilisateur",
+    
+    "solo": "Solo",
+    "multiplayer": "Multijoueurs",
+
+    "local": "Local",
+    "online": "En ligne",
+    "tourney": "Tournoi",
+
+    "password_do_not_match": "The passwords do not match.",
+    "error_account_creation": "An error occurred during account creation.",
+    "account_created_successfully": "Account created successfully!",
+    "SIGN_UP": "S'INSCRIRE",
+    "create_account": "Créez votre compte",
+    "confirm_password": "Confirmer le mot de passe",
+
+    "settings": "Paramètres",
+    "player": "Joueur",
+    "RIGHT": "DROITE",
+    "LEFT": "GAUCHE",
+    "PAUSE_GAME": "PAUSE JEU",
+    "MUTE_SOUND": "COUPER LE SON"
 }

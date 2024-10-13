@@ -48,7 +48,7 @@
 
     async function createAccount() {
         if (password1.value !== password2.value) {
-            alert('Les mots de passe ne correspondent pas.');
+            alert('The passwords do not match.');
             return;
         }
 
@@ -71,7 +71,7 @@
             });
             if (response.ok) {
                 const responseData = await response.json();
-                alert('Compte créé avec succès !');
+                alert('Account created successfully!');
                 __goTo(responseData.redirect_url);
             } else {
                 const errorData = await response.json();
@@ -79,7 +79,7 @@
             }
         } catch (error) {
             console.error('Erreur lors de la création du compte:', error);
-            alert('Une erreur est survenue pendant la création du compte.');
+            alert('An error occurred during account creation.');
         }
     }
 
@@ -95,22 +95,22 @@
 <template>
     <main>
         <div id="wrapper">
-            <h1>SIGN UP</h1>
+            <h1>{{ $t('SIGN_UP') }}</h1>
             <div class="logContainer">
                 <button class="button button-login" @click="__goTo('/log')">
-                    <span class="buttonText buttonTextSize">{{ $t('Login') }}</span>
+                    <span class="buttonText buttonTextSize">{{ $t('login') }}</span>
                 </button>
                 <button class="button button-createAccount" @click="createAccount">
-                    <span class="buttonText buttonTextSize">{{ $t('Create your account') }}</span>
+                    <span class="buttonText buttonTextSize">{{ $t('create_account') }}</span>
                 </button>
             </div>
 
             <div class="__inputInfo">
-                <Input iconClass="fa-user" placeholderText="*Username" v-model="username" />
-                <Input iconClass="fa-envelope" placeholderText="*Email" v-model="email" />
-                <Input iconClass="fa-phone" placeholderText="Phone Number" v-model="phone_number" />
-                <Input iconClass="fa-lock" placeholderText="*Password" isPassword v-model="password1" />
-                <Input iconClass="fa-lock" placeholderText="*Confirm password" isPassword v-model="password2" />
+                <Input iconClass="fa-user" :placeholderText="`*${$t('username')}`" v-model="username" />
+                <Input iconClass="fa-envelope" :placeholderText="`*${$t('email')}`" v-model="email" />
+                <Input iconClass="fa-phone" :placeholderText="`${$t('phone_number')}`" v-model="phone_number" />
+                <Input iconClass="fa-lock" :placeholderText="`*${$t('password')}`" isPassword v-model="password1" />
+                <Input iconClass="fa-lock" :placeholderText="`*${$t('confirm_password')}`" isPassword v-model="password2" />
             </div>
 
             <div class="buttonContainer">

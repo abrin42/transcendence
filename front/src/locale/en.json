@@ -3,19 +3,15 @@
     "credits": "Credits",
     "login": "Login",
     "back": "Back",
-    "settings": "Settings",
-    "player": "Player",
-    "right": "RIGHT",
-    "left": "LEFT",
-
+    
     "my_account": "My Account",
     "friends": "Friends",
     "logout": "Logout",
-
+    
     "my_friends": "My Friends",
     "search_for_a_player": "Search for a player ...",
     "no_players_found": "No players found.",
-
+    
     "modify_the_value": "Modify the value:",
     "save": "Save",
     "prohibited_action": "Prohibited action",
@@ -23,11 +19,11 @@
     "close": "Close",
     
     "disabled_switch": "The switch is disabled. You cannot perform this action.",
-
+    
     "no_text_to_display": "No text to display",
-
-
-
+    
+    
+    
     "send_code_question": "Send code by email or SMS?",
     "phone_authentication": "Phone authentication",
     "enter_sms": "Enter the code you received by SMS.",
@@ -36,7 +32,7 @@
     "next": "Next",
     "email_authentication": "Email authentication",
     "enter_mail": "Enter the code you received by e-mail.",
-
+    
     "profile_picture": "Profile Picture",
     "choose_file": "Choose File",
     "see_all_information": "See all information",
@@ -60,12 +56,34 @@
     "update_account": "Update your account",
     "delete_account": "Delete account",
     "activate": "Activate",
-
+    
     "home": "Home",
     "play_again": "Play again",
     "congratulations": "Congratulations!",
     "wasted": "WASTED",
-
+    
+    "LOGIN": "LOGIN",
     "sign_up": "Sign up",
-    "enter_username": "Enter your username"
+    "enter_username": "Enter your username",
+    
+    "solo": "Solo",
+    "multiplayer": "Multiplayer",
+    
+    "local": "Local",
+    "online": "Online",
+    "tourney": "Tourney",
+    
+    "password_do_not_match": "The passwords do not match.",
+    "error_account_creation": "An error occurred during account creation.",
+    "account_created_successfully": "Account created successfully!",
+    "SIGN_UP": "SIGN UP",
+    "create_account": "Create your account",
+    "confirm_password": "Confirm password",
+
+    "settings": "Settings",
+    "player": "Player",
+    "RIGHT": "RIGHT",
+    "LEFT": "LEFT",
+    "PAUSE_GAME": "PAUSE GAME",
+    "MUTE_SOUND": "MUTE SOUND"
 }

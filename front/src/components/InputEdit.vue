@@ -10,7 +10,7 @@
         },
         placeholderText: {
             type: String,
-            default: 'Cliquez pour modifier',
+            default: 'Click to modify',
         },
         type: {
             type: String,
@@ -22,7 +22,7 @@
         },
         inputPlaceholder: {
             type: String,
-            default: 'Modifier la valeur',
+            default: 'Modify the value',
         },
         isPassword: {
             type: Boolean,

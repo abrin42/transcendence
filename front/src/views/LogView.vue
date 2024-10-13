@@ -132,7 +132,7 @@ async function login42() {
 <template>
     <main>
         <div id="wrapper">
-            <h1>LOGIN</h1>
+            <h1>{{ $t('LOGIN') }}</h1>
 
             <div class="logContainer">
                 <button class="button button-log42" @click="login42">
