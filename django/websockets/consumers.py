@@ -305,17 +305,17 @@ class PongConsumer(AsyncWebsocketConsumer):
                 }))
         else:
             if player == 1:
-                lstgame[gameID]['P1Ready'] = 1
-                lstgame[gameID]['posPad1'] -= 5
-                if lstgame[gameID]['posPad1'] < 0:
-                    lstgame[gameID]['posPad1'] = 0
-                newY = lstgame[gameID]['posPad1']
+                self.game['P1Ready'] = 1
+                self.game['posPad1'] -= 5
+                if self.game['posPad1'] < 0:
+                    self.game['posPad1'] = 0
+                newY = self.game['posPad1']
             elif player == 2:
-                lstgame[gameID]['P2Ready'] = 1
-                lstgame[gameID]['posPad2'] -= 5
-                if lstgame[gameID]['posPad2'] < 0:
-                    lstgame[gameID]['posPad2'] = 0
-                newY = lstgame[gameID]['posPad2']
+                self.game['P2Ready'] = 1
+                self.game['posPad2'] -= 5
+                if self.game['posPad2'] < 0:
+                    self.game['posPad2'] = 0
+                newY = self.game['posPad2']
 
             await self.channel_layer.group_send(
                 gameID,
@@ -351,19 +351,19 @@ class PongConsumer(AsyncWebsocketConsumer):
                     'newY': newY,
                     'player': player,
                 }))
-        elif gameID in lstgame:
+        else:
             if player == 1:
-                lstgame[gameID]['P1Ready'] = 1
-                lstgame[gameID]['posPad1'] += 5
-                if lstgame[gameID]['posPad1'] > 560:
-                    lstgame[gameID]['posPad1'] = 560
-                newY = lstgame[gameID]['posPad1']
+                self.game['P1Ready'] = 1
+                self.game['posPad1'] += 5
+                if self.game['posPad1'] > 560:
+                    self.game['posPad1'] = 560
+                newY = self.game['posPad1']
             elif player == 2:
-                lstgame[gameID]['P2Ready'] = 1
-                lstgame[gameID]['posPad2'] += 5
-                if lstgame[gameID]['posPad2'] > 560:
-                    lstgame[gameID]['posPad2'] = 560
-                newY = lstgame[gameID]['posPad2']
+                self.game['P2Ready'] = 1
+                self.game['posPad2'] += 5
+                if self.game['posPad2'] > 560:
+                    self.game['posPad2'] = 560
+                newY = self.game['posPad2']
 
             await self.channel_layer.group_send(
                 gameID,
@@ -394,25 +394,25 @@ class PongConsumer(AsyncWebsocketConsumer):
 
 
     async def speed_up_ball_remote(self):
-        if (lstgame[self.room_id]['ball_speed'] < 10):
+        if (self.game['ball_speed'] < 10):
             return (0.2)
         return (0)
 
     async def paddle_collisions_remote(self):
-        if (lstgame[self.room_id]['future_x'] <= lstgame[self.room_id]['xPad1']  + lstgame[self.room_id]['paddle_width'] + lstgame[self.room_id]['ball_radius'] and lstgame[self.room_id]['future_x'] >= lstgame[self.room_id]['xPad1']  and lstgame[self.room_id]['future_y'] >= lstgame[self.room_id]['posPad1'] - lstgame[self.room_id]['ball_radius'] and lstgame[self.room_id]['future_y'] <= lstgame[self.room_id]['posPad1'] + lstgame[self.room_id]['paddle_height'] + lstgame[self.room_id]['ball_radius']):
-            lstgame[self.room_id]['position_in_paddle'] = (2 * (lstgame[self.room_id]['ball_y'] + lstgame[self.room_id]['ball_radius'] - lstgame[self.room_id]['posPad1']) / (lstgame[self.room_id]['paddle_height'] + lstgame[self.room_id]['ball_radius'] * 2)) - 1
-            lstgame[self.room_id]['ball_angle'] = 80 * lstgame[self.room_id]['position_in_paddle']
-            lstgame[self.room_id]['ball_x'] += lstgame[self.room_id]['ball_radius'] / 10
-            lstgame[self.room_id]['ball_speed'] += await self.speed_up_ball_remote()
+        if (self.game['future_x'] <= self.game['xPad1']  + self.game['paddle_width'] + self.game['ball_radius'] and self.game['future_x'] >= self.game['xPad1']  and self.game['future_y'] >= self.game['posPad1'] - self.game['ball_radius'] and self.game['future_y'] <= self.game['posPad1'] + self.game['paddle_height'] + self.game['ball_radius']):
+            self.game['position_in_paddle'] = (2 * (self.game['ball_y'] + self.game['ball_radius'] - self.game['posPad1']) / (self.game['paddle_height'] + self.game['ball_radius'] * 2)) - 1
+            self.game['ball_angle'] = 80 * self.game['position_in_paddle']
+            self.game['ball_x'] += self.game['ball_radius'] / 10
+            self.game['ball_speed'] += await self.speed_up_ball_remote()
 
-        if (lstgame[self.room_id]['future_x'] >= lstgame[self.room_id]['xPad2'] - lstgame[self.room_id]['ball_radius'] and lstgame[self.room_id]['future_x'] <= lstgame[self.room_id]['xPad2'] + lstgame[self.room_id]['ball_radius'] / 2 and lstgame[self.room_id]['future_y'] >= lstgame[self.room_id]['posPad2'] - lstgame[self.room_id]['ball_radius'] and lstgame[self.room_id]['future_y'] <= lstgame[self.room_id]['posPad2'] + lstgame[self.room_id]['paddle_height'] + lstgame[self.room_id]['ball_radius']):
-            lstgame[self.room_id]['position_in_paddle'] = (2 * (lstgame[self.room_id]['ball_y'] + lstgame[self.room_id]['ball_radius'] - lstgame[self.room_id]['posPad2']) / (lstgame[self.room_id]['paddle_height'] + lstgame[self.room_id]['ball_radius'] * 2)) - 1
-            lstgame[self.room_id]['ball_angle'] = 180 - 80 * lstgame[self.room_id]['position_in_paddle']
-            lstgame[self.room_id]['ball_x'] -= lstgame[self.room_id]['ball_radius'] / 10
-            lstgame[self.room_id]['ball_speed'] += await self.speed_up_ball_remote()
+        if (self.game['future_x'] >= self.game['xPad2'] - self.game['ball_radius'] and self.game['future_x'] <= self.game['xPad2'] + self.game['ball_radius'] / 2 and self.game['future_y'] >= self.game['posPad2'] - self.game['ball_radius'] and self.game['future_y'] <= self.game['posPad2'] + self.game['paddle_height'] + self.game['ball_radius']):
+            self.game['position_in_paddle'] = (2 * (self.game['ball_y'] + self.game['ball_radius'] - self.game['posPad2']) / (self.game['paddle_height'] + self.game['ball_radius'] * 2)) - 1
+            self.game['ball_angle'] = 180 - 80 * self.game['position_in_paddle']
+            self.game['ball_x'] -= self.game['ball_radius'] / 10
+            self.game['ball_speed'] += await self.speed_up_ball_remote()
 
     async def endGame_remote(self):
-        lstgame[self.room_id]['Game_on']= -1
+        self.game['Game_on']= -1
         await self.disconnect(1000)
         await self.send(text_data=json.dumps({
             'type': "endGame",
@@ -420,11 +420,11 @@ class PongConsumer(AsyncWebsocketConsumer):
 
     async def sendPts_remote(self, type, player):
         if player == "1":
-            lstgame[self.room_id]['PTSp1'] += 1
-            updatePts = lstgame[self.room_id]['PTSp1']
+            self.game['PTSp1'] += 1
+            updatePts = self.game['PTSp1']
         elif player == "2":
-            lstgame[self.room_id]['PTSp2'] += 1
-            updatePts = lstgame[self.room_id]['PTSp2']
+            self.game['PTSp2'] += 1
+            updatePts = self.game['PTSp2']
 
         await self.channel_layer.group_send(
             self.room_id,
@@ -435,8 +435,8 @@ class PongConsumer(AsyncWebsocketConsumer):
             }
         )
 
-        if (lstgame[self.room_id]['PTSp1'] == lstgame[self.room_id]['nb_pts_for_win']) or \
-            lstgame[self.room_id]['PTSp2'] == lstgame[self.room_id]['nb_pts_for_win']:
+        if (self.game['PTSp1'] == self.game['nb_pts_for_win']) or \
+            self.game['PTSp2'] == self.game['nb_pts_for_win']:
             await self.endGame_remote()
 
     async def update_points(self, event):
@@ -451,7 +451,7 @@ class PongConsumer(AsyncWebsocketConsumer):
             self.room_id,
             {
                 'type': 'update_paddle_position',
-                'newY': lstgame[self.room_id]['init_pad'],
+                'newY': self.game['init_pad'],
                 'player': "1",
             }
         )
@@ -459,50 +459,50 @@ class PongConsumer(AsyncWebsocketConsumer):
             self.room_id,
             {
                 'type': 'update_paddle_position',
-                'newY': lstgame[self.room_id]['init_pad'], 
+                'newY': self.game['init_pad'], 
                 'player': "2",
             }
         )
 
     async def begin_point_remote(self):
-        lstgame[self.room_id]['posPad1'] = lstgame[self.room_id]['init_pad']
-        lstgame[self.room_id]['posPad2'] = lstgame[self.room_id]['init_pad']
-        lstgame[self.room_id]['ball_speed'] = lstgame[self.room_id]['init_ball_speed'] 
-        lstgame[self.room_id]['ball_x'] = lstgame[self.room_id]['startXBall']
-        lstgame[self.room_id]['ball_y'] = lstgame[self.room_id]['startYBall']
-        lstgame[self.room_id]['future_x'] = lstgame[self.room_id]['ball_x']
-        lstgame[self.room_id]['future_y'] = lstgame[self.room_id]['ball_y']
-        await self.sendBall_remote(lstgame[self.room_id]['ball_x'], lstgame[self.room_id]['ball_y'])
+        self.game['posPad1'] = self.game['init_pad']
+        self.game['posPad2'] = self.game['init_pad']
+        self.game['ball_speed'] = self.game['init_ball_speed'] 
+        self.game['ball_x'] = self.game['startXBall']
+        self.game['ball_y'] = self.game['startYBall']
+        self.game['future_x'] = self.game['ball_x']
+        self.game['future_y'] = self.game['ball_y']
+        await self.sendBall_remote(self.game['ball_x'], self.game['ball_y'])
         await self.sendPadInit_remote()
         await asyncio.sleep(1)
 
     async def  victory_remote(self):
-        if (lstgame[self.room_id]['future_x'] < 6.983):
+        if (self.game['future_x'] < 6.983):
             await self.sendPts_remote("updatePts", "2")
-            lstgame[self.room_id]['ball_angle'] = 180
+            self.game['ball_angle'] = 180
             await self.begin_point_remote()
         else:
             await self.sendPts_remote("updatePts", "1")
-            lstgame[self.room_id]['ball_angle'] = 0
+            self.game['ball_angle'] = 0
             await self.begin_point_remote()
 
     async def wall_collisions_remote(self):
-        if (lstgame[self.room_id]['future_x'] < lstgame[self.room_id]['board_min'] + lstgame[self.room_id]['ball_radius'] or lstgame[self.room_id]['future_x'] + lstgame[self.room_id]['ball_radius'] > lstgame[self.room_id]['board_x_max']):
+        if (self.game['future_x'] < self.game['board_min'] + self.game['ball_radius'] or self.game['future_x'] + self.game['ball_radius'] > self.game['board_x_max']):
             await self.victory_remote()
             return (1)
-        if (lstgame[self.room_id]['future_y'] < lstgame[self.room_id]['board_min'] + lstgame[self.room_id]['ball_radius']):
-            lstgame[self.room_id]['future_y'] = lstgame[self.room_id]['board_min'] + lstgame[self.room_id]['ball_radius']
-            lstgame[self.room_id]['ball_angle'] *= -1
-        if (lstgame[self.room_id]['future_y'] > lstgame[self.room_id]['board_y_max'] - lstgame[self.room_id]['ball_radius']):
-            lstgame[self.room_id]['future_y'] = lstgame[self.room_id]['board_y_max'] - lstgame[self.room_id]['ball_radius']
-            lstgame[self.room_id]['ball_angle'] *= -1
-        lstgame[self.room_id]['ball_x'] = lstgame[self.room_id]['future_x']
-        lstgame[self.room_id]['ball_y'] = lstgame[self.room_id]['future_y']
+        if (self.game['future_y'] < self.game['board_min'] + self.game['ball_radius']):
+            self.game['future_y'] = self.game['board_min'] + self.game['ball_radius']
+            self.game['ball_angle'] *= -1
+        if (self.game['future_y'] > self.game['board_y_max'] - self.game['ball_radius']):
+            self.game['future_y'] = self.game['board_y_max'] - self.game['ball_radius']
+            self.game['ball_angle'] *= -1
+        self.game['ball_x'] = self.game['future_x']
+        self.game['ball_y'] = self.game['future_y']
         return (0)
 
     async def move_ball_remote(self):
-        lstgame[self.room_id]['future_x'] = lstgame[self.room_id]['ball_x'] + math.cos(lstgame[self.room_id]['ball_angle'] * math.pi / 180) * lstgame[self.room_id]['ball_speed'] * (lstgame[self.room_id]['boardWidth'] + lstgame[self.room_id]['boardHeight']) / 2000
-        lstgame[self.room_id]['future_y'] = lstgame[self.room_id]['ball_y']+ math.sin(lstgame[self.room_id]['ball_angle'] * math.pi / 180) * lstgame[self.room_id]['ball_speed'] * (lstgame[self.room_id]['boardWidth'] + lstgame[self.room_id]['boardHeight']) / 2000
+        self.game['future_x'] = self.game['ball_x'] + math.cos(self.game['ball_angle'] * math.pi / 180) * self.game['ball_speed'] * (self.game['boardWidth'] + self.game['boardHeight']) / 2000
+        self.game['future_y'] = self.game['ball_y']+ math.sin(self.game['ball_angle'] * math.pi / 180) * self.game['ball_speed'] * (self.game['boardWidth'] + self.game['boardHeight']) / 2000
         if await self.wall_collisions_remote() == 0:
             await self.paddle_collisions_remote()
 
@@ -541,7 +541,7 @@ class PongConsumer(AsyncWebsocketConsumer):
         print("*-*-*-*-*-*-*thread remote ball*-*-*-*-*-**")
         while True:
             await self.move_ball_remote()
-            await self.sendBall_remote(lstgame[self.room_id]['ball_x'], lstgame[self.room_id]['ball_y'])
+            await self.sendBall_remote(self.game['ball_x'], self.game['ball_y'])
             await asyncio.sleep(0.01)
 
         # while game.Game_on != -1:
@@ -553,71 +553,85 @@ class PongConsumer(AsyncWebsocketConsumer):
         #         await asyncio.sleep(game.tick_back)
         #     await asyncio.sleep(0.5)
 
-
+    async def init_game(self):
+        self.game = {
+            'wsj1': None,
+            'wsj2': None,
+            'boardWidth': 700,
+            'boardHeight': 700,
+            'AI': 0,
+            'init_ball_speed': 4,
+            'tick_back': 0.01,
+            'Game_on': 0,
+            'nb_pts_for_win': 10,
+            'P1Ready': 0,
+            'P2Ready': 0,
+            'PTSp1': 0,
+            'PTSp2': 0,
+            'xPad1': 10,
+            'xPad2': 700 - 30,
+            'paddle_width': 20,
+            'paddle_height': 140,
+            'position_in_paddle': 0,
+            'init_pad': 700 / 2 - 140 / 2,
+            'posPad1': 700 / 2 - 140 / 2,
+            'posPad2': 700 / 2 - 140 / 2,
+            'startXBall': 350,
+            'startYBall': 350,
+            'ball_x': 350,
+            'ball_y': 350,
+            'future_x': 350,
+            'future_y': 350,
+            'ball_angle': 180 if random.random() > 0.5 else 0,
+            'ball_radius': 7.18,
+            'ball_speed': 4,
+            'board_y_max': 700,
+            'board_x_max': 700,
+            'board_min': 0,
+            'is_online': 1,
+        }
 
     async def initRemote(self, id):
+        # self.redis = await get_redis()
         self.room_id = id
         self.P1Ready = 0
         self.P2Ready = 0
         self.Game_on = 0
+        # self.game['room_id'] = id
+        # self.game['P1Ready'] = 0
+        # self.game['P2Ready'] = 0
+        # self.game['Game_on'] = 0
         print("l'id est :")
         print(self.room_id)
-        if self.room_id not in lstgame:
-            lstgame[self.room_id] = {
-                'wsj1': None,
-                'wsj2': None,
-                'boardWidth': 700,
-                'boardHeight': 700,
-                'AI': 0,
-                'init_ball_speed': 4,
-                'tick_back': 0.01,
-                'Game_on': 0,
-                'nb_pts_for_win': 10,
-                'P1Ready': 0,
-                'P2Ready': 0,
-                'PTSp1': 0,
-                'PTSp2': 0,
-                'xPad1': 10,
-                'xPad2': 700 - 30,
-                'paddle_width': 20,
-                'paddle_height': 140,
-                'position_in_paddle': 0,
-                'init_pad': 700 / 2 - 140 / 2,
-                'posPad1': 700 / 2 - 140 / 2,
-                'posPad2': 700 / 2 - 140 / 2,
-                'startXBall': 350,
-                'startYBall': 350,
-                'ball_x': 350,
-                'ball_y': 350,
-                'future_x': 350,
-                'future_y': 350,
-                'ball_angle': 180 if random.random() > 0.5 else 0,
-                'ball_radius': 7.18,
-                'ball_speed': 4,
-                'board_y_max': 700,
-                'board_x_max': 700,
-                'board_min': 0,
-                'is_online': 1,
-            }
 
+        await self.init_game()
         await self.channel_layer.group_add(
             self.room_id,
             self.channel_name
         )
-        self.isRemote = 1
+        self.isRemote = 1           
+
+
         await self.accept()
-        await self.sendinfo_back("room_id","channel_name", "wsj1")
-        await self.sendinfo_back(self.room_id,self.channel_name, lstgame[self.room_id]['wsj1'])
+        # await self.sendinfo_back("room_id","channel_name", "wsj1")
+        # await self.sendinfo_back(self.room_id,self.channel_name, lstgame[self.room_id]['wsj1'])
 
         if not lstgame[self.room_id]['wsj1']:
             print("+++++++++++++++++++j1 join+++++++++++++++")
             lstgame[self.room_id]['wsj1'] = self.channel_name
             print("+++++++++++++++++++j1 join+++++++++++++++")
-        elif not lstgame[self.room_id]['wsj2']:
+        if not lstgame[self.room_id]['wsj2']:
             print("+++++++++++++++++++j2 join+++++++++++++++")
-            lstgame[self.room_id]['wsj2'] = self.channel_name
+            lstgame[self.room_id]['wsj1'] = self.channel_name
             print("+++++++++++++++++++j2 join+++++++++++++++")
             asyncio.ensure_future(self.loop_game_remote())
+
+
+
+        # if await self.redis.get(f'connected_players_{self.room_group_name}') == 2:
+            # print("+++++++++++++++++++j2 join+++++++++++++++")
+            # self.game['wsj2'] = self.channel_name
+            # print("+++++++++++++++++++j2 join+++++++++++++++")
 
 # ==========================================================================================================================
 # ==========================================================================================================================
@@ -653,10 +667,10 @@ class PongConsumer(AsyncWebsocketConsumer):
             self.channel_name
         )
         # Nettoyage de la room si les deux joueurs ont quitté
-        if lstgame[self.room_id]['wsj1'] == self.channel_name:
-            lstgame[self.room_id]['wsj1'] = None
-        elif lstgame[self.room_id]['wsj2'] == self.channel_name:
-            lstgame[self.room_id]['wsj2'] = None
+        if self.game['wsj1'] == self.channel_name:
+            self.game['wsj1'] = None
+        elif self.game['wsj2'] == self.channel_name:
+            self.game['wsj2'] = None
         # # Si la room est vide, on la supprime
         # if not lstgame[self.room_id]['wsjoueur1'] and not lstgame[self.room_id]['wsjoueur2']:
         #     del lstgame[self.room_id]
