@@ -58,19 +58,23 @@ def insertPlayer(request):
 def update_game(request):
     if request.method == "POST":
         try:
+            latest_game = Game.objects.order_by('-id').first()
+
+            #game_id = data.get('gameID')
+            #print(game_id)
+            #game = get_object_or_404(Game, id=game_id)
+            
             data = json.loads(request.body)
-            game_id = data.get('gameID')
-            game = get_object_or_404(Game, id=game_id)
-            
-            game.mode = data.get('gameMode')
-            game.scorep1 = data.get('scorep1')
-            game.scorep2 = data.get('scorep2')
-            
-            game.save()
-            print(game)
-            print(game.scorep1)
-            print(game.scorep2)
-            print(game.mode)
+            latest_game.mode = data.get('mode')
+            latest_game.scorep1 = data.get('scorep1')
+            latest_game.scorep2 = data.get('scorep2')
+            latest_game.save()
+
+            print(latest_game.scorep1)
+            print(latest_game.scorep2)
+            print(latest_game.mode)
+            print(latest_game.player1)
+            print(latest_game.player2)
             return JsonResponse({'message': 'Registration successful'}, status=200)
         except json.JSONDecodeError:
             return JsonResponse({'error': 'Invalid request body'}, status=400)

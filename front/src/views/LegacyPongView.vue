@@ -42,6 +42,7 @@ body {
       await getUser();
       if (is_connected.value === false)
         __goTo('/')
+      await updateGameInfo();
   });
 
   ////////////////////////////////////////////////
@@ -55,31 +56,39 @@ body {
   const connectionStatus = ref('');
   let connection = 0;
 
+  function getCsrfToken() {
+        const cookieValue = document.cookie
+            .split('; ')
+            .find(row => row.startsWith('csrftoken='))
+            ?.split('=')[1];
+        return cookieValue || '';
+    }
 
-  
   async function updateGameInfo() {
-    socket = new WebSocket('wss://localhost:8443/ws/game/');
-
-    socket.onopen = () => {
-        console.log('WebSocket connected');
-        socket.send(JSON.stringify({ gameID: 2, gameMode: 'legacy', scorep1: 15, scorep2: 8 }));
-    };
-
-    socket.onmessage = (event) => {
-        const data = JSON.parse(event.data);
-        console.log('Message from server:', data);
-    };
-
-    socket.onclose = (event) => {
-        console.log('WebSocket closed:', event);
-    };
-
-    socket.onerror = (error) => {
-        console.error('WebSocket error:', error);
-    };
+    try {
+        const response = await fetch('api/game/update_game/', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRFToken': getCsrfToken(),
+            },
+            body: JSON.stringify({
+                mode: "legacy",
+                scorep1: player1Score,
+                scorep2: player2Score,
+            }),
+        });
+        if (response.ok) {
+            const responseData = await response.json();
+            console.log('Game updated successfully!', responseData);
+        } else {
+            const errorData = await response.json();
+            console.error('Error:', errorData.error);
+        }
+    } catch (error) {
+        console.error('Error updating game:', error);
+    }
   }
-
-
 
   function __goTo(page) {
     if (page == null)
@@ -92,7 +101,7 @@ body {
     let boardHeight = 700;
     let context;
 
-    //players properties
+    //players propertiesupdate_game
     let playerWidth = 20;
     let playerHeight = boardHeight/5;
     let playerSpeed = 0;
@@ -140,9 +149,7 @@ function  updatePoints(player, updatePts)
   {
     player2Score = updatePts;
   }
-  player1Score = 15;
-  player2Score = 8;
-  updateGameInfo()
+  updateGameInfo();
 }
 
 function  updatePadel(player, newY)
@@ -174,7 +181,6 @@ function connectWebSocket() {
   socket.value.onopen = () => {
     console.log('WebSocket connecté');
     console.log(socket.value);
-  updateGameInfo()
   };
   
   
@@ -185,6 +191,7 @@ function connectWebSocket() {
     
     if (data.type == 'connection_success') 
     {
+
       // console.log(data.type);
       // console.log(data.message);
       // connectionStatus.value = data.message;
@@ -271,6 +278,7 @@ function sendMessage(msg) {
 }
 
 onUnmounted(() => {
+  updateGameInfo();
   if (socket.value) {
     socket.value.close();
   }

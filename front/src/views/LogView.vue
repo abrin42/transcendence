@@ -73,33 +73,21 @@ async function login() {
         }
 
         const data = await response.json();
-        const playerData = JSON.parse(data.player_data);
-        if (playerData && playerData.length > 0) {
-            const user = playerData[0];
-            
-            console.log('user:', user);
-            console.log('user.fields:', user.fields);
-            updateUserAccount(user.fields);
-            
-            //const { fields: userAccount } = user;
-            //console.log('fields: ' + fields)
-            //console.log('userAccount: ' + userAccount)
 
-            if (user.fields.email_2fa_active === true || user.fields.sms_2fa_active === true)
-                __goTo('/2fa/');
-            else
-                __goTo('/');
-            alert('Login successful!');
-        } else
+        // Check if redirection to 2FA or dashboard is required
+        if (data.redirect_url) {
+            __goTo(data.redirect_url);  // Use the redirect URL provided by the backend
+            return;
+        }
+
+         else {
             alert('User data not found!');
+        }
     } catch (error) {
         console.error('Erreur lors de la connexion /login:', error);
         alert('An error occurred during login.');
     }
 }
-
-
-
 
 
 async function login42() {

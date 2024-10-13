@@ -175,7 +175,6 @@
         <div id="wrapper">
             <div v-if="!showMailPopup && !showPhonePopup" class="TwoFAContainer">
                 <h1>{{ $t('send_code_question') }}</h1>
-                <!-- Correct assignment of otp_method -->
                 <button v-if="sms2FA" class="button button-fa __button-phone" @click="() => {choose_tfa('sms')}">
                     <i class="fas fa-mobile-button" style="margin: 0.1vw;"></i>
                     <span>SMS</span>

@@ -89,44 +89,42 @@
         router.push(`/legacy_remote/${id}`);
     }
 
-async function insertPlayer() {
-    try {
-        const response = await fetch('api/game/insertplayer/', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                'X-CSRFToken': getCsrfToken() // Assuming you have CSRF protection enabled
-            },
-            body: JSON.stringify({
-                username: userAccount.username,
-            })
-        });
-        if (response.ok) {
-            const data = await response.json();
-            console.log(data);
-            if (data.player2 == null) {
-                waitingPlayer = 1;
-                await new Promise(resolve => setTimeout(resolve, 1000));
-                insertPlayer();
-            } else {
-                waitingPlayer = 0;
-                console.log("lancement dans 3");
-                await new Promise(resolve => setTimeout(resolve, 1000));
-                console.log("lancement dans 2");
-                await new Promise(resolve => setTimeout(resolve, 1000));
-                console.log("lancement dans 1");
-                await new Promise(resolve => setTimeout(resolve, 1000));
-                goToLegacy(data.id);
+    async function insertPlayer() {
+        try {
+            const response = await fetch('api/game/insertplayer/', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRFToken': getCsrfToken() // Assuming you have CSRF protection enabled
+                },
+                body: JSON.stringify({
+                    username: userAccount.username,
+                })
+            });
+            if (response.ok) {
+                const data = await response.json();
+                console.log(data);
+                if (data.player2 == null) {
+                    waitingPlayer = 1;
+                    await new Promise(resolve => setTimeout(resolve, 1000));
+                    insertPlayer();
+                } else {
+                    waitingPlayer = 0;
+                    console.log("lancement dans 3");
+                    await new Promise(resolve => setTimeout(resolve, 1000));
+                    console.log("lancement dans 2");
+                    await new Promise(resolve => setTimeout(resolve, 1000));
+                    console.log("lancement dans 1");
+                    await new Promise(resolve => setTimeout(resolve, 1000));
+                    goToLegacy(data.id);
+                }
+
             }
-
+        } catch (error) {
+            console.error('Erreur lors de la connexion:', error);
+            alert('An error occurred during login2222');
         }
-    } catch (error) {
-        console.error('Erreur lors de la connexion:', error);
-        alert('An error occurred during login2222');
     }
-}
-
-
 
     ///////////////////////////////////////////////
     let rightplayervisible = ref(false);

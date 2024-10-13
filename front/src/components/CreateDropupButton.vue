@@ -59,6 +59,7 @@
         }
     }
 
+
 	async function setLanguage(new_language) {
 		try {
 			await fetch('api/player/update_language/', {

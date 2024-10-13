@@ -27,6 +27,7 @@ export function useUser() {
         userAccount.email_2fa_active = user.email_2fa_active;
         userAccount.sms_2fa_active = user.sms_2fa_active;
         userAccount.student = user.student;
+        userAccount.language = user.language;
 
         console.log("updateUserAccount.nickname: " + userAccount.nickname);
         console.log("updateUserAccount.username: " + userAccount.username);
@@ -36,6 +37,8 @@ export function useUser() {
         console.log("updateUserAccount.email_2fa_active: " + userAccount.email_2fa_active);
         console.log("updateUserAccount.sms_2fa_active: " + userAccount.sms_2fa_active);
         console.log("updateUserAccount.student: " + userAccount.student);
+        console.log("updateUserAccount.language: " + userAccount.language);
+
     }
 
     async function getUser() {

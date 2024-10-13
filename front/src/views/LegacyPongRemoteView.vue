@@ -11,7 +11,7 @@
 
   onMounted(async () => {
       await getUser();
-      if (is_connected.value === true)
+      if (is_connected.value === false)
           __goTo('/')
   });
 
@@ -31,7 +31,7 @@
 
   async function updateGameInfo() {
       try {
-          const response = await fetch('api/player/update_game/', {
+          const response = await fetch('api/game/update_game/', {
               method: 'POST',
               headers: {
                   'Content-Type': 'application/json',
