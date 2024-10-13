@@ -31,7 +31,6 @@ import asyncio
 
 matchmaking = deque()
 
-@csrf_exempt
 def register_view(request):
     if request.method == 'POST':
         try:
@@ -126,12 +125,11 @@ def tfa_view(request):
 @login_required
 def otp_view(request):
     ########################### Here I use the user from request and call its Player object. I apply the JWT token only when the 2FA/OTP is valid
-    if not request.user.is_authenticated:
-        return None
     try:
         user = get_object_or_404(Player, username=request.user.username)
     except Player.DoesNotExist:
-        return None
+        return JsonResponse({'error': 'User not found'}, status=404)
+    return JsonResponse({'error': 'Invalid request method'}, status=405)
     ###########################
     if request.method == "POST":
         try:

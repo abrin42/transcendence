@@ -683,7 +683,6 @@ class PongConsumer(AsyncWebsocketConsumer):
                     self.nb_pts_for_win = 5
                     asyncio.ensure_future(self.ai_loop_game())
                 
-
             if self.P1Ready == 1 and self.P2Ready == 1 and self.Game_on == 0:
                 await self.sendStart()
 

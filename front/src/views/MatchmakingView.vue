@@ -35,10 +35,9 @@
     import CreateBackButton from '../components/CreateBackButton.vue';
     import CreateSoundButton from '../components/CreateSoundButton.vue';
     import CreateHomeButton from '../components/CreateHomeButton.vue';
-    import { ref, reactive, onMounted, watch } from 'vue';
+    import { ref, reactive, onMounted, watch, defineEmits } from 'vue';
     import $ from 'jquery';
     import { useRouter } from 'vue-router';
-
 
     ////////////////////////////////////////////////
     /////// GET USER ///////////////////////////////
@@ -84,16 +83,13 @@
     let playerRank2 = "Beginner";
     const router = useRouter();
 
-    const waitingPlayer = 1;
+    let waitingPlayer = 1;
 
     function goToLegacy(id) {
-    router.push(`/legacy_remote/${id}`);
-}
-
-
+        router.push(`/legacy_remote/${id}`);
+    }
 
 async function insertPlayer() {
-        
     try {
         const response = await fetch('api/game/insertplayer/', {
             method: 'POST',
@@ -108,14 +104,11 @@ async function insertPlayer() {
         if (response.ok) {
             const data = await response.json();
             console.log(data);
-            if (data.player2 == null)
-            {
+            if (data.player2 == null) {
                 waitingPlayer = 1;
                 await new Promise(resolve => setTimeout(resolve, 1000));
                 insertPlayer();
-            }
-            else
-            {
+            } else {
                 waitingPlayer = 0;
                 console.log("lancement dans 3");
                 await new Promise(resolve => setTimeout(resolve, 1000));
@@ -126,12 +119,12 @@ async function insertPlayer() {
                 goToLegacy(data.id);
             }
 
-            }
-        } catch (error) {
-            console.error('Erreur lors de la connexion:', error);
-            alert('An error occurred during login2222');
         }
+    } catch (error) {
+        console.error('Erreur lors de la connexion:', error);
+        alert('An error occurred during login2222');
     }
+}
 
 
 

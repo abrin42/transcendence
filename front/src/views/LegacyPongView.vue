@@ -28,38 +28,64 @@ body {
 </style>
 
 <script setup>
-import { ref, onMounted, onUnmounted } from 'vue';
-import { useRouter } from 'vue-router';
+  import { ref, onMounted, onUnmounted } from 'vue';
+  import { useRouter } from 'vue-router';
 
-////////////////////////////////////////////////
-/////// GET USER ///////////////////////////////
-////////////////////////////////////////////////
+  ////////////////////////////////////////////////
+  /////// GET USER ///////////////////////////////
+  ////////////////////////////////////////////////
 
-import { useUser } from '../useUser.js'; 
-const { getUser, userAccount, is_connected } = useUser(); 
+  import { useUser } from '../useUser.js'; 
+  const { getUser, userAccount, is_connected } = useUser(); 
 
-onMounted(async () => {
-    await getUser();
-    if (is_connected.value === false)
-      __goTo('/')
-});
+  onMounted(async () => {
+      await getUser();
+      if (is_connected.value === false)
+        __goTo('/')
+  });
 
-////////////////////////////////////////////////
-////////////////////////////////////////////////
-////////////////////////////////////////////////
+  ////////////////////////////////////////////////
+  ////////////////////////////////////////////////
+  ////////////////////////////////////////////////
 
-const router = useRouter();
-const socket = ref(null);
-// const message = ref('');
-const messages = ref([]);
-const connectionStatus = ref('');
-let connection = 0;
+  const router = useRouter();
+  const socket = ref(null);
+  // const message = ref('');
+  const messages = ref([]);
+  const connectionStatus = ref('');
+  let connection = 0;
 
-function __goTo(page) {
-  if (page == null)
-      return;
-  router.push(page);
-}
+
+  
+  async function updateGameInfo() {
+    socket = new WebSocket('wss://localhost:8443/ws/game/');
+
+    socket.onopen = () => {
+        console.log('WebSocket connected');
+        socket.send(JSON.stringify({ gameID: 2, gameMode: 'legacy', scorep1: 15, scorep2: 8 }));
+    };
+
+    socket.onmessage = (event) => {
+        const data = JSON.parse(event.data);
+        console.log('Message from server:', data);
+    };
+
+    socket.onclose = (event) => {
+        console.log('WebSocket closed:', event);
+    };
+
+    socket.onerror = (error) => {
+        console.error('WebSocket error:', error);
+    };
+  }
+
+
+
+  function __goTo(page) {
+    if (page == null)
+        return;
+    router.push(page);
+  }
     //board properties
     let board;
     let boardWidth = 700;
@@ -114,6 +140,9 @@ function  updatePoints(player, updatePts)
   {
     player2Score = updatePts;
   }
+  player1Score = 15;
+  player2Score = 8;
+  updateGameInfo()
 }
 
 function  updatePadel(player, newY)
@@ -141,18 +170,19 @@ function connectWebSocket() {
   const lastSegment = currentUrl.split('/').filter(Boolean).pop();
   const gamePage = `game_${lastSegment}`;
   console.log(lastSegment);
-  socket.value = new WebSocket(`wss://localhost:8443/ws/websockets/?page=${encodeURIComponent(gamePage)}`);  
+  socket.value = new WebSocket(`wss://localhost:8443/ws/websockets/?page=${encodeURIComponent(gamePage)}`); 
   socket.value.onopen = () => {
     console.log('WebSocket connecté');
     console.log(socket.value);
+  updateGameInfo()
   };
-
-
+  
+  
   socket.value.onmessage = (event) => {
     // console.log("---ON MESSAGE---");
-
+    
     const data = JSON.parse(event.data);
-
+    
     if (data.type == 'connection_success') 
     {
       // console.log(data.type);

@@ -67,11 +67,10 @@ export function useUser() {
             is_connected.value = false;
         }
     }
-               
+
     return {
         is_connected,
         userAccount,
         getUser,
-        updateUserAccount,
     };
 }

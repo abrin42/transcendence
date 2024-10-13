@@ -45,7 +45,7 @@
                     'X-CSRFToken': getCsrfToken(),
                 },
                 body: JSON.stringify({
-                    nickname: userAccount.nickname, // Access directly from userAccount
+                    nickname: userAccount.nickname,
                     email: userAccount.email,
                     phone_number: userAccount.phone_number,
                     password: userAccount.password,
