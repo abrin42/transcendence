@@ -16,7 +16,7 @@ const { getUser, is_connected } = useUser();
 onMounted(async () => {
     await getUser();
     if (is_connected.value === true)
-        __goTo('/')
+        __goTo('/');
 });
 
 ////////////////////////////////////////////////
@@ -57,6 +57,12 @@ function isValidPhoneNumber(phone) {
     return phoneRegex.test(phone);
 }
 
+// Fonction pour gérer la touche "Enter"
+function handleEnter(event) {
+    if (event.key === 'Enter') {
+        createAccount();
+    }
+}
 
 async function createAccount() {
     if (!username.value || !email.value || !password1.value || !password2.value) {
@@ -71,13 +77,13 @@ async function createAccount() {
 
     if (phone_number.value) {
         if (!isValidPhoneNumber(phone_number.value)) {
-            alert('Veuillez entrer un numéro de téléphone valide (ajoutez "+33" au debut).');
+            alert('Veuillez entrer un numéro de téléphone valide (ajoutez "+33" au début).');
             return;
         }
     }
 
     if (password1.value !== password2.value) {
-        alert('The passwords do not match.');
+        alert('Les mots de passe ne correspondent pas.');
         return;
     }
 
@@ -106,7 +112,7 @@ async function createAccount() {
             const responseData = await response.json();
             console.log('Account created successfully!', responseData);
             alert('Inscription réussie!');
-            __goTo('/')
+            __goTo('/');
         } else {
             const errorData = await response.json();
             console.error('Error:', JSON.stringify(errorData, null, 2));
@@ -134,7 +140,8 @@ function getCsrfToken() {
 
 <template>
     <main>
-        <div id="wrapper">
+        <!-- Ajout de @keydown.enter sur le conteneur principal -->
+        <div id="wrapper" @keydown.enter="handleEnter">
             <h1>{{ $t('SIGN_UP') }}</h1>
             <div class="logContainer">
                 <button class="button button-login" @click="__goTo('/log')">

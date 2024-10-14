@@ -280,6 +280,12 @@ h1,
     margin-right: 0.5vw;
 }
 
+.custom-file-upload:hover {
+    border-color: rgba(255, 255, 255, 1);
+    background-color: rgba(255, 255, 255, 0.4);
+    transition: border-color, background-color 0.5s;
+}
+
 .editable-input-container {
     display: flex;
     flex-wrap: wrap;
