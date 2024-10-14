@@ -1,9 +1,7 @@
 {
-    "play": "Geroya",
-    "credits": "Waadas",
-    "login": "To",
     "back": "Norac",
-
+    
+    "login": "To",
     "my_account": "Ner Solegot", 
     "friends": "Burc'yase",
     "logout": "Ba'slanar",
@@ -56,6 +54,9 @@
     "update_account": "Gotal'ur tug'yc gar solegot",
     "delete_account": "Kyr'amur solegot",
     "activate": "Nau'ur",
+
+    "play": "Geroya",
+    "credits": "Waadas",
 
     "home": "Yaim",
     "play_again": "Geroya tug'yc",

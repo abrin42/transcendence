@@ -1,9 +1,7 @@
 {
-    "play": "Play",
-    "credits": "Credits",
-    "login": "Login",
     "back": "Back",
     
+    "login": "Login",
     "my_account": "My Account",
     "friends": "Friends",
     "logout": "Logout",
@@ -56,6 +54,9 @@
     "update_account": "Update your account",
     "delete_account": "Delete account",
     "activate": "Activate",
+    
+    "play": "Play",
+    "credits": "Credits",
     
     "home": "Home",
     "play_again": "Play again",
