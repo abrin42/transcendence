@@ -26,6 +26,7 @@ import DashboardView from '../views/DashboardView.vue'
 import IAPongView from '../views/IAPongView.vue'
 import TwoFaView from '../views/2faView.vue'
 import TermsView from '../views/TermsView.vue'
+import LeaderboardView2 from '../views/LeaderboardView2.vue'
 
 const router = createRouter({
   history: createWebHistory(),
@@ -146,6 +147,11 @@ const router = createRouter({
       name: 'terms',
       component: TermsView
     },
+    {
+      path: '/leaderboard2',
+      name: 'leaderboard2',
+      component: LeaderboardView2
+    }
   ]
 })
 
