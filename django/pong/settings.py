@@ -30,7 +30,7 @@ ALLOWED_HOSTS = ["*"]
 
 
 # CSRF settings
-CSRF_TRUSTED_ORIGINS = ['https://localhost:8443','https://10.11.0.0:8443', 'https://10.11.1.11:8443',]
+CSRF_TRUSTED_ORIGINS = ['https://localhost:8443','https://10.11.0.0:8443', 'https://10.11.1.11:8443']
 
 # Application definition
 INSTALLED_APPS = [
@@ -45,7 +45,7 @@ INSTALLED_APPS = [
     'player',
     'game',
     'channels',
-    # 'corsheaders',
+    'corsheaders',
     'api',
     'rest_framework',
 ]
@@ -171,9 +171,7 @@ JWT_SECRET_KEY = os.environ.get('jwt_secret_key')
 JWT_ALGORITHM = os.environ.get('jwt_algo')
 JWT_EXP_DELTA_SECONDS = os.environ.get('jwt_exp')
 
-
 ASGI_APPLICATION = 'pong.asgi.application'
-
 
 #maybe enlever 8080
 CORS_ALLOWED_ORIGINS = [

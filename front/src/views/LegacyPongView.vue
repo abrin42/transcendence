@@ -54,29 +54,30 @@ import paddleHitSound from '../assets/paddle_hit.mp3'
 import pointScoredSound from '../assets/point_scored.mp3'
 import wallHitSound from '../assets/wall_hit.mp3'
 
-////////////////////////////////////////////////
-/////// GET USER ///////////////////////////////
-////////////////////////////////////////////////
+  ////////////////////////////////////////////////
+  /////// GET USER ///////////////////////////////
+  ////////////////////////////////////////////////
 
-import { useUser } from '../useUser.js'; 
-const { getUser, userAccount, is_connected } = useUser(); 
+  import { useUser } from '../useUser.js'; 
+  const { getUser, userAccount, is_connected } = useUser(); 
 
-onMounted(async () => {
-    await getUser();
-    if (is_connected.value === false)
-      __goTo('/')
-});
+  onMounted(async () => {
+      await getUser();
+      if (is_connected.value === false)
+        __goTo('/')
+      await updateGameInfo();
+  });
 
-////////////////////////////////////////////////
-////////////////////////////////////////////////
-////////////////////////////////////////////////
+  ////////////////////////////////////////////////
+  ////////////////////////////////////////////////
+  ////////////////////////////////////////////////
 
-const router = useRouter();
-const socket = ref(null);
-// const message = ref('');
-const messages = ref([]);
-const connectionStatus = ref('');
-let connection = 0;
+  const router = useRouter();
+  const socket = ref(null);
+  // const message = ref('');
+  const messages = ref([]);
+  const connectionStatus = ref('');
+  let connection = 0;
 
 ////////////Audio Variables///////////////
 const wallHitAudio = new Audio(wallHitSound);
@@ -89,13 +90,52 @@ function __goTo(page) {
       return;
   router.push(page);
 }
+  function getCsrfToken() {
+        const cookieValue = document.cookie
+            .split('; ')
+            .find(row => row.startsWith('csrftoken='))
+            ?.split('=')[1];
+        return cookieValue || '';
+    }
+
+  async function updateGameInfo() {
+    try {
+        const response = await fetch('api/game/update_game/', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRFToken': getCsrfToken(),
+            },
+            body: JSON.stringify({
+                mode: "legacy",
+                scorep1: player1Score,
+                scorep2: player2Score,
+            }),
+        });
+        if (response.ok) {
+            const responseData = await response.json();
+            console.log('Game updated successfully!', responseData);
+        } else {
+            const errorData = await response.json();
+            console.error('Error:', errorData.error);
+        }
+    } catch (error) {
+        console.error('Error updating game:', error);
+    }
+  }
+
+  function __goTo(page) {
+    if (page == null)
+        return;
+    router.push(page);
+  }
     //board properties
     let board;
     let boardWidth = 700;
     let boardHeight = 700;
     let context;
 
-    //players properties
+    //players propertiesupdate_game
     let playerWidth = 20;
     let playerHeight = boardHeight/5;
     let playerSpeed = 0;
@@ -143,6 +183,7 @@ function  updatePoints(player, updatePts)
   {
     player2Score = updatePts;
   }
+  updateGameInfo();
 }
 
 function  updatePadel(player, newY)
@@ -170,20 +211,21 @@ function connectWebSocket() {
   const lastSegment = currentUrl.split('/').filter(Boolean).pop();
   const gamePage = `game_${lastSegment}`;
   console.log(lastSegment);
-  socket.value = new WebSocket(`wss://localhost:8443/ws/websockets/?page=${encodeURIComponent(gamePage)}`);  
+  socket.value = new WebSocket(`wss://localhost:8443/ws/websockets/?page=${encodeURIComponent(gamePage)}`); 
   socket.value.onopen = () => {
     console.log('WebSocket connecté');
     console.log(socket.value);
   };
-
-
+  
+  
   socket.value.onmessage = (event) => {
     // console.log("---ON MESSAGE---");
-
+    
     const data = JSON.parse(event.data);
-
+    
     if (data.type == 'connection_success') 
     {
+
       // console.log(data.type);
       // console.log(data.message);
       // connectionStatus.value = data.message;
@@ -276,6 +318,7 @@ function sendMessage(msg) {
 }
 
 onUnmounted(() => {
+  updateGameInfo();
   if (socket.value) {
     socket.value.close();
   }

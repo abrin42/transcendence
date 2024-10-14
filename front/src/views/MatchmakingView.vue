@@ -36,7 +36,7 @@
     import CreateBackButton from '../components/CreateBackButton.vue';
     import CreateSoundButton from '../components/CreateSoundButton.vue';
     import CreateHomeButton from '../components/CreateHomeButton.vue';
-    import { ref, reactive, onMounted, watch } from 'vue';
+    import { ref, reactive, onMounted, watch, defineEmits } from 'vue';
     import $ from 'jquery';
     import { useRouter } from 'vue-router';
 
@@ -87,8 +87,8 @@
     let waitingPlayer = 1;
 
     function goToLegacy(id) {
-    router.push(`/legacy_remote/${id}`);
-}
+        router.push(`/legacy_remote/${id}`);
+    }
 
 let loadingmodule = true;
 
@@ -175,11 +175,17 @@ async function insertPlayer() {
         }, 1000);
     }
 
-    var tips = ['Tip: Reading your phone in the stairs might lead to severe injury.', 'Tip: Try pressing \'C\' while playing ;)', 
-    'Tip: Wash your cereal bowl right after eating', 'Don\'t forget to put your paddle back in the center!', 
-    'Recipe for a lribette : one tchoukball ball (?), 50 kilos of pasta, and many many many many many Star Wars anecdotes.', 
-    'Tu es triste? Arrête.', '"Jeu de pain, jeu de vilain" - Miro', 'Bois de l\'eau. Dans 20, 30 ans y\'en aura plus.', 
-    'Tu ne pousseras point.',];
+    var tips = [
+        'Tip: Reading your phone in the stairs might lead to severe injury.',
+        'Tip: Try pressing \'C\' while playing ;)', 
+        'Tip: Wash your cereal bowl right after eating',
+        'Don\'t forget to put your paddle back in the center!',
+        'Recipe for a lribette : one tchoukball ball (?), 50 kilos of pasta, and many many many many many Star Wars anecdotes.',
+        'Tu es triste? Arrête.',
+        '"Jeu de pain, jeu de vilain" - Miro',
+        'Bois de l\'eau. Dans 20, 30 ans y\'en aura plus.',
+        'Burc\'ya vaal burk\'yc, burc\'ya veman'
+    ];
     var tipdisplayed = tips[Math.floor(Math.random()*tips.length)];
 </script>
 

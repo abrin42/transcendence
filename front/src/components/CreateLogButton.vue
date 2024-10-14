@@ -3,21 +3,21 @@
         <button ref="button" class="button button-log" @click="__goTo(is_connected ? '/dashboard' : '/log')">
             <span class="buttonText">{{ is_connected ? userAccount.nickname : $t('login') }}</span>
         </button>
-
+        
         <div id="dropdown-content" v-if="dropdownVisible" class="dropdown">
             <button class="button buttonText buttondropdown" @click="__goTo('/dashboard')">{{ $t('my_account') }}</button>
             <!-- Appel à la méthode toggleFriendsPopup pour afficher la popup -->
             <button class="button buttonText buttondropdown" @click="toggleFriendsPopup">{{ $t('friends') }}</button>
             <button class="button buttonText buttondropdown" @click="handleLogout">{{ $t('logout') }}</button>
         </div>
-
+        
         <!-- Composant FriendsPopup, écoute l'événement 'close' pour masquer la popup -->
     </div>
     <FriendsPopup class="friends-popup" v-if="friendsPopupVisible" @close="toggleFriendsPopup" />
 </template>
 
 <script setup>
-    import { ref, onMounted, watch } from 'vue';
+    import { ref, reactive, onMounted, watch } from 'vue';
     import { useRouter } from 'vue-router';
     import FriendsPopup from './FriendsPopup.vue'; 
 
@@ -30,8 +30,6 @@
 
     onMounted(async () => {
         await getUser();
-        if (is_connected.value === false)
-            __goTo('/')
     });
 
     ////////////////////////////////////////////////
@@ -67,7 +65,6 @@
             console.error('Logout failed:', error);
         }
     };
-    
 
     function getCsrfToken() {
         const cookieValue = document.cookie
@@ -77,15 +74,17 @@
         return cookieValue || '';
     }
 
+    onMounted(async () => {
+        await getUser(); // Only call getUser if state.id is available
+    });
     onMounted(() => {
         adjustButtonPosition();
     });
-
     watch(() => userAccount.nickname, adjustButtonPosition);
 
     function adjustButtonPosition() {
         const buttonWidth = button.value.offsetWidth;
-        button.value.style.right = `calc(${buttonWidth -40}px)`;
+        button.value.style.left = `calc(100vw - ${buttonWidth + 85}px)`;
     }
 
     function showDropdown() {
@@ -105,17 +104,17 @@
     }
 </script>
 
+
 <style>
     .button-container {
-        /* position: relative; */
-        /* display: inline-block; */
+         position: relative; 
+         display: inline-block; 
     }
-
+    
     .button-log {
         position: fixed;
         bottom: 93vh;
         height: 6vh;
-        right: 3vw;
         width: 7vw;
         min-width: fit-content;
         white-space: nowrap;
@@ -160,6 +159,5 @@
         background-color: rgba(255, 255, 255, 0.4);
         transition: border-color, background-color 0.5s;
     }
-
 
 </style>

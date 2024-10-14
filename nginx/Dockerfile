@@ -5,6 +5,7 @@ WORKDIR /app/front
 RUN npm install
 RUN npm install vue-i18n@10
 RUN npm run build
+RUN sleep 3
 
 
 FROM nginx:1.25.3

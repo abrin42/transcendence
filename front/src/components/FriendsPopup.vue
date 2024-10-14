@@ -149,27 +149,29 @@ function declineRequest(id) {
 // const allPlayers = ref([]);
 
 async function getAllUsers() {
-    try {
-        const response = await fetch(`api/player/get_all_user/`, {
-            method: 'GET',
-        });
+        try {
+            const response = await fetch(`api/player/get_all_user/`, {
+                method: 'GET',
+            });
 
-        if (!response.ok) {
-            throw new Error(`HTTP error! Status: ${response.status}`);
+            if (!response.ok) {
+                throw new Error(`HTTP error! Status: ${response.status}`);
+            }
+            const users = await response.json();
+            if (users.data) {
+                const userData = JSON.parse(users.data);
+                userData.forEach((element) => {
+                    var obj = {}
+                    obj['username'] = element.fields.username;
+                    obj['last_login'] =  element.fields.last_login;
+                    allPlayers.value.push(obj);
+                });
+                console.log("all user", allPlayers._rawValue)
+            }
+        } catch (error) {
+            console.error('Error retrieving user data:', error);
         }
-        const users = await response.json();
-        users.forEach((element) => {
-            var obj = {}
-            obj['username'] = element.fields.username;
-            obj['last_login'] = element.fields.last_login;
-            allPlayers.value.push(obj);
-
-        });
-        console.log("all user", allPlayers._rawValue)
-    } catch (error) {
-        console.error('Error retrieving user data:', error);
     }
-}
 
 async function getFriends() {
     try {

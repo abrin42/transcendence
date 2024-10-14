@@ -3,9 +3,9 @@ from player.jwt import token_user
 import json
 from django.http import JsonResponse, HttpResponse, HttpResponseForbidden
 from .models import Game
-import asyncio
 from player.models import Player 
 from django.core import serializers
+import asyncio
 from .serializers import GameSerializer
 
 def game(request):
@@ -27,8 +27,6 @@ def game(request):
 
 #     return (JsonResponse({'message': 'gameIDInfo', 'gameID': game.id}, status=200))
 
-
-
 def insertPlayer(request):
     if request.method == 'POST':
         try:
@@ -38,9 +36,8 @@ def insertPlayer(request):
             player = get_object_or_404(Player, username=username)
             latest_game = Game.objects.order_by('-id').first()
 
-           
             if latest_game is None:
-                    latest_game = Game.objects.create(state='waiting', player1=player, scorep1=0)
+                latest_game = Game.objects.create(state='waiting', player1=player, scorep1=0)
             elif latest_game.player1 != player and (latest_game.player2 is None or latest_game.player2 != player):
                 if latest_game.player2 is not None:
                     latest_game = Game.objects.create(state='waiting', player1=player, scorep1=0)
@@ -57,9 +54,35 @@ def insertPlayer(request):
             return JsonResponse({'error': 'Invalid request body'}, status=400)
     return JsonResponse({'error': 'Invalid request method'}, status=405)
 
+#@login_required
+def update_game(request):
+    if request.method == "POST":
+        try:
+            latest_game = Game.objects.order_by('-id').first()
 
-#changer le thread de la balle pour pouvoir le meme pour les deux j
+            #game_id = data.get('gameID')
+            #print(game_id)
+            #game = get_object_or_404(Game, id=game_id)
+            
+            data = json.loads(request.body)
+            latest_game.mode = data.get('mode')
+            latest_game.scorep1 = data.get('scorep1')
+            latest_game.scorep2 = data.get('scorep2')
+            latest_game.save()
 
+            print(latest_game.scorep1)
+            print(latest_game.scorep2)
+            print(latest_game.mode)
+            print(latest_game.player1)
+            print(latest_game.player2)
+            return JsonResponse({'message': 'Registration successful'}, status=200)
+        except json.JSONDecodeError:
+            return JsonResponse({'error': 'Invalid request body'}, status=400)
+    return JsonResponse({'error': 'Invalid request method'}, status=405)
+
+
+
+#changer le thread de la balle pour pouvoir le meme pour les deux 
 
 # j1 clique vers match meking
 # j1 post pour remplir la bdd avec ses info 

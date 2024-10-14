@@ -73,25 +73,16 @@ async function login() {
         }
 
         const data = await response.json();
-        const playerData = JSON.parse(data.player_data);
-        if (playerData && playerData.length > 0) {
-            const user = playerData[0];
-            
-            console.log('user:', user);
-            console.log('user.fields:', user.fields);
-            updateUserAccount(user.fields);
-            
-            //const { fields: userAccount } = user;
-            //console.log('fields: ' + fields)
-            //console.log('userAccount: ' + userAccount)
 
-            if (user.fields.email_2fa_active === true || user.fields.sms_2fa_active === true)
-                __goTo('/2fa/');
-            else
-                __goTo('/');
-            alert('Login successful!');
-        } else
+        // Check if redirection to 2FA or dashboard is required
+        if (data.redirect_url) {
+            __goTo(data.redirect_url);  // Use the redirect URL provided by the backend
+            return;
+        }
+
+         else {
             alert('User data not found!');
+        }
     } catch (error) {
         console.error('Erreur lors de la connexion /login:', error);
         alert('An error occurred during login.');
@@ -128,23 +119,23 @@ async function login42() {
 <template>
     <main>
         <div id="wrapper">
-            <h1>LOGIN</h1>
+            <h1>{{ $t('LOGIN') }}</h1>
 
             <div class="logContainer">
                 <button class="button button-log42" @click="login42">
                     <img class="img-42" src="../assets/img/42_Logob.png" alt="Logo 42" />
                 </button>
                 <button class="button button-register" @click="__goTo('/register')">
-                    <span class="buttonText buttonTextSize">{{ $t('Sign-up') }}</span>
+                    <span class="buttonText buttonTextSize">{{ $t('sign_up') }}</span>
                 </button>
                 <button class="button button-connect" @click="login">
-                    <span class="buttonText buttonTextSize">{{ $t('Login') }}</span>
+                    <span class="buttonText buttonTextSize">{{ $t('login') }}</span>
                 </button>
             </div>
 
             <div class="__inputInfo">
-                <Input iconClass="fa-user" placeholderText="Enter your username" v-model="username" />
-                <Input iconClass="fa-lock" placeholderText="Enter your password" isPassword v-model="password" />
+                <Input iconClass="fa-user" :placeholderText="$t('enter_username')" v-model="username" />
+                <Input iconClass="fa-lock" :placeholderText="$t('enter_password')" isPassword v-model="password" />
             </div>
 
             <div class="buttonContainer">

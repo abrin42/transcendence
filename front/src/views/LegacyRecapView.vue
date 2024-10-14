@@ -47,13 +47,13 @@
 
     let result = "win"; //fetch 'win' ou 'lose'
     let endgamemessage;
-    if (result = "win")
+    if (result == "win")
     {
-        endgamemessage = "Congratulations!";
+        endgamemessage = "congratulations";
     }
     else
     {
-        endgamemessage = "WASTED";
+        endgamemessage = "wasted";
     }
 
 </script>
@@ -64,14 +64,14 @@
             <div id="dark-background">
             <div class="buttonContainer">
                 <button class="button button-cyber" @click="goToHome">
-                    <span class="buttonText"> Home </span>
+                    <span class="buttonText">{{ $t('home') }}</span>
                 </button>
 
                 <button class="button button-cyber" @click="goToGameSelect">
-                    <span class="buttonText"> Play Again </span>
+                    <span class="buttonText">{{ $t('play_again') }}</span>
                 </button>
                 <p id="score">You {{result}} {{ scoreplayer1 }} - {{ scoreplayer2 }}</p>
-                <p id="endgame-message">{{ endgamemessage }}</p>
+                <p id="endgame-message">{{ $t(endgamemessage) }}</p>
                 <div>
                     <CreateSoundButton />
                 </div>
