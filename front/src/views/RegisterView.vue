@@ -81,7 +81,7 @@ async function createAccount() {
         return;
     }
 
-    if (!acceptTerms) {
+    if (!acceptTerms.value) {
         alert('Veuillez accepter les conditions d\'utilisation.');
         return;
     }
