@@ -60,6 +60,7 @@
                 alert('Account updated successfully!');
             } else {
                 const errorData = await response.json();
+                console.log(errorData);
                 alert('Error: ' + errorData.error);
             }
         } catch (error) {
@@ -139,17 +140,11 @@
                     <InputEdit v-if="userAccount.student === false" v-model="userAccount.password" placeholderText="Change your password" inputIconClass="fa-lock" inputPlaceholder="Enter your password" :isPassword="true" />
 
                     <div class="___btn-click">
-                        <button class="button" @click="updateAccount">
+                        <button class="button button-update" @click="updateAccount">
                             <span class="buttonText buttonTextSize" style="font-size: medium;">{{ $t('Update your account') }}</span>
                         </button>
-                        <button class="button">
-                            <span class="buttonText buttonTextSize" style="font-size: medium;">Friends</span>
-                        </button>
-                        <button class="button" @click="handleLogout">
+                        <button class="button button-logout" @click="handleLogout">
                             <span class="buttonText buttonTextSize" style="font-size: medium;">Logout</span>
-                        </button>
-                        <button class="button">
-                            <span class="buttonText buttonTextSize" style="font-size: medium;">Delete account</span>
                         </button>
                     </div>
                 </div>
@@ -323,9 +318,7 @@ h1,
 }
 
 /* Pour chaque bloc de texte */
-.TextContainer div:nth-child(2n+1) {
-    /* Ceci pour rendre le premier texte visuellement distinct si nécessaire */
-}
+.TextContainer div:nth-child(2n+1) {}
 
 .___btn-click {
     color: white;
@@ -338,19 +331,11 @@ h1,
     gap: 10px;
 }
 
-/* Pour chaque bloc de texte */
-.TextContainer div:nth-child(2n+1) {
-    /* Ceci pour rendre le premier texte visuellement distinct si nécessaire */
+.button-update {
+    background-color: rgba(74, 143, 74, 0.75);
 }
 
-.___btn-click {
-    color: white;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    white-space: nowrap;
-    flex: 1 1 calc(30% - 20px);
-    margin: 1vw;
-    gap: 10px;
+.button-logout {
+    background-color: rgba(143, 74, 74, 0.75);
 }
 </style>
