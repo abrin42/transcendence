@@ -1,129 +1,135 @@
 <script setup>
-    import CreateDropupButton from '../components/CreateDropupButton.vue';
-    import CreateBackButton from '../components/CreateBackButton.vue';
-    import CreateHomeButton from '../components/CreateHomeButton.vue';
-    import Input from '../components/Input.vue';
-    import { useRouter } from 'vue-router';
-    import { ref, onMounted } from 'vue';
+import CreateDropupButton from '../components/CreateDropupButton.vue';
+import CreateBackButton from '../components/CreateBackButton.vue';
+import CreateHomeButton from '../components/CreateHomeButton.vue';
+import Input from '../components/Input.vue';
+import { useRouter } from 'vue-router';
+import { ref, onMounted } from 'vue';
 
-    ////////////////////////////////////////////////
-    /////// GET USER ///////////////////////////////
-    ////////////////////////////////////////////////
+////////////////////////////////////////////////
+/////// GET USER ///////////////////////////////
+////////////////////////////////////////////////
 
-    import { useUser } from '../useUser.js'; 
-    const { getUser, is_connected } = useUser(); 
+import { useUser } from '../useUser.js';
+const { getUser, is_connected } = useUser();
 
-    onMounted(async () => {
-        await getUser();
-        if (is_connected.value === true)
+onMounted(async () => {
+    await getUser();
+    if (is_connected.value === true)
+        __goTo('/')
+});
+
+////////////////////////////////////////////////
+////////////////////////////////////////////////
+////////////////////////////////////////////////
+
+const router = useRouter();
+
+const username = ref('');
+const email = ref('');
+const phone_number = ref('');
+const password1 = ref('');
+const password2 = ref('');
+const acceptTerms = ref(false);
+
+defineExpose({
+    username,
+    email,
+    phone_number,
+    password1,
+    password2
+});
+
+function __goTo(page) {
+    if (page == null) {
+        return;
+    }
+    router.push(page);
+}
+
+function isValidEmail(email) {
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    return emailRegex.test(email);
+}
+
+function isValidPhoneNumber(phone) {
+    const phoneRegex = /^(?:\+33\s?[1-9](?:\s?\d{2}){4}|0[1-9](?:\s?\d{2}){4})$/;
+    return phoneRegex.test(phone);
+}
+
+
+async function createAccount() {
+    if (!username.value || !email.value || !password1.value || !password2.value) {
+        alert('Veuillez remplir tous les champs requis.');
+        return;
+    }
+
+    if (!isValidEmail(email.value)) {
+        alert('Veuillez entrer une adresse e-mail valide.');
+        return;
+    }
+
+    if (phone_number.value) {
+        if (!isValidPhoneNumber(phone_number.value)) {
+            alert('Veuillez entrer un numéro de téléphone valide (ajoutez "+33" au debut).');
+            return;
+        }
+    }
+
+    if (password1.value !== password2.value) {
+        alert('The passwords do not match.');
+        return;
+    }
+
+    if (!acceptTerms) {
+        alert('Veuillez accepter les conditions d\'utilisation.');
+        return;
+    }
+
+    try {
+        const response = await fetch('/api/player/register/', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRFToken': getCsrfToken()
+            },
+            body: JSON.stringify({
+                username: username.value,
+                email: email.value,
+                phone_number: phone_number.value,
+                password1: password1.value,
+                password2: password2.value,
+            })
+        });
+
+        if (response.ok) {
+            const responseData = await response.json();
+            console.log('Account created successfully!', responseData);
+            alert('Inscription réussie!');
             __goTo('/')
-    });
+        } else {
+            const errorData = await response.json();
+            console.error('Error:', JSON.stringify(errorData, null, 2));
 
-    ////////////////////////////////////////////////
-    ////////////////////////////////////////////////
-    ////////////////////////////////////////////////
-
-    const router = useRouter();
-
-    const username = ref('');
-    const email = ref('');
-    const phone_number = ref('');
-    const password1 = ref('');
-    const password2 = ref('');
-
-    defineExpose({
-        username,
-        email,
-        phone_number,
-        password1,
-        password2
-    });
-
-    function __goTo(page) {
-        if (page == null) {
-            return;
+            const errorMessage =
+                errorData.error || errorData.detail ||
+                errorData.non_field_errors?.join(', ') ||
+                'Une erreur inconnue est survenue';
+            alert('Erreur: ' + errorMessage);
         }
-        router.push(page);
+    } catch (error) {
+        console.error('Network error:', error);
+        alert('Une erreur réseau est survenue. Veuillez réessayer.');
     }
+}
 
-    function isValidEmail(email) {
-        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-        return emailRegex.test(email);
-    }
-
-    function isValidPhoneNumber(phone) {
-        const phoneRegex = /^(?:\+33\s?[1-9](?:\s?\d{2}){4}|0[1-9](?:\s?\d{2}){4})$/;
-        return phoneRegex.test(phone);
-    }
-
-
-    async function createAccount() {
-        if (!username.value || !email.value || !password1.value || !password2.value) {
-            alert('Veuillez remplir tous les champs requis.');
-            return;
-        }
-        
-        if (!isValidEmail(email.value)) {
-            alert('Veuillez entrer une adresse e-mail valide.');
-            return;
-        }
-        
-        if (phone_number.value) {
-            if (!isValidPhoneNumber(phone_number.value)) {
-                alert('Veuillez entrer un numéro de téléphone valide (ajoutez "+33" au debut).');
-                return;
-            }
-        }
-        
-        if (password1.value !== password2.value) {
-            alert('The passwords do not match.');
-            return;
-        }
-
-        try {
-            const response = await fetch('/api/player/register/', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'X-CSRFToken': getCsrfToken()
-                },
-                body: JSON.stringify({
-                    username: username.value,
-                    email: email.value,
-                    phone_number: phone_number.value,
-                    password1: password1.value,
-                    password2: password2.value,
-                })
-            });
-
-            if (response.ok) {
-                const responseData = await response.json();
-                console.log('Account created successfully!', responseData);
-                alert('Inscription réussie!');
-                __goTo('/')
-            } else {
-                const errorData = await response.json();
-                console.error('Error:', JSON.stringify(errorData, null, 2));
-
-                const errorMessage = 
-                    errorData.error || errorData.detail || 
-                    errorData.non_field_errors?.join(', ') || 
-                    'Une erreur inconnue est survenue';
-                alert('Erreur: ' + errorMessage);
-            }
-        } catch (error) {
-            console.error('Network error:', error);
-            alert('Une erreur réseau est survenue. Veuillez réessayer.');
-        }
-    }
-
-    function getCsrfToken() {
-        const cookieValue = document.cookie
-            .split('; ')
-            .find(row => row.startsWith('csrftoken='))
-            ?.split('=')[1];
-        return cookieValue || '';
-    }
+function getCsrfToken() {
+    const cookieValue = document.cookie
+        .split('; ')
+        .find(row => row.startsWith('csrftoken='))
+        ?.split('=')[1];
+    return cookieValue || '';
+}
 </script>
 
 <template>
@@ -134,6 +140,13 @@
                 <button class="button button-login" @click="__goTo('/log')">
                     <span class="buttonText buttonTextSize">{{ $t('login') }}</span>
                 </button>
+
+                <!-- Checkbox pour les conditions d'utilisation -->
+                <div class="terms-container">
+                    <input type="checkbox" id="terms" v-model="acceptTerms" />
+                    <label for="terms">J'accepte les <a href="/terms">conditions d'utilisation</a></label>
+                </div>
+
                 <button class="button button-createAccount" @click="createAccount">
                     <span class="buttonText buttonTextSize">{{ $t('create_account') }}</span>
                 </button>
@@ -144,7 +157,8 @@
                 <Input iconClass="fa-envelope" :placeholderText="`*${$t('email')}`" v-model="email" />
                 <Input iconClass="fa-phone" :placeholderText="`${$t('phone_number')}`" v-model="phone_number" />
                 <Input iconClass="fa-lock" :placeholderText="`*${$t('password')}`" isPassword v-model="password1" />
-                <Input iconClass="fa-lock" :placeholderText="`*${$t('confirm_password')}`" isPassword v-model="password2" />
+                <Input iconClass="fa-lock" :placeholderText="`*${$t('confirm_password')}`" isPassword
+                    v-model="password2" />
             </div>
 
             <div class="buttonContainer">
@@ -229,7 +243,7 @@ h1 {
     width: 15vw;
     height: 6vh;
     left: 42.5%;
-    top: 30%;
+    top: 26.5%;
 
     background-color: rgba(0, 0, 0, 0.5);
     border: 0.15vw solid rgba(0, 0, 0, 0.25);
@@ -254,7 +268,7 @@ h1 {
     transition: border-color, background-color 0.5s;
 }
 
-.button-createAccount:hover{
+.button-createAccount:hover {
     border-color: rgb(185, 248, 252);
     text-decoration-color: rgb(185, 248, 252);
     background-color: rgba(0, 204, 227, 0.247);
@@ -271,5 +285,38 @@ h1 {
 .button-createAccount:hover .buttonText {
     font-size: 23px;
     transition: color 0.3s ease, font-size 0.3s ease;
+}
+
+.terms-container {
+    position: fixed;
+    left: 40%;
+    top: 69%;
+    display: flex;
+    align-items: center;
+    font-size: 1.2vw;
+    color: #fff;
+}
+
+.terms-container input[type="checkbox"] {
+    margin-right: 0.5vw;
+}
+
+.terms-container a {
+    color: #0dcaf0;
+    text-decoration: none;
+}
+
+.terms-container a:hover {
+    text-decoration: underline;
+}
+
+.button-createAccount {
+    top: 73%;
+    /* Ajusté pour rapprocher le bouton de la checkbox */
+}
+
+.__inputInfo {
+    top: 35%;
+    /* Vous pouvez ajuster selon votre design global */
 }
 </style>
