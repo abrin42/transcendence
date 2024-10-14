@@ -24,6 +24,8 @@ import json
 import logging
 from django.core import serializers
 
+
+
 @login_required
 def update_language(request):
     user = token_user(request)
@@ -54,13 +56,16 @@ def update_user(request):
             user.email = data.get('email')
             user.password = data.get('password')
             user.phone_number = data.get('phone_number')
-            user.sms_2fa_active = data.get('sms_2fa_active')    
-            user.email_2fa_active = data.get('email_2fa_active')  
+            user.profile_picture = data.get('profile_picture')
+            user.email_2fa_active = data.get('email_2fa_active')
+            user.sms_2fa_active = data.get('sms_2fa_active')
+
             user.save()
-            response = JsonResponse({'redirect_url': '/dashboard/'}, status=302)
+            
+            response = JsonResponse({'redirect_url': '/dashboard/'}, status=200)
             return response
         except json.JSONDecodeError:
-            return JsonResponse({'error': 'Invalid request body'}, status=400)
+            return JsonResponse({'error': 'Invalid request body'}, status=401)
     return JsonResponse({'error': 'Invalid request method'}, status=405)
 
 @login_required

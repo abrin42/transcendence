@@ -29,6 +29,7 @@ DEBUG = True
 ALLOWED_HOSTS = ["localhost", 'api',
                 "10.11.1.11" ]
 
+DATA_UPLOAD_MAX_MEMORY_SIZE = None
 
 # CSRF settings
 CSRF_TRUSTED_ORIGINS = ['https://localhost:8443',

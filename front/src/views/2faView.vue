@@ -73,7 +73,7 @@
 
     async function get2FAUser() {
     try {
-        const response = await fetch(`/api/player/verify_user/`, {
+        const response = await fetch(`api/player/verify_user/`, {
             method: 'GET',
             credentials: 'include',  
         });
@@ -117,7 +117,7 @@
 
     async function handleNext() {
         try {
-            const response = await fetch('/api/player/otp/', {
+            const response = await fetch('api/player/otp/', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -143,7 +143,7 @@
 
     async function choose_tfa(method) {
         try {
-            const response = await fetch('/api/player/tfa/', {
+            const response = await fetch('api/player/tfa/', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',

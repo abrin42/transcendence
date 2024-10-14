@@ -13,7 +13,7 @@ class ChangePasswordForm(SetPasswordForm):
 class UpdateForm(forms.ModelForm):
     class Meta:
         model = Player
-        fields = ['profile_picture','nickname', 'email', 'phone_number']
+        fields = ['nickname', 'email', 'phone_number']
 
 
 class RegisterForm(UserCreationForm):
