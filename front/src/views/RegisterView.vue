@@ -46,14 +46,40 @@
         router.push(page);
     }
 
+    function isValidEmail(email) {
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        return emailRegex.test(email);
+    }
+
+    function isValidPhoneNumber(phone) {
+        const phoneRegex = /^(?:\+33\s?[1-9](?:\s?\d{2}){4}|0[1-9](?:\s?\d{2}){4})$/;
+        return phoneRegex.test(phone);
+    }
+
+
     async function createAccount() {
+        if (!username.value || !email.value || !password1.value || !password2.value) {
+            alert('Veuillez remplir tous les champs requis.');
+            return;
+        }
+        
+        if (!isValidEmail(email.value)) {
+            alert('Veuillez entrer une adresse e-mail valide.');
+            return;
+        }
+        
+        if (phone_number.value) {
+            if (!isValidPhoneNumber(phone_number.value)) {
+                alert('Veuillez entrer un numéro de téléphone valide (ajoutez "+33" au debut).');
+                return;
+            }
+        }
+        
         if (password1.value !== password2.value) {
-            alert('Les mots de passe ne correspondent pas.');
+            alert('The passwords do not match.');
             return;
         }
 
-        // console.log(password1.value)
-        // console.log(password2.value)
         try {
             const response = await fetch('/api/player/register/', {
                 method: 'POST',
@@ -69,17 +95,25 @@
                     password2: password2.value,
                 })
             });
+
             if (response.ok) {
                 const responseData = await response.json();
-                alert('Compte créé avec succès !');
-                __goTo(responseData.redirect_url);
+                console.log('Account created successfully!', responseData);
+                alert('Inscription réussie!');
+                __goTo('/')
             } else {
                 const errorData = await response.json();
-                alert('Erreur: ' + errorData.error);
+                console.error('Error:', JSON.stringify(errorData, null, 2));
+
+                const errorMessage = 
+                    errorData.error || errorData.detail || 
+                    errorData.non_field_errors?.join(', ') || 
+                    'Une erreur inconnue est survenue';
+                alert('Erreur: ' + errorMessage);
             }
         } catch (error) {
-            console.error('Erreur lors de la création du compte:', error);
-            alert('Une erreur est survenue pendant la création du compte.');
+            console.error('Network error:', error);
+            alert('Une erreur réseau est survenue. Veuillez réessayer.');
         }
     }
 
@@ -95,22 +129,22 @@
 <template>
     <main>
         <div id="wrapper">
-            <h1>SIGN UP</h1>
+            <h1>{{ $t('SIGN_UP') }}</h1>
             <div class="logContainer">
                 <button class="button button-login" @click="__goTo('/log')">
-                    <span class="buttonText buttonTextSize">{{ $t('Login') }}</span>
+                    <span class="buttonText buttonTextSize">{{ $t('login') }}</span>
                 </button>
                 <button class="button button-createAccount" @click="createAccount">
-                    <span class="buttonText buttonTextSize">{{ $t('Create your account') }}</span>
+                    <span class="buttonText buttonTextSize">{{ $t('create_account') }}</span>
                 </button>
             </div>
 
             <div class="__inputInfo">
-                <Input iconClass="fa-user" placeholderText="*Username" v-model="username" />
-                <Input iconClass="fa-envelope" placeholderText="*Email" v-model="email" />
-                <Input iconClass="fa-phone" placeholderText="Phone Number" v-model="phone_number" />
-                <Input iconClass="fa-lock" placeholderText="*Password" isPassword v-model="password1" />
-                <Input iconClass="fa-lock" placeholderText="*Confirm password" isPassword v-model="password2" />
+                <Input iconClass="fa-user" :placeholderText="`*${$t('username')}`" v-model="username" />
+                <Input iconClass="fa-envelope" :placeholderText="`*${$t('email')}`" v-model="email" />
+                <Input iconClass="fa-phone" :placeholderText="`${$t('phone_number')}`" v-model="phone_number" />
+                <Input iconClass="fa-lock" :placeholderText="`*${$t('password')}`" isPassword v-model="password1" />
+                <Input iconClass="fa-lock" :placeholderText="`*${$t('confirm_password')}`" isPassword v-model="password2" />
             </div>
 
             <div class="buttonContainer">
@@ -130,7 +164,7 @@ h1 {
     font-size: 4vw;
     color: #fff;
     text-shadow:
-        0 0 5px rgba(255, 255, 255, 0.8),
+        0 0 5px rgba(255, 255, 255s, 0.8),
         0 0 10px rgba(255, 255, 255, 0.6),
         0 0 20px rgba(255, 20, 147, 0.6),
         0 0 30px rgba(255, 20, 147, 0.6),

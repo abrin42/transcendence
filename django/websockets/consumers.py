@@ -212,7 +212,7 @@ class PongConsumer(AsyncWebsocketConsumer):
     async def loop_game(self):
         print("thread game")
         while self.Game_on != -1:
-            print("waiting player")
+            #print("waiting player")
             while(self.Game_on == 1):
                 await self.move_ball()
                 await self.sendBall(self.ball_x, self.ball_y)
@@ -707,7 +707,6 @@ class PongConsumer(AsyncWebsocketConsumer):
                     self.nb_pts_for_win = 5
                     asyncio.ensure_future(self.ai_loop_game())
                 
-
             if self.P1Ready == 1 and self.P2Ready == 1 and self.Game_on == 0:
                 await self.sendStart()
 

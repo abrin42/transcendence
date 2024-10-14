@@ -35,10 +35,9 @@
     import CreateBackButton from '../components/CreateBackButton.vue';
     import CreateSoundButton from '../components/CreateSoundButton.vue';
     import CreateHomeButton from '../components/CreateHomeButton.vue';
-    import { ref, reactive, onMounted, watch } from 'vue';
+    import { ref, reactive, onMounted, watch, defineEmits } from 'vue';
     import $ from 'jquery';
     import { useRouter } from 'vue-router';
-
 
     ////////////////////////////////////////////////
     /////// GET USER ///////////////////////////////
@@ -87,44 +86,38 @@
     let waitingPlayer = 1;
 
     function goToLegacy(id) {
-    router.push(`/legacy_remote/${id}`);
-}
+        router.push(`/legacy_remote/${id}`);
+    }
 
-
-
-async function insertPlayer() {
-        
-    try {
-        const response = await fetch('api/game/insertplayer/', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                'X-CSRFToken': getCsrfToken() // Assuming you have CSRF protection enabled
-            },
-            body: JSON.stringify({
-                username: userAccount.username,
-            })
-        });
-        if (response.ok) {
-            const data = await response.json();
-            console.log(data);
-            if (data.player2 == null)
-            {
-                waitingPlayer = 1;
-                await new Promise(resolve => setTimeout(resolve, 1000));
-                insertPlayer();
-            }
-            else
-            {
-                waitingPlayer = 0;
-                console.log("lancement dans 3");
-                await new Promise(resolve => setTimeout(resolve, 1000));
-                console.log("lancement dans 2");
-                await new Promise(resolve => setTimeout(resolve, 1000));
-                console.log("lancement dans 1");
-                await new Promise(resolve => setTimeout(resolve, 1000));
-                goToLegacy(data.id);
-            }
+    async function insertPlayer() {
+        try {
+            const response = await fetch('api/game/insertplayer/', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRFToken': getCsrfToken() // Assuming you have CSRF protection enabled
+                },
+                body: JSON.stringify({
+                    username: userAccount.username,
+                })
+            });
+            if (response.ok) {
+                const data = await response.json();
+                console.log(data);
+                if (data.player2 == null) {
+                    waitingPlayer = 1;
+                    await new Promise(resolve => setTimeout(resolve, 1000));
+                    insertPlayer();
+                } else {
+                    waitingPlayer = 0;
+                    console.log("lancement dans 3");
+                    await new Promise(resolve => setTimeout(resolve, 1000));
+                    console.log("lancement dans 2");
+                    await new Promise(resolve => setTimeout(resolve, 1000));
+                    console.log("lancement dans 1");
+                    await new Promise(resolve => setTimeout(resolve, 1000));
+                    goToLegacy(data.id);
+                }
 
             }
         } catch (error) {
@@ -132,8 +125,6 @@ async function insertPlayer() {
             alert('An error occurred during login2222');
         }
     }
-
-
 
     ///////////////////////////////////////////////
     let rightplayervisible = ref(false);
@@ -151,10 +142,17 @@ async function insertPlayer() {
         }, 1000);
     }
 
-    var tips = ['Tip: Reading your phone in the stairs might lead to severe injury.', 'Tip: Try pressing \'C\' while playing ;)', 
-    'Tip: Wash your cereal bowl right after eating', 'Don\'t forget to put your paddle back in the center!', 
-    'Recipe for a lribette : one tchoukball ball (?), 50 kilos of pasta, and many many many many many Star Wars anecdotes.', 
-    'Tu es triste? Arrête.', '"Jeu de pain, jeu de vilain" - Miro', 'Bois de l\'eau. Dans 20, 30 ans y\'en aura plus.'];
+    var tips = [
+        'Tip: Reading your phone in the stairs might lead to severe injury.',
+        'Tip: Try pressing \'C\' while playing ;)', 
+        'Tip: Wash your cereal bowl right after eating',
+        'Don\'t forget to put your paddle back in the center!',
+        'Recipe for a lribette : one tchoukball ball (?), 50 kilos of pasta, and many many many many many Star Wars anecdotes.',
+        'Tu es triste? Arrête.',
+        '"Jeu de pain, jeu de vilain" - Miro',
+        'Bois de l\'eau. Dans 20, 30 ans y\'en aura plus.',
+        'Burc\'ya vaal burk\'yc, burc\'ya veman'
+    ];
     var tipdisplayed = tips[Math.floor(Math.random()*tips.length)];
 
     //when 2nd player is found, we hide "waiting for player" and show opponent

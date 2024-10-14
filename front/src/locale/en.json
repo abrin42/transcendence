@@ -3,24 +3,15 @@
     "credits": "Credits",
     "login": "Login",
     "back": "Back",
-    "settings": "Settings",
-    "player": "Player",
-    "right": "RIGHT",
-    "left": "LEFT",
-    "profile_picture": "Profile Picture",
-    "choose_file": "Choose File",
-    "username": "Username",
-    "email": "Email",
-    "password": "Password",
-
+    
     "my_account": "My Account",
     "friends": "Friends",
     "logout": "Logout",
-
+    
     "my_friends": "My Friends",
     "search_for_a_player": "Search for a player ...",
     "no_players_found": "No players found.",
-
+    
     "modify_the_value": "Modify the value:",
     "save": "Save",
     "prohibited_action": "Prohibited action",
@@ -28,12 +19,71 @@
     "close": "Close",
     
     "disabled_switch": "The switch is disabled. You cannot perform this action.",
-
+    
     "no_text_to_display": "No text to display",
-
-
-
+    
+    
+    
     "send_code_question": "Send code by email or SMS?",
     "phone_authentication": "Phone authentication",
-    "enter_sms": "Enter the code you received by SMS."
+    "enter_sms": "Enter the code you received by SMS.",
+    "enter_your_code": "Enter your code",
+    "resend_the_code": "Resend the code",
+    "next": "Next",
+    "email_authentication": "Email authentication",
+    "enter_mail": "Enter the code you received by e-mail.",
+    
+    "profile_picture": "Profile Picture",
+    "choose_file": "Choose File",
+    "see_all_information": "See all information",
+    "email": "Email",
+    "nickname": "Nickname",
+    "phone_number": "Phone number",
+    "username": "Username",
+    "password": "Password",
+    "date_joined": "Date joined",
+    "number_of_wins": "Number of wins",
+    "number_of_defeats": "Number of defeats",
+    "rank": "Rank",
+    "change_nickname": "Change your nickname",
+    "enter_nickname": "Enter your nickname",
+    "change_email": "Change your email",
+    "enter_email": "Enter your email",
+    "change_phone_number": "Change your phone number",
+    "enter_phone_number": "Enter your phone number",
+    "change_password": "Change your password",
+    "enter_password": "Enter your password",
+    "update_account": "Update your account",
+    "delete_account": "Delete account",
+    "activate": "Activate",
+    
+    "home": "Home",
+    "play_again": "Play again",
+    "congratulations": "Congratulations!",
+    "wasted": "WASTED",
+    
+    "LOGIN": "LOGIN",
+    "sign_up": "Sign up",
+    "enter_username": "Enter your username",
+    
+    "solo": "Solo",
+    "multiplayer": "Multiplayer",
+    
+    "local": "Local",
+    "online": "Online",
+    "tourney": "Tourney",
+    
+    "password_do_not_match": "The passwords do not match.",
+    "error_account_creation": "An error occurred during account creation.",
+    "account_created_successfully": "Account created successfully!",
+    "SIGN_UP": "SIGN UP",
+    "create_account": "Create your account",
+    "confirm_password": "Confirm password",
+
+    "settings": "Settings",
+    "player": "Player",
+    "RIGHT": "RIGHT",
+    "LEFT": "LEFT",
+    "PAUSE_GAME": "PAUSE GAME",
+    "MUTE_SOUND": "MUTE SOUND"
 }

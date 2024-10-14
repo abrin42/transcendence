@@ -174,11 +174,10 @@ JWT_SECRET_KEY = os.environ.get('jwt_secret_key')
 JWT_ALGORITHM = os.environ.get('jwt_algo')
 JWT_EXP_DELTA_SECONDS = os.environ.get('jwt_exp')
 
-
 ASGI_APPLICATION = 'pong.asgi.application'
 
 
-CORS_ALLOW_ALL_ORIGINS = True
+#CORS_ALLOW_ALL_ORIGINS = True
 
 #maybe enlever 8080
 CORS_ALLOWED_ORIGINS = [
