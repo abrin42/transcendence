@@ -124,11 +124,6 @@ function __goTo(page) {
     }
   }
 
-  function __goTo(page) {
-    if (page == null)
-        return;
-    router.push(page);
-  }
     //board properties
     let board;
     let boardWidth = 700;
