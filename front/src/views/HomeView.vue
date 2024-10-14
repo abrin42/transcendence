@@ -1,31 +1,31 @@
 <script setup>
 // Imports
-  import CreateSoundButton from '../components/CreateSoundButton.vue';
-  import CreateDropupButton from '../components/CreateDropupButton.vue';
-  import CreateSettingsButton from '../components/CreateSettingsButton.vue';
-  import CreateLogButton from '../components/CreateLogButton.vue';
-  import CreateHomeButton from '../components/CreateHomeButton.vue';
-  import { useRouter } from 'vue-router';
+import CreateSoundButton from '../components/CreateSoundButton.vue';
+import CreateDropupButton from '../components/CreateDropupButton.vue';
+import CreateSettingsButton from '../components/CreateSettingsButton.vue';
+import CreateLogButton from '../components/CreateLogButton.vue';
+import CreateHomeButton from '../components/CreateHomeButton.vue';
+import { useRouter } from 'vue-router';
 
-  const router = useRouter();
+const router = useRouter();
 
-  var myVideo = document.getElementById('videoBG');
-  myVideo.playbackRate = 1;
+var myVideo = document.getElementById('videoBG');
+myVideo.playbackRate = 1;
 
-  function goToModeSelect() {
+function goToModeSelect() {
     router.push('/modeselect');
-  }
+}
 
-  function goToCredits() {
+function goToCredits() {
     router.push('/credits');
-  }
+}
 
-  function __goTo(page) {
+function __goTo(page) {
     if (page == null) {
-      return;
+        return;
     }
     router.push(page);
-  }
+}
 </script>
 
 <template>
@@ -37,6 +37,7 @@
                     <span class="buttonText buttonTextSize">{{ $t('play') }}</span>
                 </button>
                 <button class="button button-credits" @click="goToCredits()">
+                    <i class="fa-solid fa-copyright" style="margin-right: 1vw;"></i>
                     <span class="buttonText">{{ $t('credits') }}</span>
                 </button>
                 <div>

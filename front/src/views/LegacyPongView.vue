@@ -3,7 +3,7 @@
     <div id="wrapper">
       <div id="black-background">
         <div>
-          <canvas id ="board"></canvas>
+          <canvas id="board"></canvas>
         </div>
         <div>
           <h2 id="pause">[P] to Pause/Unpause</h2>
@@ -33,7 +33,7 @@ body {
   top: 67%;
 }
 
-#black-background{
+#black-background {
   height: 100vh;
   width: 100vw;
   background-color: black;
@@ -54,30 +54,30 @@ import paddleHitSound from '../assets/paddle_hit.mp3'
 import pointScoredSound from '../assets/point_scored.mp3'
 import wallHitSound from '../assets/wall_hit.mp3'
 
-  ////////////////////////////////////////////////
-  /////// GET USER ///////////////////////////////
-  ////////////////////////////////////////////////
+////////////////////////////////////////////////
+/////// GET USER ///////////////////////////////
+////////////////////////////////////////////////
 
-  import { useUser } from '../useUser.js'; 
-  const { getUser, userAccount, is_connected } = useUser(); 
+import { useUser } from '../useUser.js';
+const { getUser, userAccount, is_connected } = useUser();
 
-  onMounted(async () => {
-      await getUser();
-      if (is_connected.value === false)
-        __goTo('/')
-      await updateGameInfo();
-  });
+onMounted(async () => {
+  await getUser();
+  if (is_connected.value === false)
+    __goTo('/')
+  await updateGameInfo();
+});
 
-  ////////////////////////////////////////////////
-  ////////////////////////////////////////////////
-  ////////////////////////////////////////////////
+////////////////////////////////////////////////
+////////////////////////////////////////////////
+////////////////////////////////////////////////
 
-  const router = useRouter();
-  const socket = ref(null);
-  // const message = ref('');
-  const messages = ref([]);
-  const connectionStatus = ref('');
-  let connection = 0;
+const router = useRouter();
+const socket = ref(null);
+// const message = ref('');
+const messages = ref([]);
+const connectionStatus = ref('');
+let connection = 0;
 
 ////////////Audio Variables///////////////
 const wallHitAudio = new Audio(wallHitSound);
@@ -85,146 +85,135 @@ const paddleHitAudio = new Audio(paddleHitSound);
 const pointScoredAudio = new Audio(pointScoredSound);
 let soundOnOff = true;
 
+////////////////////////////////////////////////
+
+function getCsrfToken() {
+  const cookieValue = document.cookie
+    .split('; ')
+    .find(row => row.startsWith('csrftoken='))
+    ?.split('=')[1];
+  return cookieValue || '';
+}
+
+async function updateGameInfo() {
+  try {
+    const response = await fetch('api/game/update_game/', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'X-CSRFToken': getCsrfToken(),
+      },
+      body: JSON.stringify({
+        mode: "legacy",
+        scorep1: player1Score,
+        scorep2: player2Score,
+      }),
+    });
+    if (response.ok) {
+      const responseData = await response.json();
+      console.log('Game updated successfully!', responseData);
+    } else {
+      const errorData = await response.json();
+      console.error('Error:', errorData.error);
+    }
+  } catch (error) {
+    console.error('Error updating game:', error);
+  }
+}
+
 function __goTo(page) {
   if (page == null)
-      return;
+    return;
   router.push(page);
 }
-  function getCsrfToken() {
-        const cookieValue = document.cookie
-            .split('; ')
-            .find(row => row.startsWith('csrftoken='))
-            ?.split('=')[1];
-        return cookieValue || '';
-    }
+//board properties
+let board;
+let boardWidth = 700;
+let boardHeight = 700;
+let context;
 
-  async function updateGameInfo() {
-    try {
-        const response = await fetch('api/game/update_game/', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                'X-CSRFToken': getCsrfToken(),
-            },
-            body: JSON.stringify({
-                mode: "legacy",
-                scorep1: player1Score,
-                scorep2: player2Score,
-            }),
-        });
-        if (response.ok) {
-            const responseData = await response.json();
-            console.log('Game updated successfully!', responseData);
-        } else {
-            const errorData = await response.json();
-            console.error('Error:', errorData.error);
-        }
-    } catch (error) {
-        console.error('Error updating game:', error);
-    }
-  }
+//players propertiesupdate_game
+let playerWidth = 20;
+let playerHeight = boardHeight / 5;
+let playerSpeed = 0;
 
-  function __goTo(page) {
-    if (page == null)
-        return;
-    router.push(page);
-  }
-    //board properties
-    let board;
-    let boardWidth = 700;
-    let boardHeight = 700;
-    let context;
+let player1 = {
+  x: 10,
+  y: boardHeight / 5 * 2,
+  width: playerWidth,
+  height: playerHeight,
+  speed: playerSpeed
+}
 
-    //players propertiesupdate_game
-    let playerWidth = 20;
-    let playerHeight = boardHeight/5;
-    let playerSpeed = 0;
+let player2 = {
+  x: boardWidth - playerWidth - 10,
+  y: boardHeight / 5 * 2,
+  width: playerWidth,
+  height: playerHeight,
+  speed: playerSpeed
+}
 
-    let player1 = {
-        x : 10,
-        y: boardHeight/5*2,
-        width : playerWidth,
-        height : playerHeight,
-        speed : playerSpeed
-    }
+//ball properties
+let ballSize = 10;
+let ball = {
+  x: boardWidth / 2,
+  y: boardHeight / 2,
+  width: ballSize,
+  height: ballSize,
+  speedX: 1, speedY: 2
+}
 
-    let player2 = {
-        x : boardWidth - playerWidth - 10,
-        y: boardHeight/5*2, 
-        width : playerWidth,
-        height : playerHeight,
-        speed: playerSpeed
-    }
+//score
+let player1Score = 0;
+let player2Score = 0;
 
-    //ball properties
-    let ballSize = 10;
-    let ball = {
-      x : boardWidth / 2,
-      y : boardHeight / 2,
-      width : ballSize,
-      height : ballSize,
-      speedX: 1, speedY: 2
-    }
-    
-    //score
-    let player1Score = 0;
-    let player2Score = 0;
-    
 
-function  updatePoints(player, updatePts)
-{
+function updatePoints(player, updatePts) {
   console.log(player);
   console.log(updatePts);
-  if (player == 1)
-  {
+  if (player == 1) {
     player1Score = updatePts;
   }
-  else if (player == 2)
-  {
+  else if (player == 2) {
     player2Score = updatePts;
   }
   updateGameInfo();
 }
 
-function  updatePadel(player, newY)
-{
+function updatePadel(player, newY) {
   // console.log(player);
   // console.log(newY);
-  if (player == 1)
-  {
+  if (player == 1) {
     player1.y = newY;
   }
-  else if (player == 2)
-  {
+  else if (player == 2) {
     player2.y = newY;
   }
 }
 
-function updateBaal(x, y)
-{
+function updateBaal(x, y) {
   ball.x = x;
   ball.y = y;
 }
 
 function connectWebSocket() {
-  const currentUrl = window.location.href; 
+  const currentUrl = window.location.href;
   const lastSegment = currentUrl.split('/').filter(Boolean).pop();
   const gamePage = `game_${lastSegment}`;
   console.log(lastSegment);
-  socket.value = new WebSocket(`wss://localhost:8443/ws/websockets/?page=${encodeURIComponent(gamePage)}`); 
+  socket.value = new WebSocket(`wss://localhost:8443/ws/websockets/?page=${encodeURIComponent(gamePage)}`);
   socket.value.onopen = () => {
     console.log('WebSocket connecté');
     console.log(socket.value);
   };
-  
-  
+
+
   socket.value.onmessage = (event) => {
     // console.log("---ON MESSAGE---");
-    
+
     const data = JSON.parse(event.data);
-    
-    if (data.type == 'connection_success') 
-    {
+
+    if (data.type == 'connection_success') {
 
       // console.log(data.type);
       // console.log(data.message);
@@ -239,36 +228,30 @@ function connectWebSocket() {
       updatePoints(data.player, data.updatePts);
       if (soundOnOff == true)
         pointScoredAudio.play();
-    } 
-    else if (data.type == 'mouvUp' || data.type == 'mouvDown')
-    {
+    }
+    else if (data.type == 'mouvUp' || data.type == 'mouvDown') {
       updatePadel(data.player, data.newY);
       // messages.value.push(data.type);
     }
-    else if (data.type == 'updateBaal')
-    {
+    else if (data.type == 'updateBaal') {
       // console.log(data.x);
       // console.log(data.y);
       updateBaal(data.x, data.y);
     }
-    else if (data.type == 'endGame')
-    {
+    else if (data.type == 'endGame') {
       connection = 0;
       router.push('/legacyrecap');
       console.log(data.type);
     }
-    else if (data.type == 'startGame')
-    {
+    else if (data.type == 'startGame') {
       console.log(data.type);
     }
-    else if (data.type == 'paddleHit')
-    {
+    else if (data.type == 'paddleHit') {
       console.log(data.type);
       if (soundOnOff == true)
         paddleHitAudio.play();
     }
-    else if (data.type == 'wallHit')
-    { 
+    else if (data.type == 'wallHit') {
       console.log(data.type);
       if (soundOnOff == true)
         wallHitAudio.play();
@@ -289,8 +272,7 @@ function connectWebSocket() {
 
   socket.value.onclose = () => {
     console.log('WebSocket déconnecté, tentative de reconnexion...');
-    setTimeout(() => 
-    {
+    setTimeout(() => {
       if (connection != 0)
         connectWebSocket();
     }, 3000);
@@ -299,8 +281,7 @@ function connectWebSocket() {
 
 function sendMessage(msg) {
   // console.log(msg);
-  if (socket.value && socket.value.readyState === WebSocket.OPEN) 
-  {
+  if (socket.value && socket.value.readyState === WebSocket.OPEN) {
     // console.log("---SEND MESSAGE---");
     // console.log(msg.type);
     // console.log(msg.player);
@@ -311,8 +292,7 @@ function sendMessage(msg) {
     }));
     // console.log("---END SEND MESSAGE---");
   }
-  else 
-  {
+  else {
     console.error('WebSocket non connecté');
   }
 }
@@ -344,161 +324,132 @@ onMounted(() => {
   document.addEventListener('keyup', stopPlayer);
 });
 
-    function update() 
-    {
-        requestAnimationFrame(update);
-        console.log();
-        context.clearRect(0, 0, board.width, board.height); // clear rectangle after movement (remove previous paddle position)
-        context.fillRect(player1.x, player1.y, player1.width, player1.height); 
-        context.fillRect(player2.x, player2.y, player2.width, player2.height);
-        context.fillStyle = "white";
-        context.fillRect(ball.x- (ball.width/2), ball.y, ball.width, ball.height);
-        //draw score
-        context.font = "100px Arial";
-        context.fillText(player1Score, boardWidth/5, 100);
-        context.fillText(player2Score, boardWidth*4/5 -50 , 100); //subtract -45 for width of tex
-        
-        //draw middle line
-        for (let i = 10; i < board.height; i += 25)
+function update() {
+  requestAnimationFrame(update);
+  console.log();
+  context.clearRect(0, 0, board.width, board.height); // clear rectangle after movement (remove previous paddle position)
+  context.fillRect(player1.x, player1.y, player1.width, player1.height);
+  context.fillRect(player2.x, player2.y, player2.width, player2.height);
+  context.fillStyle = "white";
+  context.fillRect(ball.x - (ball.width / 2), ball.y, ball.width, ball.height);
+  //draw score
+  context.font = "100px Arial";
+  context.fillText(player1Score, boardWidth / 5, 100);
+  context.fillText(player2Score, boardWidth * 4 / 5 - 50, 100); //subtract -45 for width of tex
+
+  //draw middle line
+  for (let i = 10; i < board.height; i += 25) {
+    context.fillRect(board.width / 2 - 1, i, 2, 15);
+  }
+}
+
+let moveInterval1up = null;
+let moveInterval1down = null;
+let moveInterval2up = null;
+let moveInterval2down = null;
+let tickPadel = 10;
+function movePlayer1up(e) {
+  if (!moveInterval1up) {
+    if (e.code == "KeyW") {
+      moveInterval1up = setInterval(() => {
+        const message =
         {
-            context.fillRect(board.width / 2 - 1, i, 2, 15);
-        }
+          type: "mouvUp",
+          player: "1",
+        };
+        sendMessage(message);
+
+      },
+        tickPadel);
     }
-    
-    let moveInterval1up = null;
-    let moveInterval1down = null;
-    let moveInterval2up = null;
-    let moveInterval2down = null;
-    let tickPadel = 10;
-    function movePlayer1up(e)
-    {
-      if (!moveInterval1up)
-      {
-        if (e.code == "KeyW")
+  }
+}
+
+function movePlayer1down(e) {
+  if (!moveInterval1down) {
+    if (e.code == "KeyS") {
+      moveInterval1down = setInterval(() => {
+        const message =
         {
-          moveInterval1up = setInterval(() => 
-          {
-            const message = 
-            {
-              type: "mouvUp",
-              player: "1",
-            };
-            sendMessage(message);                    
-            
-          },
-          tickPadel);
-        }
-      }
+          type: "mouvDown",
+          player: "1",
+        };
+        sendMessage(message);
+      },
+        tickPadel);
     }
+  }
+}
 
-    function movePlayer1down(e)
-    {
-      if (!moveInterval1down)
-      {
-        if (e.code == "KeyS")
+function movePlayer2up(e) {
+  if (!moveInterval2up) {
+    if (e.code == "ArrowUp") {
+      moveInterval2up = setInterval(() => {
+        const message =
         {
-          moveInterval1down = setInterval(() => 
-          {
-            const message = 
-            {
-              type: "mouvDown",
-              player: "1",
-            };
-            sendMessage(message);                    
-          },
-          tickPadel);
-        }
-      }
+          type: "mouvUp",
+          player: "2",
+        };
+        sendMessage(message);
+
+      },
+        tickPadel);
     }
-    
-    function movePlayer2up(e)
-    {
-      if (!moveInterval2up)
-      {
-        if (e.code == "ArrowUp")
+  }
+}
+
+function movePlayer2down(e) {
+  if (!moveInterval2down) {
+    if (e.code == "ArrowDown") {
+      moveInterval2down = setInterval(() => {
+        const message =
         {
-          moveInterval2up = setInterval(() => 
-          {
-            const message = 
-            {
-              type: "mouvUp",
-              player: "2",
-            };
-            sendMessage(message);                    
-            
-          },
-          tickPadel);
-        }
-      }
+          type: "mouvDown",
+          player: "2",
+        };
+        sendMessage(message);
+      },
+        tickPadel);
     }
+  }
+}
 
-    function movePlayer2down(e)
-    {
-      if (!moveInterval2down)
-      {
-        if (e.code == "ArrowDown")
-        {
-          moveInterval2down = setInterval(() => 
-          {
-            const message = 
-            {
-              type: "mouvDown",
-              player: "2",
-            };
-            sendMessage(message);                    
-          },
-          tickPadel);
-        }
-      }
-    }
+function pauseGame(e) {
+  if (e.code == "KeyP") {
+    //force Axel <3
+  }
+}
 
-    function pauseGame(e)
-    {
-      if (e.code == "KeyP")
-      {
-        //force Axel <3
-      }
-    }
+function muteSound(e) {
+  if (e.code == "KeyM") {
+    console.log(soundOnOff);
+    soundOnOff = !soundOnOff;
+    console.log(soundOnOff);
+  }
+}
 
-    function muteSound(e)
-    {
-      if (e.code == "KeyM")
-      {
-        console.log(soundOnOff);
-        soundOnOff = !soundOnOff;
-        console.log(soundOnOff);
-      }
-    }
+function surpriiise(e) {
+  if (e.code == "KeyC") {
+    // A faire plus tard
+  }
+}
 
-    function surpriiise(e)
-    {
-      if (e.code == "KeyC")
-      {
-        // A faire plus tard
-      }
-    }
-
-    function stopPlayer(e) {
-      if (e.code == "KeyW")
-      {  
-        clearInterval(moveInterval1up);
-        moveInterval1up = null;
-      }
-      else if(e.code == "KeyS")
-      {
-        clearInterval(moveInterval1down);
-        moveInterval1down = null;
-      }
-      else if (e.code == "ArrowUp")
-      {  
-        clearInterval(moveInterval2up);
-        moveInterval2up = null;
-      }
-      else if (e.code == "ArrowDown")
-      {
-        clearInterval(moveInterval2down);
-        moveInterval2down = null;
-      }
-    }
+function stopPlayer(e) {
+  if (e.code == "KeyW") {
+    clearInterval(moveInterval1up);
+    moveInterval1up = null;
+  }
+  else if (e.code == "KeyS") {
+    clearInterval(moveInterval1down);
+    moveInterval1down = null;
+  }
+  else if (e.code == "ArrowUp") {
+    clearInterval(moveInterval2up);
+    moveInterval2up = null;
+  }
+  else if (e.code == "ArrowDown") {
+    clearInterval(moveInterval2down);
+    moveInterval2down = null;
+  }
+}
 </script>
-
