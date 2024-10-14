@@ -5,97 +5,81 @@
     import Switch from '@/components/Switch.vue';
     import TextDisplay from './../components/TextDisplay.vue';
     import profilePicture from '@/assets/img/default-profile.png';
-    import { ref } from 'vue';
-    import { reactive, onMounted } from 'vue';
+    import CreateHomeButton from '../components/CreateHomeButton.vue';
+    import Input from '../components/Input.vue';
     import { useRouter } from 'vue-router';
+    import { ref, onMounted } from 'vue';
+    
+    ////////////////////////////////////////////////
+    /////// GET USER ///////////////////////////////
+    ////////////////////////////////////////////////
+    
+    import { useUser } from '../useUser.js'; 
+    const { getUser, userAccount, is_connected } = useUser(); 
+    
+    onMounted(async () => {
+        await getUser();
+        if (is_connected.value === false)
+            __goTo('/')
+    });
+
+    ////////////////////////////////////////////////
+    ////////////////////////////////////////////////
+    ////////////////////////////////////////////////
+
+    function __goTo(page) {
+        if (page == null)
+            return;
+        router.push(page);
+    }
 
     const router = useRouter();
     const showAllInfo = ref(false);
 
-    const is_connected = ref('');
-    const userAccount = reactive({
-        date_joined:"",
-        email:"",
-        email_2fa_active:"",
-        sms_2fa_active:"",
-        lose:0,
-        nickname:"",
-        password:"",
-        phone_number:"",
-        profilePicture: profilePicture,
-        rank:0,
-        username:"",
-        win:0,
-    });
-    async function getUser() {
+    async function updateAccount() {
         try {
-            const response = await fetch(`api/player/connected_user/`, {
-                method: 'GET',
-            });
-            if (!response.ok) {
-                console.warn(`HTTP error! Status: ${response.status}`);
-                return;
-            }
-            const user = await response.json();
-            if (user) {
-                userAccount.nickname = user[0].fields.nickname;
-                userAccount.username = user[0].fields.username;
-                userAccount.email = user[0].fields.email;
-                userAccount.password = user[0].fields.password;
-                userAccount.phone_number = user[0].fields.phone_number;
-                userAccount.student = user[0].fields.student;
-                userAccount.email_2fa_active = user[0].fields.email_2fa_active;
-                userAccount.sms_2fa_active = user[0].fields.sms_2fa_active;
-                
-                is_connected.value = true;
-
-                console.log(userAccount.student)
-                console.log(userAccount.nickname)
-                console.log(is_connected.value)
-            } else {
-                console.log('No user data retrieved.');
-                is_connected.value = false;
-                return;
-            }
-        } catch (error) {
-            console.error('Error retrieving user data:', error);
-        }
-    }
-
-    const email_2fa_active = ref('');
-    const sms_2fa_active = ref('');
-    async function postUser() {
-        try {
-            const response = await fetch('api/player/update_2fa/', {
+            const response = await fetch('api/player/update_user/', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
-                    'X-CSRFToken': getCsrfToken()
+                    'X-CSRFToken': getCsrfToken(),
                 },
                 body: JSON.stringify({
+                    nickname: userAccount.nickname,
+                    email: userAccount.email,
+                    phone_number: userAccount.phone_number,
+                    password: userAccount.password,
+
                     email_2fa_active: userAccount.email_2fa_active,
                     sms_2fa_active: userAccount.sms_2fa_active,
                 })
             });
-            console.log(email_2fa_active);
-            console.log(sms_2fa_active);
+            if (response.ok) {
+                console.log(userAccount.nickname);
+                const responseData = await response.json();
+                alert('Account updated successfully!');
+            } else {
+                const errorData = await response.json();
+                console.log(errorData);
+                alert('Error: ' + errorData.error);
+            }
         } catch (error) {
-            console.error('Erreur lors de la création du compte:', error);
-            alert('Une erreur est survenue pendant la création du compte.');
+            console.error('Error updating account:', error);
+            alert('An error occurred during account update.');
         }
     }
 
-    function getAccountType() {
-        if (userAccount.student === true)
-            return "42";
-        return "normal";
+    function getCsrfToken() {
+        const cookieValue = document.cookie
+            .split('; ')
+            .find(row => row.startsWith('csrftoken='))
+            ?.split('=')[1];
+        return cookieValue || '';
     }
-    
-    const logoutUrl = "api/player/logout/";
 
     const handleLogout = async () => {
         try {
-            await fetch(logoutUrl, {
+            await fetch("api/player/logout/", {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -107,19 +91,6 @@
             console.error('Logout failed:', error);
         }
     };
-
-    function getCsrfToken() {
-        const cookieValue = document.cookie
-            .split('; ')
-            .find(row => row.startsWith('csrftoken='))
-            ?.split('=')[1];
-        return cookieValue || '';
-    }
-
-    onMounted(async () => {
-        await getUser(); // Only call getUser if state.id is available
-        //postUser();
-    });
 
     const handleProfilePictureChange = (event) => {
         const file = event.target.files[0];
@@ -141,78 +112,53 @@
             <div class="containerDashboard">
                 <div class="input-section profile-picture-section">
                     <h2 class="category-title">{{ $t('profile_picture') }}</h2>
-                    <img :src="userAccount.profilePicture || 'default-profile.png'" alt="Profile Picture"
-                        class="profile-picture" />
+                    <!-- Utilisation de l'image par défaut si aucune image n'est présente -->
+                    <img :src="userAccount.profilePicture || profilePicture" alt="Profile Picture" class="profile-picture" />
                     <label for="file-upload" class="custom-file-upload">
                         <i class="fas fa-upload"></i> {{ $t('choose_file') }}
                     </label>
-                    <input id="file-upload" type="file" @change="handleProfilePictureChange" accept="image/*"
-                        class="hidden-file-input" />
+                    <input id="file-upload" type="file" @change="handleProfilePictureChange" accept="image/*" class="hidden-file-input" />
                 </div>
 
-                <Switch class="infoGlobal" buttonText="See all information" v-model="showAllInfo" />
+                <Switch class="infoGlobal" :buttonText="$t('see_all_information')" v-model="showAllInfo" />
 
                 <div class="TextContainer">
-                    <TextDisplay v-if="showAllInfo || !showAllInfo" :textValue="userAccount.email"
-                        nameContainer="Email" />
-                    <TextDisplay v-if="showAllInfo || !showAllInfo" :textValue="userAccount.nickname"
-                        nameContainer="Nickname" />
-                    <TextDisplay v-if="showAllInfo || !showAllInfo" :textValue="userAccount.phone_number"
-                        nameContainer="Phone number" />
-
-                    <TextDisplay v-if="showAllInfo" :textValue="userAccount.username" nameContainer="Username" />
-                    <TextDisplay v-if="showAllInfo" :textValue="userAccount.password" nameContainer="Password" />
-                    <!-- Faire en sorte que le password puisse etre afficher vie un oeil -->
-                    <TextDisplay v-if="showAllInfo" :textValue="userAccount.date_joined" nameContainer="Date joined" />
-                    <TextDisplay v-if="showAllInfo" :textValue="userAccount.win" nameContainer="Number of win" />
-                    <TextDisplay v-if="showAllInfo" :textValue="userAccount.lose" nameContainer="Number of lose" />
-                    <TextDisplay v-if="showAllInfo" :textValue="userAccount.rank" nameContainer="Rank" />
+                    <TextDisplay v-if="showAllInfo || !showAllInfo" :textValue="userAccount.email" :nameContainer="$t('email')" />
+                    <TextDisplay v-if="showAllInfo || !showAllInfo" :textValue="userAccount.nickname" :nameContainer="$t('nickname')" />
+                    <TextDisplay v-if="showAllInfo || !showAllInfo" :textValue="userAccount.phone_number" :nameContainer="$t('phone_number')" />
+                    <TextDisplay v-if="showAllInfo" :textValue="userAccount.username" :nameContainer="$t('username')" />
+                    <TextDisplay v-if="showAllInfo" :textValue="userAccount.password" :nameContainer="$t('password')" />
+                    <TextDisplay v-if="showAllInfo" :textValue="userAccount.date_joined" :nameContainer="$t('date_joined')" />
+                    <TextDisplay v-if="showAllInfo" :textValue="userAccount.win" :nameContainer="$t('number_of_wins')" />
+                    <TextDisplay v-if="showAllInfo" :textValue="userAccount.lose" :nameContainer="$t('number_of_defeats')" />
+                    <TextDisplay v-if="showAllInfo" :textValue="userAccount.rank" :nameContainer="$t('rank')" />
                 </div>
 
                 <div class="editable-input-container">
-
-                    <InputEdit v-model="userAccount.nickname" placeholderText="Change your nickname"
-                        inputIconClass="fa-user" inputPlaceholder="Enter your nickname" :isPassword="false" />
-
-                    <InputEdit v-model="userAccount.email" placeholderText="Change your email" inputIconClass="fa-user"
-                        inputPlaceholder="Enter your email" :isPassword="false"
-                        :isDisabled="getAccountType() === '42'" />
-
-                    <!-- Utilisation de v-if pour retirer complètement du DOM les champs non nécessaires pour un compte 42 -->
-                    <InputEdit v-if="getAccountType() !== '42'" v-model="userAccount.phone_number"
-                        placeholderText="Change your phone number" inputIconClass="fa-user"
-                        inputPlaceholder="Enter your phone number" :isPassword="false" />
-
-                    <InputEdit v-if="getAccountType() !== '42'" v-model="userAccount.password"
-                        placeholderText="Change your password" inputIconClass="fa-lock"
-                        inputPlaceholder="Enter your password" :isPassword="true" />
-
+                    <InputEdit v-model="userAccount.nickname" :placeholderText="$t('change_nickname')" inputIconClass="fa-user" :inputPlaceholder="$t('enter_nickname')" :isPassword="false" />
+                    <InputEdit v-model="userAccount.email" :placeholderText="$t('change_email')" inputIconClass="fa-user" :inputPlaceholder="$t('enter_email')" :isPassword="false" :isDisabled="userAccount.student === true" />
+                    <InputEdit v-if="userAccount.student === false" v-model="userAccount.phone_number" :placeholderText="$t('change_phone_number')" inputIconClass="fa-user" :inputPlaceholder="$t('enter_phone_number')" :isPassword="false" />
+                    <InputEdit v-if="userAccount.student === false" v-model="userAccount.password" :placeholderText="$t('change_password')" inputIconClass="fa-lock" :inputPlaceholder="$t('enter_password')" :isPassword="true" />
 
                     <div class="___btn-click">
-                        <button class="button">
-                            <span class="buttonText buttonTextSize" style="font-size: medium;">Friends</span>
+                        <button class="button button-update" @click="updateAccount">
+                            <span class="buttonText buttonTextSize" style="font-size: medium;">{{ $t('Update your account') }}</span>
                         </button>
-
-                        <button class="button">
-                            <span class="buttonText buttonTextSize" @click="handleLogout" style="font-size: medium;">Logout</span>
-                        </button>
-
-                        <button class="button">
-                            <span class="buttonText buttonTextSize" style="font-size: medium;">Delete account</span>
+                        <button class="button button-logout" @click="handleLogout">
+                            <span class="buttonText buttonTextSize" style="font-size: medium;">Logout</span>
                         </button>
                     </div>
                 </div>
-                <div class="SwitchStyle" v-if="getAccountType() !== '42'">
-                    <Switch buttonText="Activer 2FA (SMS)"
-                        :isDisabled="userAccount.phone_number === '' ? false : true" 
-                        v-model="userAccount.sms_2fa_active" />
-                    <Switch buttonText="Activer 2FA (EMAIL)" 
-                        v-model="userAccount.email_2fa_active"/>
+
+                <div class="SwitchStyle" v-if="userAccount.student === false">
+                    <Switch :buttonText="`${$t('activate')} 2FA (SMS)`" :isDisabled="userAccount.phone_number === '' ? false : true" v-model="userAccount.sms_2fa_active" />
+                    <Switch :buttonText="`${$t('activate')} 2FA (${$t('email')})`" v-model="userAccount.email_2fa_active" />
                 </div>
             </div>
         </div>
     </main>
 </template>
+
 
 <style scoped>
 h1,
@@ -373,9 +319,7 @@ h1,
 }
 
 /* Pour chaque bloc de texte */
-.TextContainer div:nth-child(2n+1) {
-    /* Ceci pour rendre le premier texte visuellement distinct si nécessaire */
-}
+.TextContainer div:nth-child(2n+1) {}
 
 .___btn-click {
     color: white;
@@ -388,19 +332,11 @@ h1,
     gap: 10px;
 }
 
-/* Pour chaque bloc de texte */
-.TextContainer div:nth-child(2n+1) {
-    /* Ceci pour rendre le premier texte visuellement distinct si nécessaire */
+.button-update {
+    background-color: rgba(74, 143, 74, 0.75);
 }
 
-.___btn-click {
-    color: white;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    white-space: nowrap;
-    flex: 1 1 calc(30% - 20px);
-    margin: 1vw;
-    gap: 10px;
+.button-logout {
+    background-color: rgba(143, 74, 74, 0.75);
 }
 </style>

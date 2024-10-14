@@ -1,57 +1,96 @@
-<script setup type="text/javascript">
+<template>
+    <main>                        
+        <p id="loading" class="waiting-text">.</p>
+        <div id="wrapper-matchmaking">
+            <CreateSoundButton />
+            <CreateDropupButton />
+            <CreateHomeButton />
+            <CreateBackButton />
+            <h2 id="matchmaking-title">Matchmaking</h2>
+            <p id="game-type">game-mode: {{gamemode}}</p>
+            <p id="game-advice">{{tipdisplayed}}</p>
+            <div class="button-container-mm">
+                <p id="versus-text">VS</p>
+                <div class="stuff-to-move">
+                    <img id="player1-picture" class="profile-picture-matchmaking-left" src="../assets/Chachou.png"/>
+                    <p id="player1-name" class="profile-text-left">{{playerName1}}</p>
+                    <p id="player1-rank" class="rank-text-left">{{playerRank1}}</p>
+                </div>
+                <div id="stuff-to-hide">
+                    <p id="opponent-text" class="opponent-text">Looking for an opponent...</p>
+                </div>
+                <div id="stuff-to-show">
+                    <img id="player2-picture" class="profile-picture-matchmaking-right" src="../assets/Chachou.png"/>
+                    <p id="player2-name" class="profile-text-right">{{playerName2}}</p>
+                    <p id="player2-rank" class="rank-text-right">{{playerRank2}}</p>
+                </div>
+            </div>
+        </div>
+    </main>
+</template>
+
+
+<script setup>
 //imports
     import CreateDropupButton from '../components/CreateDropupButton.vue';
     import CreateBackButton from '../components/CreateBackButton.vue';
     import CreateSoundButton from '../components/CreateSoundButton.vue';
     import CreateHomeButton from '../components/CreateHomeButton.vue';
-    import { reactive, onMounted } from 'vue';
+    import { ref, reactive, onMounted, watch, defineEmits } from 'vue';
+    import $ from 'jquery';
     import { useRouter } from 'vue-router';
+
+    ////////////////////////////////////////////////
+    /////// GET USER ///////////////////////////////
+    ////////////////////////////////////////////////
+
+    import { useUser } from '../useUser.js'; 
+    const { getUser, userAccount, is_connected } = useUser(); 
+
+    onMounted(async () => {
+        await getUser();
+        if (is_connected.value === false)
+            __goTo('/')
+        await insertPlayer();
+    });
+
+    ////////////////////////////////////////////////
+    ////////////////////////////////////////////////
+    ////////////////////////////////////////////////
+
+    function __goTo(page) {
+        if (page == null)
+            return;
+        router.push(page);
+    }
+    
+    function getCsrfToken() {
+        const cookieValue = document.cookie
+            .split('; ')
+            .find(row => row.startsWith('csrftoken='))
+            ?.split('=')[1];
+        return cookieValue || '';
+    }
 
     var myVideo = document.getElementById('videoBG');
     
     myVideo.playbackRate = 2;
     let player1;
     let player2;
-    let gamemode = "Legacy Pong";
+    let gamemode = "legacy"; //fetch game mode selected?
     let playerName1 = "Chachou";
     let playerName2 = "Chachou2";
-    let playerRank1 = "noob";
-    let playerRank2 = "beginner";
+    let playerRank1 = "Noob";
+    let playerRank2 = "Beginner";
     const router = useRouter();
 
-    const userAccount = reactive({
-        username:"",
-        rank:0,
-    });
-
-    
-    const waitingPlayer = 1;
+    let waitingPlayer = 1;
 
     function goToLegacy(id) {
-    router.push(`/legacy_remote/${id}`);
-}
+        router.push(`/legacy_remote/${id}`);
+    }
 
-async function getUser() {
-  try {
-    const response = await fetch(`api/player/connected_user/`, {
-      method: 'GET',
-    });
-    if (!response.ok) {
-      console.warn(`HTTP error! Status: ${response.status}`);
-      return;
-    }
-    const user = await response.json();
-    if (user ) {
-      userAccount.username = user[0].fields.username;
-      userAccount.rank = user[0].fields.rank;
-      console.log(userAccount.username)
-    } else {
-      console.log('No user data retrieved.');
-    }
-  } catch (error) {
-    console.error('Error retrieving user data:', error);
-  }
-}
+let loadingmodule = true;
 
 async function insertPlayer() {
         
@@ -71,18 +110,46 @@ async function insertPlayer() {
             console.log(data);
             if (data.player2 == null)
             {
+                waitingPlayer = 1;
                 await new Promise(resolve => setTimeout(resolve, 1000));
                 insertPlayer();
             }
             else
             {
+                waitingPlayer = 0;
+
+                //slide first player
+                const player1_pic = document.getElementById('player1-picture');
+                player1_pic.classList.add(...['slide-left']);
+                const player1_name = document.getElementById('player1-name');
+                player1_name.classList.add(...['slide-left']);
+                const player1_rank = document.getElementById('player1-rank');
+                player1_rank.classList.add(...['slide-left']);
+
+                //fadein second player
+                const player2_pic = document.getElementById('player2-picture');
+                player2_pic.classList.add(...['fade-in']);
+                const player2_name = document.getElementById('player2-name');
+                player2_name.classList.add(...['fade-in']);
+                const player2_rank = document.getElementById('player2-rank');
+                player2_rank.classList.add(...['fade-in']);
+                const versus_text = document.getElementById('versus-text');
+                versus_text.classList.add(...['fade-in']);
+                
+                //fadeout loading assets
+                loadingmodule = false;
+                const dotdotdot = document.getElementById('loading');
+                dotdotdot.classList.add(...['fade-out']);
+                const waiting_text = document.getElementById('opponent-text');
+                waiting_text.classList.add(...['fade-out']);
+
                 console.log("lancement dans 3");
                 await new Promise(resolve => setTimeout(resolve, 1000));
                 console.log("lancement dans 2");
                 await new Promise(resolve => setTimeout(resolve, 1000));
                 console.log("lancement dans 1");
                 await new Promise(resolve => setTimeout(resolve, 1000));
-                goToLegacy(data.id);
+                //goToLegacy(data.id);
             }
 
         }
@@ -92,94 +159,43 @@ async function insertPlayer() {
     }
 }
 
-function getCsrfToken() {
-    const cookieValue = document.cookie
-        .split('; ')
-        .find(row => row.startsWith('csrftoken='))
-        ?.split('=')[1];
-    return cookieValue || '';
-}
-
-
-    onMounted(async () => {
-        // await postUser();
-        await getUser();
-        await insertPlayer();
-        console.log(userAccount.id);
-
-    });
-
+    ///////////////////////////////////////////////
 
     //dynamic "loading" dots 
-    if(document.getElementById("loading") != null)
+    console.log(loadingmodule);
+    if (loadingmodule == true)
     {
-        //console.log(document.getElementById("loading"));
-        if (document.getElementById("loading") != false)
-        {
-            var dots = window.setInterval( function() {
-            var wait = document.getElementById("loading");
-            console.log(document.getElementById("loading"));
-            if ( wait.innerHTML.length >= 3 ) 
-                wait.innerHTML = ".";
-            else 
-                wait.innerHTML += ".";
-            }, 1000);
-        }
+        var dots = window.setInterval( function() {
+        var wait = document.getElementById('loading');
+        console.log(wait);
+        if ( wait.innerHTML.length >= 3 ) 
+            wait.innerHTML = ".";
+        else 
+            wait.innerHTML += ".";
+        }, 1000);
     }
 
-    // if(document.getElementById("right-side") != null &&
-    // document.getElementById("loading") != null )
-    // {
-    // //when 2nd player is found, we hide "waiting for player" and show opponent
-    //     let playerfound = true;
-    //     if(playerfound == true)
-    //     {
-    //         document.getElementById("right-side").style.display = block;
-    //         document.getElementById("loading").style.display = 'none';
-    //     }
-    //     else
-    //     {
-    //         document.getElementById("right-side").style.display = none;
-    //         document.getElementById("loading").style.display = block;
-    //     }
-    // }
-    
+    var tips = [
+        'Tip: Reading your phone in the stairs might lead to severe injury.',
+        'Tip: Try pressing \'C\' while playing ;)', 
+        'Tip: Wash your cereal bowl right after eating',
+        'Don\'t forget to put your paddle back in the center!',
+        'Recipe for a lribette : one tchoukball ball (?), 50 kilos of pasta, and many many many many many Star Wars anecdotes.',
+        'Tu es triste? Arrête.',
+        '"Jeu de pain, jeu de vilain" - Miro',
+        'Bois de l\'eau. Dans 20, 30 ans y\'en aura plus.',
+        'Burc\'ya vaal burk\'yc, burc\'ya veman'
+    ];
+    var tipdisplayed = tips[Math.floor(Math.random()*tips.length)];
 </script>
 
-<template>
-    <main>
-        <div>
-            <div id="wrapper-matchmaking">
-                <CreateSoundButton />
-                <CreateDropupButton />
-                <CreateHomeButton />
-                <CreateBackButton />
-                <h2 id="matchmaking-title">Matchmaking</h2>
-                <p id="game-type">{{gamemode}}</p>
-                <p id="game-advice">Advice: dont read your phone in the stairs</p>
-                <div class="buttonContainer">
-                    <div class="stuff-to-move">
-                        <img class="profile-picture-matchmaking-left" src="../assets/Chachou.png">
-                        <p class="profile-text-left">{{playerName1}}</p>
-                        <p class="rank-text-left">{{playerRank1}}</p>
-                    </div>
-                    <div id="stuff-to-hide">
-                        <span id="loading" class="waiting-text">.</span>
-                        <p class="opponent-text">Looking for an opponent</p>
-                    </div>
-                    <div id="stuff-to-show">
-                        <p class="rank-text-right">{{playerRank2}}</p>
-                        <p class="profile-text-right">{{playerName2}}</p>
-                        <img class="profile-picture-matchmaking-right" src="../assets/Chachou.png">
-                    </div>
-                </div>
-            </div>
-        </div>
-    </main>
-</template>
 
 <style scoped>
 @import './../assets/main.scss';
+.button-container-mm {
+    position: relative; 
+    display: inline-block; 
+}
 
 .wrapper {
     display: flex;
@@ -189,27 +205,52 @@ function getCsrfToken() {
 }
 
 #wrapper-matchmaking {
+    display: flex;
+    justify-content: center;
+    align-items: center;
     box-shadow: inset 0 0 0 1000px rgba(0, 0, 0, 0.398);
+    height: 100vh;
 }
 
 #matchmaking-title {
-    position: flex;
-    text-align: center;
-    left: 38vw;
-    text-align: center;
+    position: fixed;
+    display: none;
+    top: 15%;
+    left: 50%;
+    transform: translate(-50%, -50%);
     font-size: 55px;
-    top: 5vh;
+    font-weight: bold;
     color: white;   
+    filter: drop-shadow(5px 5px 4px #0000003b);
 }
 
 #game-type{
     position: fixed;
-    text-align: center;
-    left: 42vw;
-    text-align: center;
-    font-size: 35px;
-    top: 11vh;
+    top: 1%;
+    right: 1%;
+    font-size: 20px;
+    font-weight: bold;
+    color: rgb(208, 208, 208);
+}
+
+#game-advice{
+    position: fixed;
+    top: 92%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-size: 20px;
+    font-weight: bold;
     color: white;
+    filter: drop-shadow(5px 5px 4px #0000003b);
+}
+
+#versus-text{
+    top: 70%;
+    left: 50%;
+    font-size: 150px;
+    font-weight: bold;
+    color: white;
+    filter: drop-shadow(5px 5px 4px #0000003b);
 }
 
 .profile-picture-matchmaking-left {
@@ -217,48 +258,108 @@ function getCsrfToken() {
     width: 250px;
     height: 250px;
     border-radius: 50%;
-    top: 30vh;
-    left: 20vw;
+    top: 35%;
+    left: 42vw;
     border: 5px solid white;
     filter: drop-shadow(5px 5px 4px #0000003b);
 }
 
+.fade-in {
+    visibility: visible;
+    animation: fadeIn 0.7s;
+}
+
+@keyframes fadeIn {
+  0% { opacity: 0; }
+  100% { opacity: 1; }
+}
+
+.fade-out {
+    visibility: hidden;
+    animation: fadeOut 0.7s;
+}
+
+@keyframes fadeOut {
+  0% { opacity: 1; }
+  100% { opacity: 0; }
+}
+
+.slide-left {
+    position: fixed;
+	animation: slide-left 0.5s cubic-bezier(0.250, 0.460, 0.450, 0.940) both;
+}
+
+@keyframes slide-left {
+    0% {
+        transform: translateX(0);
+    }
+    100% {
+        transform: translateX(-450px);
+    }
+}
+
+.to-show {
+    position: fixed;
+    animation-name: to-show 0.5s cubic-bezier(0.250, 0.460, 0.450, 0.940) both;
+}
+
+@keyframes to-show {
+  0% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 1;
+  }
+}
+
 .profile-text-left {
     position: fixed;
-    top: 35vw;
-    left: 22vw;
+    top: 62%;
+    text-align: center;
+    font-size: 30px;
+    font-weight: bold;
+    left: 45%;
     color: white;
 }
 .profile-text-right {
     position: fixed;
-    top: 35vw;
-    right: 22vw;
+    top: 62%;
+    text-align: center;
+    font-size: 30px;
+    font-weight: bold;
+    left: 72%;
     color: white;
 }
 
 .rank-text-left {
     position: fixed;
     font-size: 25px;
-    top: 38vw;
-    left: 22vw;
+    font-weight: bold;
+    top: 65%;
+    left: 47%;
     color: white;
 }
 
 .rank-text-right {
     position: fixed;
     font-size: 25px;
-    top: 38vw;
-    left:75vw;
+    font-weight: bold;
+    top: 65%;
+    left: 72%;
     color: white;
 }
 
 #loading {
     position: fixed;
+    visibility: visible;
     z-index: 5;
     font-size: 80px;
-    top: 38vw;
-    left: 45vw;
+    font-weight: bold;
+    text-align: center;
+    top: 72%;
+    left: 47.9%;
     color: white;
+    filter: drop-shadow(5px 5px 4px #0000003b);
 }
 
 .profile-picture-matchmaking-right {
@@ -266,17 +367,22 @@ function getCsrfToken() {
     width: 250px;
     height: 250px;
     border-radius: 50%;
-    top: 30vh;
-    right: 20vw;
+    top: 35%;
+    left: 70%;
     border: 5px solid white;
     filter: drop-shadow(5px 5px 4px #0000003b);
 }
+
 .opponent-text {
     position: fixed;
+    visibility: visible;
     z-index: 5;
     font-size: 30px;
-    top: 36vw;
-    left: 38vw;
+    font-weight: bold;
+    top: 24%;
+    left: 50.3%;
+    transform: translate(-50%, -50%);
     color: white;
+    filter: drop-shadow(5px 5px 4px #0000003b);
 }
 </style>

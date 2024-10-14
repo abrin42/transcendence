@@ -5,6 +5,8 @@ from django.contrib.auth.forms import AuthenticationForm
 from django.contrib.auth.decorators import login_required
 from django.core.exceptions import ImproperlyConfigured
 from django.core.files.base import ContentFile
+from django.core import serializers
+from django.core.serializers import serialize
 from django.http import JsonResponse, HttpResponse, HttpResponseForbidden
 from django.middleware.csrf import get_token
 from django.conf import settings
@@ -22,84 +24,103 @@ import requests
 import jwt
 import json
 import logging
-from django.core import serializers
 from collections import deque
 import asyncio
 
 matchmaking = deque()
 
-@csrf_exempt
 def register_view(request):
     if request.method == 'POST':
         try:
             data = json.loads(request.body)
-            print(data)
-            username = data.get('username')
-            username: f"_{username}"
+            username = f"_{data.get('username')}"
+            email = data.get('email')
+            phone_number = data.get('phone_number')
+            password = data.get('password1')
+            
+            print(username)
+            print(password)
+            
+            if Player.objects.filter(username=username).exists():
+                return JsonResponse(
+                    {'error': 'Le nom d\'utilisateur existe déjà.'}, status=400
+                )
 
-            form = RegisterForm(data)
-            if form.is_valid():
-                print("FORM IS VALID")
-                user = form.save()
-                raw_password = form.cleaned_data.get('password1')
-                user = authenticate(username=user.username, password=raw_password)
-                if user is not None:
-                    login(request, user)
-                    user.nickname = user.username[1:]
-                    user.save()
+            user, created = Player.objects.get_or_create(
+                username=username,
+                defaults={'email': email}
+            )
 
-                    token = generate_jwt(user)
-                    response = JsonResponse({'message': 'Registration successful', 'redirect_url': '/dashboard'}, status=200)
-                    set_jwt_token(response, token)
+            user.email = email
+            user.phone_number = phone_number  # Ensure this field exists in your model
+            user.set_password(password)
+            user.save()
+            print(user.username)
+            print(user.password)
+            authenticated_user = authenticate(username=user.username, password=password)
+            if authenticated_user:
+                login(request, authenticated_user)
+                authenticated_user.nickname = user.username[1:]  # Remove leading underscore
+                authenticated_user.save()
 
-                    return response
-            return JsonResponse({'error': 'Invalid username or password'}, status=400)
+                token = generate_jwt(authenticated_user)
+                response = JsonResponse({
+                    'message': 'Inscription réussie!',
+                    'redirect_url': '/dashboard'
+                }, status=200)
+                set_jwt_token(response, token)
+                return response
+
+            return JsonResponse({'error': 'Échec de l\'authentification.'}, status=400)
 
         except json.JSONDecodeError:
-            return JsonResponse({'error': 'Invalid request body'}, status=400)
+            return JsonResponse({'error': 'Corps de la requête invalide.'}, status=400)
 
-    return JsonResponse({'error': 'Invalid request method'}, status=405)
+    return JsonResponse({'error': 'Méthode non autorisée.'}, status=405)
+
 
 def login_view(request):
-    if request.method == "POST":
-        try:
-            data = json.loads(request.body)
-            username = data.get('username')
-            password = data.get('password')
-            post_data = {
-                'username': f"_{username}", 
-                'password': password
-            }
-            form = AuthenticationForm(data=post_data)
-            if form.is_valid():
-                user = form.get_user()
-                login(request, user)
+    if request.method != "POST":
+        return JsonResponse({'error': 'Invalid request method'}, status=405)
 
-                if user is not None:
-                    user = get_object_or_404(Player, username=user.username)
+    try:
+        data = json.loads(request.body)
+        username = f"_{data.get('username')}"
+        password = data.get('password')
 
-                    if not user.email_2fa_active and not user.sms_2fa_active:
-                        token = generate_jwt(user)
-                        user = decode_jwt(token)
-                        print(user)
-                        
-                        if not user.nickname:
-                            user.nickname = user.username[1:]
-                            user.save()
+        if not username or not password:
+            return JsonResponse({'error': 'Username and password required'}, status=400)
 
-                        response = JsonResponse({'redirect_url': '/'}, status=302)
-                        set_jwt_token(response, token)
+        player = get_object_or_404(Player, username=username)
+        if not player:
+            return JsonResponse({'error': 'Invalid username or password'}, status=401)
 
-                        return response
-                    
-                    response = JsonResponse({'redirect_url': '/2fa'}, status=302)
-                    return response
-            return JsonResponse({'error': 'Invalid username or password'}, status=400)
-        
-        except json.JSONDecodeError:
-            return JsonResponse({'error': 'Invalid request body'}, status=400)
+        print(f'username: {player.username}, email_2fa_active: {player.email_2fa_active}')
 
-    return JsonResponse({'error': 'Invalid request method'}, status=405)
+        login(request, player)
+
+        if not player.email_2fa_active and not player.sms_2fa_active:
+            token = generate_jwt(player)
+
+            if not player.nickname:
+                player.nickname = player.username[1:]
+                player.save()
+
+            response = JsonResponse({
+                'message': 'Login successful',
+                'redirect_url': '/'
+            }, status=200)
+            set_jwt_token(response, token)
+            return response
+
+        player_data = serializers.serialize('json', [player])
+        return JsonResponse({
+            'player_data': player_data,
+            'redirect_url': '/2fa/'
+        }, content_type='application/json')
+
+    except json.JSONDecodeError:
+        return JsonResponse({'error': 'Invalid request body'}, status=400)
 
 
 def login42_view(request):
@@ -108,23 +129,24 @@ def login42_view(request):
         return JsonResponse({'url': oauth_url}, status=200)
     return JsonResponse({'error': 'Invalid request method'}, status=405)
 
-
 @login_required
 def tfa_view(request):
-    ########################### Here I use the user from request and call its Player object. I apply the JWT token only when the 2FA/OTP is valid
-    user = verify_user(request)
-    ###########################
-
     if request.method == "POST":
-        create_otp(request, user)
-        response = JsonResponse({'message': 'Code sent successfully', 'redirect_url': '/2fa'}, status=200)
-        return response
+        try:
+            user = get_object_or_404(Player, username=request.user.username)
+            create_otp(request, user)
+            return JsonResponse({'message': 'Code sent successfully', 'redirect_url': '/2fa'}, status=200)
+        except Player.DoesNotExist:
+            return JsonResponse({'error': 'User not found'}, status=404)
     return JsonResponse({'error': 'Invalid request method'}, status=405)
 
 @login_required
 def otp_view(request):
     ########################### Here I use the user from request and call its Player object. I apply the JWT token only when the 2FA/OTP is valid
-    user = verify_user(request)
+    try:
+        user = get_object_or_404(Player, username=request.user.username)
+    except Player.DoesNotExist:
+        return JsonResponse({'error': 'User not found'}, status=404)
     ###########################
     if request.method == "POST":
         try:
@@ -227,11 +249,7 @@ def auth_42_callback(request):
         login(request, user)
         user = token_user(request)
         return response
-
     return redirect('/log/')
-
-
-
 
 
 @login_required
@@ -295,7 +313,6 @@ def logout_view(request):
         return response
     return JsonResponse({'error': 'Invalid request method'}, status=405)
 
-
 @login_required
 def delete_account_view(request):
     user = token_user(request)
@@ -304,20 +321,19 @@ def delete_account_view(request):
         # return redirect(reverse('player:login'))
     # return render(request, 'player/delete_account.html')
 
-
+@login_required
 def connected_user(request):
     user = token_user(request)
     if user:
-        data = serializers.serialize('json', [user])
+        user_data = json.loads(serialize('json', [user]))[0]['fields']
+        return JsonResponse(user_data, safe=False) 
     else:
-        data = json.dumps({'error': 'User not found'})
-    return HttpResponse(data, content_type='application/json')
+        return JsonResponse({'error': 'User not found'}, status=404)
 
 def get_all_user(request):
     data = Player.objects.all()
     data = serializers.serialize('json', data)
-    return HttpResponse(data, content_type='application/json')
-
+    return JsonResponse(data, safe=False) 
 
 def enter_matchmaking(request):
     user = token_user(request)
@@ -341,6 +357,8 @@ async def get_match(request):
         data.append(matchmaking[1])
         #creatgame(data)
         data = serializers.serialize('json', data)
-        return HttpResponse(data, content_type='application/json')
+        #return HttpResponse(data, content_type='application/json')
+        return JsonResponse(data, safe=False, content_type='application/json')
+
     await asyncio.sleep(0.5)
     return JsonResponse({'redirect_url': '/matchmaking'}, status=302)

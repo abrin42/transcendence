@@ -1,21 +1,18 @@
 <script setup>
 //imports
     import { useRouter } from 'vue-router';
-
     const router = useRouter();
 
     function goToHome() {
-    router.push('/');
+        router.push('/');
     }
 </script>
-``
+
 <template>
     <main>
-        <div id="wrapper">
-            <button class="button button-transcendence" @click="goToHome()">
-                    <img class="img-ft_transcendence" src="../assets/CyberPong.png" alt="CyberPong" />
-                </button>
-        </div>
+        <button class="button button-transcendence" @click="goToHome()">
+                <img class="img-ft_transcendence" src="../assets/CyberPong.png" alt="CyberPong" />
+        </button>
     </main>
 </template>
 
@@ -23,9 +20,10 @@
 @import './../assets/main.scss';
 
 .img-ft_transcendence {
-    display: fixed;
+    position: fixed;
+    top: 1%;
     width: 30vw;
-    height: 12vh;
+    height: 14vh;
 }
 
 .button-transcendence {

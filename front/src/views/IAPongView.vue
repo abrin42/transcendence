@@ -9,7 +9,28 @@ const messages = ref([]);
 const connectionStatus = ref('');
 let connection = 0;
 
+////////////////////////////////////////////////
+/////// GET USER ///////////////////////////////
+////////////////////////////////////////////////
 
+import { useUser } from '../useUser.js'; 
+const { getUser, userAccount, is_connected } = useUser(); 
+
+onMounted(async () => {
+    await getUser();
+    if (is_connected.value === false)
+      __goTo('/')
+});
+
+////////////////////////////////////////////////
+////////////////////////////////////////////////
+////////////////////////////////////////////////
+
+function __goTo(page) {
+  if (page == null)
+      return;
+  router.push(page);
+}
 
 function  updatePoints(player, updatePts)
 {
@@ -111,6 +132,14 @@ function connectWebSocket() {
     // {
     //   console.log(data.type);
     // }
+    else if (data.type == 'paddleHit') //sound
+    {
+      console.log(data.type);
+    }
+    else if (data.type == 'wallHit')//sound
+    { 
+      console.log(data.type);
+    }
     else if (data.type == 'info_back') //a enlever test
     {
       console.log(data.type + " : " + data.value_back1 + "; " + data.value_back2 + "; " + data.value_back3);

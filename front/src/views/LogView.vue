@@ -4,100 +4,34 @@ import CreateBackButton from '../components/CreateBackButton.vue';
 import CreateHomeButton from '../components/CreateHomeButton.vue';
 import Input from '../components/Input.vue';
 import { useRouter } from 'vue-router';
-import { ref, reactive, onMounted } from 'vue';
+import { ref, onMounted } from 'vue';
 
-const router = useRouter();
-const username = ref('');
-const password = ref('');
-//const userAccount = reactive({
-    //is2FA:"",
-//});
+////////////////////////////////////////////////
+/////// GET USER ///////////////////////////////
+////////////////////////////////////////////////
 
-async function getUser() {
-    try {
-        const response = await fetch(`api/player/connected_user/`, {
-            method: 'GET',
-        });
-        if (!response.ok) 
-            throw new Error(`HTTP error! Status: ${response.status}`);
-        //const user = await response.json();
-        //userAccount.is2FA = user[0].fields.is2FA;
-    } catch (error) {
-        console.error('Error retrieving user data:', error);
-    }
-}
+import { useUser } from '../useUser.js'; 
+
+const { getUser, updateUserAccount, userAccount, is_connected } = useUser(); 
 
 onMounted(async () => {
-    await getUser();
+    await getUser();  
+    console.log("onMounted/is_connected: " + is_connected.value);  
+    console.log("onMounted/username: " + userAccount.username);
+    if (is_connected.value === true)
+        __goTo('/')
 });
 
+////////////////////////////////////////////////
+////////////////////////////////////////////////
+////////////////////////////////////////////////
+
+const router = useRouter();
+
 function __goTo(page) {
-    if (page == null) {
+    if (page == null)
         return;
-    }
     router.push(page);
-}
-
-async function login() {
-    if (!username.value || !password.value) {
-        alert('Veuillez entrer un email et un mot de passe.');
-        return;
-    }
-    try {
-        const response = await fetch('api/player/login/', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                'X-CSRFToken': getCsrfToken() // Assuming you have CSRF protection enabled
-            },
-            body: JSON.stringify({
-                username: username.value,
-                password: password.value
-            })
-        });
-        console.log(username);
-        console.log(password);
-        if (response.ok) {
-            const data = await response.json();
-            if (data.redirect_url) {
-                router.push(data.redirect_url);
-            } else {
-                alert('Login successful');
-            }
-        }
-        __goTo('/2fa')
-    } catch (error) {
-        console.error('Erreur lors de la connexion:', error);
-        alert('An error occurred during login2222');
-    }
-}
-
-async function login42() {
-    try {
-        const response = await fetch('api/player/login42/', {
-            method: 'POST', // Change to POST to match the Django view
-            headers: {
-                'Content-Type': 'application/json',
-                'X-CSRFToken': getCsrfToken()
-            },
-        });
-
-        if (!response.ok) {
-            throw new Error(`HTTP error! Status: ${response.status}`);
-        }
-
-        const data = await response.json();
-        if (data.url) {
-            // Use the URL returned from the backend
-            window.location.href = data.url; // Redirect to the URL
-        } else {
-            alert('Could not get URL for login');
-        }
-
-    } catch (error) {
-        console.error('Error during login:', error);
-        alert('An error occurred during login');
-    }
 }
 
 function getCsrfToken() {
@@ -107,28 +41,101 @@ function getCsrfToken() {
         ?.split('=')[1];
     return cookieValue || '';
 }
+
+////////////////////////////////////////////////
+////////////////////////////////////////////////
+////////////////////////////////////////////////
+
+const username = ref('');
+const password = ref('');
+
+async function login() {
+    if (!username.value || !password.value) {
+        alert('Veuillez entrer un email et un mot de passe.');
+        return;
+    }
+
+    try {
+        const response = await fetch('api/player/login/', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRFToken': getCsrfToken(), // Assuming CSRF protection is enabled
+            },
+            body: JSON.stringify({
+                username: username.value,
+                password: password.value,
+            }),
+        });
+
+        if (!response.ok) {
+            throw new Error(`HTTP error! Status: ${response.status}`);
+        }
+
+        const data = await response.json();
+
+        // Check if redirection to 2FA or dashboard is required
+        if (data.redirect_url) {
+            __goTo(data.redirect_url);  // Use the redirect URL provided by the backend
+            return;
+        }
+
+         else {
+            alert('User data not found!');
+        }
+    } catch (error) {
+        console.error('Erreur lors de la connexion /login:', error);
+        alert('An error occurred during login.');
+    }
+}
+
+async function login42() {
+    try {
+        const response = await fetch('api/player/login42/', {
+            method: 'POST', 
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRFToken': getCsrfToken()
+            },
+        });
+        if (!response.ok) {
+            throw new Error(`HTTP error! Status: ${response.status}`);
+        }
+        const data = await response.json();
+        if (data.url) {
+            window.location.href = data.url;
+        } else {
+            alert('Could not get URL for login');
+        }
+        
+    } catch (error) {
+        console.error('Error during login:', error);
+        alert('An error occurred during login');
+    }
+}
+
 </script>
 
 <template>
     <main>
         <div id="wrapper">
-            <h1>LOGIN</h1>
+            <h1>{{ $t('LOGIN') }}</h1>
 
             <div class="logContainer">
                 <button class="button button-log42" @click="login42">
                     <img class="img-42" src="../assets/img/42_Logob.png" alt="Logo 42" />
                 </button>
                 <button class="button button-register" @click="__goTo('/register')">
-                    <span class="buttonText buttonTextSize">{{ $t('Sign-up') }}</span>
+                    <span class="buttonText buttonTextSize">{{ $t('sign_up') }}</span>
                 </button>
                 <button class="button button-connect" @click="login">
-                    <span class="buttonText buttonTextSize">{{ $t('Login') }}</span>
+                    <span class="buttonText buttonTextSize">{{ $t('login') }}</span>
                 </button>
             </div>
 
             <div class="__inputInfo">
-                <Input iconClass="fa-user" placeholderText="Enter your username" v-model="username" />
-                <Input iconClass="fa-lock" placeholderText="Enter your password" isPassword v-model="password" />
+                <Input iconClass="fa-user" :placeholderText="$t('enter_username')" v-model="username" />
+                <Input iconClass="fa-lock" :placeholderText="$t('enter_password')" isPassword v-model="password" />
             </div>
 
             <div class="buttonContainer">
@@ -145,7 +152,7 @@ function getCsrfToken() {
 h1 {
     position: fixed;
     left: auto;
-    top: 10%;
+    top: 15%;
     font-size: 4vw;
     color: #fff;
     text-shadow:

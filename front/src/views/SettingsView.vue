@@ -1,58 +1,58 @@
 <script setup>
-import { reactive, ref, onMounted, onBeforeUnmount } from 'vue';
-import CreateBackButton from '../components/CreateBackButton.vue';
-import CreateDropupButton from '@/components/CreateDropupButton.vue';
-import CreateHomeButton from '@/components/CreateHomeButton.vue';
+    import { reactive, ref, onBeforeUnmount } from 'vue';
+    import CreateBackButton from '../components/CreateBackButton.vue';
+    import CreateDropupButton from '@/components/CreateDropupButton.vue';
+    import CreateHomeButton from '@/components/CreateHomeButton.vue';
 
-const keys = reactive({
-    player1Left: 'ArrowLeft',
-    player1Right: 'ArrowRight',
-    player2Left: 'A',
-    player2Right: 'D',
-    pause: 'P',
-    mute: 'M',
-});
+    const keys = reactive({
+        player1Left: 'ArrowLeft',
+        player1Right: 'ArrowRight',
+        player2Left: 'A',
+        player2Right: 'D',
+        pause: 'P',
+        mute: 'M',
+    });
 
-const selectedKey = ref(null);
+    const selectedKey = ref(null);
 
-const changeKey = (action) => {
-    selectedKey.value = action;
-    window.addEventListener('keydown', setKey);
+    const changeKey = (action) => {
+        selectedKey.value = action;
+        window.addEventListener('keydown', setKey);
 
-};
+    };
 
-const setKey = (event) => {
-    const newKey = event.key.toUpperCase();
-    if (isKeyAlreadyUsed(newKey)) {
-        alert('Cette touche est déjà utilisée.');
-        return;
-    }
-    if (
-        (selectedKey.value === 'player1Left' && newKey === keys.player1Right) ||
-        (selectedKey.value === 'player1Right' && newKey === keys.player1Left) ||
-        (selectedKey.value === 'player2Left' && newKey === keys.player2Right) ||
-        (selectedKey.value === 'player2Right' && newKey === keys.player2Left) ||
-        (selectedKey.value === 'pause' && newKey === keys.pause) ||
-        (selectedKey.value === 'mute' && newKey === keys.mute)
-    ) {
-        alert('Le meme joueur ne peut pas utiliser la meme touche pour gauche et droite.');
-        return;
-    }
+    const setKey = (event) => {
+        const newKey = event.key.toUpperCase();
+        if (isKeyAlreadyUsed(newKey)) {
+            alert('Cette touche est déjà utilisée.');
+            return;
+        }
+        if (
+            (selectedKey.value === 'player1Left' && newKey === keys.player1Right) ||
+            (selectedKey.value === 'player1Right' && newKey === keys.player1Left) ||
+            (selectedKey.value === 'player2Left' && newKey === keys.player2Right) ||
+            (selectedKey.value === 'player2Right' && newKey === keys.player2Left) ||
+            (selectedKey.value === 'pause' && newKey === keys.pause) ||
+            (selectedKey.value === 'mute' && newKey === keys.mute)
+        ) {
+            alert('Le meme joueur ne peut pas utiliser la meme touche pour gauche et droite.');
+            return;
+        }
 
-    if (selectedKey.value) {
-        keys[selectedKey.value] = newKey;
-        selectedKey.value = null;
+        if (selectedKey.value) {
+            keys[selectedKey.value] = newKey;
+            selectedKey.value = null;
+            window.removeEventListener('keydown', setKey);
+        }
+    };
+
+    const isKeyAlreadyUsed = (newKey) => {
+        return Object.values(keys).includes(newKey);
+    };
+
+    onBeforeUnmount(() => {
         window.removeEventListener('keydown', setKey);
-    }
-};
-
-const isKeyAlreadyUsed = (newKey) => {
-    return Object.values(keys).includes(newKey);
-};
-
-onBeforeUnmount(() => {
-    window.removeEventListener('keydown', setKey);
-});
+    });
 </script>
 
 <template>
@@ -64,30 +64,30 @@ onBeforeUnmount(() => {
             <div class="settingsBackground">
                 <span class="titleSettings">{{ $t('settings') }}</span>
                 <div class="settingsText">
-                    <span>{{ $t('player') }} 1 - {{ $t('right') }}</span>
-                    <span>{{ $t('player') }} 1 - {{ $t('left') }}</span>
-                    <span>{{ $t('player') }} 2 - {{ $t('right') }}</span>
-                    <span>{{ $t('player') }} 2 - {{ $t('left') }}</span>
-                    <span>PAUSE GAME</span>
-                    <span>MUTE SOUND</span>
+                    <span>{{ $t('player') }} 1 - {{ $t('RIGHT') }}</span>
+                    <span>{{ $t('player') }} 1 - {{ $t('LEFT') }}</span>
+                    <span>{{ $t('player') }} 2 - {{ $t('RIGHT') }}</span>
+                    <span>{{ $t('player') }} 2 - {{ $t('LEFT') }}</span>
+                    <span>{{ $t('PAUSE_GAME') }}</span>
+                    <span>{{ $t('MUTE_SOUND') }}</span>
                 </div>
                 <div class="buttonContainer">
-                    <button class="button" @click="changeKey('player1Right')">
+                    <button id="bouton-touche" class="button" @click="changeKey('player1Right')">
                         <span class="buttonText">{{ keys.player1Right }}</span>
                     </button>
-                    <button class="button" @click="changeKey('player1Left')">
+                    <button id="bouton-touche" class="button" @click="changeKey('player1Left')">
                         <span class="buttonText">{{ keys.player1Left }}</span>
                     </button>
-                    <button class="button" @click="changeKey('player2Right')">
+                    <button id="bouton-touche" class="button" @click="changeKey('player2Right')">
                         <span class="buttonText">{{ keys.player2Right }}</span>
                     </button>
-                    <button class="button" @click="changeKey('player2Left')">
+                    <button id="bouton-touche" class="button" @click="changeKey('player2Left')">
                         <span class="buttonText">{{ keys.player2Left }}</span>
                     </button>
-                    <button class="button" @click="changeKey('pause')">
+                    <button id="bouton-touche" class="button" @click="changeKey('pause')">
                         <span class="buttonText">{{ keys.pause }}</span>
                     </button>
-                    <button class="button" @click="changeKey('mute')">
+                    <button id="bouton-touche" class="button" @click="changeKey('mute')">
                         <span class="buttonText">{{ keys.mute }}</span>
                     </button>
                     
@@ -110,6 +110,10 @@ onBeforeUnmount(() => {
     color: white;
     text-align: center;
     z-index: 1;
+}
+
+#bouton-touche{
+    width: 10vw;
 }
 
 #wrapper {

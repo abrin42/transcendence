@@ -1,7 +1,7 @@
 <template>
 
   <audio id="background_audio" loop="loop">
-  <source src="./../assets/test.mp3">
+  <source src="./../assets/test.mp3" type="audio/mpeg">
       Your browser does not support the audio element.
   </audio>
 

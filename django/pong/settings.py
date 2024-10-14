@@ -30,7 +30,7 @@ ALLOWED_HOSTS = ["*"]
 
 
 # CSRF settings
-CSRF_TRUSTED_ORIGINS = ['https://localhost:8443','https://10.11.0.0:8443', 'https://10.11.1.11:8443',]
+CSRF_TRUSTED_ORIGINS = ['https://localhost:8443','https://10.11.0.0:8443', 'https://10.11.1.11:8443']
 
 # Application definition
 INSTALLED_APPS = [
@@ -44,8 +44,8 @@ INSTALLED_APPS = [
     'friend',
     'player',
     'game',
-    # 'channels',
-    # 'corsheaders',
+    'channels',
+    'corsheaders',
     'api',
     'rest_framework',
 ]
@@ -171,9 +171,7 @@ JWT_SECRET_KEY = os.environ.get('jwt_secret_key')
 JWT_ALGORITHM = os.environ.get('jwt_algo')
 JWT_EXP_DELTA_SECONDS = os.environ.get('jwt_exp')
 
-
 ASGI_APPLICATION = 'pong.asgi.application'
-
 
 #maybe enlever 8080
 CORS_ALLOWED_ORIGINS = [
@@ -188,11 +186,11 @@ APPEND_SLASH = False
 # WEBSOCKET_URL = '/ws/'
 # WEBSOCKET_REDIS_BROKER_URL = 'redis://localhost:6379/0'
 
-# CHANNEL_LAYERS = {
-#     'default': {
-#         'BACKEND': 'channels_redis.core.RedisChannelLayer',
-#         'CONFIG': {
-#             "hosts": [('redis', 6379)],
-#         },
-#     },
-# }
+CHANNEL_LAYERS = {
+    'default': {
+        'BACKEND': 'channels_redis.core.RedisChannelLayer',
+        'CONFIG': {
+            "hosts": [('redis', 6379)],
+        },
+    },
+}

@@ -22,6 +22,6 @@ class Friendship(models.Model):
         
     def friendInfo(self):
         return {
-        "username": self.friend.username,
-        "nickname": self.friend.nickname,
+            "username": self.friend.username,
+            "nickname": self.friend.nickname,
         }

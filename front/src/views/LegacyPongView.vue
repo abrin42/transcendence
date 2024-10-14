@@ -1,15 +1,169 @@
+<template>
+  <main>
+    <div id="wrapper">
+      <div id="black-background">
+        <div>
+          <canvas id ="board"></canvas>
+        </div>
+        <div>
+          <h2 id="pause">[P] to Pause/Unpause</h2>
+          <h2 id="mute">[M] to Mute/Unmute</h2>
+        </div>
+      </div>
+    </div>
+  </main>
+</template>
+
+<style lang="scss">
+body {
+  text-align: center;
+}
+
+#pause {
+  color: rgb(114, 114, 114);
+  font-size: 25px;
+  left: 20%;
+  top: 70%;
+}
+
+#mute {
+  color: rgb(114, 114, 114);
+  font-size: 25px;
+  left: 20%;
+  top: 67%;
+}
+
+#black-background{
+  height: 100vh;
+  width: 100vw;
+  background-color: black;
+}
+
+#board {
+  background-color: black;
+  border: 5px solid white;
+  width: 700px;
+  height: 700px;
+}
+</style>
+
 <script setup>
 import { ref, onMounted, onUnmounted } from 'vue';
 import { useRouter } from 'vue-router';
+import paddleHitSound from '../assets/paddle_hit.mp3'
+import pointScoredSound from '../assets/point_scored.mp3'
+import wallHitSound from '../assets/wall_hit.mp3'
 
-const router = useRouter();
-const socket = ref(null);
-// const message = ref('');
-const messages = ref([]);
-const connectionStatus = ref('');
-let connection = 0;
+  ////////////////////////////////////////////////
+  /////// GET USER ///////////////////////////////
+  ////////////////////////////////////////////////
 
+  import { useUser } from '../useUser.js'; 
+  const { getUser, userAccount, is_connected } = useUser(); 
 
+  onMounted(async () => {
+      await getUser();
+      if (is_connected.value === false)
+        __goTo('/')
+  });
+
+  ////////////////////////////////////////////////
+  ////////////////////////////////////////////////
+  ////////////////////////////////////////////////
+
+  const router = useRouter();
+  const socket = ref(null);
+  // const message = ref('');
+  const messages = ref([]);
+  const connectionStatus = ref('');
+  let connection = 0;
+
+////////////Audio Variables///////////////
+const wallHitAudio = new Audio(wallHitSound);
+const paddleHitAudio = new Audio(paddleHitSound);
+const pointScoredAudio = new Audio(pointScoredSound);
+let soundOnOff = true;
+
+function __goTo(page) {
+  if (page == null)
+      return;
+  router.push(page);
+}
+  function getCsrfToken() {
+        const cookieValue = document.cookie
+            .split('; ')
+            .find(row => row.startsWith('csrftoken='))
+            ?.split('=')[1];
+        return cookieValue || '';
+    }
+
+  async function updateGameInfo() {
+    try {
+        const response = await fetch('api/game/update_game/', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRFToken': getCsrfToken(),
+            },
+            body: JSON.stringify({
+                mode: "legacy",
+                scorep1: player1Score,
+                scorep2: player2Score,
+            }),
+        });
+        if (response.ok) {
+            const responseData = await response.json();
+            console.log('Game updated successfully!', responseData);
+        } else {
+            const errorData = await response.json();
+            console.error('Error:', errorData.error);
+        }
+    } catch (error) {
+        console.error('Error updating game:', error);
+    }
+  }
+
+    //board properties
+    let board;
+    let boardWidth = 700;
+    let boardHeight = 700;
+    let context;
+
+    //players propertiesupdate_game
+    let playerWidth = 20;
+    let playerHeight = boardHeight/5;
+    let playerSpeed = 0;
+
+    let player1 = {
+        x : 10,
+        y: boardHeight/5*2,
+        width : playerWidth,
+        height : playerHeight,
+        speed : playerSpeed
+    }
+
+    let player2 = {
+        x : boardWidth - playerWidth - 10,
+        y: boardHeight/5*2, 
+        width : playerWidth,
+        height : playerHeight,
+        speed: playerSpeed
+    }
+
+    //ball properties
+    let ballSize = 10;
+    let ball = {
+      x : boardWidth / 2,
+      y : boardHeight / 2,
+      width : ballSize,
+      height : ballSize,
+      speedX: 1, speedY: 2
+    }
+    
+    //score
+    let player1Score = 0;
+    let player2Score = 0;
+    
 
 function  updatePoints(player, updatePts)
 {
@@ -48,31 +202,36 @@ function updateBaal(x, y)
 function connectWebSocket() {
   const currentUrl = window.location.href; 
   const lastSegment = currentUrl.split('/').filter(Boolean).pop();
-  socket.value = new WebSocket(`wss://localhost:8443/ws/websockets/?page=${encodeURIComponent(lastSegment)}`);  
+  const gamePage = `game_${lastSegment}`;
+  console.log(lastSegment);
+  socket.value = new WebSocket(`wss://localhost:8443/ws/websockets/?page=${encodeURIComponent(gamePage)}`); 
   socket.value.onopen = () => {
     console.log('WebSocket connecté');
     console.log(socket.value);
   };
-
-
+  
+  
   socket.value.onmessage = (event) => {
     // console.log("---ON MESSAGE---");
-
+    
     const data = JSON.parse(event.data);
-
+    
     if (data.type == 'connection_success') 
     {
+
       // console.log(data.type);
       // console.log(data.message);
       // connectionStatus.value = data.message;
       connection = 1;
     }
-    else if (data.type == 'updatePts')
+    else if (data.type == 'updatePts') //sound
     {
       console.log(data.type);
       console.log(data.updatePts);
       console.log(data.player);
       updatePoints(data.player, data.updatePts);
+      if (soundOnOff == true)
+        pointScoredAudio.play();
     } 
     else if (data.type == 'mouvUp' || data.type == 'mouvDown')
     {
@@ -92,8 +251,20 @@ function connectWebSocket() {
       console.log(data.type);
     }
     else if (data.type == 'startGame')
+    {
+      console.log(data.type);
+    }
+    else if (data.type == 'paddleHit')
+    {
+      console.log(data.type);
+      if (soundOnOff == true)
+        paddleHitAudio.play();
+    }
+    else if (data.type == 'wallHit')
     { 
       console.log(data.type);
+      if (soundOnOff == true)
+        wallHitAudio.play();
     }
     else if (data.type == 'info_back') //a enlever test
     {
@@ -140,6 +311,7 @@ function sendMessage(msg) {
 }
 
 onUnmounted(() => {
+  updateGameInfo();
   if (socket.value) {
     socket.value.close();
   }
@@ -147,87 +319,42 @@ onUnmounted(() => {
 
 onMounted(() => {
   connectWebSocket();
+  board = document.getElementById("board"); //link board element in template to board variable
+  board.height = boardHeight;
+  board.width = boardWidth;
+  context = board.getContext("2d"); //Drawing on board
+
+  context.fillStyle = "white";
+  context.fillRect(player1.x, player1.y, player1.width, player1.height);
+  requestAnimationFrame(update); // Gameloop
+  document.addEventListener("keydown", movePlayer1up);
+  document.addEventListener("keydown", movePlayer1down);
+  document.addEventListener("keydown", movePlayer2up);
+  document.addEventListener("keydown", movePlayer2down);
+  document.addEventListener("keydown", muteSound);
+  document.addEventListener("keydown", pauseGame);
+  //document.addEventListener("keydown", surpriiise);
+  document.addEventListener('keyup', stopPlayer);
 });
-
-    //board properties
-    let board;
-    let boardWidth = 700;
-    let boardHeight = 700;
-    let context;
-
-    //players properties
-    let playerWidth = 20;
-    let playerHeight = boardHeight/5;
-    let playerSpeed = 0;
-
-    let player1 = {
-        x : 10,
-        y: boardHeight/5*2,
-        width : playerWidth,
-        height : playerHeight,
-        speed : playerSpeed
-    }
-
-    let player2 = {
-        x : boardWidth - playerWidth - 10,
-        y: boardHeight/5*2, 
-        width : playerWidth,
-        height : playerHeight,
-        speed: playerSpeed
-    }
-
-    //ball properties
-    let ballSize = 10;
-    let ball = {
-      x : boardWidth / 2,
-      y : boardHeight / 2,
-      width : ballSize,
-      height : ballSize,
-      speedX: 1, speedY: 2
-    }
-
-    
-    //score
-    let player1Score = 0;
-    let player2Score = 0;
-
-    window.onload = function() {
-        board = document.getElementById("board"); //link board element in template to board variable
-        board.height = boardHeight;
-        board.width = boardWidth;
-        context = board.getContext("2d"); //Drawing on board
-
-        //draw player1
-        context.fillStyle = "white";
-        context.fillRect(player1.x, player1.y, player1.width, player1.height);
-        context.fillText("[P] to pause", boardWidth/5*4, 100);
-        requestAnimationFrame(update); // Gameloop
-        document.addEventListener("keydown", movePlayer1up);
-        document.addEventListener("keydown", movePlayer1down);
-        document.addEventListener("keydown", movePlayer2up);
-        document.addEventListener("keydown", movePlayer2down);
-        document.addEventListener('keyup', stopPlayer);
-    }
 
     function update() 
     {
         requestAnimationFrame(update);
-        
+        console.log();
         context.clearRect(0, 0, board.width, board.height); // clear rectangle after movement (remove previous paddle position)
         context.fillRect(player1.x, player1.y, player1.width, player1.height); 
         context.fillRect(player2.x, player2.y, player2.width, player2.height);
         context.fillStyle = "white";
-        context.fillRect(ball.x, ball.y, ball.width, ball.height);
-
+        context.fillRect(ball.x- (ball.width/2), ball.y, ball.width, ball.height);
         //draw score
         context.font = "100px Arial";
         context.fillText(player1Score, boardWidth/5, 100);
-        context.fillText(player2Score, boardWidth*4/5 -50 , 100); //subtract -45 for width of text
+        context.fillText(player2Score, boardWidth*4/5 -50 , 100); //subtract -45 for width of tex
         
         //draw middle line
         for (let i = 10; i < board.height; i += 25)
         {
-            context.fillRect(board.width / 2 - 10, i, 2, 15);
+            context.fillRect(board.width / 2 - 1, i, 2, 15);
         }
     }
     
@@ -236,7 +363,6 @@ onMounted(() => {
     let moveInterval2up = null;
     let moveInterval2down = null;
     let tickPadel = 10;
-
     function movePlayer1up(e)
     {
       if (!moveInterval1up)
@@ -319,6 +445,32 @@ onMounted(() => {
       }
     }
 
+    function pauseGame(e)
+    {
+      if (e.code == "KeyP")
+      {
+        //force Axel <3
+      }
+    }
+
+    function muteSound(e)
+    {
+      if (e.code == "KeyM")
+      {
+        console.log(soundOnOff);
+        soundOnOff = !soundOnOff;
+        console.log(soundOnOff);
+      }
+    }
+
+    function surpriiise(e)
+    {
+      if (e.code == "KeyC")
+      {
+        // A faire plus tard
+      }
+    }
+
     function stopPlayer(e) {
       if (e.code == "KeyW")
       {  
@@ -341,24 +493,5 @@ onMounted(() => {
         moveInterval2down = null;
       }
     }
-
 </script>
 
-<template>
-  <main>
-      <div id>
-          <canvas id ="board"></canvas>
-      </div>
-  </main>
-</template>
-
-<style lang="scss">
-body {
-  text-align: center;
-}
-
-#board {
-  background-color: black;
-  border: 5px solid white;
-}
-</style>

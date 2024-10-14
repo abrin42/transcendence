@@ -5,10 +5,8 @@
   import CreateSettingsButton from '../components/CreateSettingsButton.vue';
   import CreateLogButton from '../components/CreateLogButton.vue';
   import CreateHomeButton from '../components/CreateHomeButton.vue';
-
   import { useRouter } from 'vue-router';
 
-  // Routing functions
   const router = useRouter();
 
   var myVideo = document.getElementById('videoBG');
@@ -38,12 +36,11 @@
                     <i class="fas fa-play" style="margin-right: 1vw;"></i>
                     <span class="buttonText buttonTextSize">{{ $t('play') }}</span>
                 </button>
-                <button class="button button-credits" @click="__goTo('/credits')">
+                <button class="button button-credits" @click="goToCredits()">
                     <span class="buttonText">{{ $t('credits') }}</span>
                 </button>
                 <div>
                     <CreateHomeButton />
-                    <!-- <CreateSoundButton /> -->
                     <CreateSoundButton />
                     <CreateLogButton />
                     <CreateSettingsButton @click="__goTo('/settings')" />

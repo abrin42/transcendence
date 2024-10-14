@@ -3,13 +3,87 @@
     "credits": "Crédits",
     "login": "Connexion",
     "back": "Retour",
-    "settings": "Paramètres",
-    "player": "Joueur",
-    "right": "DROITE",
-    "left": "GAUCHE",
+
+    "my_account": "Mon compte",
+    "friends": "Amis",
+    "logout": "Déconnexion",
+
+    "my_friends": "Mes Amis",
+    "search_for_a_player": "Rechercher un joueur ...",
+    "no_players_found": "Aucun joueur trouvé.",
+
+    "modify_the_value": "Modifier la valeur:",
+    "save": "Sauvegarder",
+    "prohibited_action": "Action interdite",
+    "disabled_button": "Le bouton est désactivé. Vous ne pouvez pas effectuer cette action.",
+    "close": "Fermer",
+    
+    "disabled_switch": "Le commutateur est désactivé. Vous ne pouvez pas effectuer cette action.",
+
+    "no_text_to_display": "Aucun texte à afficher",
+
+
+
+    "send_code_question": "Envoyer le code par courriel ou par SMS ?",
+    "phone_authentication": "Authentification par téléphone",
+    "enter_sms": "Saisissez le code que vous avez reçu par SMS.",
+    "enter_your_code": "Entrez votre code",
+    "resend_the_code": "Renvoyer le code",
+    "next": "Suivant",
+    "email_authentication": "Authentification par courriel",
+    "enter_mail": "Saisissez le code que vous avez reçu par courriel.",
+
     "profile_picture": "Photo de Profil",
     "choose_file": "Choisir un Fichier",
-    "username": "Nom d'Utilisateur",
-    "email": "Email",
-    "password": "Mot de Passe"
+    "see_all_information": "Voir toutes les informations",
+    "email": "Courriel",
+    "nickname": "Pseudonyme",
+    "phone_number": "Numéro de téléphone",
+    "username": "Nom d'utilisateur",
+    "password": "Mot de Passe",
+    "date_joined": "Date d'adhésion",
+    "number_of_wins": "Nombre de victoires",
+    "number_of_defeats": "Nombre de défaites",
+    "rank": "Rang",
+    "change_nickname": "Changez votre pseudonyme",
+    "enter_nickname": "Saisissez votre pseudonyme",
+    "change_email": "Modifiez votre courriel",
+    "enter_email": "Saisissez votre courriel",
+    "change_phone_number": "Modifiez votre numéro de téléphone",
+    "enter_phone_number": "Saisissez votre numéro de téléphone",
+    "change_password": "Modifiez votre mot de passe",
+    "enter_password": "Entrez votre mot de passe",
+    "update_account": "Mettre à jour votre compte",
+    "delete_account": "Supprimer le compte",
+    "activate": "Activer",
+
+    "home": "Accueil",
+    "play_again": "Rejouer",
+    "congratulations": "Félicitations !",
+    "wasted": "WASTED",
+
+    "LOGIN": "CONNEXION",
+    "sign_up": "S'inscrire",
+    "enter_username": "Entrez votre nom d'utilisateur",
+    
+    "solo": "Solo",
+    "multiplayer": "Multijoueurs",
+
+    "local": "Local",
+    "online": "En ligne",
+    "tourney": "Tournoi",
+
+    "password_do_not_match": "The passwords do not match.",
+    "error_account_creation": "An error occurred during account creation.",
+    "account_created_successfully": "Account created successfully!",
+    "SIGN_UP": "S'INSCRIRE",
+    "create_account": "Créez votre compte",
+    "confirm_password": "Confirmer le mot de passe",
+
+    "settings": "Paramètres",
+    "player": "Joueur",
+    "RIGHT": "DROITE",
+    "LEFT": "GAUCHE",
+    "PAUSE_GAME": "PAUSE JEU",
+    "MUTE_SOUND": "COUPER LE SON"
 }

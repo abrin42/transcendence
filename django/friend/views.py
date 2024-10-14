@@ -13,6 +13,7 @@ import requests
 from django.http import JsonResponse, HttpResponse, HttpResponseForbidden
 from datetime import datetime, timedelta
 from .serialize import FriendshipSerializer
+
 @login_required
 def index(request):
     user = token_user(request)
@@ -87,8 +88,8 @@ def refuse(request, id_friendship):
 def list(request):
     you = token_user(request)
     friends = Friendship.objects.filter(Q(user=you, status='accepted') | Q(friend=you, status='accepted'))
-    you.last_login = timezone.now()
-    you.save()
+    #you.last_login = timezone.now()
+    #you.save()
     #return render(request, "friend/list.html", {'friends':friends, 'you':you})
     data = serializers.serialize('json', friends, use_natural_foreign_keys=True, use_natural_primary_keys=True)
 
@@ -116,4 +117,5 @@ def refused(request):
     you.save()
     #return render(request, "friend/refused.html", {'friends':friends, 'you':you})
     data = serializers.serialize('json', friends, use_natural_foreign_keys=True, use_natural_primary_keys=True)
-    return HttpResponse(data, content_type='application/json')
+    return JsonResponse(data, safe=False, content_type='application/json')
+    #return HttpResponse(data, content_type='application/json')

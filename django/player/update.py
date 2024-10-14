@@ -27,26 +27,37 @@ from django.core import serializers
 @login_required
 def update_language(request):
     user = token_user(request)
-    if request.method == "POST":
-        try:
-            data = json.loads(request.body)
-            language = data.get('language')
-            user.language = language
-            user.save()
-            response = JsonResponse({'redirect_url': '/dashboard/'}, status=302)
-            return response
-        except json.JSONDecodeError:
-            return JsonResponse({'error': 'Invalid request body'}, status=400)
-    return JsonResponse({'error': 'Invalid request method'}, status=405)
+    if user:
+        if request.method == "POST":
+            try:
+                data = json.loads(request.body)
+                language = data.get('language')
+                if language:
+                    user.language = language
+                    user.save()
+                response = JsonResponse({'redirect_url': '/dashboard/'}, status=302)
+                return response
+            except json.JSONDecodeError:
+                return JsonResponse({'error': 'Invalid request body'}, status=400)
+        return JsonResponse({'error': 'Invalid request method'}, status=405)
+    return JsonResponse({'error': 'No user'}, status=405)
+ 
 
 @login_required
-def update_nickname(request):
+def update_user(request):
     user = token_user(request)
     if request.method == "POST":
         try:
             data = json.loads(request.body)
-            nickname = data.get('nickname')
-            user.nickname = nickname
+            print(data)
+            user.nickname = data.get('nickname')
+            user.email = data.get('email')
+            user.password = data.get('password')
+            user.phone_number = data.get('phone_number')
+            
+            user.email_2fa_active = data.get('email_2fa_active')
+            user.sms_2fa_active = data.get('sms_2fa_active')
+
             user.save()
             response = JsonResponse({'redirect_url': '/dashboard/'}, status=302)
             return response

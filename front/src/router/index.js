@@ -134,6 +134,12 @@ const router = createRouter({
 			name: 'matchmaking',
 			component: MatchmakingView
 		},
+    {
+      path: '/leaderboard', // for testing front end
+      // path: '/leaderboard/:id',
+      name: 'leaderboard',
+      component: LeaderboardView
+    },
   ]
 })
 

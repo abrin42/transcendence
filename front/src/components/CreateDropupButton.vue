@@ -1,13 +1,13 @@
 <template>
 	<div class="dropup" @mouseleave="hideMenu" @mouseenter="showMenu">
-		<button id="p0" class="dropbtn">{{ userAccount.flag }}</button>
+		<button id="p0" class="dropbtn">{{ current_flag }}</button>
 		<div class="dropup-content locale-changer" v-show="menuVisible">
-			<a v-if="userAccount.language !== 'ES'" @click="switchLang('ES')">🇪🇸</a>
-			<a v-if="userAccount.language !== 'FR'" @click="switchLang('FR')">🇫🇷</a>
-			<a v-if="userAccount.language !== 'EN'" @click="switchLang('EN')">🇬🇧</a>
-			<a v-if="userAccount.language !== 'DE'" @click="switchLang('DE')">🇩🇪</a>
-			<a v-if="userAccount.language !== 'IT'" @click="switchLang('IT')">🇮🇹</a>
-			<a v-if="userAccount.language !== 'MA'" @click="switchLang('MA')">⚔️</a>
+			<a v-if="current_lang !== 'ES'" @click="switchLang('ES')">🇪🇸</a>
+			<a v-if="current_lang !== 'FR'" @click="switchLang('FR')">🇫🇷</a>
+			<a v-if="current_lang !== 'EN'" @click="switchLang('EN')">🇬🇧</a>
+			<a v-if="current_lang !== 'DE'" @click="switchLang('DE')">🇩🇪</a>
+			<a v-if="current_lang !== 'IT'" @click="switchLang('IT')">🇮🇹</a>
+			<a v-if="current_lang !== 'MA'" @click="switchLang('MA')">⚔️</a>
 		</div>
 	</div>
 </template>
@@ -15,41 +15,45 @@
 <script setup>
 	import { ref } from 'vue';
 	import { useI18n } from 'vue-i18n';
-	import { reactive, onMounted } from 'vue';
+	import { inject, onMounted } from 'vue';
+    const current_flag = inject('current_flag');
+    const toggle_flag = inject('toggle_flag');
 
+	const current_lang = inject('current_lang');
+    const toggle_lang = inject('toggle_lang');
+	
 	const { locale } = useI18n();
-
-	const userAccount = reactive({
-		language: "",
-		flag: "",
-	});
-
+	
+	function injectToggleFlag(lang) {
+		toggle_flag(lang); 
+	}
+	
+	function injectToggleLang(lang) {
+		toggle_lang(lang); 
+	}
+	
 	const menuVisible = ref(false);
 	let timeoutId;
+	
+	////////////////////////////////////////////////
+	/////// GET USER ///////////////////////////////
+	////////////////////////////////////////////////
+	
+	import { useUser } from '../useUser.js'; 
+	const { getUser, userAccount, is_connected } = useUser(); 
+	
+	onMounted(async () => {
+		await getUser();
+		if (is_connected.value == true)
+			switchLang(userAccount.language);
+		else
+			switchLang(current_lang.value);
+	});
 
-	const is_connected = ref(false);
-    async function getLanguage() {
-        try {
-            const response = await fetch(`api/player/connected_user/`, {
-                method: 'GET',
-            });
-            if (!response) {
-                console.warn(`HTTP error! Status: ${response.status}`);
-                return;
-            }
-            const user = await response.json();
-            if (user && user.length > 0) {
-				userAccount.language = user[0].fields.language;
-                is_connected.value = true;
-                console.log(is_connected.value)
-            } else {
-                console.log('No user data retrieved.');
-				return;
-            }
-        } catch (error) {
-            console.error('Error retrieving user data:', error);
-        }
-    }
+	////////////////////////////////////////////////
+	////////////////////////////////////////////////
+	////////////////////////////////////////////////
+
 
 	async function setLanguage(new_language) {
 		try {
@@ -63,7 +67,7 @@
 					language: new_language,
 				})
 			});
-			userAccount.language = new_language;
+			current_lang.value = new_language;
 		} catch (error) {
 			console.error('Erreur lors du changement de langues:', error);
 		}
@@ -78,20 +82,20 @@
 	}
 
 	function switchLang(lang) {
-		if (is_connected)
-			locale.value = lang;
-			const langs = ["EN", "FR", "ES", "DE", "IT", "MA"];
-			const flags = ["🇬🇧", "🇫🇷", "🇪🇸", "🇩🇪", "🇮🇹", "⚔️"];
-			for (let i = 0; i < 6; ++i)
-				if (lang == langs[i])
-					userAccount.flag = flags[i];
+		locale.value = lang;
+		current_lang.value = lang;
+		const langs = ["EN", "FR", "ES", "DE", "IT", "MA"];
+		const flags = ["🇬🇧", "🇫🇷", "🇪🇸", "🇩🇪", "🇮🇹", "⚔️"];
+		for (let i = 0; i < 6; ++i)
+			if (lang == langs[i])
+				current_flag.value = flags[i];
+		if (is_connected.value == true) {
 			setLanguage(lang);
+		} else {
+			injectToggleFlag(current_flag.value);
+			injectToggleLang(current_lang.value)
+		}
 	}
-
-	onMounted(async () => {
-		await getLanguage();
-		//switchLang(userAccount.language);
-	});
 
 	function showMenu() {
 		clearTimeout(timeoutId);

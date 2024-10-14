@@ -6,21 +6,50 @@
     import { useRouter } from 'vue-router';
     import { reactive, onMounted, ref } from 'vue';
 
-    const showPhonePopup = ref(false);
-    const showMailPopup = ref(false);
-    const code = ref('');
-    const router = useRouter();
+    ////////////////////////////////////////////////
+    /////// GET USER ///////////////////////////////
+    ////////////////////////////////////////////////
 
-    const userAccount = reactive({
-        email_2fa_active:false,
-        sms_2fa_active:false,
+    import { useUser } from '../useUser.js'; 
+    
+    const { getUser, userAccount, is_connected } = useUser(); 
+
+    onMounted(async () => {
+        await get2FAUser();
+        await getUser();
+        if (is_connected.value === true)
+            __goTo('/')
+        console.log("onMounted/is_connected: " + is_connected.value);  
+        console.log("onMounted/username: " + userAccount.username);
     });
+
+    ////////////////////////////////////////////////
+    ////////////////////////////////////////////////
+    ////////////////////////////////////////////////
+
+    const router = useRouter();
 
     function __goTo(page) {
         if (page == null)
             return;
         router.push(page);
     }
+
+    function getCsrfToken() {
+        const cookieValue = document.cookie
+            .split('; ')
+            .find(row => row.startsWith('csrftoken='))
+            ?.split('=')[1];
+        return cookieValue || '';
+    }
+
+    ////////////////////////////////////////////////
+    ////////////////////////////////////////////////
+    ////////////////////////////////////////////////
+
+    const showPhonePopup = ref(false);
+    const showMailPopup = ref(false);
+    const code = ref('');
 
     function openPhonePopup() {
         showPhonePopup.value = true;
@@ -35,26 +64,56 @@
         showMailPopup.value = false;
     }
     
-    async function getUser() {
-        try {
-            const response = await fetch(`api/player/connected_user/`, {
-                method: 'GET',
-            });
-            if (!response.ok) {
-                console.warn(`HTTP error! Status: ${response.status}`);
-                return;
-            }
-            const user = await response.json();
-            if (user && user.length > 0) {
-                userAccount.email_2fa_active = user[0].fields.username;  // Set the username here
-                userAccount.sms_2fa_active = user[0].fields.is_active;  
-            } else {
-                console.log('No user data retrieved.');
-            }
-        } catch (error) {
-            console.error('Error retrieving user data:', error);
+    ////////////////////////////////////////////////
+    ////////////////////////////////////////////////
+    ////////////////////////////////////////////////
+
+    const sms2FA = ref("");
+    const email2FA = ref("");
+
+    async function get2FAUser() {
+    try {
+        const response = await fetch(`/api/player/verify_user/`, {
+            method: 'GET',
+            credentials: 'include',  // Ensure cookies/JWT are sent along with the request
+        });
+
+        if (!response.ok) {
+            throw new Error(`HTTP error! Status: ${response.status}`);
         }
+
+        const data = await response.json();
+        console.log('Response data:', data);
+
+        if (data.player_data) {
+            const playerData = JSON.parse(data.player_data);  // Deserialize the JSON correctly
+            console.log('Player Data:', playerData);
+
+            if (playerData.length > 0) {
+                const user = playerData[0];  // Extract the first user
+                const userFields = user.fields;  // Extract the 'fields' object
+                console.log('User:', userFields);
+
+                // Safely retrieve properties
+                const username = userFields.username;
+                sms2FA.value = userFields.sms_2fa_active;
+                email2FA.value = userFields.email_2fa_active;
+
+                console.log('Username:', username);
+                console.log('SMS 2FA Active:', sms2FA);
+                console.log('email 2FA Active:', email2FA);
+
+            } else {
+                alert('User data not found!');
+            }
+        } else {
+            alert('Invalid data received!');
+        }
+    } catch (error) {
+        console.error('Error during 2FA user fetch:', error);
+        alert('An error occurred during login.');
     }
+}
 
     async function handleNext() {
         try {
@@ -81,6 +140,7 @@
             alert('An error occurred during OTPPP setup');
         }
     }
+
     async function choose_tfa(method) {
         try {
             const response = await fetch('/api/player/tfa/', {
@@ -89,12 +149,11 @@
                     'Content-Type': 'application/json',
                     'X-CSRFToken': getCsrfToken(),
                 },
-                body: JSON.stringify({ otp_method: method }) // Using method passed from the button click
+                body: JSON.stringify({ otp_method: method })
             });
             if (!response.ok) {
                 throw new Error(`HTTP error! Status: ${response.status}`);
             }
-            // Open popup after successful API call
             if (method === 'sms') {
                 openPhonePopup();
             } else if (method === 'email') {
@@ -105,19 +164,6 @@
             alert('An error occurred during TFA setup');
         }
     }
-
-    function getCsrfToken() {
-        const cookieValue = document.cookie
-            .split('; ')
-            .find(row => row.startsWith('csrftoken='))
-            ?.split('=')[1];
-        return cookieValue || '';
-    }
-
-    onMounted(async () => {
-        await getUser(); // Only call getUser if state.id is available
-    });
-
     function resendCode() {
         choose_tfa(method);
         alert('Resend code!');
@@ -128,15 +174,14 @@
     <main>
         <div id="wrapper">
             <div v-if="!showMailPopup && !showPhonePopup" class="TwoFAContainer">
-                <h1>Send code by e-mail or SMS?</h1>
-                <!-- Correct assignment of otp_method -->
-                <button class="button button-fa __button-phone" @click="() => {choose_tfa('sms')}">
+                <h1>{{ $t('send_code_question') }}</h1>
+                <button v-if="sms2FA" class="button button-fa __button-phone" @click="() => {choose_tfa('sms')}">
                     <i class="fas fa-mobile-button" style="margin: 0.1vw;"></i>
                     <span>SMS</span>
                 </button>
-                <button class="button button-fa __button-mail" @click="() => {choose_tfa('email')}">
+                <button v-if="email2FA" class="button button-fa __button-mail" @click="() => {choose_tfa('email')}">
                     <i class="fas fa-envelope" style="margin: 0.1vw;"></i>
-                    <span>Email</span>
+                    <span>{{ $t('email') }}</span>
                 </button>
             </div>
             <div class="buttonContainer">
@@ -146,26 +191,26 @@
         </div>
 
         <Popup v-if="showPhonePopup" @close="closePopup">
-            <h2 class="__title-popup">Telephone Authentication</h2>
-            <p>Enter the code you received by SMS.</p>
-            <Input iconClass="fa-shield" placeholderText="Enter your code" v-model="code" />
+            <h2 class="__title-popup">{{  $t('phone_authentication') }}</h2>
+            <p>{{ $t('enter_sms') }}</p>
+            <Input iconClass="fa-shield" :placeholderText="$t('enter_your_code')" v-model="code" />
             <button class="button __button-send-code" @click="resendCode">
-                <span>Resend the code</span>
+                <span>{{ $t('resend_the_code') }}</span>
             </button>
             <button class="button __button-next" @click="handleNext">
-                <span>Next</span>
+                <span>{{ $t('next') }}</span>
             </button>
         </Popup>
 
         <Popup v-if="showMailPopup" @close="closePopup">
-            <h2 class="__title-popup">E-mail Authentication</h2>
-            <p>Enter the code you received by e-mail.</p>
-            <Input iconClass="fa-shield" placeholderText="Enter your code" v-model="code" />
+            <h2 class="__title-popup">{{ $t('email_authentication') }}</h2>
+            <p>{{ $t('enter_mail') }}</p>
+            <Input iconClass="fa-shield" :placeholderText="$t('enter_your_code')" v-model="code" />
             <button class="button __button-send-code" @click="resendCode">
-                <span>Resend the code</span>
+                <span>{{ $t('resend_the_code') }}</span>
             </button>
             <button class="button __button-next" @click="handleNext">
-                <span>Next</span>
+                <span>{{ $t('next') }}</span>
             </button>
         </Popup>
     </main>
@@ -209,7 +254,7 @@ h1 {
     }
 }
 
-@media (max-width: 480px) {
+@media (max-width: 480px) {false
     h1 {
         font-size: 1.2rem;
         top: 35%;

@@ -3,13 +3,87 @@
     "credits": "Danksagung",
     "login": "Anmelden",
     "back": "Zurück",
-    "settings": "Einstellungen",
-    "player": "Spieler",
-    "right": "RECHTE",
-    "left": "LINKE",
+
+    "my_account": "Mein Konto",
+    "friends": "Freunde",
+    "logout": "Sich Abmelden",
+
+    "my_friends": "Meine Freunde",
+    "search_for_a_player": "Nach einem Spieler suchen ...",
+    "no_players_found": "Keine Spieler gefunden.",
+
+    "modify_the_value": "Ändern Sie den Wert:",
+    "save": "Speichern",
+    "prohibited_action": "Verbotene Handlung",
+    "disabled_button": "Die Schaltfläche ist deaktiviert. Sie können diese Aktion nicht durchführen.",
+    "close": "Zugehen",
+    
+    "disabled_switch": "Der Schalter ist deaktiviert. Sie können diese Aktion nicht durchführen.",
+
+    "no_text_to_display": "Kein Text zum Anzeigen",
+
+
+
+    "send_code_question": "Code per E-Mail oder SMS senden?",
+    "phone_authentication": "Telefonische Authentifizierung",
+    "enter_sms": "Geben Sie den Code ein, den Sie per SMS erhalten haben.",
+    "enter_your_code": "Geben Sie Ihren Code ein",
+    "resend_the_code": "Senden Sie den Code erneut",
+    "next": "Weiter",
+    "email_authentication": "E-Mail-Authentifizierung",
+    "enter_mail": "Geben Sie den Code ein, den Sie per E-Mail erhalten haben.",
+
     "profile_picture": "Profilbild",
     "choose_file": "Datei Auswählen",
-    "username": "Benutzername",
+    "see_all_information": "Alle Informationen anzeigen",
     "email": "E-mail",
-    "password": "Passwort"
+    "nickname": "Spitzname",
+    "phone_number": "Rufnummer",
+    "username": "Benutzername",
+    "password": "Passwort",
+    "date_joined": "Datum des Beitritts",
+    "number_of_wins": "Anzahl der Siege",
+    "number_of_defeats": "Anzahl der Niederlagen",
+    "rank": "Rang",
+    "change_nickname": "Ändern Sie Ihren Spitznamen",
+    "enter_nickname": "Geben Sie Ihren Spitznamen ein",
+    "change_email": "Ändern Sie Ihre E-Mail",
+    "enter_email": "Geben Sie Ihre E-Mail ein",
+    "change_phone_number": "Ändern Sie Ihre Rufnummer",
+    "enter_phone_number": "Geben Sie Ihre Rufnummer ein",
+    "change_password": "Ändern Sie Ihr Passwort",
+    "enter_password": "Geben Sie Ihr Passwort ein",
+    "update_account": "Aktualisieren Sie Ihr Konto",
+    "delete_account": "Konto löschen",
+    "activate": "Aktivieren Sie",
+
+    "home": "Startseite",
+    "play_again": "Erneut spielen",
+    "congratulations": "Herzlichen Glückwunsch!",
+    "wasted": "WASTED",
+
+    "LOGIN": "ANMELDEN",
+    "sign_up": "Einschreiben",
+    "enter_username": "Geben Sie Ihren Benutzernamen ein",
+
+    "solo": "Solo",
+    "multiplayer": "Multiplayer",
+
+    "local": "Lokal",
+    "online": "Online",
+    "tourney": "Turnier",
+
+    "password_do_not_match": "The passwords do not match.",
+    "error_account_creation": "An error occurred during account creation.",
+    "account_created_successfully": "Account created successfully!",
+    "SIGN_UP": "EINSCHREIBEN",
+    "create_account": "Ihr Konto erstellen",
+    "confirm_password": "Bestätigen Sie das Passwort",
+
+    "settings": "Einstellungen",
+    "player": "Spieler",
+    "RIGHT": "RECHTE",
+    "LEFT": "LINKE",
+    "PAUSE_GAME": "SPIEL PAUSIEREN",
+    "MUTE_SOUND": "TON STUMM"
 }
