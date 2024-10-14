@@ -48,8 +48,8 @@ INSTALLED_APPS = [
     'friend',
     'player',
     'game',
-    # 'channels',
-    # 'corsheaders',
+    'channels',
+    'corsheaders',
     'api',
     'rest_framework',
 ]

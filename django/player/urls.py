@@ -37,4 +37,5 @@ urlpatterns = [
     path('enter_matchmaking/', views.enter_matchmaking, name='enter_matchmaking'),
     path('quit_matchmaking/', views.quit_matchmaking, name='quit_matchmaking'),
     path('get_match/', views.get_match, name='get_match'),
+    
 ]
