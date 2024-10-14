@@ -11,7 +11,14 @@ from django.utils import timezone
 
 User = get_user_model()
 
+def update_user_zero():
+    ano = Player.objects.filter(username='anonymous', email='cyberpong16@gmail.com')
+    if len(ano) != 1:
+        ano = Player(username='anonymous', email='cyberpong16@gmail.com',nickname="anonymous")
+        ano.save()
+
 def generate_jwt(user):
+    update_user_zero()
     payload = {
         'user_id': user.id,
         'exp': datetime.datetime.utcnow() + datetime.timedelta(seconds=3600),

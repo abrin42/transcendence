@@ -230,6 +230,7 @@ async function getAllUsers() {
             
             
                 const userData = JSON.parse(users);
+                console.log("all user before", userData);
                 userData.forEach((element) => {
                     var obj = {}
                     obj['username'] = element.fields.username;
@@ -237,7 +238,6 @@ async function getAllUsers() {
                     obj['nickname'] = element.fields.nickname;
                     allPlayers.value.push(obj);
                 });
-                console.log("all user");
                 console.log("all user", allPlayers._rawValue);
             
         } catch (error) {
