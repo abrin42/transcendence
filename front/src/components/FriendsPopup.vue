@@ -1,3 +1,4 @@
+<!-- @lribette todo translate -->
 <template>
     <div>
         <!-- Popup des amis -->
@@ -25,7 +26,7 @@
                     </div>
                 </div>
             </div>
-
+x
             <!-- Liste des amis actuels -->
             <div v-if="searchQuery.length === 0" class="friends-list">
                 <div v-for="friend in friends" :key="friend.id" class="friend-item">
