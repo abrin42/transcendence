@@ -27,10 +27,10 @@ function __goTo(page) {
 
 // Exemple de participants
 const participants = ref([
-    { name: 'Player 1' },
-    { name: 'Player 2' },
-    { name: 'Player 3' },
-    { name: 'Player 4' },
+    { name: 'Lucas' },
+    { name: null },
+    { name: null },
+    { name: null },
 ]);
 
 const matches = ref([
@@ -146,7 +146,7 @@ onUnmounted(() => {
                                     </div>
                                 </div>
                                 <div v-else>
-                                    <span class="finale-text" >Les matches pour les finales ne sont pas encore définies.</span>
+                                    <span class="finale-text" >Les matchs pour les finales ne sont pas encore définies.</span>
                                 </div>
                             </div>
                         </div>

@@ -1,9 +1,7 @@
 {
-    "play": "Giocare",
-    "credits": "Ringraziamenti",
-    "login": "Login",
     "back": "Indietro",
-
+    
+    "login": "Login",
     "my_account": "Il Mio Account",
     "friends": "Gli Amici",
     "logout": "Disconnessione",
@@ -56,6 +54,9 @@
     "update_account": "Aggiornare l'account",
     "delete_account": "Cancellare l'account",
     "activate": "Attivare",
+
+    "play": "Giocare",
+    "credits": "Ringraziamenti",
 
     "home": "Casa",
     "play_again": "Riproduzione",
