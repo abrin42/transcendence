@@ -65,7 +65,6 @@ import wallHitSound from '../assets/wall_hit.mp3'
       await getUser();
       if (is_connected.value === false)
         __goTo('/')
-      await updateGameInfo();
   });
 
   ////////////////////////////////////////////////
@@ -124,11 +123,6 @@ function __goTo(page) {
     }
   }
 
-  function __goTo(page) {
-    if (page == null)
-        return;
-    router.push(page);
-  }
     //board properties
     let board;
     let boardWidth = 700;
@@ -183,7 +177,6 @@ function  updatePoints(player, updatePts)
   {
     player2Score = updatePts;
   }
-  updateGameInfo();
 }
 
 function  updatePadel(player, newY)
