@@ -1,9 +1,7 @@
 {
-    "play": "Jugar",
-    "credits": "Créditos",
-    "login": "Conexión",
     "back": "Atrás",
-
+    
+    "login": "Conexión",
     "my_account": "Mi Cuenta",
     "friends": "Amigos",
     "logout": "Cerrar Sesión",
@@ -56,6 +54,9 @@
     "update_account": "Actualice tu cuenta",
     "delete_account": "Eliminar cuenta",
     "activate": "Activar",
+    
+    "play": "Jugar",
+    "credits": "Créditos",
 
     "home": "Inicio",
     "play_again": "Jugar de nuevo",

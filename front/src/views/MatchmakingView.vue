@@ -107,51 +107,56 @@ async function insertPlayer() {
         });
         if (response.ok) {
             const data = await response.json();
-            console.log(data);
-            if (data.player2 == null)
-            {
-                waitingPlayer = 1;
-                await new Promise(resolve => setTimeout(resolve, 1000));
-                insertPlayer();
+
+            if (data.serializer_data) {
+                const gameData = JSON.parse(data.serializer_data);  
+                console.log('Player Data:', gameData);
+          
+                if (gameData.length > 0) {
+                    const game = gameData[0].fields;  
+                    console.log('game:', game);
+                    if (game.player2 == null) {
+                        waitingPlayer = 1;
+                        await new Promise(resolve => setTimeout(resolve, 1000));
+                        insertPlayer();
+                    } else {
+                        waitingPlayer = 0;
+        
+                        //slide first player
+                        const player1_pic = document.getElementById('player1-picture');
+                        player1_pic.classList.add(...['slide-left']);
+                        const player1_name = document.getElementById('player1-name');
+                        player1_name.classList.add(...['slide-left']);
+                        const player1_rank = document.getElementById('player1-rank');
+                        player1_rank.classList.add(...['slide-left']);
+        
+                        //fadein second player
+                        const player2_pic = document.getElementById('player2-picture');
+                        player2_pic.classList.add(...['fade-in']);
+                        const player2_name = document.getElementById('player2-name');
+                        player2_name.classList.add(...['fade-in']);
+                        const player2_rank = document.getElementById('player2-rank');
+                        player2_rank.classList.add(...['fade-in']);
+                        const versus_text = document.getElementById('versus-text');
+                        versus_text.classList.add(...['fade-in']);
+                        
+                        //fadeout loading assets
+                        loadingmodule = false;
+                        const dotdotdot = document.getElementById('loading');
+                        dotdotdot.classList.add(...['fade-out']);
+                        const waiting_text = document.getElementById('opponent-text');
+                        waiting_text.classList.add(...['fade-out']);
+        
+                        console.log("lancement dans 3");
+                        await new Promise(resolve => setTimeout(resolve, 1000));
+                        console.log("lancement dans 2");
+                        await new Promise(resolve => setTimeout(resolve, 1000));
+                        console.log("lancement dans 1");
+                        await new Promise(resolve => setTimeout(resolve, 1000));
+                        //goToLegacy(data.id);
+                    }
+                }
             }
-            else
-            {
-                waitingPlayer = 0;
-
-                //slide first player
-                const player1_pic = document.getElementById('player1-picture');
-                player1_pic.classList.add(...['slide-left']);
-                const player1_name = document.getElementById('player1-name');
-                player1_name.classList.add(...['slide-left']);
-                const player1_rank = document.getElementById('player1-rank');
-                player1_rank.classList.add(...['slide-left']);
-
-                //fadein second player
-                const player2_pic = document.getElementById('player2-picture');
-                player2_pic.classList.add(...['fade-in']);
-                const player2_name = document.getElementById('player2-name');
-                player2_name.classList.add(...['fade-in']);
-                const player2_rank = document.getElementById('player2-rank');
-                player2_rank.classList.add(...['fade-in']);
-                const versus_text = document.getElementById('versus-text');
-                versus_text.classList.add(...['fade-in']);
-                
-                //fadeout loading assets
-                loadingmodule = false;
-                const dotdotdot = document.getElementById('loading');
-                dotdotdot.classList.add(...['fade-out']);
-                const waiting_text = document.getElementById('opponent-text');
-                waiting_text.classList.add(...['fade-out']);
-
-                console.log("lancement dans 3");
-                await new Promise(resolve => setTimeout(resolve, 1000));
-                console.log("lancement dans 2");
-                await new Promise(resolve => setTimeout(resolve, 1000));
-                console.log("lancement dans 1");
-                await new Promise(resolve => setTimeout(resolve, 1000));
-                //goToLegacy(data.id);
-            }
-
         }
     } catch (error) {
         console.error('Erreur lors de la connexion:', error);

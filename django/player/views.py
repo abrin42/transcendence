@@ -326,7 +326,7 @@ def connected_user(request):
     user = token_user(request)
     if user:
         user_data = json.loads(serialize('json', [user]))[0]['fields']
-        return JsonResponse(user_data, safe=False) 
+        return JsonResponse(user_data, safe=True) 
     else:
         return JsonResponse({'error': 'User not found'}, status=404)
 

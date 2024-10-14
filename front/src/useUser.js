@@ -29,16 +29,18 @@ export function useUser() {
         userAccount.sms_2fa_active = user.sms_2fa_active;
         userAccount.student = user.student;
         userAccount.language = user.language;
+        userAccount.profilePicture = user.profile_picture;
 
-        console.log("updateUserAccount.nickname: " + userAccount.nickname);
-        console.log("updateUserAccount.username: " + userAccount.username);
-        console.log("updateUserAccount.email: " + userAccount.email);
-        console.log("updateUserAccount.password: " + userAccount.password);
-        console.log("updateUserAccount.phone_number: " + userAccount.phone_number);
-        console.log("updateUserAccount.email_2fa_active: " + userAccount.email_2fa_active);
-        console.log("updateUserAccount.sms_2fa_active: " + userAccount.sms_2fa_active);
-        console.log("updateUserAccount.student: " + userAccount.student);
-        console.log("updateUserAccount.language: " + userAccount.language);
+        // console.log("updateUserAccount.nickname: " + userAccount.nickname);
+        // console.log("updateUserAccount.username: " + userAccount.username);
+        // console.log("updateUserAccount.email: " + userAccount.email);
+        // console.log("updateUserAccount.password: " + userAccount.password);
+        // console.log("updateUserAccount.phone_number: " + userAccount.phone_number);
+        // console.log("updateUserAccount.email_2fa_active: " + userAccount.email_2fa_active);
+        // console.log("updateUserAccount.sms_2fa_active: " + userAccount.sms_2fa_active);
+        // console.log("updateUserAccount.student: " + userAccount.student);
+        // console.log("updateUserAccount.language: " + userAccount.language);
+        console.log("updateUserAccount.profilePicture: " + userAccount.profilePicture);
     }
 
     async function getUser() {
@@ -50,19 +52,26 @@ export function useUser() {
     
             if (!response.ok) {
                 console.warn(`HTTP error! Status: ${response.status}`);
+                const text = await response.text();  // Try to log the raw HTML response
+                console.error('Response text:', text);
                 is_connected.value = false;
                 return;
             }
     
-            const user = await response.json();
-            if (user && !user.error) {
-                updateUserAccount(user);
-                is_connected.value = true;
+            let user_data;
+            try {
+                user_data = await response.json();
+            } catch (jsonError) {
+                console.error('Invalid JSON response:', jsonError);
+                is_connected.value = false;
+                return;
+            }
     
-                //console.log(`getUser/nickname: ${userAccount.value.nickname}`);
-                //console.log(`getUser/is_connected: ${is_connected.value}`);
+            if (user_data && user_data.is_active) {
+                updateUserAccount(user_data);
+                is_connected.value = true;
             } else {
-                console.log('No user data retrieved.');
+                console.log('User is inactive or not found.');
                 is_connected.value = false;
             }
         } catch (error) {

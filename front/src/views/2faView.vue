@@ -73,9 +73,9 @@
 
     async function get2FAUser() {
     try {
-        const response = await fetch(`/api/player/verify_user/`, {
+        const response = await fetch(`api/player/verify_user/`, {
             method: 'GET',
-            credentials: 'include',  // Ensure cookies/JWT are sent along with the request
+            credentials: 'include',  
         });
 
         if (!response.ok) {
@@ -86,12 +86,12 @@
         console.log('Response data:', data);
 
         if (data.player_data) {
-            const playerData = JSON.parse(data.player_data);  // Deserialize the JSON correctly
+            const playerData = JSON.parse(data.player_data);  
             console.log('Player Data:', playerData);
 
             if (playerData.length > 0) {
-                const user = playerData[0];  // Extract the first user
-                const userFields = user.fields;  // Extract the 'fields' object
+                const user = playerData[0];  
+                const userFields = user.fields; 
                 console.log('User:', userFields);
 
                 // Safely retrieve properties
@@ -117,7 +117,7 @@
 
     async function handleNext() {
         try {
-            const response = await fetch('/api/player/otp/', {
+            const response = await fetch('api/player/otp/', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -143,7 +143,7 @@
 
     async function choose_tfa(method) {
         try {
-            const response = await fetch('/api/player/tfa/', {
+            const response = await fetch('api/player/tfa/', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',

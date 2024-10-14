@@ -11,10 +11,9 @@ def upload_to_profile_pictures(instance, filename):
 class Player(AbstractUser):
     student = models.BooleanField(default=False)
     nickname = models.CharField(blank=True, null=True, max_length=30)
-    profile_picture = models.ImageField(upload_to=upload_to_profile_pictures, blank=True, null=False, default="profile_pictures/fallback.png")
     email = models.CharField(blank=True, null=True, max_length=40)
     phone_number = PhoneNumberField(blank=True, null=True)
-    #picture = models.BinaryField(null=True)
+    profile_picture = models.TextField(null=True)
     #image_data_url = models.CharField(null=True)
 
     email_2fa_active = models.BooleanField(default=False)

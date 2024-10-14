@@ -49,19 +49,19 @@
                     email: userAccount.email,
                     phone_number: userAccount.phone_number,
                     password: userAccount.password,
+                    profile_picture: userAccount.profilePicture,
 
                     email_2fa_active: userAccount.email_2fa_active,
                     sms_2fa_active: userAccount.sms_2fa_active,
                 })
             });
             if (response.ok) {
+                const errorData = await response.json();
+                console.log(errorData);
+            } else {
                 console.log(userAccount.nickname);
                 const responseData = await response.json();
                 alert('Account updated successfully!');
-            } else {
-                const errorData = await response.json();
-                console.log(errorData);
-                alert('Error: ' + errorData.error);
             }
         } catch (error) {
             console.error('Error updating account:', error);
@@ -97,7 +97,9 @@
         if (file) {
             const reader = new FileReader();
             reader.onload = (e) => {
+                console.log("updateUserAccount.profilePicture: " + userAccount.profilePicture);
                 userAccount.profilePicture = e.target.result;
+                console.log("updateUserAccount.profilePicture: " + userAccount.profilePicture);
             };
             reader.readAsDataURL(file);
         }
