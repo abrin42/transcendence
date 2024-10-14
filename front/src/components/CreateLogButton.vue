@@ -4,7 +4,7 @@
             <span class="buttonText">{{ is_connected ? userAccount.nickname : $t('login') }}</span>
         </button>
 
-        <div v-if="dropdownVisible" class="dropdown">
+        <div id="dropdown-content" v-if="dropdownVisible" class="dropdown">
             <button class="button buttonText buttondropdown" @click="__goTo('/dashboard')">{{ $t('my_account') }}</button>
             <!-- Appel à la méthode toggleFriendsPopup pour afficher la popup -->
             <button class="button buttonText buttondropdown" @click="toggleFriendsPopup">{{ $t('friends') }}</button>
@@ -12,8 +12,8 @@
         </div>
 
         <!-- Composant FriendsPopup, écoute l'événement 'close' pour masquer la popup -->
-        <FriendsPopup v-if="friendsPopupVisible" @close="toggleFriendsPopup" />
     </div>
+    <FriendsPopup class="friends-popup" v-if="friendsPopupVisible" @close="toggleFriendsPopup" />
 </template>
 
 <script setup>
@@ -40,6 +40,7 @@
 
     const router = useRouter();
 
+
     function __goTo(page) {
         if (page == null) {
             return;
@@ -49,7 +50,7 @@
 
     const button = ref(null);
     const dropdownVisible = ref(false);
-    const friendsPopupVisible = ref(true);
+    const friendsPopupVisible = ref(false);
     let hoverTimeout = null;
     
     const handleLogout = async () => {
@@ -72,7 +73,7 @@
         const cookieValue = document.cookie
             .split('; ')
             .find(row => row.startsWith('csrftoken='))
-            ?.split('=')[1];
+            ?.split('=')[1];    
         return cookieValue || '';
     }
 
@@ -89,7 +90,7 @@
 
     function showDropdown() {
         hoverTimeout = setTimeout(() => {
-            if (is_connected)
+            if (is_connected.value === true)
                 dropdownVisible.value = true;
         }, 5);
     }
@@ -159,4 +160,6 @@
         background-color: rgba(255, 255, 255, 0.4);
         transition: border-color, background-color 0.5s;
     }
+
+
 </style>
