@@ -59,6 +59,8 @@ def update_game(request):
     if request.method == "POST":
         try:
             latest_game = Game.objects.order_by('-id').first()
+            if not latest_game:
+                return JsonResponse({'error': 'No game found to update.'}, status=404)
 
             #game_id = data.get('gameID')
             #print(game_id)
