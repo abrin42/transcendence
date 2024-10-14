@@ -192,25 +192,25 @@
 
         <Popup v-if="showPhonePopup" @close="closePopup">
             <h2 class="__title-popup">{{  $t('phone_authentication') }}</h2>
-            <p>Enter the code you received by SMS.</p>
-            <Input iconClass="fa-shield" placeholderText="Enter your code" v-model="code" />
+            <p>{{ $t('enter_sms') }}</p>
+            <Input iconClass="fa-shield" :placeholderText="$t('enter_your_code')" v-model="code" />
             <button class="button __button-send-code" @click="resendCode">
-                <span>Resend the code</span>
+                <span>{{ $t('resend_the_code') }}</span>
             </button>
             <button class="button __button-next" @click="handleNext">
-                <span>Next</span>
+                <span>{{ $t('next') }}</span>
             </button>
         </Popup>
 
         <Popup v-if="showMailPopup" @close="closePopup">
-            <h2 class="__title-popup">E-mail Authentication</h2>
-            <p>Enter the code you received by e-mail.</p>
-            <Input iconClass="fa-shield" placeholderText="Enter your code" v-model="code" />
+            <h2 class="__title-popup">{{ $t('email_authentication') }}</h2>
+            <p>{{ $t('enter_mail') }}</p>
+            <Input iconClass="fa-shield" :placeholderText="$t('enter_your_code')" v-model="code" />
             <button class="button __button-send-code" @click="resendCode">
-                <span>Resend the code</span>
+                <span>{{ $t('resend_the_code') }}</span>
             </button>
             <button class="button __button-next" @click="handleNext">
-                <span>Next</span>
+                <span>{{ $t('next') }}</span>
             </button>
         </Popup>
     </main>

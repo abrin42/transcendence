@@ -3,17 +3,8 @@
     "credits": "Waadas",
     "login": "To",
     "back": "Norac",
-    "settings": "Jatne emuurire",
-    "player": "Verd",
-    "right": "STAABI",
-    "left": "PAYT",
-    "profile_picture": "Ner Sur'gaan",
-    "choose_file": "Gaanader Sur'gaan",
-    "username": "Gai",
-    "email": "Lenedat",
-    "password": "Miit Ranov'la",
 
-    "my_account": "Ner Account-------------------------------------------------", 
+    "my_account": "Ner Solegot", 
     "friends": "Burc'yase",
     "logout": "Ba'slanar",
 
@@ -21,7 +12,7 @@
     "search_for_a_player": "Echoylir verd ...",
     "no_players_found": "Naasad beroya mar'ey'la",
 
-    "modify_the_value": "Modify the value:-----------------------------------",
+    "modify_the_value": "Naritir ibic:",
     "save": "Hibirar",
     "prohibited_action": "Nari grati'la",
     "disabled_button": "Nu'gar lise narir ibic nari.",
@@ -33,7 +24,66 @@
 
 
 
-    "send_code_question": "Send code by email or SMS?----------------------------",
+    "send_code_question": "Parjir dadita de lenedat ra SMS?",
     "phone_authentication": "Comlink buyacyc",
-    "enter_sms": "Miit'gaanar dadita gar parji by SMS."
+    "enter_sms": "Ke miit'gaanar dadita gar parji de SMS.",
+    "enter_your_code": "Ke miit'gaanar gar dadita",
+    "resend_the_code": "Parjir tug'yc dadita",
+    "next": "Projor",
+    "email_authentication": "Lenedat buyacyc",
+    "enter_mail": "Ke miit'gaanar dadita gar parji de lenedat.",
+
+    "profile_picture": "Ner Sur'gaan",
+    "choose_file": "Gaanader Sur'gaan",
+    "see_all_information": "Haa'taylir an",
+    "email": "Lenedat",
+    "nickname": "Ika",
+    "phone_number": "Comlink to",
+    "username": "Gai",
+    "password": "Miit'ranov'la",
+    "date_joined": "Ca'nara tomyc",
+    "number_of_wins": "Parjise",
+    "number_of_defeats": "Rohake",
+    "rank": "Verd gai",
+    "change_nickname": "Naritir gar ika",
+    "enter_nickname": "Ke miit'gaanar gar ika",
+    "change_email": "Naritir gar lenedat",
+    "enter_email": "Ke miit'gaanar gar lenedat",
+    "change_phone_number": "Naritir gar comlink to",
+    "enter_phone_number": "Ke miit'gaanar gar comlink to",
+    "change_password": "Naritir gar miit'ranov'la",
+    "enter_password": "Ke miit'gaanar gar miit'ranov'la",
+    "update_account": "Gotal'ur tug'yc gar solegot",
+    "delete_account": "Kyr'amur solegot",
+    "activate": "Nau'ur",
+
+    "home": "Yaim",
+    "play_again": "Geroya tug'yc",
+    "congratulations": "K'oyacyi!",
+    "wasted": "K'ATINI!",
+
+    "LOGIN": "TO",
+    "sign_up": "Tion'cuy",
+    "enter_username": "Ke miit'gaanar gar gai",
+    
+    "solo": "Solus",
+    "multiplayer": "Birov verde",
+
+    "local": "Yaim'la",
+    "online": "O'r briik",
+    "tourney": "Kyrbej",
+
+    "password_do_not_match": "The passwords do not match.",
+    "error_account_creation": "An error occurred during account creation.",
+    "account_created_successfully": "Account created successfully!",
+    "SIGN_UP": "TION'CUY",
+    "create_account": "Gotal'ur gar solegot",
+    "confirm_password": "Jor'lekir miit'ranov'la",
+
+    "settings": "Jatne emuurire",
+    "player": "Verd",
+    "RIGHT": "STAABI",
+    "LEFT": "PAYT",
+    "PAUSE_GAME": "GEV GEROYA",
+    "MUTE_SOUND": "HOKAANIR KAAB"
 }

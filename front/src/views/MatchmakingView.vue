@@ -142,10 +142,17 @@
         }, 1000);
     }
 
-    var tips = ['Tip: Reading your phone in the stairs might lead to severe injury.', 'Tip: Try pressing \'C\' while playing ;)', 
-    'Tip: Wash your cereal bowl right after eating', 'Don\'t forget to put your paddle back in the center!', 
-    'Recipe for a lribette : one tchoukball ball (?), 50 kilos of pasta, and many many many many many Star Wars anecdotes.', 
-    'Tu es triste? Arrête.', '"Jeu de pain, jeu de vilain" - Miro', 'Bois de l\'eau. Dans 20, 30 ans y\'en aura plus.'];
+    var tips = [
+        'Tip: Reading your phone in the stairs might lead to severe injury.',
+        'Tip: Try pressing \'C\' while playing ;)', 
+        'Tip: Wash your cereal bowl right after eating',
+        'Don\'t forget to put your paddle back in the center!',
+        'Recipe for a lribette : one tchoukball ball (?), 50 kilos of pasta, and many many many many many Star Wars anecdotes.',
+        'Tu es triste? Arrête.',
+        '"Jeu de pain, jeu de vilain" - Miro',
+        'Bois de l\'eau. Dans 20, 30 ans y\'en aura plus.',
+        'Burc\'ya vaal burk\'yc, burc\'ya veman'
+    ];
     var tipdisplayed = tips[Math.floor(Math.random()*tips.length)];
 
     //when 2nd player is found, we hide "waiting for player" and show opponent

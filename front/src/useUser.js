@@ -10,6 +10,7 @@ export function useUser() {
         nickname: "",
         password: "",
         student:"",
+        language:"",
         phone_number: "",
         profilePicture: "",
         rank: "",
@@ -38,7 +39,6 @@ export function useUser() {
         console.log("updateUserAccount.sms_2fa_active: " + userAccount.sms_2fa_active);
         console.log("updateUserAccount.student: " + userAccount.student);
         console.log("updateUserAccount.language: " + userAccount.language);
-
     }
 
     async function getUser() {

@@ -120,23 +120,23 @@ async function login42() {
 <template>
     <main>
         <div id="wrapper">
-            <h1>LOGIN</h1>
+            <h1>{{ $t('LOGIN') }}</h1>
 
             <div class="logContainer">
                 <button class="button button-log42" @click="login42">
                     <img class="img-42" src="../assets/img/42_Logob.png" alt="Logo 42" />
                 </button>
                 <button class="button button-register" @click="__goTo('/register')">
-                    <span class="buttonText buttonTextSize">{{ $t('Sign-up') }}</span>
+                    <span class="buttonText buttonTextSize">{{ $t('sign_up') }}</span>
                 </button>
                 <button class="button button-connect" @click="login">
-                    <span class="buttonText buttonTextSize">{{ $t('Login') }}</span>
+                    <span class="buttonText buttonTextSize">{{ $t('login') }}</span>
                 </button>
             </div>
 
             <div class="__inputInfo">
-                <Input iconClass="fa-user" placeholderText="Enter your username" v-model="username" />
-                <Input iconClass="fa-lock" placeholderText="Enter your password" isPassword v-model="password" />
+                <Input iconClass="fa-user" :placeholderText="$t('enter_username')" v-model="username" />
+                <Input iconClass="fa-lock" :placeholderText="$t('enter_password')" isPassword v-model="password" />
             </div>
 
             <div class="buttonContainer">

@@ -64,12 +64,12 @@
             <div class="settingsBackground">
                 <span class="titleSettings">{{ $t('settings') }}</span>
                 <div class="settingsText">
-                    <span>{{ $t('player') }} 1 - {{ $t('right') }}</span>
-                    <span>{{ $t('player') }} 1 - {{ $t('left') }}</span>
-                    <span>{{ $t('player') }} 2 - {{ $t('right') }}</span>
-                    <span>{{ $t('player') }} 2 - {{ $t('left') }}</span>
-                    <span>PAUSE GAME</span>
-                    <span>MUTE SOUND</span>
+                    <span>{{ $t('player') }} 1 - {{ $t('RIGHT') }}</span>
+                    <span>{{ $t('player') }} 1 - {{ $t('LEFT') }}</span>
+                    <span>{{ $t('player') }} 2 - {{ $t('RIGHT') }}</span>
+                    <span>{{ $t('player') }} 2 - {{ $t('LEFT') }}</span>
+                    <span>{{ $t('PAUSE_GAME') }}</span>
+                    <span>{{ $t('MUTE_SOUND') }}</span>
                 </div>
                 <div class="buttonContainer">
                     <button id="bouton-touche" class="button" @click="changeKey('player1Right')">

@@ -21,43 +21,38 @@
 
 	const current_lang = inject('current_lang');
     const toggle_lang = inject('toggle_lang');
-
+	
 	const { locale } = useI18n();
-	// const current_language = ref("EN");
-
+	
 	function injectToggleFlag(lang) {
-    	toggle_flag(lang); 
+		toggle_flag(lang); 
 	}
-
+	
 	function injectToggleLang(lang) {
-    	toggle_lang(lang); 
+		toggle_lang(lang); 
 	}
-
+	
 	const menuVisible = ref(false);
 	let timeoutId;
+	
+	////////////////////////////////////////////////
+	/////// GET USER ///////////////////////////////
+	////////////////////////////////////////////////
+	
+	import { useUser } from '../useUser.js'; 
+	const { getUser, userAccount, is_connected } = useUser(); 
+	
+	onMounted(async () => {
+		await getUser();
+		if (is_connected.value == true)
+			switchLang(userAccount.language);
+		else
+			switchLang(current_lang.value);
+	});
 
-	const is_connected = ref('');
-    async function getLanguage() {
-        try {
-            const response = await fetch(`api/player/connected_user/`, {
-                method: 'GET',
-            });
-            if (!response) {
-                console.warn(`HTTP error! Status: ${response.status}`);
-                return;
-            }
-            const user = await response.json();
-            if (user && user.length > 0) {
-				current_lang.value = user[0].fields.language;
-                is_connected.value = true;
-			} else {
-				console.log('No user data retrieved.');
-				return;
-            }
-        } catch (error) {
-            console.error('Error retrieving user data:', error);
-        }
-    }
+	////////////////////////////////////////////////
+	////////////////////////////////////////////////
+	////////////////////////////////////////////////
 
 
 	async function setLanguage(new_language) {
@@ -101,11 +96,6 @@
 			injectToggleLang(current_lang.value)
 		}
 	}
-
-	onMounted(async () => {
-		await getLanguage();
-		switchLang(current_lang.value);
-	});
 
 	function showMenu() {
 		clearTimeout(timeoutId);
