@@ -10,21 +10,22 @@
             <p id="game-type">game-mode: {{gamemode}}</p>
             <p id="game-advice">{{tipdisplayed}}</p>
             <div class="button-container-mm">
+                <p id="versus-text">VS</p>
                 <div class="stuff-to-move">
                     <img id="player1-picture" class="profile-picture-matchmaking-left" src="../assets/Chachou.png"/>
-                    <p class="profile-text-left">{{playerName1}}</p>
-                    <p class="rank-text-left">{{playerRank1}}</p>
+                    <p id="player1-name" class="profile-text-left">{{playerName1}}</p>
+                    <p id="player1-rank" class="rank-text-left">{{playerRank1}}</p>
                 </div>
-                <div id="stuff-to-hide" v-if="loadingmodule">
-                        <p class="opponent-text">Looking for an opponent...</p>
-                    </div>
-                    <div id="stuff-to-show" v-if="rightplayervisible">
-                        <p class="rank-text-right">{{playerRank2}}</p>
-                        <p class="profile-text-right">{{playerName2}}</p>
-                        <img class="profile-picture-matchmaking-right" src="../assets/Chachou.png"/>
-                    </div>
+                <div id="stuff-to-hide">
+                    <p id="opponent-text" class="opponent-text">Looking for an opponent...</p>
+                </div>
+                <div id="stuff-to-show">
+                    <img id="player2-picture" class="profile-picture-matchmaking-right" src="../assets/Chachou.png"/>
+                    <p id="player2-name" class="profile-text-right">{{playerName2}}</p>
+                    <p id="player2-rank" class="rank-text-right">{{playerRank2}}</p>
                 </div>
             </div>
+        </div>
     </main>
 </template>
 
@@ -89,52 +90,84 @@
         router.push(`/legacy_remote/${id}`);
     }
 
-    async function insertPlayer() {
-        try {
-            const response = await fetch('api/game/insertplayer/', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'X-CSRFToken': getCsrfToken() // Assuming you have CSRF protection enabled
-                },
-                body: JSON.stringify({
-                    username: userAccount.username,
-                })
-            });
-            if (response.ok) {
-                const data = await response.json();
-                console.log(data);
-                if (data.player2 == null) {
-                    waitingPlayer = 1;
-                    await new Promise(resolve => setTimeout(resolve, 1000));
-                    insertPlayer();
-                } else {
-                    waitingPlayer = 0;
-                    console.log("lancement dans 3");
-                    await new Promise(resolve => setTimeout(resolve, 1000));
-                    console.log("lancement dans 2");
-                    await new Promise(resolve => setTimeout(resolve, 1000));
-                    console.log("lancement dans 1");
-                    await new Promise(resolve => setTimeout(resolve, 1000));
-                    goToLegacy(data.id);
-                }
+let loadingmodule = true;
 
+async function insertPlayer() {
+        
+    try {
+        const response = await fetch('api/game/insertplayer/', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRFToken': getCsrfToken() // Assuming you have CSRF protection enabled
+            },
+            body: JSON.stringify({
+                username: userAccount.username,
+            })
+        });
+        if (response.ok) {
+            const data = await response.json();
+            console.log(data);
+            if (data.player2 == null)
+            {
+                waitingPlayer = 1;
+                await new Promise(resolve => setTimeout(resolve, 1000));
+                insertPlayer();
             }
-        } catch (error) {
-            console.error('Erreur lors de la connexion:', error);
-            alert('An error occurred during login2222');
+            else
+            {
+                waitingPlayer = 0;
+
+                //slide first player
+                const player1_pic = document.getElementById('player1-picture');
+                player1_pic.classList.add(...['slide-left']);
+                const player1_name = document.getElementById('player1-name');
+                player1_name.classList.add(...['slide-left']);
+                const player1_rank = document.getElementById('player1-rank');
+                player1_rank.classList.add(...['slide-left']);
+
+                //fadein second player
+                const player2_pic = document.getElementById('player2-picture');
+                player2_pic.classList.add(...['fade-in']);
+                const player2_name = document.getElementById('player2-name');
+                player2_name.classList.add(...['fade-in']);
+                const player2_rank = document.getElementById('player2-rank');
+                player2_rank.classList.add(...['fade-in']);
+                const versus_text = document.getElementById('versus-text');
+                versus_text.classList.add(...['fade-in']);
+                
+                //fadeout loading assets
+                loadingmodule = false;
+                const dotdotdot = document.getElementById('loading');
+                dotdotdot.classList.add(...['fade-out']);
+                const waiting_text = document.getElementById('opponent-text');
+                waiting_text.classList.add(...['fade-out']);
+
+                console.log("lancement dans 3");
+                await new Promise(resolve => setTimeout(resolve, 1000));
+                console.log("lancement dans 2");
+                await new Promise(resolve => setTimeout(resolve, 1000));
+                console.log("lancement dans 1");
+                await new Promise(resolve => setTimeout(resolve, 1000));
+                //goToLegacy(data.id);
+            }
+
         }
+    } catch (error) {
+        console.error('Erreur lors de la connexion:', error);
+        alert('An error occurred during login2222');
     }
+}
 
     ///////////////////////////////////////////////
-    let rightplayervisible = ref(false);
-    let loadingmodulevisible = ref(true);
 
     //dynamic "loading" dots 
-    if (document.getElementById("loading") != false)
+    console.log(loadingmodule);
+    if (loadingmodule == true)
     {
         var dots = window.setInterval( function() {
         var wait = document.getElementById('loading');
+        console.log(wait);
         if ( wait.innerHTML.length >= 3 ) 
             wait.innerHTML = ".";
         else 
@@ -154,21 +187,6 @@
         'Burc\'ya vaal burk\'yc, burc\'ya veman'
     ];
     var tipdisplayed = tips[Math.floor(Math.random()*tips.length)];
-
-    //when 2nd player is found, we hide "waiting for player" and show opponent
-    let playerfound = true;
-    if(playerfound == true)
-    {
-        //onTriggerMovePlayer1ProfilePicture();
-        rightplayervisible = !rightplayervisible;
-        loadingmodulevisible = !loadingmodulevisible;
-    }
-
-
-    function onTriggerMovePlayer1ProfilePicture() {
-        const player1_pic = document.getElementById('player1-picture');
-        player1_pic.classList.add(...[to-anim]);
-    }
 </script>
 
 
@@ -186,28 +204,10 @@
     height: 100vh;
 }
 
-.to-anim {
-    position: relative;
-
-    animation-duration: .4s;
-    animation-name: my_anim;
-}
-
-@keyframes my_anim {
-    0% {
-        left: 0;
-    }
-
-    .5% {
-        left: 100px;
-    }
-
-    100% {
-        left: 0px;
-    }
-}
-
 #wrapper-matchmaking {
+    display: flex;
+    justify-content: center;
+    align-items: center;
     box-shadow: inset 0 0 0 1000px rgba(0, 0, 0, 0.398);
     height: 100vh;
 }
@@ -244,48 +244,90 @@
     filter: drop-shadow(5px 5px 4px #0000003b);
 }
 
+#versus-text{
+    top: 70%;
+    left: 50%;
+    font-size: 150px;
+    font-weight: bold;
+    color: white;
+    filter: drop-shadow(5px 5px 4px #0000003b);
+}
+
 .profile-picture-matchmaking-left {
     position: fixed;
     width: 250px;
     height: 250px;
     border-radius: 50%;
-    position: fixed;
-    top: 47.5%;
-    transform: translate(-50%, -50%);
-    left: 50%;
-    text-align: center;
+    top: 35%;
+    left: 42vw;
     border: 5px solid white;
     filter: drop-shadow(5px 5px 4px #0000003b);
 }
 
-.profile-picture-matchmaking-left.slide-left {
+.fade-in {
+    visibility: visible;
+    animation: fadeIn 0.7s;
+}
+
+@keyframes fadeIn {
+  0% { opacity: 0; }
+  100% { opacity: 1; }
+}
+
+.fade-out {
+    visibility: hidden;
+    animation: fadeOut 0.7s;
+}
+
+@keyframes fadeOut {
+  0% { opacity: 1; }
+  100% { opacity: 0; }
+}
+
+.slide-left {
+    position: fixed;
 	animation: slide-left 0.5s cubic-bezier(0.250, 0.460, 0.450, 0.940) both;
 }
 
 @keyframes slide-left {
+    0% {
+        transform: translateX(0);
+    }
+    100% {
+        transform: translateX(-450px);
+    }
+}
+
+.to-show {
+    position: fixed;
+    animation-name: to-show 0.5s cubic-bezier(0.250, 0.460, 0.450, 0.940) both;
+}
+
+@keyframes to-show {
   0% {
-            transform: translateX(0);
+    opacity: 0;
   }
   100% {
-            transform: translateX(-100px);
+    opacity: 1;
   }
 }
 
 .profile-text-left {
     position: fixed;
-    top: 65%;
-    text-align: left;
+    top: 62%;
+    text-align: center;
     font-size: 30px;
     font-weight: bold;
-    left: 50%;
-    transform: translate(-50%, -50%);
+    left: 45%;
     color: white;
 }
 .profile-text-right {
     position: fixed;
+    top: 62%;
+    text-align: center;
+    font-size: 30px;
     font-weight: bold;
-    top: 35vw;
-    right: 22vw;
+    left: 72%;
     color: white;
 }
 
@@ -293,9 +335,8 @@
     position: fixed;
     font-size: 25px;
     font-weight: bold;
-    top: 68%;
-    left: 50%;
-    transform: translate(-50%, -50%);
+    top: 65%;
+    left: 47%;
     color: white;
 }
 
@@ -303,19 +344,20 @@
     position: fixed;
     font-size: 25px;
     font-weight: bold;
-    top: 38vw;
-    left:75vw;
+    top: 65%;
+    left: 72%;
     color: white;
 }
 
 #loading {
     position: fixed;
+    visibility: visible;
     z-index: 5;
     font-size: 80px;
     font-weight: bold;
     text-align: center;
     top: 72%;
-    left: 48%;
+    left: 47.9%;
     color: white;
     filter: drop-shadow(5px 5px 4px #0000003b);
 }
@@ -325,21 +367,22 @@
     width: 250px;
     height: 250px;
     border-radius: 50%;
-    top: 30vh;
-    right: 20vw;
+    top: 35%;
+    left: 70%;
     border: 5px solid white;
     filter: drop-shadow(5px 5px 4px #0000003b);
 }
+
 .opponent-text {
     position: fixed;
+    visibility: visible;
     z-index: 5;
     font-size: 30px;
     font-weight: bold;
     top: 24%;
-    left: 50%;
+    left: 50.3%;
     transform: translate(-50%, -50%);
     color: white;
     filter: drop-shadow(5px 5px 4px #0000003b);
-
 }
 </style>

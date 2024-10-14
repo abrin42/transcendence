@@ -60,6 +60,7 @@
                 alert('Account updated successfully!');
             } else {
                 const errorData = await response.json();
+                console.log(errorData);
                 alert('Error: ' + errorData.error);
             }
         } catch (error) {
@@ -111,7 +112,8 @@
             <div class="containerDashboard">
                 <div class="input-section profile-picture-section">
                     <h2 class="category-title">{{ $t('profile_picture') }}</h2>
-                    <img :src="userAccount.profilePicture || 'default-profile.png'" alt="Profile Picture" class="profile-picture" />
+                    <!-- Utilisation de l'image par défaut si aucune image n'est présente -->
+                    <img :src="userAccount.profilePicture || profilePicture" alt="Profile Picture" class="profile-picture" />
                     <label for="file-upload" class="custom-file-upload">
                         <i class="fas fa-upload"></i> {{ $t('choose_file') }}
                     </label>
@@ -139,17 +141,11 @@
                     <InputEdit v-if="userAccount.student === false" v-model="userAccount.password" :placeholderText="$t('change_password')" inputIconClass="fa-lock" :inputPlaceholder="$t('enter_password')" :isPassword="true" />
 
                     <div class="___btn-click">
-                        <button class="button" @click="updateAccount">
-                            <span class="buttonText buttonTextSize" style="font-size: medium;">{{ $t('update_account') }}</span>
+                        <button class="button button-update" @click="updateAccount">
+                            <span class="buttonText buttonTextSize" style="font-size: medium;">{{ $t('Update your account') }}</span>
                         </button>
-                        <button class="button">
-                            <span class="buttonText buttonTextSize" style="font-size: medium;">{{ $t('friends') }}</span>
-                        </button>
-                        <button class="button" @click="handleLogout">
-                            <span class="buttonText buttonTextSize" style="font-size: medium;">{{ $t('logout') }}</span>
-                        </button>
-                        <button class="button">
-                            <span class="buttonText buttonTextSize" style="font-size: medium;">{{ $t('delete_account') }}</span>
+                        <button class="button button-logout" @click="handleLogout">
+                            <span class="buttonText buttonTextSize" style="font-size: medium;">Logout</span>
                         </button>
                     </div>
                 </div>
@@ -323,9 +319,7 @@ h1,
 }
 
 /* Pour chaque bloc de texte */
-.TextContainer div:nth-child(2n+1) {
-    /* Ceci pour rendre le premier texte visuellement distinct si nécessaire */
-}
+.TextContainer div:nth-child(2n+1) {}
 
 .___btn-click {
     color: white;
@@ -338,19 +332,11 @@ h1,
     gap: 10px;
 }
 
-/* Pour chaque bloc de texte */
-.TextContainer div:nth-child(2n+1) {
-    /* Ceci pour rendre le premier texte visuellement distinct si nécessaire */
+.button-update {
+    background-color: rgba(74, 143, 74, 0.75);
 }
 
-.___btn-click {
-    color: white;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    white-space: nowrap;
-    flex: 1 1 calc(30% - 20px);
-    margin: 1vw;
-    gap: 10px;
+.button-logout {
+    background-color: rgba(143, 74, 74, 0.75);
 }
 </style>

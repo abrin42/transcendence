@@ -1,3 +1,20 @@
+<template>
+    <div class="button-container" @mouseenter="showDropdown" @mouseleave="hideDropdown">
+        <button ref="button" class="button button-log" @click="__goTo(is_connected ? '/dashboard' : '/log')">
+            <span class="buttonText">{{ is_connected ? userAccount.nickname : $t('login') }}</span>
+        </button>
+        
+        <div id="dropdown-content" v-if="dropdownVisible" class="dropdown">
+            <button class="button buttonText buttondropdown" @click="__goTo('/dashboard')">{{ $t('my_account') }}</button>
+            <!-- Appel à la méthode toggleFriendsPopup pour afficher la popup -->
+            <button class="button buttonText buttondropdown" @click="toggleFriendsPopup">{{ $t('friends') }}</button>
+            <button class="button buttonText buttondropdown" @click="handleLogout">{{ $t('logout') }}</button>
+        </div>
+        
+        <!-- Composant FriendsPopup, écoute l'événement 'close' pour masquer la popup -->
+    </div>
+    <FriendsPopup class="friends-popup" v-if="friendsPopupVisible" @close="toggleFriendsPopup" />
+</template>
 
 <script setup>
     import { ref, reactive, onMounted, watch } from 'vue';
@@ -20,6 +37,8 @@
     ////////////////////////////////////////////////
 
     const router = useRouter();
+
+
     function __goTo(page) {
         if (page == null) {
             return;
@@ -29,7 +48,7 @@
 
     const button = ref(null);
     const dropdownVisible = ref(false);
-    const friendsPopupVisible = ref(true);
+    const friendsPopupVisible = ref(false);
     let hoverTimeout = null;
     
     const handleLogout = async () => {
@@ -51,7 +70,7 @@
         const cookieValue = document.cookie
             .split('; ')
             .find(row => row.startsWith('csrftoken='))
-            ?.split('=')[1];
+            ?.split('=')[1];    
         return cookieValue || '';
     }
 
@@ -70,7 +89,7 @@
 
     function showDropdown() {
         hoverTimeout = setTimeout(() => {
-            if (is_connected.value)
+            if (is_connected.value === true)
                 dropdownVisible.value = true;
         }, 5);
     }
@@ -85,23 +104,6 @@
     }
 </script>
 
-<template>
-    <div class="button-container" @mouseenter="showDropdown" @mouseleave="hideDropdown">
-        <button ref="button" class="button button-log" @click="__goTo(is_connected ? '/dashboard' : '/log')">
-            <span class="buttonText">{{ is_connected ? userAccount.nickname : $t('login') }}</span>
-        </button>
-
-        <div v-if="dropdownVisible" class="dropdown">
-            <button class="button buttonText buttondropdown" @click="__goTo('/dashboard')">My Account</button>
-            <!-- Appel à la méthode toggleFriendsPopup pour afficher la popup -->
-            <button class="button buttonText buttondropdown" @click="toggleFriendsPopup">Friends</button>
-            <button class="button buttonText buttondropdown" @click="handleLogout">Logout</button>
-        </div>
-
-        <!-- Composant FriendsPopup, écoute l'événement 'close' pour masquer la popup -->
-        <FriendsPopup v-if="friendsPopupVisible" @close="toggleFriendsPopup" />
-    </div>
-</template>
 
 <style>
     .button-container {
@@ -157,4 +159,5 @@
         background-color: rgba(255, 255, 255, 0.4);
         transition: border-color, background-color 0.5s;
     }
+
 </style>

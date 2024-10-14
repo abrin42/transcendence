@@ -70,7 +70,7 @@
 
     background-color: rgba(0, 0, 0, 0.25);
     padding: 2vh 2vw;
-    border: 0.15vw solid rgba(0, 0, 0, 0.25);
+    border: 0.15vw ridge rgba(255, 124, 216, 0.6);
     border-radius: 0.4vw;
 }
 
