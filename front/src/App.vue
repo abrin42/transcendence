@@ -35,8 +35,6 @@
       <component :is="Component"></component>
     </transition>
   </RouterView>
-
-
 </template>
 
 <style scoped>

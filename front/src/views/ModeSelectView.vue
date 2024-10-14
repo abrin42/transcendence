@@ -52,11 +52,13 @@
     <main>
         <div id="wrapper">
             <div class="buttonContainer">
-                <button class="button button-credits" @click="goToGameSelect()">
-                    <span class="buttonText">{{ $t('solo') }}</span>
+                <button class="button button-solo" @click="goToGameSelect()">
+                    <i class="fa-solid fa-user"></i>
+                    <span class="buttonText" style="margin-left: 0.5vw;">{{ $t('Solo') }}</span>
                 </button>
                 <button class="button button-credits" @click="goToMulti()">
-                    <span class="buttonText">{{ $t('multiplayer') }}</span>
+                    <i class="fa-solid fa-users"></i>
+                    <span class="buttonText" style="margin-left: 0.5vw;">{{ $t('Multiplayer') }}</span>
                 </button>
                 <CreateHomeButton />
                 <CreateSoundButton />
@@ -68,7 +70,5 @@
 </template>
 
 <style scoped>
-@import './../assets/main.scss';
-
 
 </style>
