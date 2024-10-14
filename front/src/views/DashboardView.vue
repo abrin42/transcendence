@@ -112,7 +112,8 @@
             <div class="containerDashboard">
                 <div class="input-section profile-picture-section">
                     <h2 class="category-title">{{ $t('profile_picture') }}</h2>
-                    <img :src="userAccount.profilePicture || 'default-profile.png'" alt="Profile Picture" class="profile-picture" />
+                    <!-- Utilisation de l'image par défaut si aucune image n'est présente -->
+                    <img :src="userAccount.profilePicture || profilePicture" alt="Profile Picture" class="profile-picture" />
                     <label for="file-upload" class="custom-file-upload">
                         <i class="fas fa-upload"></i> {{ $t('choose_file') }}
                     </label>
