@@ -50,19 +50,26 @@ export function useUser() {
     
             if (!response.ok) {
                 console.warn(`HTTP error! Status: ${response.status}`);
+                const text = await response.text();  // Try to log the raw HTML response
+                console.error('Response text:', text);
                 is_connected.value = false;
                 return;
             }
     
-            const user = await response.json();
-            if (user && !user.error) {
-                updateUserAccount(user);
-                is_connected.value = true;
+            let user_data;
+            try {
+                user_data = await response.json();
+            } catch (jsonError) {
+                console.error('Invalid JSON response:', jsonError);
+                is_connected.value = false;
+                return;
+            }
     
-                //console.log(`getUser/nickname: ${userAccount.value.nickname}`);
-                //console.log(`getUser/is_connected: ${is_connected.value}`);
+            if (user_data && user_data.is_active) {
+                updateUserAccount(user_data);
+                is_connected.value = true;
             } else {
-                console.log('No user data retrieved.');
+                console.log('User is inactive or not found.');
                 is_connected.value = false;
             }
         } catch (error) {

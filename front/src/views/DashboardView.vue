@@ -55,13 +55,12 @@
                 })
             });
             if (response.ok) {
+                const errorData = await response.json();
+                console.log(errorData);
+            } else {
                 console.log(userAccount.nickname);
                 const responseData = await response.json();
                 alert('Account updated successfully!');
-            } else {
-                const errorData = await response.json();
-                console.log(errorData);
-                alert('Error: ' + errorData.error);
             }
         } catch (error) {
             console.error('Error updating account:', error);

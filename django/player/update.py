@@ -54,10 +54,8 @@ def update_user(request):
             user.email = data.get('email')
             user.password = data.get('password')
             user.phone_number = data.get('phone_number')
-            
-            user.email_2fa_active = data.get('email_2fa_active')
-            user.sms_2fa_active = data.get('sms_2fa_active')
-
+            user.sms_2fa_active = data.get('sms_2fa_active')    
+            user.email_2fa_active = data.get('email_2fa_active')  
             user.save()
             response = JsonResponse({'redirect_url': '/dashboard/'}, status=302)
             return response

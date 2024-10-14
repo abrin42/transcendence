@@ -47,8 +47,12 @@ def insertPlayer(request):
                     latest_game.scorep2 = 0
                     latest_game.save()
 
-            serializer = GameSerializer(latest_game)
-            return JsonResponse(serializer.data, safe=False) 
+            data = serializers.serialize('json', [latest_game])
+            return JsonResponse(data, safe=False, content_type='application/json')
+
+            #serializer = GameSerializer(latest_game)
+            #serializer_data = json.loads(serialize('json', [serializer]))[0]['fields']
+            #return JsonResponse(serializer_data, safe=False) 
             # return HttpResponse(data,content_type='application/json')
         except json.JSONDecodeError:
             return JsonResponse({'error': 'Invalid request body'}, status=400)
@@ -77,6 +81,7 @@ def update_game(request):
             print(latest_game.mode)
             print(latest_game.player1)
             print(latest_game.player2)
+            
             return JsonResponse({'message': 'Registration successful'}, status=200)
         except json.JSONDecodeError:
             return JsonResponse({'error': 'Invalid request body'}, status=400)

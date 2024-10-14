@@ -75,7 +75,7 @@
     try {
         const response = await fetch(`/api/player/verify_user/`, {
             method: 'GET',
-            credentials: 'include',  // Ensure cookies/JWT are sent along with the request
+            credentials: 'include',  
         });
 
         if (!response.ok) {
@@ -86,12 +86,12 @@
         console.log('Response data:', data);
 
         if (data.player_data) {
-            const playerData = JSON.parse(data.player_data);  // Deserialize the JSON correctly
+            const playerData = JSON.parse(data.player_data);  
             console.log('Player Data:', playerData);
 
             if (playerData.length > 0) {
-                const user = playerData[0];  // Extract the first user
-                const userFields = user.fields;  // Extract the 'fields' object
+                const user = playerData[0];  
+                const userFields = user.fields; 
                 console.log('User:', userFields);
 
                 // Safely retrieve properties
