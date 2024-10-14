@@ -29,16 +29,18 @@ export function useUser() {
         userAccount.sms_2fa_active = user.sms_2fa_active;
         userAccount.student = user.student;
         userAccount.language = user.language;
+        userAccount.profilePicture = user.profile_picture;
 
-        console.log("updateUserAccount.nickname: " + userAccount.nickname);
-        console.log("updateUserAccount.username: " + userAccount.username);
-        console.log("updateUserAccount.email: " + userAccount.email);
-        console.log("updateUserAccount.password: " + userAccount.password);
-        console.log("updateUserAccount.phone_number: " + userAccount.phone_number);
-        console.log("updateUserAccount.email_2fa_active: " + userAccount.email_2fa_active);
-        console.log("updateUserAccount.sms_2fa_active: " + userAccount.sms_2fa_active);
-        console.log("updateUserAccount.student: " + userAccount.student);
-        console.log("updateUserAccount.language: " + userAccount.language);
+        // console.log("updateUserAccount.nickname: " + userAccount.nickname);
+        // console.log("updateUserAccount.username: " + userAccount.username);
+        // console.log("updateUserAccount.email: " + userAccount.email);
+        // console.log("updateUserAccount.password: " + userAccount.password);
+        // console.log("updateUserAccount.phone_number: " + userAccount.phone_number);
+        // console.log("updateUserAccount.email_2fa_active: " + userAccount.email_2fa_active);
+        // console.log("updateUserAccount.sms_2fa_active: " + userAccount.sms_2fa_active);
+        // console.log("updateUserAccount.student: " + userAccount.student);
+        // console.log("updateUserAccount.language: " + userAccount.language);
+        console.log("updateUserAccount.profilePicture: " + userAccount.profilePicture);
     }
 
     async function getUser() {

@@ -20,7 +20,7 @@
                 <div v-for="player in filteredPlayers" :key="player.id" class="friend-item">
                     <span class="friend-name">{{ player.username }}</span>
                     <div class="friend-actions">
-                        <button @click="invitePlayer(player.id)" aria-label="Invite player">
+                        <button @click="invitePlayer(player.username)" aria-label="Invite player">
                             <i class="fas fa-user-plus icon-items"></i>
                         </button>
                     </div>
@@ -38,7 +38,7 @@ x
                         <button @click="inviteFriendToPlay(friend.id)" aria-label="Invite friend to play">
                             <i class="fas fa-gamepad icon-items"></i>
                         </button>
-                        <button @click="deleteFriend(friend.id)" aria-label="Delete friend">
+                        <button @click="deleteFriend(friend.username)" aria-label="Delete friend">
                             <i class="fas fa-trash-alt icon-items"></i>
                         </button>
                     </div>
@@ -73,7 +73,7 @@ x
                     <div v-for="request in friendRequests" :key="request.id" class="friend-request-item">
                         <span>{{ request.username }}</span>
                         <div class="request-actions">
-                            <button @click="acceptRequest(request.id)" class="icon-items">
+                            <button @click="acceptRequest(request.username)" class="icon-items">
                                 <i class="fas fa-check"></i>
                             </button>
                             <button @click="declineRequest(request.id)" class="icon-items">
@@ -102,12 +102,6 @@ import Input from './Input.vue';
 import { useUser } from '../useUser.js';
 const { getUser, userAccount, is_connected } = useUser();
 
-onMounted(async () => {
-    await getUser();
-    await getAllUsers();
-    await getFriends();
-});
-
 ////////////////////////////////////////////////
 ////////////////////////////////////////////////
 ////////////////////////////////////////////////
@@ -118,26 +112,102 @@ function __goTo(page) {
     router.push(page);
 }
 
+const friends = ref([]);
+const allPlayers = ref([]);
+const friendRequests = ref([]);
+
 const router = useRouter();
-const friends = ref([
-    { id: 1, username: 'test 1' },
-    { id: 2, username: 'test 2' },
-    { id: 3, username: 'test 3' },
-    { id: 4, username: 'test 4' },
-    { id: 5, username: 'test 5' },
-]);
+// const friends = ref([
+//     { id: 1, username: 'test 1' },
+//     { id: 2, username: 'test 2' },
+//     { id: 3, username: 'test 3' },
+//     { id: 4, username: 'test 4' },
+//     { id: 5, username: 'test 5' },
+// ]);
 
 // Gestion des demandes d'amis (simulation)
-const friendRequests = ref([
-    { id: 6, username: 'Lucie' },
-    { id: 7, username: 'Caroline' },
-    { id: 8, username: 'Lucas' }
-]);
+// const friendRequests = ref([
+//     { id: 6, username: 'Lucie' },
+//     { id: 7, username: 'Caroline' },
+//     { id: 8, username: 'Lucas' }
+// ]);
+
+
+async function getFriendsRequest() {
+    try {
+        const response = await fetch(`api/friend/pending/`, {
+            method: 'GET',
+        });
+
+        if (!response.ok) {
+            throw new Error(`HTTP error! Status: ${response.status}`);
+        }
+        const users = await response.json();
+        console.log(users);
+         let users_data = JSON.parse(users)
+         console.log("all friends: ", users_data);
+         for (let i = 0; i < users_data.length; i++) {
+             var obj = {}
+             if (users_data[i].fields.friend[0] == userAccount.username) {
+                 obj['username'] = users_data[i].fields.user[0];
+             } else {
+                 obj['username'] = users_data[i].fields.friend[0];
+             }
+             friendRequests.value.push(obj);
+         }
+    } catch (error) {
+        console.error('Error retrieving user data:', error);
+    }
+}
+
 
 // Accepter une demande d'ami
-function acceptRequest(id) {
-    friendRequests.value = friendRequests.value.filter(request => request.id !== id);
-    console.log('Demande d\'ami acceptée pour ID:', id);
+async function acceptRequest(playerUsername) {
+    try {
+        console.log('Inviting player with ID:', playerUsername);
+        const response = await fetch('api/friend/help/', {
+            method: 'POST', // Change to POST to match the Django view
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                username: playerUsername,
+            })
+        });
+        if (!response.ok) {
+            throw new Error(`HTTP error! Status: ${response.status}`);
+        }
+        friendRequests.value = friendRequests.value.filter(request => request.username !== playerUsername);
+        getFriends();
+    } catch (error) {
+        console.error('Error while adding friends:', error);
+        alert('An error occurred when adding a friend');
+    }
+}
+
+async function invitePlayer(playerUsername) {
+    try {
+        console.log('Inviting player with ID:', playerUsername);
+        const response = await fetch('api/friend/add/', {
+            method: 'POST', // Change to POST to match the Django view
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                username: playerUsername,
+            })
+        });
+        if (!response.ok) {
+            throw new Error(`HTTP error! Status: ${response.status}`);
+        }
+    } catch (error) {
+        if (error == "Error: HTTP error! Status: 400") {
+            alert('you have already send an invite to this user' );
+        } else {
+            alert('An error occurred when adding a friend');
+        }
+    }
+    allPlayers.value = allPlayers.value.filter(request => request.username !== playerUsername);
 }
 
 // Refuser une demande d'ami
@@ -153,21 +223,23 @@ async function getAllUsers() {
             const response = await fetch(`api/player/get_all_user/`, {
                 method: 'GET',
             });
-
             if (!response.ok) {
                 throw new Error(`HTTP error! Status: ${response.status}`);
             }
             const users = await response.json();
-            if (users.data) {
-                const userData = JSON.parse(users.data);
+            
+            
+                const userData = JSON.parse(users);
                 userData.forEach((element) => {
                     var obj = {}
                     obj['username'] = element.fields.username;
                     obj['last_login'] =  element.fields.last_login;
+                    obj['nickname'] = element.fields.nickname;
                     allPlayers.value.push(obj);
                 });
-                console.log("all user", allPlayers._rawValue)
-            }
+                console.log("all user");
+                console.log("all user", allPlayers._rawValue);
+            
         } catch (error) {
             console.error('Error retrieving user data:', error);
         }
@@ -200,6 +272,7 @@ async function getFriends() {
             } else {
                 obj['isOnline'] = false;
             }
+            obj['username'] = result.nickname;
             friends.value.push(obj);
         }
     } catch (error) {
@@ -209,32 +282,33 @@ async function getFriends() {
 
 const emit = defineEmits(['close']);
 
-// Liste des amis actuels avec un booléen isOnline
-//const friends = ref(getFriends());
-
-// Liste des joueurs non amis
-const allPlayers = ref([
-    { id: 6, username: 'Lucie' },
-    { id: 7, username: 'Caroline' },
-    { id: 8, username: 'Lucas' },
-    { id: 9, username: 'Isaac' },
-    { id: 10, username: 'Tabata' },
-]);
-
 const searchQuery = ref('');
 
 function closePopup() {
     emit('close');
 }
 
-function invitePlayer(playerId) {
-    console.log('Inviting player with ID:', playerId);
-    // TODO: Code pour inviter le joueur non ami
-}
 
-function deleteFriend(friendId) {
-    console.log('Deleting friend with ID:', friendId);
-    // TODO: Code pour supprimer l'ami
+async function deleteFriend(playerUsername) {
+    try {
+        console.log('delete player with :', playerUsername);
+        const response = await fetch('api/friend/delete/', {
+            method: 'POST', // Change to POST to match the Django view
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                username: playerUsername,
+            })
+        });
+        if (!response.ok) {
+            throw new Error(`HTTP error! Status: ${response.status}`);
+        }
+        friends.value = friends.value.filter(request => request.username !== playerUsername);
+    } catch (error) {
+        console.error('Error while adding friends:', error);
+        alert('An error occurred when adding a friend');
+    }
 }
 
 function inviteFriendToPlay(friendId) {
@@ -266,6 +340,14 @@ function closePopupFriendRequest() {
     friendRequestsVisible.value = false;
     friendsPopupVisible.value = true;
 }
+
+onMounted(async () => {
+    await getUser();
+    await getAllUsers();
+    await getFriends();
+    await getFriendsRequest();
+});
+
 </script>
 
 <style scoped>
