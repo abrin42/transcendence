@@ -98,10 +98,6 @@ async function login() {
     }
 }
 
-
-
-
-
 async function login42() {
     try {
         const response = await fetch('api/player/login42/', {
