@@ -49,6 +49,7 @@
                     email: userAccount.email,
                     phone_number: userAccount.phone_number,
                     password: userAccount.password,
+                    profile_picture: userAccount.profilePicture,
 
                     email_2fa_active: userAccount.email_2fa_active,
                     sms_2fa_active: userAccount.sms_2fa_active,
@@ -97,7 +98,9 @@
         if (file) {
             const reader = new FileReader();
             reader.onload = (e) => {
+                console.log("updateUserAccount.profilePicture: " + userAccount.profilePicture);
                 userAccount.profilePicture = e.target.result;
+                console.log("updateUserAccount.profilePicture: " + userAccount.profilePicture);
             };
             reader.readAsDataURL(file);
         }

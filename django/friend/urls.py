@@ -6,10 +6,10 @@ urlpatterns = [
     path('',  views.index, name='index'),
     path('add/',  views.add, name='add'),
     path('delete/',  views.delete, name='delete'),
-
     path('pending/', views.pending, name='pending'),
-    path('accept/<int:id_friendship>', views.accept, name='accept'),
-    path('refuse/<int:id_friendship>', views.refuse, name='refuse'),
+    #path('accept', views.accept, name='accept'),
+    path('refuse', views.refuse, name='refuse'),
     path('refused/', views.refused, name='refused'),
     path('list/', views.list, name='list'),
+    path('help/', views.help, name='help'),
 ]

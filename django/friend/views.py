@@ -1,5 +1,5 @@
 from django.shortcuts import render, get_object_or_404, redirect
-from django.contrib.auth.decorators import login_required
+from django.views.decorators.csrf import csrf_exempt
 from django.contrib.auth.models import User
 from django.contrib import messages
 from django.db.models import Q
@@ -14,14 +14,14 @@ from django.http import JsonResponse, HttpResponse, HttpResponseForbidden
 from datetime import datetime, timedelta
 from .serialize import FriendshipSerializer
 
-@login_required
+@csrf_exempt
 def index(request):
     user = token_user(request)
     if user is None: 
         return redirect(reverse('player:login'))
     return render(request, "friend/index.html")
 
-@login_required
+@csrf_exempt
 def add(request):
     user = token_user(request)
     if user is None: 
@@ -30,28 +30,17 @@ def add(request):
         data = json.loads(request.body)
         username = data.get('username')
         if username == user.username:
-            #messages.add_message(request, messages.INFO, "can't add userrself")
-            #return render(request, "friend/add.html")
-            return JsonResponse({'error': "Can't add userrself"}, status=400)
+            return JsonResponse({'error': "Can't add userrself"}, status=401)
         users = Player.objects.filter(username=username)
-        if len(users) == 0:
-            #messages.add_message(request, messages.INFO, ("user doesn't exist"))
-            #return render(request, "friend/add.html")
-            return JsonResponse({'error': "user doesn't exist"}, status=400)
         new_friend = Friendship.objects.filter(Q(user=user, friend=users[0]) | Q(user=users[0], friend=user))
         if len(new_friend) != 0:
-            #messages.add_message(request, messages.INFO, ("invitation already sent"))
-            #return render(request, "friend/add.html")
             return JsonResponse({'error': "invitation already sent"}, status=400)
         new_friend = Friendship(user=user, friend=users[0])
-        new_friend.status = 'accepted'
         new_friend.save()
-        #return render(request, "friend/work.html", {'friend':users[0], 'user':user}) #faire le changement vers les page front return JsonResponse({'redirect_url': '/'}, status=302)
         return JsonResponse({'redirect_url': '/'}, status=200)
-    #return render(request, "friend/add.html")
     return JsonResponse({'error': "Invalid request methode"}, status=405)
 
-@login_required
+@csrf_exempt
 def delete(request):
     user = token_user(request)
     if user is None: 
@@ -64,17 +53,25 @@ def delete(request):
     #return redirect("friend:list")
     return JsonResponse({'redirect_url': '/'}, status=200)
 
-@login_required
-def accept(request, id_friendship):
+@csrf_exempt
+def help(request):
     user = token_user(request)
     if user is None: 
         return redirect(reverse('player:login'))
-    request = Friendship.objects.get(id=id_friendship)
-    request.status = 'accepted'
-    request.save()
-    return redirect("friend:pending")
+    if request.method == 'POST':
+        data = json.loads(request.body)
+        username = data.get('username')
+        users = Player.objects.filter(username=username)
+        if len(users) == 0:
+            return JsonResponse({'error': "user doesn't exist"}, status=400)
+        new_friend = Friendship.objects.filter(user=users[0], friend=user)
+        for elem in new_friend:
+            elem.status = 'accepted'
+            elem.save()
+        return JsonResponse({'redirect_url': '/'}, status=200)
+    return JsonResponse({'error': "Invalid request methode"}, status=405)
 
-@login_required
+@csrf_exempt
 def refuse(request, id_friendship):
     user = token_user(request)
     if user is None: 
@@ -84,32 +81,27 @@ def refuse(request, id_friendship):
     request.save()
     return redirect("friend:pending")
 
-@login_required
+@csrf_exempt
 def list(request):
     you = token_user(request)
     friends = Friendship.objects.filter(Q(user=you, status='accepted') | Q(friend=you, status='accepted'))
-    #you.last_login = timezone.now()
-    #you.save()
+
     #return render(request, "friend/list.html", {'friends':friends, 'you':you})
     data = serializers.serialize('json', friends, use_natural_foreign_keys=True, use_natural_primary_keys=True)
-
-    #serializer = FriendshipSerializer(friends.values())
-    #if serializer.is_valid():
-    #        serializer.save()
     return JsonResponse(data, safe=False, content_type='application/json')
-    #return HttpResponse(friend_list, content_type='application/json')
+    
 
-@login_required
+@csrf_exempt
 def pending(request):
     you = token_user(request)
     friends = Friendship.objects.filter(Q(friend=you, status='pending'))
     you.last_login = timezone.now()
     you.save()
-    return render(request, "friend/pending.html", {'friends':friends, 'you':you})
-    #data = serializers.serialize('json', friends)
-    #return HttpResponse(data, content_type='application/json')
+    #return render(request, "friend/pending.html", {'friends':friends, 'you':you})
+    data = serializers.serialize('json', friends, use_natural_foreign_keys=True, use_natural_primary_keys=True)
+    return JsonResponse(data, safe=False, content_type='application/json')
 
-@login_required
+@csrf_exempt
 def refused(request):
     you = token_user(request)
     friends = Friendship.objects.filter(Q(friend=you, status='refused'))

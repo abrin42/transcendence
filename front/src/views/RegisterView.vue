@@ -81,7 +81,7 @@
         }
 
         try {
-            const response = await fetch('/api/player/register/', {
+            const response = await fetch('api/player/register/', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
