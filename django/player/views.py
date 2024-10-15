@@ -78,7 +78,7 @@ def register_view(request):
 
     return JsonResponse({'error': 'Méthode non autorisée.'}, status=405)
 
-exempt
+
 def login_view(request):
     if request.method != "POST":
         return JsonResponse({'error': 'Invalid request method'}, status=405)
@@ -122,7 +122,7 @@ def login_view(request):
     except json.JSONDecodeError:
         return JsonResponse({'error': 'Invalid request body'}, status=400)
 
-exempt
+
 def login42_view(request):
     if request.method == "POST":
         oauth_url = f"{settings.FT42_OAUTH_URL}?client_id={settings.FT42_CLIENT_ID}&redirect_uri={settings.FT42_REDIRECT_URI}&response_type=code"

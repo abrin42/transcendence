@@ -1,3 +1,6 @@
+
+import { useRouter } from 'vue-router';
+import { onMounted } from 'vue';
 import { ref, reactive } from 'vue';
 
 export function useUser() {
@@ -18,6 +21,34 @@ export function useUser() {
         lose: "",
         win: "",
     });
+
+    const router = useRouter();
+
+    onMounted(async () => {
+        await submitForm();
+    });
+
+    async function submitForm() {
+    try {
+        const response = await fetch('api/test-csrf/', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            credentials: 'include',
+        });
+        
+        if (!response.ok) {
+            throw new Error('Network response was not ok');
+        }
+        
+        const data = await response.json();
+        console.log('Response data:', data);
+        
+    } catch (error) {
+        console.error('Error during fetch operation:', error);
+    }
+}
 
     function updateUserAccount(user) {
         userAccount.nickname = user.nickname;

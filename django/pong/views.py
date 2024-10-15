@@ -17,9 +17,12 @@ def layout(request):
 
 @csrf_exempt
 def csrf_test_view(request):
+    print(request)
     if request.method == 'POST':
         csrf_token = get_token(request)
         response = JsonResponse({'message': 'CSRF token generated'})
         response.set_cookie('csrftoken', csrf_token)
+        csrf_cook = request.COOKIES.get('jwt')
+        print(csrf_cook)
         return response
     return JsonResponse({'error': 'Invalid request la'}, status=400)

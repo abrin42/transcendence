@@ -32,17 +32,17 @@ ALLOWED_HOSTS = ["localhost", 'api',
 
 DATA_UPLOAD_MAX_MEMORY_SIZE = None
 
+CORS_ALLOW_ALL_ORIGINS = True
 CSRF_COOKIE_SAMESITE = 'None'
-CSRF_COOKIE_SECURE = True
+CSRF_COOKIE_SECURE = False
+
 # CSRF settings
 CSRF_TRUSTED_ORIGINS = ['https://localhost:8443',
                         'https://10.11.1.11:8443',
                         'https://10.11.1.10:8443',]
 
 
-CORS_ALLOW_ALL_ORIGINS = True
 
-CSRF_COOKIE_DOMAIN = '10.11.1.10'
 
 #maybe enlever 8080
 CORS_ALLOWED_ORIGINS = [
@@ -70,16 +70,11 @@ INSTALLED_APPS = [
     'api',
     'rest_framework',
 ]
-CORS_ALLOW_CREDENTIALS = True
-CSRF_COOKIE_SECURE = True
-SESSION_COOKIE_SECURE = True
-CSRF_COOKIE_SAMESITE = 'Lax'
-SESSION_COOKIE_SAMESITE = 'Lax'
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
-    'django.middleware.csrf.CsrfViewMiddleware',
     'corsheaders.middleware.CorsMiddleware',
+    'django.middleware.csrf.CsrfViewMiddleware',
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',

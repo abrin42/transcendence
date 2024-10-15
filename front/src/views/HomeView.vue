@@ -1,14 +1,14 @@
 <script setup>
 // Imports
-  import CreateSoundButton from '../components/CreateSoundButton.vue';
-  import CreateDropupButton from '../components/CreateDropupButton.vue';
-  import CreateSettingsButton from '../components/CreateSettingsButton.vue';
-  import CreateLogButton from '../components/CreateLogButton.vue';
-  import CreateHomeButton from '../components/CreateHomeButton.vue';
-  import { useRouter } from 'vue-router';
-  import { onMounted } from 'vue';
+    import CreateSoundButton from '../components/CreateSoundButton.vue';
+    import CreateDropupButton from '../components/CreateDropupButton.vue';
+    import CreateSettingsButton from '../components/CreateSettingsButton.vue';
+    import CreateLogButton from '../components/CreateLogButton.vue';
+    import CreateHomeButton from '../components/CreateHomeButton.vue';
+    import { useRouter } from 'vue-router';
+    import { onMounted } from 'vue';
 
-  const router = useRouter();
+    const router = useRouter();
 
     onMounted(async () => {
         await submitForm();
