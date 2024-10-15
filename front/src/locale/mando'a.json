@@ -85,5 +85,7 @@
     "RIGHT": "STAABI",
     "LEFT": "PAYT",
     "PAUSE_GAME": "GEV GEROYA",
-    "MUTE_SOUND": "HOKAANIR KAAB"
+    "MUTE_SOUND": "HOKAANIR KAAB",
+
+    "leaderboard2": "Verd'la"
 }

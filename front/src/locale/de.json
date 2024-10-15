@@ -85,5 +85,7 @@
     "RIGHT": "RECHTE",
     "LEFT": "LINKE",
     "PAUSE_GAME": "SPIEL PAUSIEREN",
-    "MUTE_SOUND": "TON STUMM"
+    "MUTE_SOUND": "TON STUMM",
+
+    "leaderboard2": "Bestenliste"
 }

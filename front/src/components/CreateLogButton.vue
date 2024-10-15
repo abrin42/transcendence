@@ -3,161 +3,162 @@
         <button ref="button" class="button button-log" @click="__goTo(is_connected ? '/dashboard' : '/log')">
             <span class="buttonText">{{ is_connected ? userAccount.nickname : $t('login') }}</span>
         </button>
-        
+
         <div id="dropdown-content" v-if="dropdownVisible" class="dropdown">
-            <button class="button buttonText buttondropdown" @click="__goTo('/dashboard')">{{ $t('my_account') }}</button>
+            <button class="button buttonText buttondropdown" @click="__goTo('/dashboard')">{{ $t('my_account')
+                }}</button>
             <!-- Appel à la méthode toggleFriendsPopup pour afficher la popup -->
             <button class="button buttonText buttondropdown" @click="toggleFriendsPopup">{{ $t('friends') }}</button>
+            <button class="button buttonText buttondropdown" @click="__goTo('/leaderboard2')">{{ $t('leaderboard2') }}</button>
             <button class="button buttonText buttondropdown" @click="handleLogout">{{ $t('logout') }}</button>
         </div>
-        
+
         <!-- Composant FriendsPopup, écoute l'événement 'close' pour masquer la popup -->
     </div>
     <FriendsPopup class="friends-popup" v-if="friendsPopupVisible" @close="toggleFriendsPopup" />
 </template>
 
 <script setup>
-    import { ref, reactive, onMounted, watch } from 'vue';
-    import { useRouter } from 'vue-router';
-    import FriendsPopup from './FriendsPopup.vue'; 
+import { ref, reactive, onMounted, watch } from 'vue';
+import { useRouter } from 'vue-router';
+import FriendsPopup from './FriendsPopup.vue';
 
-    ////////////////////////////////////////////////
-    /////// GET USER ///////////////////////////////
-    ////////////////////////////////////////////////
+////////////////////////////////////////////////
+/////// GET USER ///////////////////////////////
+////////////////////////////////////////////////
 
-    import { useUser } from '../useUser.js'; 
-    const { getUser, userAccount, is_connected } = useUser(); 
+import { useUser } from '../useUser.js';
+const { getUser, userAccount, is_connected } = useUser();
 
-    onMounted(async () => {
-        await getUser();
-    });
+onMounted(async () => {
+    await getUser();
+});
 
-    ////////////////////////////////////////////////
-    ////////////////////////////////////////////////
-    ////////////////////////////////////////////////
+////////////////////////////////////////////////
+////////////////////////////////////////////////
+////////////////////////////////////////////////
 
-    const router = useRouter();
+const router = useRouter();
 
 
-    function __goTo(page) {
-        if (page == null) {
-            return;
-        }
-        router.push(page);
+function __goTo(page) {
+    if (page == null) {
+        return;
     }
+    router.push(page);
+}
 
-    const button = ref(null);
-    const dropdownVisible = ref(false);
-    const friendsPopupVisible = ref(false);
-    let hoverTimeout = null;
-    
-    const handleLogout = async () => {
-        try {
-            await fetch("api/player/logout/", {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'X-CSRFToken': getCsrfToken()
-                },
-            });
-            router.push('/log');
-        } catch (error) {
-            console.error('Logout failed:', error);
-        }
-    };
+const button = ref(null);
+const dropdownVisible = ref(false);
+const friendsPopupVisible = ref(false);
+let hoverTimeout = null;
 
-    function getCsrfToken() {
-        const cookieValue = document.cookie
-            .split('; ')
-            .find(row => row.startsWith('csrftoken='))
-            ?.split('=')[1];    
-        return cookieValue || '';
+const handleLogout = async () => {
+    try {
+        await fetch("api/player/logout/", {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRFToken': getCsrfToken()
+            },
+        });
+        router.push('/log');
+    } catch (error) {
+        console.error('Logout failed:', error);
     }
+};
 
-    onMounted(async () => {
-        await getUser(); // Only call getUser if state.id is available
-    });
-    onMounted(() => {
-        adjustButtonPosition();
-    });
-    watch(() => userAccount.nickname, adjustButtonPosition);
+function getCsrfToken() {
+    const cookieValue = document.cookie
+        .split('; ')
+        .find(row => row.startsWith('csrftoken='))
+        ?.split('=')[1];
+    return cookieValue || '';
+}
 
-    function adjustButtonPosition() {
-        const buttonWidth = button.value.offsetWidth;
-        button.value.style.left = `calc(100vw - ${buttonWidth + 85}px)`;
-    }
+onMounted(async () => {
+    await getUser(); // Only call getUser if state.id is available
+});
+onMounted(() => {
+    adjustButtonPosition();
+});
+watch(() => userAccount.nickname, adjustButtonPosition);
 
-    function showDropdown() {
-        hoverTimeout = setTimeout(() => {
-            if (is_connected.value === true)
-                dropdownVisible.value = true;
-        }, 5);
-    }
+function adjustButtonPosition() {
+    const buttonWidth = button.value.offsetWidth;
+    button.value.style.left = `calc(100vw - ${buttonWidth + 85}px)`;
+}
 
-    function hideDropdown() {
-        clearTimeout(hoverTimeout);
-        dropdownVisible.value = false;
-    }
+function showDropdown() {
+    hoverTimeout = setTimeout(() => {
+        if (is_connected.value === true)
+            dropdownVisible.value = true;
+    }, 5);
+}
 
-    function toggleFriendsPopup() {
-        friendsPopupVisible.value = !friendsPopupVisible.value;
-    }
+function hideDropdown() {
+    clearTimeout(hoverTimeout);
+    dropdownVisible.value = false;
+}
+
+function toggleFriendsPopup() {
+    friendsPopupVisible.value = !friendsPopupVisible.value;
+}
 </script>
 
 
 <style>
-    .button-container {
-         position: relative; 
-         display: inline-block; 
-    }
-    
-    .button-log {
-        position: fixed;
-        bottom: 93vh;
-        height: 6vh;
-        width: 7vw;
-        min-width: fit-content;
-        white-space: nowrap;
-        transition: width 0.3s ease, left 0.3s ease;
-    }
+.button-container {
+    position: relative;
+    display: inline-block;
+}
 
-    .dropdown {
-        position: fixed;
-        bottom: 87%;
-        left: 83.2%;
-        height: 6%;
-        width: 11vw;
-        min-width: fit-content;
-        white-space: nowrap;
-        border-radius: 2vw;
-        z-index: 1000;
-        display: flex;
-        flex-direction: column;
-    }
+.button-log {
+    position: fixed;
+    bottom: 93vh;
+    height: 6vh;
+    width: 7vw;
+    min-width: fit-content;
+    white-space: nowrap;
+    transition: width 0.3s ease, left 0.3s ease;
+}
 
-    .dropdown button {
-        padding: 10px;
-        background-color: rgba(0, 0, 0, 0.25);
-        padding: 2vh 2vw;
-        border: 0.15vw solid rgba(0, 0, 0, 0.25);
-        border-radius: 0.4vw;
-        transition: border-color 0.5s;
-        margin-top: 0.1vh;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        box-sizing: border-box;
-    }
+.dropdown {
+    position: fixed;
+    bottom: 87%;
+    left: 83.2%;
+    height: 6%;
+    width: 11vw;
+    min-width: fit-content;
+    white-space: nowrap;
+    border-radius: 2vw;
+    z-index: 1000;
+    display: flex;
+    flex-direction: column;
+}
 
-    .buttondropdown {
-        width: 11vw;
-        height: 6vh;
-    }
+.dropdown button {
+    padding: 10px;
+    background-color: rgba(0, 0, 0, 0.25);
+    padding: 2vh 2vw;
+    border: 0.15vw solid rgba(0, 0, 0, 0.25);
+    border-radius: 0.4vw;
+    transition: border-color 0.5s;
+    margin-top: 0.1vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-sizing: border-box;
+}
 
-    .dropdown button:hover {
-        border-color: rgba(255, 255, 255, 1);
-        background-color: rgba(255, 255, 255, 0.4);
-        transition: border-color, background-color 0.5s;
-    }
+.buttondropdown {
+    width: 11vw;
+    height: 6vh;
+}
 
+.dropdown button:hover {
+    border-color: rgba(255, 255, 255, 1);
+    background-color: rgba(255, 255, 255, 0.4);
+    transition: border-color, background-color 0.5s;
+}
 </style>

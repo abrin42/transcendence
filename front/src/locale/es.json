@@ -85,5 +85,7 @@
     "RIGHT": "DERECHA",
     "LEFT": "IZQUIERDA",
     "PAUSE_GAME": "PAUSA JUEGO",
-    "MUTE_SOUND": "SILENCIAR SONIDO"
+    "MUTE_SOUND": "SILENCIAR SONIDO",
+
+    "leaderboard2": "Clasificación"
 }

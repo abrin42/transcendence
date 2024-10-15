@@ -85,5 +85,7 @@
     "RIGHT": "RIGHT",
     "LEFT": "LEFT",
     "PAUSE_GAME": "PAUSE GAME",
-    "MUTE_SOUND": "MUTE SOUND"
+    "MUTE_SOUND": "MUTE SOUND",
+
+    "leaderboard2": "Leaderboard"
 }
