@@ -22,4 +22,4 @@ def csrf_test_view(request):
         response = JsonResponse({'message': 'CSRF token generated'})
         response.set_cookie('csrftoken', csrf_token)
         return response
-    return JsonResponse({'error': 'Invalid request'}, status=400)
+    return JsonResponse({'error': 'Invalid request la'}, status=400)

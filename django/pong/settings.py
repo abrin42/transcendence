@@ -42,11 +42,14 @@ CSRF_TRUSTED_ORIGINS = ['https://localhost:8443',
 
 CORS_ALLOW_ALL_ORIGINS = True
 
+CSRF_COOKIE_DOMAIN = '10.11.1.10'
+
 #maybe enlever 8080
 CORS_ALLOWED_ORIGINS = [
     "http://localhost:8080", #a tej ?
     "https://localhost:8443",
-    "https://10.11.1.11:8443" 
+    "https://10.11.1.11:8443",
+    'https://10.11.1.10:8443', 
 ]
 
 
@@ -68,7 +71,11 @@ INSTALLED_APPS = [
     'rest_framework',
 ]
 CORS_ALLOW_CREDENTIALS = True
-CSRF_COOKIE_SECURE = False
+CSRF_COOKIE_SECURE = True
+SESSION_COOKIE_SECURE = True
+CSRF_COOKIE_SAMESITE = 'Lax'
+SESSION_COOKIE_SAMESITE = 'Lax'
+
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
