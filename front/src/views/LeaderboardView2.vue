@@ -1,3 +1,4 @@
+<!-- @lribette todo translate -->
 <script setup>
 import { ref, computed, defineEmits, onMounted } from 'vue';
 import CreateDropupButton from '../components/CreateDropupButton.vue';
@@ -156,25 +157,20 @@ onMounted(async () => {
                 <div class="latestGame">
                     <div v-if="lengthOfAllPlayers() > 0">
                         <div v-for="(game, index) in allPlayers" :key="game.id">
-                            <div v-if="game !== null">
-                                <button :class="['game-button',
-                                    index === 0 ? 'first-place' : '',
-                                    index === 1 ? 'second-place' : '',
-                                    index === 2 ? 'third-place' : '']">
-                                    <div class="ranking-left">{{ index + 1 }}.</div>
-                                    <span class="game-match"> {{ game.username }}
-                                        <i v-if="index < 3" class="fa-solid fa-trophy trophy-icon"></i>
-                                    </span>
-                                    <!-- Utilisez la méthode formatPoints ici -->
-                                    <div class="points-right">{{ formatPoints(game.rank) }} RANK</div>
-                                </button>
-                            </div>
-                            <div v-else class="">
-                                <p>Aucune partie récente à afficher.</p>
-                            </div>
+                            <button :class="['game-button',
+                                index === 0 ? 'first-place' : '',
+                                index === 1 ? 'second-place' : '',
+                                index === 2 ? 'third-place' : '']">
+                                <div class="ranking-left">{{ index + 1 }}.</div>
+                                <span class="game-match"> {{ game.username }}
+                                    <i v-if="index < 3" class="fa-solid fa-trophy trophy-icon"></i>
+                                </span>
+                                <!-- Utilisez la méthode formatPoints ici -->
+                                <div class="points-right">{{ formatPoints(game.rank) }} RANK</div>
+                            </button>
                         </div>
                     </div>
-                    <div class="game-button game-info" v-else>
+                    <div class="game-info" v-else>
                         <p>Aucune partie récente à afficher.</p>
                     </div>
                 </div>
@@ -314,5 +310,13 @@ h1,
     justify-content: left;
     flex-grow: 1;
     text-align: center;
+}
+
+.game-info {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100%;
+    color: #fff;
 }
 </style>

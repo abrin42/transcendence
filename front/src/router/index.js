@@ -27,6 +27,7 @@ import IAPongView from '../views/IAPongView.vue'
 import TwoFaView from '../views/2faView.vue'
 import TermsView from '../views/TermsView.vue'
 import LeaderboardView2 from '../views/LeaderboardView2.vue'
+import NotFound from '../views/NotFound.vue'
 
 const router = createRouter({
   history: createWebHistory(),
@@ -126,16 +127,16 @@ const router = createRouter({
       name: 'IA',
       component: IAPongView
     },
-		{
-			path: '/2fa',
-			name: '2fa',
-			component: TwoFaView
-		},
     {
-			path: '/matchmaking',
-			name: 'matchmaking',
-			component: MatchmakingView
-		},
+      path: '/2fa',
+      name: '2fa',
+      component: TwoFaView
+    },
+    {
+      path: '/matchmaking',
+      name: 'matchmaking',
+      component: MatchmakingView
+    },
     {
       path: '/leaderboard', // for testing front end
       // path: '/leaderboard/:id',
@@ -151,6 +152,10 @@ const router = createRouter({
       path: '/leaderboard2',
       name: 'leaderboard2',
       component: LeaderboardView2
+    },
+    {
+      path: '/:pathMatch(.*)*', // Cela correspond à toute route non définie
+      component: NotFound
     }
   ]
 })
