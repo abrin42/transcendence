@@ -95,5 +95,8 @@
     "semi_finals": "Semifinali",
     "final": "Finale",
     "matches_not_yet_decided": "Gli abbinamenti per le finali non sono ancora stati decisi.",
-    "small_final": "Piccolo finale"
+    "small_final": "Piccolo finale",
+
+    "to_pause_unpause": "per mettere in pausa/disattivare",
+    "to_mute_unmute": "per silenziare/disattivare"
 }

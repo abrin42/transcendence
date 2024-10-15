@@ -96,5 +96,8 @@
     "semi_finals": "Semi-finals",
     "final": "Final",
     "matches_not_yet_decided": "The matches for the finals have not yet been decided.",
-    "small_final": "Small final"
+    "small_final": "Small final",
+    
+    "to_pause_unpause": "to Pause/Unpause",
+    "to_mute_unmute": "to Mute/Unmute"
 }

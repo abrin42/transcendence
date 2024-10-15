@@ -95,5 +95,8 @@
     "semi_finals": "Halbfinale",
     "final": "Finale",
     "matches_not_yet_decided": "Die Spiele der Endrunde sind noch nicht entschieden.",
-    "small_final": "Kleines Finale"
+    "small_final": "Kleines Finale",
+
+    "to_pause_unpause": "zu Pause/Unterbrechung",
+    "to_mute_unmute": "Stummschalten/Stummschaltung aufheben"
 }

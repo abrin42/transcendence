@@ -95,5 +95,8 @@
     "semi_finals": "Ge'sol'kyr",
     "final": "Kyr",
     "matches_not_yet_decided": "Nu akaanire par kyre ru gaanla.",
-    "small_final": "Kih'kyr"
+    "small_final": "Kih'kyr",
+
+    "to_pause_unpause": "par Gev/Slanar",
+    "to_mute_unmute": "par Hokaanir/Goorar kaab"
 }
