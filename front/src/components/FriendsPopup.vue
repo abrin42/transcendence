@@ -201,7 +201,7 @@ async function invitePlayer(playerUsername) {
         }
     } catch (error) {
         if (error == "Error: HTTP error! Status: 400") {
-            alert('you have already send an invite to this user' );
+            alert('You have already sent an invitation to this user' );
         } else {
             alert('An error occurred when adding a friend');
         }
@@ -316,7 +316,7 @@ async function deleteFriend(playerUsername) {
 
 function inviteFriendToPlay(friendId) {
     console.log('Inviting friend with ID:', friendId, 'to play');
-    alert(`Invitation envoyée à ${friends.value.find(friend => friend.id === friendId).name} pour jouer.`);
+    alert(`Invitation sent to  ${friends.value.find(friend => friend.id === friendId).name} to play.`);
 }
 
 const filteredPlayers = computed(() => {

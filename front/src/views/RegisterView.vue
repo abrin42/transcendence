@@ -64,18 +64,18 @@
 
     async function createAccount() {
         if (!username.value || !email.value || !password1.value || !password2.value) {
-            alert('Veuillez remplir tous les champs requis.');
+            alert('Please fill in all the required fields.');
             return;
         }
         
         if (!isValidEmail(email.value)) {
-            alert('Veuillez entrer une adresse e-mail valide.');
+            alert('Please enter a valid e-mail address.');
             return;
         }
         
         if (phone_number.value) {
             if (!isValidPhoneNumber(phone_number.value)) {
-                alert('Veuillez entrer un numéro de téléphone valide (ajoutez "+33" au debut).');
+                alert('Please enter a valid telephone number (add ‘+33’ at the beginning).');
                 return;
             }
         }
@@ -115,7 +115,7 @@
             if (response.ok) {
                 const responseData = await response.json();
                 console.log('Account created successfully!', responseData);
-                alert('Inscription réussie!');
+                alert('Successful registration!');
                 __goTo('/')
             } else {
                 const errorData = await response.json();
@@ -124,12 +124,12 @@
                 const errorMessage = 
                     errorData.error || errorData.detail || 
                     errorData.non_field_errors?.join(', ') || 
-                    'Une erreur inconnue est survenue';
-                alert('Erreur: ' + errorMessage);
+                    'An unknown error has occurred';
+                alert('Error: ' + errorMessage);
             }
         } catch (error) {
             console.error('Network error:', error);
-            alert('Une erreur réseau est survenue. Veuillez réessayer.');
+            alert('A network error has occurred. Please try again.');
         }
     }
 

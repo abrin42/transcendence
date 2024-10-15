@@ -191,7 +191,7 @@
         </div>
 
         <Popup v-if="showPhonePopup" @close="closePopup">
-            <h2 class="__title-popup">{{  $t('phone_authentication') }}</h2>
+            <h2 class="__title-popup">{{ $t('phone_authentication') }}</h2>
             <p>{{ $t('enter_sms') }}</p>
             <Input iconClass="fa-shield" :placeholderText="$t('enter_your_code')" v-model="code" />
             <button class="button __button-send-code" @click="resendCode">

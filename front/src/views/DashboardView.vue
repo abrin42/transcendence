@@ -159,10 +159,10 @@
 
                     <div class="___btn-click">
                         <button class="button button-update" @click="updateAccount">
-                            <span class="buttonText buttonTextSize" style="font-size: medium;">{{ $t('Update your account') }}</span>
+                            <span class="buttonText buttonTextSize" style="font-size: medium;">{{ $t('update_account') }}</span>
                         </button>
                         <button class="button button-logout" @click="handleLogout">
-                            <span class="buttonText buttonTextSize" style="font-size: medium;">Logout</span>
+                            <span class="buttonText buttonTextSize" style="font-size: medium;">{{ $t('logout') }}</span>
                         </button>
                         <button class="button button-logout" @click="handleDelete">
                             <span class="buttonText buttonTextSize" style="font-size: medium;">{{ $t('delete_account') }}</span>

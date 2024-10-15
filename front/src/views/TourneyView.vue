@@ -71,7 +71,7 @@ function startTimer() {
         interval = setInterval(() => {
             timer.value--;
             if (timer.value === -1) {
-                alert("START GAME SOON.");
+                alert("GAME LAUNCH SOON.");
                 stopTimer();
             }
         }, 1000);
