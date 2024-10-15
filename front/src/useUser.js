@@ -30,7 +30,9 @@ export function useUser() {
         userAccount.student = user.student;
         userAccount.language = user.language;
         userAccount.profilePicture = user.profile_picture;
-
+        userAccount.win = user.win;
+        userAccount.lose = user.lose;
+        userAccount.rank = user.rank;
         // console.log("updateUserAccount.nickname: " + userAccount.nickname);
         // console.log("updateUserAccount.username: " + userAccount.username);
         // console.log("updateUserAccount.email: " + userAccount.email);
@@ -40,7 +42,7 @@ export function useUser() {
         // console.log("updateUserAccount.sms_2fa_active: " + userAccount.sms_2fa_active);
         // console.log("updateUserAccount.student: " + userAccount.student);
         // console.log("updateUserAccount.language: " + userAccount.language);
-        console.log("updateUserAccount.profilePicture: " + userAccount.profilePicture);
+        //console.log("updateUserAccount.profilePicture: " + userAccount.profilePicture);
     }
 
     async function getUser() {

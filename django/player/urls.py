@@ -23,7 +23,7 @@ urlpatterns = [
 
     path('update/', views.update_view, name='update'),
     path('update_password/', views.update_password_view, name='update_password'),
-    path('delete_account/', views.delete_account_view, name='delete_account'),    
+    path('delete_account/', views.delete_account, name='delete_account'),    
     path('get_all_user/', views.get_all_user, name='get_all_user'),
 
     path('update_language/', update.update_language, name='update_language'),

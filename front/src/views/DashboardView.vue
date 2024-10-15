@@ -92,8 +92,7 @@
         }
     };
 
-    
-    const handleDelete = async () =>{
+    const handleDelete = async () => {
         try {
             await fetch("api/player/delete_account/", {
                 method: 'POST',

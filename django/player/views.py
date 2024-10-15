@@ -302,6 +302,11 @@ def update_password_view(request):
         return render(request, 'player/update_password.html', {"form": form})
 
 @login_required
+def delete_p(request):
+    user = token_user(request)
+    user.delete()
+
+@login_required
 def logout_view(request):
     if request.method == "POST":
         token = request.COOKIES.get('jwt')
@@ -315,9 +320,10 @@ def logout_view(request):
     return JsonResponse({'error': 'Invalid request method'}, status=405)
 
 @login_required
-def delete_account_view(request):
+def delete_account(request):
     user = token_user(request)
-    return render(request, 'player/delete_account.html')
+    user.delete()
+    return JsonResponse({'redirect_url': '/log'}, status=200)
     # if user is None: 
         # return redirect(reverse('player:login'))
     # return render(request, 'player/delete_account.html')
