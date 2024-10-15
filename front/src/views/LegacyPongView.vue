@@ -284,18 +284,12 @@ function connectWebSocket() {
 }
 
 function sendMessage(msg) {
-  // console.log(msg);
   if (socket.value && socket.value.readyState === WebSocket.OPEN) 
   {
-    // console.log("---SEND MESSAGE---");
-    // console.log(msg.type);
-    // console.log(msg.player);
-    // console.log(msg.posPad);
     socket.value.send(JSON.stringify({
       'type': msg.type,
       'player': msg.player,
     }));
-    // console.log("---END SEND MESSAGE---");
   }
   else 
   {
@@ -315,7 +309,7 @@ onMounted(async () => {
       if (is_connected.value === false)
         __goTo('/')
   connectWebSocket();
-  board = document.getElementById("board"); //link board element in template to board variable
+  board = document.getElementById("board");
   board.height = boardHeight;
   board.width = boardWidth;
   context = board.getContext("2d"); //Drawing on board
@@ -359,10 +353,10 @@ onMounted(async () => {
     let tickPadel = 10;
 
     /////Game controls//////
-    let moveUpP1 = userAccount.moveUpP1;
-    let moveDownP1 =  userAccount.moveDownP1;
-    let moveUpP2 =  userAccount.moveUpP2;
-    let moveDownP2 = userAccount.moveDownP2;
+    let moveUpP1 = "KeyW";
+    let moveDownP1 =  "KeyS";
+    let moveUpP2 =  "KeyE";
+    let moveDownP2 = "KeyD";
     let mute = userAccount.mute;
 
     function movePlayer1up(e)

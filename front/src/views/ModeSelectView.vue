@@ -50,11 +50,11 @@
             <div class="buttonContainer">
                 <button class="button button-solo" @click="goToIA()">
                     <i class="fa-solid fa-user"></i>
-                    <span class="buttonText" style="margin-left: 0.5vw;">{{ $t('Solo') }}</span>
+                    <span class="buttonText" style="margin-left: 0.5vw;">{{ $t('solo') }}</span>
                 </button>
                 <button class="button button-credits" @click="goToMulti()">
                     <i class="fa-solid fa-users"></i>
-                    <span class="buttonText" style="margin-left: 0.5vw;">{{ $t('Multiplayer') }}</span>
+                    <span class="buttonText" style="margin-left: 0.5vw;">{{ $t('multiplayer') }}</span>
                 </button>
                 <CreateHomeButton />
                 <CreateSoundButton />

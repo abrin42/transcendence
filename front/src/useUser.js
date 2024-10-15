@@ -20,6 +20,12 @@ export function useUser() {
         username: "",
         lose: "",
         win: "",
+        player1Up: "",
+        player1Down: "",
+        player2Up: "",
+        player2Down: "",
+        pause: "",
+        mute: "",
     });
 
     const router = useRouter();

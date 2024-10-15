@@ -41,6 +41,10 @@ onMounted(async () => {
 
 
 ////////////Audio Variables///////////////
+import paddleHitSound from '../assets/paddle_hit.mp3'
+import pointScoredSound from '../assets/point_scored.mp3'
+import wallHitSound from '../assets/wall_hit.mp3'
+
 const wallHitAudio = new Audio(wallHitSound);
 const paddleHitAudio = new Audio(paddleHitSound);
 const pointScoredAudio = new Audio(pointScoredSound);
@@ -293,10 +297,14 @@ let moveInterval1down = null;
 let moveInterval2up = null;
 let moveInterval2down = null;
 let tickPadel = 10;
+/////Game controls//////
+let moveUpP1 = userAccount.moveUpP1;
+let moveDownP1 =  userAccount.moveDownP1;
+let mute = userAccount.mute;
 
 function movePlayer1down(e) {
   if (!moveInterval1down) {
-    if (e.code == "KeyS") {
+    if (e.code == moveDownP1) {
       moveInterval1down = setInterval(() => {
         const message =
         {
@@ -310,10 +318,6 @@ function movePlayer1down(e) {
   }
 }
 
-    /////Game controls//////
-    let moveUpP1 = userAccount.moveUpP1;
-    let moveDownP1 =  userAccount.moveDownP1;
-    let mute = userAccount.mute;
 
     function movePlayer1up(e)
     {
