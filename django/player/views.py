@@ -14,7 +14,6 @@ from django.urls import reverse
 from django.views.decorators.csrf import csrf_exempt
 from .otp import send_otp, create_otp
 from .jwt import generate_jwt, decode_jwt, token_user, set_jwt_token
-from .forms import RegisterForm, ChangePasswordForm, UpdateForm
 from .models import Player, BlacklistedToken
 from .utils import set_picture_42, username_underscore, verify_user
 from datetime import datetime, timedelta
@@ -78,7 +77,6 @@ def register_view(request):
 
     return JsonResponse({'error': 'Méthode non autorisée.'}, status=405)
 
-@csrf_exempt
 def login_view(request):
     if request.method != "POST":
         return JsonResponse({'error': 'Invalid request method'}, status=405)
@@ -91,13 +89,12 @@ def login_view(request):
         if not username or not password:
             return JsonResponse({'error': 'Username and password required'}, status=400)
 
-        player = get_object_or_404(Player, username=username)
+        player = authenticate(request, username=username, password=password)
         if not player:
             return JsonResponse({'error': 'Invalid username or password'}, status=401)
+        login(request, player)
 
         print(f'username: {player.username}, email_2fa_active: {player.email_2fa_active}')
-
-        login(request, player)
 
         if not player.email_2fa_active and not player.sms_2fa_active:
             token = generate_jwt(player)
@@ -122,13 +119,11 @@ def login_view(request):
     except json.JSONDecodeError:
         return JsonResponse({'error': 'Invalid request body'}, status=400)
 
-@csrf_exempt
 def login42_view(request):
     if request.method == "POST":
         oauth_url = f"{settings.FT42_OAUTH_URL}?client_id={settings.FT42_CLIENT_ID}&redirect_uri={settings.FT42_REDIRECT_URI}&response_type=code"
         return JsonResponse({'url': oauth_url}, status=200)
     return JsonResponse({'error': 'Invalid request method'}, status=405)
-
 
 @login_required
 def tfa_view(request):
@@ -252,54 +247,10 @@ def auth_42_callback(request):
         return response
     return redirect('/log/')
 
-
 @login_required
-def account_view(request):
+def delete_p(request):
     user = token_user(request)
-    if user is None: 
-        return redirect(reverse('player:login'))
-
-    if request.method == 'POST':
-        email_2fa_active = 'email_2fa_active' in request.POST
-        sms_2fa_active = 'sms_2fa_active' in request.POST
-
-        user.email_2fa_active = email_2fa_active
-        if user.phone_number:
-            user.sms_2fa_active = sms_2fa_active
-        user.save()
-    return render(request, 'player/account.html', {'user': user})
-
-@login_required
-def update_view(request):
-    user = token_user(request)
-    if user is None: 
-        return redirect(reverse('player:login'))
-    if request.method == 'POST':
-        form = UpdateForm(request.POST, request.FILES, instance=user)
-        if form.is_valid():
-            form.save()
-            return redirect('/api/player/account/')
-    else:
-        form = UpdateForm(instance=user)
-    return render(request, 'player/update.html', {'form': form})
-
-@login_required
-def update_password_view(request):
-    user = token_user(request)
-    if user is None: 
-        return redirect(reverse('player:login'))
-
-    if request.method == 'POST':
-        form = ChangePasswordForm(user, request.POST)
-        if form.is_valid():
-            form.save()
-            login(request, user)
-            return redirect('/api/player/account/')
-        else:
-            return render(request, 'player/update_password.html', {"form": form})
-    else:
-        form = ChangePasswordForm(user)
-        return render(request, 'player/update_password.html', {"form": form})
+    user.delete()
 
 @login_required
 def logout_view(request):
@@ -315,12 +266,10 @@ def logout_view(request):
     return JsonResponse({'error': 'Invalid request method'}, status=405)
 
 @login_required
-def delete_account_view(request):
+def delete_account(request):
     user = token_user(request)
-    return render(request, 'player/delete_account.html')
-    # if user is None: 
-        # return redirect(reverse('player:login'))
-    # return render(request, 'player/delete_account.html')
+    user.delete()
+    return JsonResponse({'redirect_url': '/log'}, status=200)
 
 @login_required
 def connected_user(request):
@@ -350,15 +299,11 @@ def quit_matchmaking(request):
     matchmaking.remove(user)
     return JsonResponse({'redirect_url': '/'}, status=302)
 
-
-#quand les 2 sont trouvé on lance la partie sinon on attend 0.5s et relance la page matchma 
 async def get_match(request):
     if len(matchmaking) >= 2:
         data = matchmaking[0]
         data.append(matchmaking[1])
-        #creatgame(data)
         data = serializers.serialize('json', data)
-        #return HttpResponse(data, content_type='application/json')
         return JsonResponse(data, safe=False, content_type='application/json')
 
     await asyncio.sleep(0.5)

@@ -30,6 +30,7 @@ urlpatterns = [
     path('api/game/', include('game.urls')),
     path('api/layout/', views.layout),
     path('api/test-api/', include('api.urls')),
+    path('api/test-csrf/', views.csrf_test_view),
 ]
 
 urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

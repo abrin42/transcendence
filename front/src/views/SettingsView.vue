@@ -1,17 +1,77 @@
 <script setup>
-    import { reactive, ref, onBeforeUnmount } from 'vue';
+    import { reactive, ref, onBeforeUnmount, onMounted } from 'vue';
     import CreateBackButton from '../components/CreateBackButton.vue';
     import CreateDropupButton from '@/components/CreateDropupButton.vue';
     import CreateHomeButton from '@/components/CreateHomeButton.vue';
 
+    ////////////////////////////////////////////////
+    /////// GET USER ///////////////////////////////
+    ////////////////////////////////////////////////
+
+    import { useUser } from '../useUser.js'; 
+    const { getUser, userAccount, is_connected } = useUser(); 
+
+    onMounted(async () => {
+        await getUser();
+    });
+
+    ////////////////////////////////////////////////
+    ////////////////////////////////////////////////
+    ////////////////////////////////////////////////
+
+    function __goTo(page) {
+    if (page == null)
+        return;
+    router.push(page);
+    }
+
     const keys = reactive({
-        player1Left: 'ArrowLeft',
-        player1Right: 'ArrowRight',
-        player2Left: 'A',
-        player2Right: 'D',
+        player1Up: 'W',
+        player1Down: 'S',
+        player2Up: 'ArrowUp',
+        player2Down: 'ArrowDown',
         pause: 'P',
         mute: 'M',
     });
+
+    async function update_keys() {
+    try {
+        const response = await fetch('api/player/update_keys/', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRFToken': getCsrfToken(), // Assuming CSRF protection is enabled
+            },
+            body: JSON.stringify({
+                moveUpP1: userAccount.player1Up,
+                moveDownP1: userAccount.player1Down,
+                moveUpP2: userAccount.player2Up,
+                moveDownP2: userAccount.player2Down,
+                pause: userAccount.pause,
+                mute: userAccount.mute
+            }),
+        });
+
+        if (!response.ok) {
+            throw new Error(`HTTP error! Status: ${response.status}`);
+        }
+
+        const data = await response.json();
+        console.log(data);
+        
+    } catch (error) {
+        console.error('Could not change', error);
+        alert('An error occurred during login.');
+    }
+}
+
+    function getCsrfToken() {
+        const cookieValue = document.cookie
+            .split('; ')
+            .find(row => row.startsWith('csrftoken='))
+            ?.split('=')[1];
+        return cookieValue || '';
+    }
 
     const selectedKey = ref(null);
 
@@ -28,19 +88,33 @@
             return;
         }
         if (
-            (selectedKey.value === 'player1Left' && newKey === keys.player1Right) ||
-            (selectedKey.value === 'player1Right' && newKey === keys.player1Left) ||
-            (selectedKey.value === 'player2Left' && newKey === keys.player2Right) ||
-            (selectedKey.value === 'player2Right' && newKey === keys.player2Left) ||
+            (selectedKey.value === 'player1Down' && newKey === keys.player1Up) ||
+            (selectedKey.value === 'player1Up' && newKey === keys.player1Down) ||
+            (selectedKey.value === 'player2Down' && newKey === keys.player2Up) ||
+            (selectedKey.value === 'player2Up' && newKey === keys.player2Down) ||
             (selectedKey.value === 'pause' && newKey === keys.pause) ||
             (selectedKey.value === 'mute' && newKey === keys.mute)
         ) {
-            alert('Le meme joueur ne peut pas utiliser la meme touche pour gauche et droite.');
+            alert('Le meme joueur ne peut pas utiliser la meme touche pour haut et bas.');
             return;
         }
 
         if (selectedKey.value) {
             keys[selectedKey.value] = newKey;
+            if(selectedKey.value === 'player1Down')
+                userAccount.player1Down = event.code;
+            else if(selectedKey.value === 'player1Up')
+                userAccount.player1Up = event.code;
+            else if(selectedKey.value === 'player2Down')
+                userAccount.player2Down = event.code;
+            else if(selectedKey.value === 'player2Up')
+                userAccount.player2Up = event.code;
+            else if(selectedKey.value === 'pause')
+                userAccount.pause = event.code;
+            else if(selectedKey.value === 'mute')
+                userAccount.mute = event.code;
+            update_keys();
+            console.log("changing");
             selectedKey.value = null;
             window.removeEventListener('keydown', setKey);
         }
@@ -64,25 +138,25 @@
             <div class="settingsBackground">
                 <span class="titleSettings">{{ $t('settings') }}</span>
                 <div class="settingsText">
-                    <span>{{ $t('player') }} 1 - {{ $t('RIGHT') }}</span>
-                    <span>{{ $t('player') }} 1 - {{ $t('LEFT') }}</span>
-                    <span>{{ $t('player') }} 2 - {{ $t('RIGHT') }}</span>
-                    <span>{{ $t('player') }} 2 - {{ $t('LEFT') }}</span>
+                    <span>{{ $t('player') }} 1 - {{ $t('UP') }}</span>
+                    <span>{{ $t('player') }} 1 - {{ $t('DOWN') }}</span>
+                    <span>{{ $t('player') }} 2 - {{ $t('UP') }}</span>
+                    <span>{{ $t('player') }} 2 - {{ $t('DOWN') }}</span>
                     <span>{{ $t('PAUSE_GAME') }}</span>
                     <span>{{ $t('MUTE_SOUND') }}</span>
                 </div>
                 <div class="buttonContainer">
-                    <button id="bouton-touche" class="button" @click="changeKey('player1Right')">
-                        <span class="buttonText">{{ keys.player1Right }}</span>
+                    <button id="bouton-touche" class="button" @click="changeKey('player1Up')">
+                        <span class="buttonText">{{ keys.player1Up }}</span>
                     </button>
-                    <button id="bouton-touche" class="button" @click="changeKey('player1Left')">
-                        <span class="buttonText">{{ keys.player1Left }}</span>
+                    <button id="bouton-touche" class="button" @click="changeKey('player1Down')">
+                        <span class="buttonText">{{ keys.player1Down }}</span>
                     </button>
-                    <button id="bouton-touche" class="button" @click="changeKey('player2Right')">
-                        <span class="buttonText">{{ keys.player2Right }}</span>
+                    <button id="bouton-touche" class="button" @click="changeKey('player2Up')">
+                        <span class="buttonText">{{ keys.player2Up }}</span>
                     </button>
-                    <button id="bouton-touche" class="button" @click="changeKey('player2Left')">
-                        <span class="buttonText">{{ keys.player2Left }}</span>
+                    <button id="bouton-touche" class="button" @click="changeKey('player2Down')">
+                        <span class="buttonText">{{ keys.player2Down }}</span>
                     </button>
                     <button id="bouton-touche" class="button" @click="changeKey('pause')">
                         <span class="buttonText">{{ keys.pause }}</span>

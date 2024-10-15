@@ -18,7 +18,7 @@
             <!-- Liste des résultats de recherche (non amis) -->
             <div class="search-results" v-if="searchQuery.length > 0 && filteredPlayers.length > 0">
                 <div v-for="player in filteredPlayers" :key="player.id" class="friend-item">
-                    <span class="friend-name">{{ player.username }}</span>
+                    <span class="friend-name" @click="goProfile(player.username)">{{ player.username }}</span>
                     <div class="friend-actions">
                         <button @click="invitePlayer(player.username)" aria-label="Invite player">
                             <i class="fas fa-user-plus icon-items"></i>
@@ -26,7 +26,6 @@
                     </div>
                 </div>
             </div>
-x
             <!-- Liste des amis actuels -->
             <div v-if="searchQuery.length === 0" class="friends-list">
                 <div v-for="friend in friends" :key="friend.id" class="friend-item">
@@ -100,7 +99,7 @@ import Input from './Input.vue';
 ////////////////////////////////////////////////
 
 import { useUser } from '../useUser.js';
-const { getUser, userAccount, is_connected } = useUser();
+const { getUser, userAccount } = useUser();
 
 ////////////////////////////////////////////////
 ////////////////////////////////////////////////
@@ -230,6 +229,7 @@ async function getAllUsers() {
             
             
                 const userData = JSON.parse(users);
+                console.log("all user before", userData);
                 userData.forEach((element) => {
                     var obj = {}
                     obj['username'] = element.fields.username;
@@ -241,7 +241,6 @@ async function getAllUsers() {
                     obj['lose'] = element.fields.lose;
                     allPlayers.value.push(obj);
                 });
-                console.log("all user");
                 console.log("all user", allPlayers._rawValue);
             
         } catch (error) {
@@ -343,6 +342,11 @@ function toggleFriendRequests() {
 function closePopupFriendRequest() {
     friendRequestsVisible.value = false;
     friendsPopupVisible.value = true;
+}
+
+function goProfile(_username) {
+    console.log(_username);
+    __goTo(`/leaderboard/${_username}`);
 }
 
 onMounted(async () => {

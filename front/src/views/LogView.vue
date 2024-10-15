@@ -18,8 +18,6 @@ onMounted(async () => {
     await getUser();  
     console.log("onMounted/is_connected: " + is_connected.value);  
     console.log("onMounted/username: " + userAccount.username);
-    if (is_connected.value === true)
-        __goTo('/')
 });
 
 ////////////////////////////////////////////////
@@ -60,7 +58,7 @@ async function login() {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
-                'X-CSRFToken': getCsrfToken(), // Assuming CSRF protection is enabled
+                'X-CSRFToken': getCsrfToken(),
             },
             body: JSON.stringify({
                 username: username.value,
@@ -74,13 +72,10 @@ async function login() {
 
         const data = await response.json();
 
-        // Check if redirection to 2FA or dashboard is required
         if (data.redirect_url) {
-            __goTo(data.redirect_url);  // Use the redirect URL provided by the backend
+            __goTo(data.redirect_url);
             return;
-        }
-
-         else {
+        } else {
             alert('User data not found!');
         }
     } catch (error) {

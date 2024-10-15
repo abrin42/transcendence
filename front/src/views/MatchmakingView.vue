@@ -10,7 +10,7 @@
             <p id="game-type">game-mode: {{gamemode}}</p>
             <p id="game-advice">{{tipdisplayed}}</p>
             <div class="button-container-mm">
-                <p id="versus-text">VS</p>
+                <img id="versus-image" src="../assets/vs_text.png"/>
                 <div class="stuff-to-move">
                     <img id="player1-picture" class="profile-picture-matchmaking-left" src="../assets/Chachou.png"/>
                     <p id="player1-name" class="profile-text-left">{{playerName1}}</p>
@@ -31,7 +31,7 @@
 
 
 <script setup>
-//imports
+    //imports
     import CreateDropupButton from '../components/CreateDropupButton.vue';
     import CreateBackButton from '../components/CreateBackButton.vue';
     import CreateSoundButton from '../components/CreateSoundButton.vue';
@@ -156,12 +156,47 @@ async function insertPlayer() {
                     }
                 }
             }
+            else
+            {
+                waitingPlayer = 0;
+
+                //slide first player
+                const player1_pic = document.getElementById('player1-picture');
+                player1_pic.classList.add(...['slide-left']);
+                const player1_name = document.getElementById('player1-name');
+                player1_name.classList.add(...['slide-left']);
+                const player1_rank = document.getElementById('player1-rank');
+                player1_rank.classList.add(...['slide-left']);
+
+                //fadein second player
+                const player2_pic = document.getElementById('player2-picture');
+                player2_pic.classList.add(...['fade-in']);
+                const player2_name = document.getElementById('player2-name');
+                player2_name.classList.add(...['fade-in']);
+                const player2_rank = document.getElementById('player2-rank');
+                player2_rank.classList.add(...['fade-in']);
+                const versus_text = document.getElementById('versus-image');
+                versus_text.classList.add(...['fade-in']);
+
+                
+                //fadeout loading assets
+                loadingmodule = false;
+                const dotdotdot = document.getElementById('loading');
+                dotdotdot.classList.add(...['fade-out']);
+                const waiting_text = document.getElementById('opponent-text');
+                waiting_text.classList.add(...['fade-out']);
+
+                await setTimeout(4000);
+                goToLegacy(data.id);
+            }
+
         }
     } catch (error) {
         console.error('Erreur lors de la connexion:', error);
         alert('An error occurred during login2222');
     }
 }
+
 
     ///////////////////////////////////////////////
 
@@ -185,7 +220,7 @@ async function insertPlayer() {
         'Tip: Wash your cereal bowl right after eating',
         'Don\'t forget to put your paddle back in the center!',
         'Recipe for a lribette : one tchoukball ball (?), 50 kilos of pasta, and many many many many many Star Wars anecdotes.',
-        'Tu es triste? Arrête.',
+        'Astuce: Tu es triste? Arrête.',
         '"Jeu de pain, jeu de vilain" - Miro',
         'Bois de l\'eau. Dans 20, 30 ans y\'en aura plus.',
         'Burc\'ya vaal burk\'yc, burc\'ya veman'
@@ -248,13 +283,22 @@ async function insertPlayer() {
     filter: drop-shadow(5px 5px 4px #0000003b);
 }
 
-#versus-text{
-    top: 70%;
+#versus-image{
+    position: fixed;
+    opacity: 0;
+    top: 50%;
     left: 50%;
-    font-size: 150px;
-    font-weight: bold;
-    color: white;
+    transform: translate(-50%, -50%);
+    size: 30%;
     filter: drop-shadow(5px 5px 4px #0000003b);
+}
+
+#versus-image-new{
+    position: fixed;
+
+    left: 50%;
+    opacity: 1;
+
 }
 
 .profile-picture-matchmaking-left {
@@ -269,23 +313,35 @@ async function insertPlayer() {
 }
 
 .fade-in {
-    visibility: visible;
+    opacity: 1;
     animation: fadeIn 0.7s;
+    animation-fill-mode: forwards;
 }
 
 @keyframes fadeIn {
-  0% { opacity: 0; }
-  100% { opacity: 1; }
+    0% { 
+        opacity: 0;
+    }
+    100%
+    { 
+        opacity: 1;
+    }
 }
 
 .fade-out {
-    visibility: hidden;
+    opacity: 0;
     animation: fadeOut 0.7s;
+    animation-fill-mode: forwards;
 }
 
 @keyframes fadeOut {
-  0% { opacity: 1; }
-  100% { opacity: 0; }
+    0% { 
+        opacity: 1;
+    }
+    100%
+    { 
+        opacity: 0;
+    }
 }
 
 .slide-left {
@@ -302,20 +358,6 @@ async function insertPlayer() {
     }
 }
 
-.to-show {
-    position: fixed;
-    animation-name: to-show 0.5s cubic-bezier(0.250, 0.460, 0.450, 0.940) both;
-}
-
-@keyframes to-show {
-  0% {
-    opacity: 0;
-  }
-  100% {
-    opacity: 1;
-  }
-}
-
 .profile-text-left {
     position: fixed;
     top: 62%;
@@ -327,11 +369,12 @@ async function insertPlayer() {
 }
 .profile-text-right {
     position: fixed;
+    opacity: 0;
     top: 62%;
     text-align: center;
     font-size: 30px;
     font-weight: bold;
-    left: 72%;
+    left: 75%;
     color: white;
 }
 
@@ -346,10 +389,11 @@ async function insertPlayer() {
 
 .rank-text-right {
     position: fixed;
+    opacity: 0;
     font-size: 25px;
     font-weight: bold;
     top: 65%;
-    left: 72%;
+    left: 77%;
     color: white;
 }
 
@@ -368,18 +412,18 @@ async function insertPlayer() {
 
 .profile-picture-matchmaking-right {
     position: fixed;
+    opacity: 0;
     width: 250px;
     height: 250px;
     border-radius: 50%;
     top: 35%;
-    left: 70%;
+    left: 73%;
     border: 5px solid white;
     filter: drop-shadow(5px 5px 4px #0000003b);
 }
 
 .opponent-text {
     position: fixed;
-    visibility: visible;
     z-index: 5;
     font-size: 30px;
     font-weight: bold;

@@ -47,7 +47,6 @@
         router.push('/cyberpong');
     }
 
-
 </script>
 
 <template>

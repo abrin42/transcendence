@@ -53,6 +53,7 @@
 
                     email_2fa_active: userAccount.email_2fa_active,
                     sms_2fa_active: userAccount.sms_2fa_active,
+                    anonymized: userAccount.anonymized,
                 })
             });
             if (response.ok) {
@@ -92,8 +93,7 @@
         }
     };
 
-    
-    const handleDelete = async () =>{
+    const handleDelete = async () => {
         try {
             await fetch("api/player/delete_account/", {
                 method: 'POST',
@@ -145,7 +145,7 @@
                     <TextDisplay v-if="showAllInfo || !showAllInfo" :textValue="userAccount.nickname" :nameContainer="$t('nickname')" />
                     <TextDisplay v-if="showAllInfo || !showAllInfo" :textValue="userAccount.phone_number" :nameContainer="$t('phone_number')" />
                     <TextDisplay v-if="showAllInfo" :textValue="userAccount.username" :nameContainer="$t('username')" />
-                    <TextDisplay v-if="showAllInfo" :textValue="userAccount.password" :nameContainer="$t('password')" />
+                    <TextDisplay v-if="showAllInfo" :textValue="userAccount.password" :nameContainer="$t('password')" :isPassword="true" />
                     <TextDisplay v-if="showAllInfo" :textValue="userAccount.date_joined" :nameContainer="$t('date_joined')" />
                     <TextDisplay v-if="showAllInfo" :textValue="userAccount.win" :nameContainer="$t('number_of_wins')" />
                     <TextDisplay v-if="showAllInfo" :textValue="userAccount.lose" :nameContainer="$t('number_of_defeats')" />
@@ -174,6 +174,7 @@
                 <div class="SwitchStyle" v-if="userAccount.student === false">
                     <Switch :buttonText="`${$t('activate')} 2FA (SMS)`" :isDisabled="userAccount.phone_number === '' ? false : true" v-model="userAccount.sms_2fa_active" />
                     <Switch :buttonText="`${$t('activate')} 2FA (${$t('email')})`" v-model="userAccount.email_2fa_active" />
+                    <Switch :buttonText="`${$t('activate')} Anonymization`" v-model="userAccount.anonymized" />
                 </div>
             </div>
         </div>
