@@ -16,7 +16,6 @@ let interval = null;
 // Charger les utilisateurs et démarrer le timer si 4 participants
 onMounted(async () => {
     await getUser();
-    startTournament();
 });
 
 // Navigation vers une autre page
@@ -34,10 +33,10 @@ const newParticipants = ref(["", "", "", ""]);
 
 // Matches de tournoi
 const matches = ref([
-    { round: 'SEMI', team1: '', team2: '', score1: null, score2: null, winner: '' },
-    { round: 'SEMI', team1: '', team2: '', score1: null, score2: null, winner: '' },
-    { round: 'THIRD_PLACE', team1: '', team2: '', score1: null, score2: null, winner: '' },
-    { round: 'FINAL', team1: '', team2: '', score1: null, score2: null, winner: '' }
+    { round: 'SEMI', team1: '', team2: '', score1: 0, score2: 0, winner: '', loser: '' },
+    { round: 'SEMI', team1: '', team2: '', score1: 0, score2: 0, winner: '', loser: '' },
+    { round: 'THIRD_PLACE', team1: '', team2: '', score1: 0, score2: 0, winner: '', loser: '' },
+    { round: 'FINAL', team1: '', team2: '', score1: 0, score2: 0, winner: '', loser: '' }
 ]);
 
 // Fonction pour mélanger les participants
@@ -70,6 +69,11 @@ function addParticipants() {
     const filteredParticipants = newParticipants.value.filter(name => name.trim() !== "");
 
     if (filteredParticipants.length === 4) {
+        const participantsWithoutDuplicates = new Set(filteredParticipants);
+        if (participantsWithoutDuplicates.size !== filteredParticipants.length) {
+            alert("You can't use the same nickname for more than one player.");
+            return ;
+        }
         participants.value = filteredParticipants.map(name => ({ name }));
         startTournament();
     } else {
@@ -94,7 +98,7 @@ function startTimer() {
         interval = setInterval(() => {
             timer.value--;
             if (timer.value === -1) {
-                alert("START GAME SOON.");
+                alert("STARTING GAME SOON.");
                 stopTimer();
             }
         }, 1000);
