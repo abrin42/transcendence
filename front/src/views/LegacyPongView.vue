@@ -61,11 +61,11 @@ import wallHitSound from '../assets/wall_hit.mp3'
   import { useUser } from '../useUser.js'; 
   const { getUser, userAccount, is_connected } = useUser(); 
 
-  onMounted(async () => {
-      await getUser();
-      if (is_connected.value === false)
-        __goTo('/')
-  });
+  // onMounted(async () => {
+  //     await getUser();
+  //     if (is_connected.value === false)
+  //       __goTo('/')
+  // });
 
   ////////////////////////////////////////////////
   ////////////////////////////////////////////////
@@ -317,7 +317,10 @@ onUnmounted(() => {
   }
 });
 
-onMounted(() => {
+onMounted(async () => {
+      await getUser();
+      if (is_connected.value === false)
+        __goTo('/')
   connectWebSocket();
   board = document.getElementById("board"); //link board element in template to board variable
   board.height = boardHeight;
