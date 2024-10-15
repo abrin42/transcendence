@@ -98,5 +98,7 @@
     "small_final": "Petite finale",
 
     "to_pause_unpause": "pour mettre en pause/annuler",
-    "to_mute_unmute": "pour activer/désactiver le son"
+    "to_mute_unmute": "pour activer/désactiver le son",
+    
+    "leaderboard2": "Classement"
 }

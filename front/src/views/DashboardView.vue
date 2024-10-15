@@ -220,6 +220,17 @@ h1,
     }
 }
 
+#wrapper {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    height: 100vh;
+    background-color: rgba(0, 0, 0, 0.8);
+    padding: 20px;
+}
+
 .containerDashboard {
     position: fixed;
     width: 40vw;
@@ -298,6 +309,12 @@ h1,
 
 .custom-file-upload i {
     margin-right: 0.5vw;
+}
+
+.custom-file-upload:hover {
+    border-color: rgba(255, 255, 255, 1);
+    background-color: rgba(255, 255, 255, 0.4);
+    transition: border-color, background-color 0.5s;
 }
 
 .editable-input-container {

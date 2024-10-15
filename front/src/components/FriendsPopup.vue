@@ -26,6 +26,7 @@
                     </div>
                 </div>
             </div>
+
             <!-- Liste des amis actuels -->
             <div v-if="searchQuery.length === 0" class="friends-list">
                 <div v-for="friend in friends" :key="friend.id" class="friend-item">
@@ -218,35 +219,33 @@ function declineRequest(id) {
 // const allPlayers = ref([]);
 
 async function getAllUsers() {
-        try {
-            const response = await fetch(`api/player/get_all_user/`, {
-                method: 'GET',
-            });
-            if (!response.ok) {
-                throw new Error(`HTTP error! Status: ${response.status}`);
-            }
-            const users = await response.json();
-            
-            
-                const userData = JSON.parse(users);
-                console.log("all user before", userData);
-                userData.forEach((element) => {
-                    var obj = {}
-                    obj['username'] = element.fields.username;
-                    obj['last_login'] =  element.fields.last_login;
-                    obj['nickname'] = element.fields.nickname;
-
-                    obj['rank'] = element.fields.rank;
-                    obj['win'] = element.fields.win;
-                    obj['lose'] = element.fields.lose;
-                    allPlayers.value.push(obj);
-                });
-                console.log("all user", allPlayers._rawValue);
-            
-        } catch (error) {
-            console.error('Error retrieving user data:', error);
+    try {
+        const response = await fetch(`api/player/get_all_user/`, {
+            method: 'GET',
+        });
+        if (!response.ok) {
+            throw new Error(`HTTP error! Status: ${response.status}`);
         }
+        const users = await response.json();
+        if (users.data) {
+            const userData = JSON.parse(users.data);
+            userData.forEach((element) => {
+                var obj = {}
+                obj['username'] = element.fields.username;
+                obj['last_login'] =  element.fields.last_login;
+                obj['nickname'] = element.fields.nickname;
+
+                obj['rank'] = element.fields.rank;
+                obj['win'] = element.fields.win;
+                obj['lose'] = element.fields.lose;
+                allPlayers.value.push(obj);
+            });
+            console.log("all user", allPlayers._rawValue)
+        }
+    } catch (error) {
+        console.error('Error retrieving user data:', error);
     }
+}
 
 async function getFriends() {
     try {

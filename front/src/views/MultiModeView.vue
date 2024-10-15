@@ -36,7 +36,7 @@
     }
 
     function goToGameSelect() {
-        router.push('/gameselect');
+        router.push('/legacy');
     }
 
     function goToMatchmaking() {

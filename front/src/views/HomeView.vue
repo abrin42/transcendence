@@ -36,23 +36,23 @@
     }
 }
 
-  var myVideo = document.getElementById('videoBG');
-  myVideo.playbackRate = 1;
+var myVideo = document.getElementById('videoBG');
+myVideo.playbackRate = 1;
 
-  function goToModeSelect() {
+function goToModeSelect() {
     router.push('/modeselect');
-  }
+}
 
-  function goToCredits() {
+function goToCredits() {
     router.push('/credits');
-  }
+}
 
-  function __goTo(page) {
+function __goTo(page) {
     if (page == null) {
-      return;
+        return;
     }
     router.push(page);
-  }
+}
 </script>
 
 <template>
@@ -64,6 +64,7 @@
                     <span class="buttonText buttonTextSize">{{ $t('play') }}</span>
                 </button>
                 <button class="button button-credits" @click="goToCredits()">
+                    <i class="fa-solid fa-copyright" style="margin-right: 1vw;"></i>
                     <span class="buttonText">{{ $t('credits') }}</span>
                 </button>
                 <div>

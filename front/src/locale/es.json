@@ -98,5 +98,7 @@
     "small_final": "Pequeño final",
 
     "to_pause_unpause": "para pausar/despausar",
-    "to_mute_unmute": "para silenciar/activar el sonido"
+    "to_mute_unmute": "para silenciar/activar el sonido",
+    
+    "leaderboard2": "Clasificación"
 }
