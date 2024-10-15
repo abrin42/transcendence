@@ -30,6 +30,13 @@ export function useUser() {
         userAccount.student = user.student;
         userAccount.language = user.language;
 
+        userAccount.player1Up = user.player1Up;
+        userAccount.player1Down = user.player1Down;
+        userAccount.player2Up = user.player2Up;
+        userAccount.player2Down = user.player2Down;
+        userAccount.pause = user.pause;
+        userAccount.mute = user.mute;
+
         console.log("updateUserAccount.nickname: " + userAccount.nickname);
         console.log("updateUserAccount.username: " + userAccount.username);
         console.log("updateUserAccount.email: " + userAccount.email);

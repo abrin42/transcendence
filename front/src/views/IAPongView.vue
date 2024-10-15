@@ -20,6 +20,23 @@ onMounted(async () => {
     await getUser();
     if (is_connected.value === false)
       __goTo('/')
+      connectWebSocket();
+  board = document.getElementById("board"); //link board element in template to board variable
+  board.height = boardHeight;
+  board.width = boardWidth;
+  context = board.getContext("2d"); //Drawing on board
+
+  context.fillStyle = "white";
+  context.fillRect(player1.x, player1.y, player1.width, player1.height);
+  requestAnimationFrame(update); // Gameloop
+  document.addEventListener("keydown", movePlayer1up);
+  document.addEventListener("keydown", movePlayer1down);
+  document.addEventListener("keydown", movePlayer2up);
+  document.addEventListener("keydown", movePlayer2down);
+  document.addEventListener("keydown", muteSound);
+  document.addEventListener("keydown", pauseGame);
+  //document.addEventListener("keydown", surpriiise);
+  document.addEventListener('keyup', stopPlayer);
 });
 
 ////////////////////////////////////////////////
@@ -351,15 +368,43 @@ onMounted(() => {
 
 <template>
   <main>
-      <div id>
+    <div id="wrapper">
+      <div id="black-background">
+        <div>
           <canvas id ="board"></canvas>
       </div>
+      <div>
+          <h2 id="pause">[P] to Pause/Unpause</h2>
+          <h2 id="mute">[M] to Mute/Unmute</h2>
+        </div>
+      </div>
+    </div>
   </main>
 </template>
 
 <style lang="scss">
 body {
   text-align: center;
+}
+
+#pause {
+  color: rgb(114, 114, 114);
+  font-size: 25px;
+  left: 20%;
+  top: 70%;
+}
+
+#mute {
+  color: rgb(114, 114, 114);
+  font-size: 25px;
+  left: 20%;
+  top: 67%;
+}
+
+#black-background{
+  height: 100vh;
+  width: 100vw;
+  background-color: black;
 }
 
 #board {
