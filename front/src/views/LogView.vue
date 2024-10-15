@@ -5,7 +5,6 @@ import CreateHomeButton from '../components/CreateHomeButton.vue';
 import Input from '../components/Input.vue';
 import { useRouter } from 'vue-router';
 import { ref, onMounted } from 'vue';
-import { useUser } from '../useUser.js';
 
 ////////////////////////////////////////////////
 /////// GET USER ///////////////////////////////
