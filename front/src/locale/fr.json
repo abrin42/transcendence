@@ -9,6 +9,8 @@
     "my_friends": "Mes Amis",
     "search_for_a_player": "Rechercher un joueur ...",
     "no_players_found": "Aucun joueur trouvé.",
+    "friend_requests": "Demandes d'amis",
+    "no_friend_requests": "Vous n'avez pas reçu de demande d'ami",
 
     "modify_the_value": "Modifier la valeur:",
     "save": "Sauvegarder",
@@ -86,5 +88,12 @@
     "RIGHT": "DROITE",
     "LEFT": "GAUCHE",
     "PAUSE_GAME": "PAUSE JEU",
-    "MUTE_SOUND": "COUPER LE SON"
+    "MUTE_SOUND": "COUPER LE SON",
+
+    "please_wait": "Veuillez patienter",
+    "number_of_participants": "Le nombre de participants doit être exactement de 4 pour commencer le tournoi.",
+    "semi_finals": "Demi-finales",
+    "final": "Finale",
+    "matches_not_yet_decided": "Les matches de la finale n'ont pas encore été déterminés.",
+    "small_final": "Petite finale"
 }

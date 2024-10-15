@@ -9,6 +9,8 @@
     "my_friends": "Ner Burc'yase",
     "search_for_a_player": "Echoylir verd ...",
     "no_players_found": "Naasad beroya mar'ey'la",
+    "friend_requests": "Tionas be burc'ya",
+    "no_friend_requests": "Nu'gar parji'la be tionas be burc'ya",
 
     "modify_the_value": "Naritir ibic:",
     "save": "Hibirar",
@@ -86,5 +88,12 @@
     "RIGHT": "STAABI",
     "LEFT": "PAYT",
     "PAUSE_GAME": "GEV GEROYA",
-    "MUTE_SOUND": "HOKAANIR KAAB"
+    "MUTE_SOUND": "HOKAANIR KAAB",
+
+    "please_wait": "Gedet'ye parer",
+    "number_of_participants": "Gar enteyor cuir par gotal'ur kyrbej.",
+    "semi_finals": "Ge'sol'kyr",
+    "final": "Kyr",
+    "matches_not_yet_decided": "Nu akaanire par kyre ru gaanla.",
+    "small_final": "Kih'kyr"
 }

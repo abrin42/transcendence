@@ -51,7 +51,7 @@ const password = ref('');
 
 async function login() {
     if (!username.value || !password.value) {
-        alert('Veuillez entrer un email et un mot de passe.');
+        alert('Please enter an email address and a password.');
         return;
     }
 

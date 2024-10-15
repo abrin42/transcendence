@@ -24,7 +24,7 @@
     const setKey = (event) => {
         const newKey = event.key.toUpperCase();
         if (isKeyAlreadyUsed(newKey)) {
-            alert('Cette touche est déjà utilisée.');
+            alert('This key is already in use.');
             return;
         }
         if (
@@ -35,7 +35,7 @@
             (selectedKey.value === 'pause' && newKey === keys.pause) ||
             (selectedKey.value === 'mute' && newKey === keys.mute)
         ) {
-            alert('Le meme joueur ne peut pas utiliser la meme touche pour gauche et droite.');
+            alert('The same player cannot use the same key for left and right.');
             return;
         }
 
