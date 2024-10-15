@@ -92,6 +92,22 @@
         }
     };
 
+    
+    const handleDelete = async () =>{
+        try {
+            await fetch("api/player/delete_account/", {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRFToken': getCsrfToken()
+                },
+            });
+            router.push('/');
+        } catch (error) {
+            console.error('Deleting account failed:', error);
+        }
+    };
+
     const handleProfilePictureChange = (event) => {
         const file = event.target.files[0];
         if (file) {
@@ -148,6 +164,9 @@
                         </button>
                         <button class="button button-logout" @click="handleLogout">
                             <span class="buttonText buttonTextSize" style="font-size: medium;">Logout</span>
+                        </button>
+                        <button class="button button-logout" @click="handleDelete">
+                            <span class="buttonText buttonTextSize" style="font-size: medium;">{{ $t('delete_account') }}</span>
                         </button>
                     </div>
                 </div>

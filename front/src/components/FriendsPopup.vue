@@ -235,6 +235,10 @@ async function getAllUsers() {
                     obj['username'] = element.fields.username;
                     obj['last_login'] =  element.fields.last_login;
                     obj['nickname'] = element.fields.nickname;
+
+                    obj['rank'] = element.fields.rank;
+                    obj['win'] = element.fields.win;
+                    obj['lose'] = element.fields.lose;
                     allPlayers.value.push(obj);
                 });
                 console.log("all user");

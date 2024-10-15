@@ -47,7 +47,7 @@ export function useUser() {
         try {
             const response = await fetch(`api/player/connected_user/`, {
                 method: 'GET',
-                credentials: 'include',
+                //credentials: 'include',
             });
     
             if (!response.ok) {

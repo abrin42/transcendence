@@ -46,6 +46,12 @@
         router.push(page);
     }
 
+    function isValidPassword(password) {
+        const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[\W_]).{8,}$/;
+        return passwordRegex.test(password);
+    }
+
+
     function isValidEmail(email) {
         const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
         return emailRegex.test(email);
@@ -55,7 +61,6 @@
         const phoneRegex = /^(?:\+33\s?[1-9](?:\s?\d{2}){4}|0[1-9](?:\s?\d{2}){4})$/;
         return phoneRegex.test(phone);
     }
-
 
     async function createAccount() {
         if (!username.value || !email.value || !password1.value || !password2.value) {
@@ -80,11 +85,22 @@
             return;
         }
 
+        if (!isValidPassword(password1.value)) {
+            alert(
+                `Should contain at least a capital letter\n` +
+                `Should contain at least a small letter\n` +
+                `Should contain at least a number\n` +
+                `Should contain at least a special character\n` +
+                `Should contain 8 minimum length`
+            );
+            return;
+        }
+
         try {
             const response = await fetch('api/player/register/', {
                 method: 'POST',
                 headers: {
-                    'Content-Type': 'application/json',
+                    'Content-usernameType': 'application/json',
                     'X-CSRFToken': getCsrfToken()
                 },
                 body: JSON.stringify({

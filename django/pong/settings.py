@@ -25,17 +25,24 @@ SECRET_KEY = os.environ.get('secret_key')
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
+
 # ALLOWED_HOSTS = ['api']
 ALLOWED_HOSTS = ["localhost", 'api',
                 "10.11.1.11" ]
 
-DATA_UPLOAD_MAX_MEMORY_SIZE = None
-
 # CSRF settings
 CSRF_TRUSTED_ORIGINS = ['https://localhost:8443',
-                        'https://10.11.0.0:8443', #explorer
                         'https://10.11.1.11:8443',
                         'https://10.11.1.10:8443',]
+
+CORS_ALLOW_ALL_ORIGINS = True
+
+#maybe enlever 8080
+CORS_ALLOWED_ORIGINS = [
+    "http://localhost:8080", 
+    "https://localhost:8443",
+    "https://10.11.1.11:8443" 
+]
 
 # Application definition
 INSTALLED_APPS = [
@@ -177,16 +184,6 @@ JWT_ALGORITHM = os.environ.get('jwt_algo')
 JWT_EXP_DELTA_SECONDS = os.environ.get('jwt_exp')
 
 ASGI_APPLICATION = 'pong.asgi.application'
-
-
-CORS_ALLOW_ALL_ORIGINS = True
-
-#maybe enlever 8080
-CORS_ALLOWED_ORIGINS = [
-    "http://localhost:8080", 
-    "https://localhost:8443",
-    "https://10.11.1.11:8443" 
-]
 
 # settings.py test
 APPEND_SLASH = False

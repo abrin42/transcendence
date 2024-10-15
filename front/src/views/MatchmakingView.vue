@@ -93,7 +93,6 @@
 let loadingmodule = true;
 
 async function insertPlayer() {
-        
     try {
         const response = await fetch('api/game/insertplayer/', {
             method: 'POST',
