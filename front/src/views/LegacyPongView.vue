@@ -449,7 +449,12 @@ onMounted(() => {
     {
       if (e.code == "KeyP")
       {
-        //force Axel <3
+        const message = 
+            {
+              type: "pause",
+              player: "2",
+            };
+            sendMessage(message);        
       }
     }
 
