@@ -285,6 +285,8 @@ function update() {
 
 let moveInterval1up = null;
 let moveInterval1down = null;
+let moveInterval2up = null;
+let moveInterval2down = null;
 let tickPadel = 10;
 
 
@@ -321,6 +323,64 @@ function movePlayer1down(e) {
   }
 }
 
+function movePlayer2up(e)
+    {
+      if (!moveInterval2up)
+      {
+        if (e.code == "ArrowUp")
+        {
+          moveInterval2up = setInterval(() => 
+          {
+            const message = 
+            {
+              type: "mouvUp",
+              player: "2",
+            };
+            sendMessage(message);                    
+            
+          },
+          tickPadel);
+        }
+      }
+    }
+
+    function movePlayer2down(e)
+    {
+      if (!moveInterval2down)
+      {
+        if (e.code == "ArrowDown")
+        {
+          moveInterval2down = setInterval(() => 
+          {
+            const message = 
+            {
+              type: "mouvDown",
+              player: "2",
+            };
+            sendMessage(message);                    
+          },
+          tickPadel);
+        }
+      }
+    }
+    
+    function pauseGame(e)
+    {
+      if (e.code == "KeyP")
+      {
+        //force Axel <3
+      }
+    }
+
+    function muteSound(e)
+    {
+      if (e.code == "KeyM")
+      {
+        console.log(soundOnOff);
+        soundOnOff = !soundOnOff;
+        console.log(soundOnOff);
+      }
+    }
 
 function stopPlayer(e) {
   if (e.code == "KeyW") {
