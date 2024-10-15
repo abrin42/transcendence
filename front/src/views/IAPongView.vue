@@ -31,17 +31,21 @@ onMounted(async () => {
   requestAnimationFrame(update); // Gameloop
   document.addEventListener("keydown", movePlayer1up);
   document.addEventListener("keydown", movePlayer1down);
-  document.addEventListener("keydown", movePlayer2up);
-  document.addEventListener("keydown", movePlayer2down);
   document.addEventListener("keydown", muteSound);
   document.addEventListener("keydown", pauseGame);
-  //document.addEventListener("keydown", surpriiise);
   document.addEventListener('keyup', stopPlayer);
 });
 
 ////////////////////////////////////////////////
 ////////////////////////////////////////////////
 ////////////////////////////////////////////////
+
+
+////////////Audio Variables///////////////
+const wallHitAudio = new Audio(wallHitSound);
+const paddleHitAudio = new Audio(paddleHitSound);
+const pointScoredAudio = new Audio(pointScoredSound);
+let soundOnOff = true;
 
 function __goTo(page) {
   if (page == null)
@@ -125,6 +129,8 @@ function connectWebSocket() {
       // console.log(data.updatePts);
       // console.log(data.player);
       updatePoints(data.player, data.updatePts);
+      if (soundOnOff == true)
+        pointScoredAudio.play();
     } 
     else if (data.type == 'mouvUp' || data.type == 'mouvDown')
     {
@@ -152,10 +158,14 @@ function connectWebSocket() {
     else if (data.type == 'paddleHit') //sound
     {
       console.log(data.type);
+      if (soundOnOff == true)
+        paddleHitAudio.play();
     }
     else if (data.type == 'wallHit')//sound
     { 
       console.log(data.type);
+      if (soundOnOff == true)
+        wallHitAudio.play();
     }
     else if (data.type == 'info_back') //a enlever test
     {
@@ -345,6 +355,28 @@ onMounted(() => {
       }
     }
 
+    function pauseGame(e)
+    {
+      if (e.code == pause)
+      {
+        const message = 
+            {
+              type: "pause",
+              player: "2",
+            };
+            sendMessage(message);        
+      }
+    }
+
+    function muteSound(e)
+    {
+      if (e.code == mute)
+      {
+        console.log(soundOnOff);
+        soundOnOff = !soundOnOff;
+        console.log(soundOnOff);
+      }
+    }
 
     function stopPlayer(e) {
       if (e.code == "KeyW")
@@ -358,10 +390,6 @@ onMounted(() => {
         moveInterval1down = null;
       }
     }
-
-
-
-
 
 
 </script>

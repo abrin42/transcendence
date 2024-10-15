@@ -333,7 +333,6 @@ onMounted(() => {
   document.addEventListener("keydown", movePlayer2down);
   document.addEventListener("keydown", muteSound);
   document.addEventListener("keydown", pauseGame);
-  //document.addEventListener("keydown", surpriiise);
   document.addEventListener('keyup', stopPlayer);
 });
 
@@ -477,13 +476,6 @@ onMounted(() => {
       }
     }
 
-    function surpriiise(e)
-    {
-      if (e.code == "KeyC")
-      {
-        // A faire plus tard
-      }
-    }
 
     function stopPlayer(e) {
       if (e.code == "KeyW")

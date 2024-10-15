@@ -35,16 +35,12 @@
         router.push(page);
     }
 
-    function goToGameSelect() {
-        router.push('/gameselect');
+    function goToIA() {
+        router.push('/IA');
     }
 
     function goToMulti() {
         router.push('/multimode');
-    }
-
-    function goToTournoi() {
-        router.push('/tourney');
     }
 </script>
 
@@ -52,7 +48,7 @@
     <main>
         <div id="wrapper">
             <div class="buttonContainer">
-                <button class="button button-solo" @click="goToGameSelect()">
+                <button class="button button-solo" @click="goToIA()">
                     <i class="fa-solid fa-user"></i>
                     <span class="buttonText" style="margin-left: 0.5vw;">{{ $t('Solo') }}</span>
                 </button>
