@@ -1,8 +1,8 @@
-<!-- @lribette todo translate -->
 <script setup>
 import CreateDropupButton from '@/components/CreateDropupButton.vue';
 import CreateBackButton from '@/components/CreateBackButton.vue';
 import NeonText from '@/components/NeonText.vue';
+import Input from '@/components/Input.vue'; // Assurez-vous que ce composant Input existe
 
 import { useRouter } from 'vue-router';
 import { onMounted, ref, watch, onUnmounted } from 'vue';
@@ -19,20 +19,20 @@ onMounted(async () => {
     startTournament();
 });
 
+// Navigation vers une autre page
 function __goTo(page) {
     if (page) {
         router.push(page);
     }
 }
 
-// Exemple de participants
-const participants = ref([
-    { name: 'Player 1' },
-    { name: 'Player 2' },
-    { name: 'Player 3' },
-    { name: 'Player 4' },
-]);
+// Liste des participants
+const participants = ref([]);
 
+// Référence pour les nouveaux participants
+const newParticipants = ref(["", "", "", ""]);
+
+// Matches de tournoi
 const matches = ref([
     { round: 'SEMI', team1: '', team2: '', score1: null, score2: null, winner: '' },
     { round: 'SEMI', team1: '', team2: '', score1: null, score2: null, winner: '' },
@@ -65,23 +65,15 @@ function setupSemiFinals() {
     matches.value[1].team2 = participants.value[3].name;
 }
 
-// Démarrer le timer
-function startTimer() {
-    if (!interval) {
-        interval = setInterval(() => {
-            timer.value--;
-            if (timer.value === -1) {
-                alert("START GAME SOON.");
-                stopTimer();
-            }
-        }, 1000);
-    }
-}
+// Fonction pour ajouter les participants
+function addParticipants() {
+    const filteredParticipants = newParticipants.value.filter(name => name.trim() !== "");
 
-function stopTimer() {
-    if (interval) {
-        clearInterval(interval);
-        interval = null;
+    if (filteredParticipants.length === 4) {
+        participants.value = filteredParticipants.map(name => ({ name }));
+        startTournament();
+    } else {
+        alert("Veuillez entrer 4 noms de participants valides.");
     }
 }
 
@@ -95,11 +87,32 @@ function updateFinals() {
         matches.value[3].team2 = semi2.winner;
     }
 }
+
+// Fonction pour démarrer le timer
+function startTimer() {
+    if (!interval) {
+        interval = setInterval(() => {
+            timer.value--;
+            if (timer.value === -1) {
+                alert("START GAME SOON.");
+                stopTimer();
+            }
+        }, 1000);
+    }
+}
+
+// Fonction pour arrêter le timer
+function stopTimer() {
+    if (interval) {
+        clearInterval(interval);
+        interval = null;
+    }
+}
+
 onUnmounted(() => {
     stopTimer();
 });
 </script>
-
 
 <template>
     <main>
@@ -107,8 +120,11 @@ onUnmounted(() => {
             <div class="theme">
                 <!-- Si le nombre de participants est différent de 4, affiche la configuration -->
                 <div v-if="participants.length !== 4" class="custom-content">
-                    <h1>Veuillez patienter</h1>
-                    <p>Le nombre de participants doit être exactement 4 pour démarrer le tournoi.</p>
+                    <h2>Ajoutez les participants</h2>
+                    <div v-for="(participant, index) in newParticipants" :key="index">
+                        <Input v-model="newParticipants[index]" :placeholderText="`Nom du participant [${index}]`" />
+                    </div>
+                    <button class="button buttonText" @click="addParticipants">Valider les participants</button>
                 </div>
 
                 <!-- Si le nombre de participants est égal à 4, affiche le bracket et le timer -->
@@ -146,7 +162,8 @@ onUnmounted(() => {
                                     </div>
                                 </div>
                                 <div v-else>
-                                    <span class="finale-text" >Les matches pour les finales ne sont pas encore définies.</span>
+                                    <span class="finale-text">Les matches pour les finales ne sont pas encore
+                                        définies.</span>
                                 </div>
                             </div>
                         </div>
@@ -178,6 +195,7 @@ onUnmounted(() => {
         </div>
     </main>
 </template>
+
 
 <style scoped>
 .theme {
