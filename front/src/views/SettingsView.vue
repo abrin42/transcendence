@@ -102,17 +102,17 @@
         if (selectedKey.value) {
             keys[selectedKey.value] = newKey;
             if(selectedKey.value === 'player1Down')
-                userAccount.player1Down = newKey;
+                userAccount.player1Down = event.code;
             else if(selectedKey.value === 'player1Up')
-                userAccount.player1Up = newKey;
+                userAccount.player1Up = event.code;
             else if(selectedKey.value === 'player2Down')
-                userAccount.player2Down = newKey;
+                userAccount.player2Down = event.code;
             else if(selectedKey.value === 'player2Up')
-                userAccount.player2Up = newKey;
+                userAccount.player2Up = event.code;
             else if(selectedKey.value === 'pause')
-                userAccount.pause = newKey;
+                userAccount.pause = event.code;
             else if(selectedKey.value === 'mute')
-                userAccount.mute = newKey;
+                userAccount.mute = event.code;
             update_keys();
             console.log("changing");
             selectedKey.value = null;
