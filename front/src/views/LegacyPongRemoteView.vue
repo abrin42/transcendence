@@ -1,6 +1,7 @@
 <script setup>
   import { ref, onMounted, onUnmounted } from 'vue';
   import { compileScript } from 'vue/compiler-sfc';
+  import { useRouter } from 'vue-router';
 
   ////////////////////////////////////////////////
   /////// GET USER ///////////////////////////////
@@ -8,6 +9,13 @@
 
   import { useUser } from '../useUser.js'; 
   const { getUser, userAccount, is_connected } = useUser(); 
+
+
+function __goTo(page) {
+  if (page == null)
+      return;
+  router.push(page);
+}
 
   onMounted(async () => {
       await getUser();
@@ -29,38 +37,41 @@
     connectWebSocket();
   });
 
-  async function updateGameInfo() {
-      try {
-          const response = await fetch('api/game/update_game/', {
-              method: 'POST',
-              headers: {
-                  'Content-Type': 'application/json',
-                  'X-CSRFToken': getCsrfToken(),
-              },
-              body: JSON.stringify({
-                  gameID: game__ID,
-                  gameMode: "legacy_remote",
-                  scorep1: player1Score,
-                  scorep2: player2Score,
-              })
-          });
-          if (response.ok) {
-              const responseData = await response.json();
-              console.log('Game updated successfully!', responseData);
-          } else {
-              const errorData = await response.json();
-              console.error('Error: ' + errorData.error);
-          }
-      } catch (error) {
-          console.error('Error updating game:', error);
-      }
-  }
+  // async function updateGameInfo() {
+  //     try {
+  //         const response = await fetch('api/game/update_game/', {
+  //             method: 'POST',
+  //             headers: {
+  //                 'Content-Type': 'application/json',
+  //                 'X-CSRFToken': getCsrfToken(),
+  //             },
+  //             body: JSON.stringify({
+  //                 gameID: game__ID,
+  //                 gameMode: "legacy_remote",
+  //                 scorep1: player1Score,
+  //                 scorep2: player2Score,
+  //             })
+  //         });
+  //         if (response.ok) {
+  //             const responseData = await response.json();
+  //             console.log('Game updated successfully!', responseData);
+  //         } else {
+  //             const errorData = await response.json();
+  //             console.error('Error: ' + errorData.error);
+  //         }
+  //     } catch (error) {
+  //         console.error('Error updating game:', error);
+  //     }
+  // }
 
   const socket = ref(null);
   // const message = ref('');
   const messages = ref([]);
   const connectionStatus = ref('');
   let connection = 0;
+  let currentUrl = window.location.href;
+  let lastSegment = currentUrl.split('/').filter(Boolean).pop();
+  let gamePage = `game_${lastSegment}`;
   let game__ID = (gamePage.split('_')[1])
 
 
@@ -102,9 +113,7 @@
     ball.y = y;
   }
 
-  const currentUrl = window.location.href;
-  const lastSegment = currentUrl.split('/').filter(Boolean).pop();
-  const gamePage = `game_${lastSegment}`;
+
   console.log(gamePage);
 
   function connectWebSocket() {
