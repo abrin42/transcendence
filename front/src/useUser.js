@@ -74,6 +74,23 @@ export function useUser() {
         // console.log("updateUserAccount.student: " + userAccount.student);
         // console.log("updateUserAccount.language: " + userAccount.language);
         //console.log("updateUserAccount.profilePicture: " + userAccount.profilePicture);
+
+        userAccount.player1Up = user.player1Up;
+        userAccount.player1Down = user.player1Down;
+        userAccount.player2Up = user.player2Up;
+        userAccount.player2Down = user.player2Down;
+        userAccount.pause = user.pause;
+        userAccount.mute = user.mute;
+
+        console.log("updateUserAccount.nickname: " + userAccount.nickname);
+        console.log("updateUserAccount.username: " + userAccount.username);
+        console.log("updateUserAccount.email: " + userAccount.email);
+        console.log("updateUserAccount.password: " + userAccount.password);
+        console.log("updateUserAccount.phone_number: " + userAccount.phone_number);
+        console.log("updateUserAccount.email_2fa_active: " + userAccount.email_2fa_active);
+        console.log("updateUserAccount.sms_2fa_active: " + userAccount.sms_2fa_active);
+        console.log("updateUserAccount.student: " + userAccount.student);
+        console.log("updateUserAccount.language: " + userAccount.language);
     }
 
     async function getUser() {

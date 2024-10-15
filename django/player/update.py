@@ -44,6 +44,26 @@ def update_language(request):
         return JsonResponse({'error': 'Invalid request method'}, status=405)
     return JsonResponse({'error': 'No user'}, status=405)
  
+@login_required
+def update_keys(request):
+    user = token_user(request)
+    if request.method == "POST":
+        try:
+            data = json.loads(request.body)
+            print(data)
+            print(f'Avant: {user.moveUpP1}')
+            user.moveUpP1 = data.get('moveUpP1')
+            user.moveDownP1 = data.get('moveDownP1')
+            user.moveUpP2 = data.get('moveUpP2')
+            user.moveDownP2 = data.get('moveDownP2')
+            user.pause = data.get('pause')
+            user.mute = data.get('mute')
+            user.save()
+            print(f'Apres: {user.moveUpP1}')
+            return JsonResponse({'Message' : 'Key changed successfully'}, status=200)
+        except json.JSONDecodeError:
+            return JsonResponse({'error': 'Invalid request body'}, status=400)
+    return JsonResponse({'error': 'Invalid request method'}, status=405)
 
 @login_required
 def update_user(request):

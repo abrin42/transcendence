@@ -3,7 +3,7 @@
     <div id="wrapper">
       <div id="black-background">
         <div>
-          <canvas id ="board"></canvas>
+          <canvas id ="board" data-glow></canvas>
         </div>
         <div>
           <h2 id="pause">[P] to Pause/Unpause</h2>
@@ -363,11 +363,20 @@ onMounted(() => {
     let moveInterval2up = null;
     let moveInterval2down = null;
     let tickPadel = 10;
+
+    /////Game controls//////
+    let moveUpP1 = "KeyW";
+    let moveDownP1 = "KeyS";
+    let moveUpP2 = "ArrowUp";
+    let moveDownP2 = "ArrowDown";
+    let pause = "KeyP";
+    let mute = "KeyM";
+
     function movePlayer1up(e)
     {
       if (!moveInterval1up)
       {
-        if (e.code == "KeyW")
+        if (e.code == moveUpP1)
         {
           moveInterval1up = setInterval(() => 
           {
@@ -388,7 +397,7 @@ onMounted(() => {
     {
       if (!moveInterval1down)
       {
-        if (e.code == "KeyS")
+        if (e.code == moveDownP1)
         {
           moveInterval1down = setInterval(() => 
           {
@@ -408,7 +417,7 @@ onMounted(() => {
     {
       if (!moveInterval2up)
       {
-        if (e.code == "ArrowUp")
+        if (e.code == moveUpP2)
         {
           moveInterval2up = setInterval(() => 
           {
@@ -429,7 +438,7 @@ onMounted(() => {
     {
       if (!moveInterval2down)
       {
-        if (e.code == "ArrowDown")
+        if (e.code == moveDownP2)
         {
           moveInterval2down = setInterval(() => 
           {
@@ -447,7 +456,7 @@ onMounted(() => {
 
     function pauseGame(e)
     {
-      if (e.code == "KeyP")
+      if (e.code == pause)
       {
         const message = 
             {
@@ -460,7 +469,7 @@ onMounted(() => {
 
     function muteSound(e)
     {
-      if (e.code == "KeyM")
+      if (e.code == mute)
       {
         console.log(soundOnOff);
         soundOnOff = !soundOnOff;
