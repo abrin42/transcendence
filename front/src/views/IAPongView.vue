@@ -31,17 +31,20 @@ onMounted(async () => {
   requestAnimationFrame(update); // Gameloop
   document.addEventListener("keydown", movePlayer1up);
   document.addEventListener("keydown", movePlayer1down);
-  document.addEventListener("keydown", movePlayer2up);
-  document.addEventListener("keydown", movePlayer2down);
   document.addEventListener("keydown", muteSound);
-  document.addEventListener("keydown", pauseGame);
-  //document.addEventListener("keydown", surpriiise);
   document.addEventListener('keyup', stopPlayer);
 });
 
 ////////////////////////////////////////////////
 ////////////////////////////////////////////////
 ////////////////////////////////////////////////
+
+
+////////////Audio Variables///////////////
+const wallHitAudio = new Audio(wallHitSound);
+const paddleHitAudio = new Audio(paddleHitSound);
+const pointScoredAudio = new Audio(pointScoredSound);
+let soundOnOff = true;
 
 function __goTo(page) {
   if (page == null)
@@ -116,8 +119,11 @@ function connectWebSocket() {
       // console.log(data.updatePts);
       // console.log(data.player);
       updatePoints(data.player, data.updatePts);
-    }
-    else if (data.type == 'mouvUp' || data.type == 'mouvDown') {
+      if (soundOnOff == true)
+        pointScoredAudio.play();
+    } 
+    else if (data.type == 'mouvUp' || data.type == 'mouvDown')
+    {
       // console.log(data.type);
       updatePadel(data.player, data.newY);
       // messages.value.push(data.type);
@@ -129,7 +135,7 @@ function connectWebSocket() {
     }
     else if (data.type == 'endGame') {
       connection = 0;
-      router.push('/'); //========================================== Erreur
+      router.push('/legacyrecap'); //========================================== Erreur
     }
     //   console.log(data.type);
     // }
@@ -140,10 +146,14 @@ function connectWebSocket() {
     else if (data.type == 'paddleHit') //sound
     {
       console.log(data.type);
+      if (soundOnOff == true)
+        paddleHitAudio.play();
     }
     else if (data.type == 'wallHit')//sound
     {
       console.log(data.type);
+      if (soundOnOff == true)
+        wallHitAudio.play();
     }
     else if (data.type == 'info_back') //a enlever test
     {
@@ -185,11 +195,6 @@ function sendMessage(msg) {
     console.error('WebSocket non connecté');
   }
 }
-
-
-
-
-
 
 onUnmounted(() => {
   if (socket.value) {
@@ -289,24 +294,6 @@ let moveInterval2up = null;
 let moveInterval2down = null;
 let tickPadel = 10;
 
-
-function movePlayer1up(e) {
-  if (!moveInterval1up) {
-    if (e.code == "KeyW") {
-      moveInterval1up = setInterval(() => {
-        const message =
-        {
-          type: "mouvUp",
-          player: "1",
-        };
-        sendMessage(message);
-
-      },
-        tickPadel);
-    }
-  }
-}
-
 function movePlayer1down(e) {
   if (!moveInterval1down) {
     if (e.code == "KeyS") {
@@ -323,11 +310,16 @@ function movePlayer1down(e) {
   }
 }
 
-function movePlayer2up(e)
+    /////Game controls//////
+    let moveUpP1 = userAccount.moveUpP1;
+    let moveDownP1 =  userAccount.moveDownP1;
+    let mute = userAccount.mute;
+
+    function movePlayer1up(e)
     {
       if (!moveInterval2up)
       {
-        if (e.code == "ArrowUp")
+        if (e.code == moveUpP1)
         {
           moveInterval2up = setInterval(() => 
           {
@@ -344,37 +336,10 @@ function movePlayer2up(e)
       }
     }
 
-    function movePlayer2down(e)
-    {
-      if (!moveInterval2down)
-      {
-        if (e.code == "ArrowDown")
-        {
-          moveInterval2down = setInterval(() => 
-          {
-            const message = 
-            {
-              type: "mouvDown",
-              player: "2",
-            };
-            sendMessage(message);                    
-          },
-          tickPadel);
-        }
-      }
-    }
-    
-    function pauseGame(e)
-    {
-      if (e.code == "KeyP")
-      {
-        //force Axel <3
-      }
-    }
 
     function muteSound(e)
     {
-      if (e.code == "KeyM")
+      if (e.code == mute)
       {
         console.log(soundOnOff);
         soundOnOff = !soundOnOff;
@@ -383,11 +348,11 @@ function movePlayer2up(e)
     }
 
 function stopPlayer(e) {
-  if (e.code == "KeyW") {
+  if (e.code == moveUpP1) {
     clearInterval(moveInterval1up);
     moveInterval1up = null;
   }
-  else if (e.code == "KeyS") {
+  else if (e.code == moveDownP1) {
     clearInterval(moveInterval1down);
     moveInterval1down = null;
   }
@@ -406,10 +371,9 @@ function stopPlayer(e) {
       <div id="black-background">
         <div>
           <canvas id ="board"></canvas>
-      </div>
+        </div>
       <div>
-          <h2 id="pause">[P] to Pause/Unpause</h2>
-          <h2 id="mute">[M] to Mute/Unmute</h2>
+          <h2 id="mute">[{{userAccount.mute }}] to Mute/Unmute</h2>
         </div>
       </div>
     </div>
@@ -419,13 +383,6 @@ function stopPlayer(e) {
 <style lang="scss">
 body {
   text-align: center;
-}
-
-#pause {
-  color: rgb(114, 114, 114);
-  font-size: 25px;
-  left: 20%;
-  top: 70%;
 }
 
 #mute {

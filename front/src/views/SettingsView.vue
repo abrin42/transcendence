@@ -25,14 +25,14 @@
     router.push(page);
     }
 
-    const keys = reactive({
+    const keys = {
         player1Up: 'W',
         player1Down: 'S',
         player2Up: 'ArrowUp',
         player2Down: 'ArrowDown',
         pause: 'P',
         mute: 'M',
-    });
+    };
 
     async function update_keys() {
     try {
@@ -142,7 +142,6 @@
                     <span>{{ $t('player') }} 1 - {{ $t('DOWN') }}</span>
                     <span>{{ $t('player') }} 2 - {{ $t('UP') }}</span>
                     <span>{{ $t('player') }} 2 - {{ $t('DOWN') }}</span>
-                    <span>{{ $t('PAUSE_GAME') }}</span>
                     <span>{{ $t('MUTE_SOUND') }}</span>
                 </div>
                 <div class="buttonContainer">
@@ -157,9 +156,6 @@
                     </button>
                     <button id="bouton-touche" class="button" @click="changeKey('player2Down')">
                         <span class="buttonText">{{ keys.player2Down }}</span>
-                    </button>
-                    <button id="bouton-touche" class="button" @click="changeKey('pause')">
-                        <span class="buttonText">{{ keys.pause }}</span>
                     </button>
                     <button id="bouton-touche" class="button" @click="changeKey('mute')">
                         <span class="buttonText">{{ keys.mute }}</span>
