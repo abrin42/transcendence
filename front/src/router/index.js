@@ -98,8 +98,8 @@ const router = createRouter({
       component: MatchmakingView
     },
     {
-      path: '/cyberpong',
-      name: 'cyberpong',
+      path: '/cyberpong-ia',
+      name: 'cyberpong-ia',
       component: CyberPongView
     },
     {
@@ -123,8 +123,8 @@ const router = createRouter({
       component: LegacyRecapView
     },
     {
-      path: '/IA',
-      name: 'IA',
+      path: '/ia',
+      name: 'ia',
       component: IAPongView
     },
     {

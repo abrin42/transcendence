@@ -40,11 +40,11 @@ function goToMatchmaking() {
 }
 
 function goToLegacy() {
-    router.push('/legacy');
+    router.push('/ia');
 }
 
 function goToCyber() {
-    router.push('/cyberpong');
+    router.push('/cyberpong-ia');
 }
 
 function goToThree() {

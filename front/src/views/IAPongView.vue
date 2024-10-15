@@ -13,13 +13,13 @@ let connection = 0;
 /////// GET USER ///////////////////////////////
 ////////////////////////////////////////////////
 
-import { useUser } from '../useUser.js'; 
-const { getUser, userAccount, is_connected } = useUser(); 
+import { useUser } from '../useUser.js';
+const { getUser, userAccount, is_connected } = useUser();
 
 onMounted(async () => {
-    await getUser();
-    if (is_connected.value === false)
-      __goTo('/')
+  await getUser();
+  if (is_connected.value === false)
+    __goTo('/')
 });
 
 ////////////////////////////////////////////////
@@ -28,46 +28,39 @@ onMounted(async () => {
 
 function __goTo(page) {
   if (page == null)
-      return;
+    return;
   router.push(page);
 }
 
-function  updatePoints(player, updatePts)
-{
+function updatePoints(player, updatePts) {
   // console.log(player);
   // console.log(updatePts);
-  if (player == 1)
-  {
+  if (player == 1) {
     player1Score = updatePts;
   }
-  else if (player == 2)
-  {
+  else if (player == 2) {
     player2Score = updatePts;
   }
 }
 
-function  updatePadel(player, newY)
-{
+function updatePadel(player, newY) {
   // console.log(player);
   // console.log(newY);
-  if (player == 1)
-  {
+  if (player == 1) {
     player1.y = newY;
   }
-  else if (player == 2)
-  {
+  else if (player == 2) {
     player2.y = newY;
   }
 }
 
-function updateBaal(x, y)
-{
+function updateBaal(x, y) {
   ball.x = x;
   ball.y = y;
 }
 
 function connectWebSocket() {
-  const currentUrl = window.location.href; 
+  const currentUrl = window.location.href;
   const lastSegment = currentUrl.split('/').filter(Boolean).pop();
   socket.value = new WebSocket(`wss://localhost:8443/ws/websockets/?page=${encodeURIComponent(lastSegment)}`);
   socket.value.onopen = () => {
@@ -86,8 +79,7 @@ function connectWebSocket() {
     // message_type = data.get('type');
     // message_content = data.get('message');
 
-    if (data.type == 'connection_success') 
-    {
+    if (data.type == 'connection_success') {
       // console.log(data.type);
       // console.log(data.message);
       // connectionStatus.value = data.message;
@@ -102,27 +94,23 @@ function connectWebSocket() {
 
       connection = 1;
     }
-    else if (data.type == 'updatePts')
-    {
+    else if (data.type == 'updatePts') {
       // console.log(data.type);
       // console.log(data.updatePts);
       // console.log(data.player);
       updatePoints(data.player, data.updatePts);
-    } 
-    else if (data.type == 'mouvUp' || data.type == 'mouvDown')
-    {
+    }
+    else if (data.type == 'mouvUp' || data.type == 'mouvDown') {
       // console.log(data.type);
       updatePadel(data.player, data.newY);
       // messages.value.push(data.type);
     }
-    else if (data.type == 'updateBaal')
-    {
+    else if (data.type == 'updateBaal') {
       // console.log(data.x);
       // console.log(data.y);
       updateBaal(data.x, data.y);
     }
-    else if (data.type == 'endGame')
-    {
+    else if (data.type == 'endGame') {
       connection = 0;
       router.push('/'); //========================================== Erreur
     }
@@ -137,7 +125,7 @@ function connectWebSocket() {
       console.log(data.type);
     }
     else if (data.type == 'wallHit')//sound
-    { 
+    {
       console.log(data.type);
     }
     else if (data.type == 'info_back') //a enlever test
@@ -156,8 +144,7 @@ function connectWebSocket() {
 
   socket.value.onclose = () => {
     console.log('WebSocket déconnecté, tentative de reconnexion...');
-    setTimeout(() => 
-    {
+    setTimeout(() => {
       if (connection != 0)
         connectWebSocket();
     }, 3000);
@@ -166,8 +153,7 @@ function connectWebSocket() {
 
 function sendMessage(msg) {
   // console.log(msg);
-  if (socket.value && socket.value.readyState === WebSocket.OPEN) 
-  {
+  if (socket.value && socket.value.readyState === WebSocket.OPEN) {
     // console.log("---SEND MESSAGE---");
     // console.log(msg.type);
     // console.log(msg.player);
@@ -178,8 +164,7 @@ function sendMessage(msg) {
     }));
     // console.log("---END SEND MESSAGE---");
   }
-  else 
-  {
+  else {
     console.error('WebSocket non connecté');
   }
 }
@@ -200,147 +185,136 @@ onMounted(() => {
 });
 
 
-    //board properties
-    let board;
-    let boardWidth = 700;
-    let boardHeight = 700;
-    let context;
+//board properties
+let board;
+let boardWidth = 700;
+let boardHeight = 700;
+let context;
 
-    //players properties
-    let playerWidth = 20;
-    let playerHeight = boardHeight/5;
-    let playerSpeed = 0;
+//players properties
+let playerWidth = 20;
+let playerHeight = boardHeight / 5;
+let playerSpeed = 0;
 
-    let player1 = {
-        x : 10,
-        y: boardHeight/5*2,
-        width : playerWidth,
-        height : playerHeight,
-        speed : playerSpeed
-    }
+let player1 = {
+  x: 10,
+  y: boardHeight / 5 * 2,
+  width: playerWidth,
+  height: playerHeight,
+  speed: playerSpeed
+}
 
-    let player2 = {
-        x : boardWidth - playerWidth - 10,
-        y: boardHeight/5*2, 
-        width : playerWidth,
-        height : playerHeight,
-        speed: playerSpeed
-    }
+let player2 = {
+  x: boardWidth - playerWidth - 10,
+  y: boardHeight / 5 * 2,
+  width: playerWidth,
+  height: playerHeight,
+  speed: playerSpeed
+}
 
-    //ball properties
-    let ballSize = 10;
-    let ball = {
-      x : boardWidth / 2,
-      y : boardHeight / 2,
-      width : ballSize,
-      height : ballSize,
-      speedX: 1, speedY: 2
-    }
+//ball properties
+let ballSize = 10;
+let ball = {
+  x: boardWidth / 2,
+  y: boardHeight / 2,
+  width: ballSize,
+  height: ballSize,
+  speedX: 1, speedY: 2
+}
 
-    
-    //score
-    let player1Score = 0;
-    let player2Score = 0;
 
-    window.onload = function() {
-        board = document.getElementById("board"); //link board element in template to board variable
-        board.height = boardHeight;
-        board.width = boardWidth;
-        context = board.getContext("2d"); //Drawing on board
+//score
+let player1Score = 0;
+let player2Score = 0;
 
-        //draw player1
-        context.fillStyle = "white";
-        context.fillRect(player1.x, player1.y, player1.width, player1.height);
+window.onload = function () {
+  board = document.getElementById("board"); //link board element in template to board variable
+  board.height = boardHeight;
+  board.width = boardWidth;
+  context = board.getContext("2d"); //Drawing on board
 
-        requestAnimationFrame(update); // Gameloop
-        document.addEventListener("keydown", movePlayer1up);
-        document.addEventListener("keydown", movePlayer1down);
-        document.addEventListener('keyup', stopPlayer);
-        // document.addEventListener("keydown", leaveGame);
-    }
+  //draw player1
+  context.fillStyle = "white";
+  context.fillRect(player1.x, player1.y, player1.width, player1.height);
 
-    function update() {
-        requestAnimationFrame(update);
-        
-        context.clearRect(0, 0, board.width, board.height); // clear rectangle after movement (remove previous paddle position)
-        context.fillRect(player1.x, player1.y, player1.width, player1.height); // redesine tous 
-        context.fillRect(player2.x, player2.y, player2.width, player2.height);
-        context.fillStyle = "white";
-        context.fillRect(ball.x, ball.y, ball.width, ball.height);
+  requestAnimationFrame(update); // Gameloop
+  document.addEventListener("keydown", movePlayer1up);
+  document.addEventListener("keydown", movePlayer1down);
+  document.addEventListener('keyup', stopPlayer);
+  // document.addEventListener("keydown", leaveGame);
+}
 
-        //draw score
-        context.font = "100px Arial";
-        context.fillText(player1Score, boardWidth/5, 100);
-        context.fillText(player2Score, boardWidth*4/5 -50 , 100); //subtract -45 for width of text
-        
-        //draw middle line
-        for (let i = 10; i < board.height; i += 25)
+function update() {
+  requestAnimationFrame(update);
+
+  context.clearRect(0, 0, board.width, board.height); // clear rectangle after movement (remove previous paddle position)
+  context.fillRect(player1.x, player1.y, player1.width, player1.height); // redesine tous 
+  context.fillRect(player2.x, player2.y, player2.width, player2.height);
+  context.fillStyle = "white";
+  context.fillRect(ball.x, ball.y, ball.width, ball.height);
+
+  //draw score
+  context.font = "100px Arial";
+  context.fillText(player1Score, boardWidth / 5, 100);
+  context.fillText(player2Score, boardWidth * 4 / 5 - 50, 100); //subtract -45 for width of text
+
+  //draw middle line
+  for (let i = 10; i < board.height; i += 25) {
+    context.fillRect(board.width / 2 - 10, i, 2, 15);
+  }
+
+}
+
+
+let moveInterval1up = null;
+let moveInterval1down = null;
+let tickPadel = 10;
+
+
+function movePlayer1up(e) {
+  if (!moveInterval1up) {
+    if (e.code == "KeyW") {
+      moveInterval1up = setInterval(() => {
+        const message =
         {
-            context.fillRect(board.width / 2 - 10, i, 2, 15);
-        }
+          type: "mouvUp",
+          player: "1",
+        };
+        sendMessage(message);
 
+      },
+        tickPadel);
     }
+  }
+}
 
-    
-    let moveInterval1up = null;
-    let moveInterval1down = null;
-    let tickPadel = 10;
-
-
-    function movePlayer1up(e)
-    {
-      if (!moveInterval1up)
-      {
-        if (e.code == "KeyW")
+function movePlayer1down(e) {
+  if (!moveInterval1down) {
+    if (e.code == "KeyS") {
+      moveInterval1down = setInterval(() => {
+        const message =
         {
-          moveInterval1up = setInterval(() => 
-          {
-            const message = 
-            {
-              type: "mouvUp",
-              player: "1",
-            };
-            sendMessage(message);                    
-            
-          },
-          tickPadel);
-        }
-      }
+          type: "mouvDown",
+          player: "1",
+        };
+        sendMessage(message);
+      },
+        tickPadel);
     }
-
-    function movePlayer1down(e)
-    {
-      if (!moveInterval1down)
-      {
-        if (e.code == "KeyS")
-        {
-          moveInterval1down = setInterval(() => 
-          {
-            const message = 
-            {
-              type: "mouvDown",
-              player: "1",
-            };
-            sendMessage(message);                    
-          },
-          tickPadel);
-        }
-      }
-    }
+  }
+}
 
 
-    function stopPlayer(e) {
-      if (e.code == "KeyW")
-      {  
-        clearInterval(moveInterval1up);
-        moveInterval1up = null;
-      }
-      else if(e.code == "KeyS")
-      {
-        clearInterval(moveInterval1down);
-        moveInterval1down = null;
-      }
-    }
+function stopPlayer(e) {
+  if (e.code == "KeyW") {
+    clearInterval(moveInterval1up);
+    moveInterval1up = null;
+  }
+  else if (e.code == "KeyS") {
+    clearInterval(moveInterval1down);
+    moveInterval1down = null;
+  }
+}
 
 
 
@@ -351,9 +325,9 @@ onMounted(() => {
 
 <template>
   <main>
-      <div id>
-          <canvas id ="board"></canvas>
-      </div>
+    <div id>
+      <canvas id="board"></canvas>
+    </div>
   </main>
 </template>
 
