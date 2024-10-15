@@ -32,7 +32,6 @@ onMounted(async () => {
   document.addEventListener("keydown", movePlayer1up);
   document.addEventListener("keydown", movePlayer1down);
   document.addEventListener("keydown", muteSound);
-  document.addEventListener("keydown", pauseGame);
   document.addEventListener('keyup', stopPlayer);
 });
 
@@ -147,7 +146,7 @@ function connectWebSocket() {
     else if (data.type == 'endGame')
     {
       connection = 0;
-      router.push('/'); //========================================== Erreur
+      router.push('/legacyrecap'); //========================================== Erreur
     }
     //   console.log(data.type);
     // }
@@ -210,11 +209,6 @@ function sendMessage(msg) {
     console.error('WebSocket non connecté');
   }
 }
-
-
-
-
-
 
 onUnmounted(() => {
   if (socket.value) {
@@ -308,17 +302,20 @@ onMounted(() => {
 
     }
 
-    
     let moveInterval1up = null;
     let moveInterval1down = null;
     let tickPadel = 10;
 
+    /////Game controls//////
+    let moveUpP1 = userAccount.moveUpP1;
+    let moveDownP1 =  userAccount.moveDownP1;
+    let mute = userAccount.mute;
 
     function movePlayer1up(e)
     {
       if (!moveInterval1up)
       {
-        if (e.code == "KeyW")
+        if (e.code == moveUpP1)
         {
           moveInterval1up = setInterval(() => 
           {
@@ -339,7 +336,7 @@ onMounted(() => {
     {
       if (!moveInterval1down)
       {
-        if (e.code == "KeyS")
+        if (e.code == moveDownP1)
         {
           moveInterval1down = setInterval(() => 
           {
@@ -352,19 +349,6 @@ onMounted(() => {
           },
           tickPadel);
         }
-      }
-    }
-
-    function pauseGame(e)
-    {
-      if (e.code == pause)
-      {
-        const message = 
-            {
-              type: "pause",
-              player: "2",
-            };
-            sendMessage(message);        
       }
     }
 
@@ -390,8 +374,6 @@ onMounted(() => {
         moveInterval1down = null;
       }
     }
-
-
 </script>
 
 <template>
@@ -400,10 +382,9 @@ onMounted(() => {
       <div id="black-background">
         <div>
           <canvas id ="board"></canvas>
-      </div>
+        </div>
       <div>
-          <h2 id="pause">[P] to Pause/Unpause</h2>
-          <h2 id="mute">[M] to Mute/Unmute</h2>
+          <h2 id="mute">[{{userAccount.mute }}] to Mute/Unmute</h2>
         </div>
       </div>
     </div>
@@ -413,13 +394,6 @@ onMounted(() => {
 <style lang="scss">
 body {
   text-align: center;
-}
-
-#pause {
-  color: rgb(114, 114, 114);
-  font-size: 25px;
-  left: 20%;
-  top: 70%;
 }
 
 #mute {

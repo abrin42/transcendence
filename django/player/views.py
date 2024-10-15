@@ -50,7 +50,12 @@ def register_view(request):
                 username=username,
                 defaults={'email': email}
             )
-
+            user.moveUpP1 = "KeyW"
+            user.moveDownP1 = "KeyS"
+            user.moveUpP2 = "ArrowUp"
+            user.moveDownP2 = "ArrowDown"
+            user.pause = "KeyP"
+            user.mute = "KeyM"
             user.email = email
             user.phone_number = phone_number  # Ensure this field exists in your model
             user.set_password(password)

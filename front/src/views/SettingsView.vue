@@ -25,14 +25,14 @@
     router.push(page);
     }
 
-    const keys = reactive({
+    const keys = {
         player1Up: 'W',
         player1Down: 'S',
         player2Up: 'ArrowUp',
         player2Down: 'ArrowDown',
         pause: 'P',
         mute: 'M',
-    });
+    };
 
     async function update_keys() {
     try {
@@ -102,17 +102,17 @@
         if (selectedKey.value) {
             keys[selectedKey.value] = newKey;
             if(selectedKey.value === 'player1Down')
-                userAccount.player1Down = event.code;
+                userAccount.player1Down = newKey;
             else if(selectedKey.value === 'player1Up')
-                userAccount.player1Up = event.code;
+                userAccount.player1Up = newKey;
             else if(selectedKey.value === 'player2Down')
-                userAccount.player2Down = event.code;
+                userAccount.player2Down = newKey;
             else if(selectedKey.value === 'player2Up')
-                userAccount.player2Up = event.code;
+                userAccount.player2Up = newKey;
             else if(selectedKey.value === 'pause')
-                userAccount.pause = event.code;
+                userAccount.pause = newKey;
             else if(selectedKey.value === 'mute')
-                userAccount.mute = event.code;
+                userAccount.mute = newKey;
             update_keys();
             console.log("changing");
             selectedKey.value = null;
@@ -142,7 +142,6 @@
                     <span>{{ $t('player') }} 1 - {{ $t('DOWN') }}</span>
                     <span>{{ $t('player') }} 2 - {{ $t('UP') }}</span>
                     <span>{{ $t('player') }} 2 - {{ $t('DOWN') }}</span>
-                    <span>{{ $t('PAUSE_GAME') }}</span>
                     <span>{{ $t('MUTE_SOUND') }}</span>
                 </div>
                 <div class="buttonContainer">
@@ -157,9 +156,6 @@
                     </button>
                     <button id="bouton-touche" class="button" @click="changeKey('player2Down')">
                         <span class="buttonText">{{ keys.player2Down }}</span>
-                    </button>
-                    <button id="bouton-touche" class="button" @click="changeKey('pause')">
-                        <span class="buttonText">{{ keys.pause }}</span>
                     </button>
                     <button id="bouton-touche" class="button" @click="changeKey('mute')">
                         <span class="buttonText">{{ keys.mute }}</span>

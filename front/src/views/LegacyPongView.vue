@@ -6,8 +6,7 @@
           <canvas id ="board" data-glow></canvas>
         </div>
         <div>
-          <h2 id="pause">[P] to Pause/Unpause</h2>
-          <h2 id="mute">[M] to Mute/Unmute</h2>
+          <h2 id="mute">[{{ userAccount.mute }}] to Mute/Unmute</h2>
         </div>
       </div>
     </div>
@@ -19,12 +18,6 @@ body {
   text-align: center;
 }
 
-#pause {
-  color: rgb(114, 114, 114);
-  font-size: 25px;
-  left: 20%;
-  top: 70%;
-}
 
 #mute {
   color: rgb(114, 114, 114);
@@ -332,7 +325,6 @@ onMounted(() => {
   document.addEventListener("keydown", movePlayer2up);
   document.addEventListener("keydown", movePlayer2down);
   document.addEventListener("keydown", muteSound);
-  document.addEventListener("keydown", pauseGame);
   document.addEventListener('keyup', stopPlayer);
 });
 
@@ -364,12 +356,11 @@ onMounted(() => {
     let tickPadel = 10;
 
     /////Game controls//////
-    let moveUpP1 = "KeyW";
-    let moveDownP1 = "KeyS";
-    let moveUpP2 = "ArrowUp";
-    let moveDownP2 = "ArrowDown";
-    let pause = "KeyP";
-    let mute = "KeyM";
+    let moveUpP1 = userAccount.moveUpP1;
+    let moveDownP1 =  userAccount.moveDownP1;
+    let moveUpP2 =  userAccount.moveUpP2;
+    let moveDownP2 = userAccount.moveDownP2;
+    let mute = userAccount.mute;
 
     function movePlayer1up(e)
     {
@@ -450,19 +441,6 @@ onMounted(() => {
           },
           tickPadel);
         }
-      }
-    }
-
-    function pauseGame(e)
-    {
-      if (e.code == pause)
-      {
-        const message = 
-            {
-              type: "pause",
-              player: "2",
-            };
-            sendMessage(message);        
       }
     }
 
