@@ -15,16 +15,24 @@ class Player(AbstractUser):
     phone_number = PhoneNumberField(blank=True, null=True)
     profile_picture = models.TextField(null=True)
     #image_data_url = models.CharField(null=True)
+    language = models.CharField(max_length=2, default="EN")
+    socket = models.CharField(max_length=255, null=True, blank=True)
 
     email_2fa_active = models.BooleanField(default=False)
     sms_2fa_active = models.BooleanField(default=False)
-    
+    anonymized = models.BooleanField(default=False)
+
     rank = models.IntegerField(default=1000)
     win = models.IntegerField(default=0)
     lose = models.IntegerField(default=0)
+    balls_returned = models.IntegerField(default=0)
 
-    language = models.CharField(max_length=2, default="EN")
-    socket = models.CharField(max_length=255, null=True, blank=True)
+    moveUpP1 = models.CharField(blank=True, null=True, max_length=18, default="KeyW")
+    moveUpP2 = models.CharField(blank=True, null=True, max_length=18, default="KeyS")
+    moveDownP1 = models.CharField(blank=True, null=True, max_length=18, default="ArrowUp")
+    moveDownP2 = models.CharField(blank=True, null=True, max_length=18, default="ArrowDown")
+    pause = models.CharField(blank=True, null=True, max_length=18, default="KeyP")
+    mute = models.CharField(blank=True, null=True, max_length=18, default="KeyM")
 
     moveUpP1 = models.CharField(blank=True, null=True, max_length=18, default='KeyW')
     moveUpP2 = models.CharField(blank=True, null=True, max_length=18, default='KeyS')

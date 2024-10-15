@@ -33,11 +33,13 @@ ALLOWED_HOSTS = ["localhost", 'api',
 DATA_UPLOAD_MAX_MEMORY_SIZE = None
 
 CORS_ALLOW_ALL_ORIGINS = True
-CSRF_COOKIE_SAMESITE = 'None'
-CSRF_COOKIE_SECURE = False
+CSRF_COOKIE_SAMESITE = 'Lax'
+CSRF_COOKIE_SECURE = 'False'
 
 # CSRF settings
-CSRF_TRUSTED_ORIGINS = ['https://localhost:8443']
+CSRF_TRUSTED_ORIGINS = ['https://localhost:8443',
+                        'https://10.11.1.11:8443',
+                        'https://10.11.1.10:8443',]
 
 
 

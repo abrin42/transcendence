@@ -7,7 +7,24 @@ import { useRouter } from 'vue-router';
 import { ref, onMounted } from 'vue';
 import { useUser } from '../useUser.js';
 
-const { getUser, updateUserAccount, userAccount, is_connected } = useUser();
+////////////////////////////////////////////////
+/////// GET USER ///////////////////////////////
+////////////////////////////////////////////////
+
+import { useUser } from '../useUser.js'; 
+
+const { getUser, updateUserAccount, userAccount, is_connected } = useUser(); 
+
+onMounted(async () => {
+    await getUser();  
+    console.log("onMounted/is_connected: " + is_connected.value);  
+    console.log("onMounted/username: " + userAccount.username);
+});
+
+////////////////////////////////////////////////
+////////////////////////////////////////////////
+////////////////////////////////////////////////
+
 const router = useRouter();
 const username = ref('');
 const password = ref('');

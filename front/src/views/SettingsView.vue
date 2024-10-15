@@ -73,6 +73,45 @@
         return cookieValue || '';
     }
 
+    async function update_keys() {
+    try {
+        const response = await fetch('api/player/update_keys/', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRFToken': getCsrfToken(), // Assuming CSRF protection is enabled
+            },
+            body: JSON.stringify({
+                moveUpP1: userAccount.player1Up,
+                moveDownP1: userAccount.player1Down,
+                moveUpP2: userAccount.player2Up,
+                moveDownP2: userAccount.player2Down,
+                pause: userAccount.pause,
+                mute: userAccount.mute
+            }),
+        });
+
+        if (!response.ok) {
+            throw new Error(`HTTP error! Status: ${response.status}`);
+        }
+
+        const data = await response.json();
+        console.log(data);
+        
+    } catch (error) {
+        console.error('Could not change', error);
+        alert('An error occurred during login.');
+    }
+}
+
+    function getCsrfToken() {
+        const cookieValue = document.cookie
+            .split('; ')
+            .find(row => row.startsWith('csrftoken='))
+            ?.split('=')[1];
+        return cookieValue || '';
+    }
+
     const selectedKey = ref(null);
 
     const changeKey = (action) => {

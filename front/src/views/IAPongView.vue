@@ -380,6 +380,9 @@ function stopPlayer(e) {
           <h2 id="mute">[{{userAccount.mute }}] to Mute/Unmute</h2>
         </div>
       </div>
+      <div>
+          <h2 id="mute">[M] to Mute/Unmute</h2>
+      </div>
     </div>
   </main>
 </template>

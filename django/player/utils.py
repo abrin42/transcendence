@@ -31,14 +31,6 @@ def set_picture_42(request, user, profile_picture):
     else:
         print(f"Failed to fetch profile picture, status code: {response.status_code}")
 
-def is_auth(request):
-    player = verify_user(request)
-    print(player)
-    if player:
-        player_data = serializers.serialize('json', [player])
-    player_data = json.dumps({'error': 'User not found'})
-    return JsonResponse({'player_data': player_data}, content_type='application/json')
-
 @login_required
 def verify_user(request):
     try:
