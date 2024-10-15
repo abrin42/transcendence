@@ -73,7 +73,7 @@ function addParticipants() {
         participants.value = filteredParticipants.map(name => ({ name }));
         startTournament();
     } else {
-        alert("Veuillez entrer 4 noms de participants valides.");
+        alert("Please enter 4 valid participant names.");
     }
 }
 
@@ -120,11 +120,11 @@ onUnmounted(() => {
             <div class="theme">
                 <!-- Si le nombre de participants est différent de 4, affiche la configuration -->
                 <div v-if="participants.length !== 4" class="custom-content">
-                    <h2>Ajoutez les participants</h2>
+                    <h2>{{ $t('add_participants') }}</h2>
                     <div v-for="(participant, index) in newParticipants" :key="index">
-                        <Input v-model="newParticipants[index]" :placeholderText="`Nom du participant [${index}]`" />
+                        <Input v-model="newParticipants[index]" :placeholderText="`${$t('name_of_participant')} [${index}]`" />
                     </div>
-                    <button class="button buttonText" @click="addParticipants">Valider les participants</button>
+                    <button class="button buttonText" @click="addParticipants">{{ $t('validate_participants') }}</button>
                 </div>
 
                 <!-- Si le nombre de participants est égal à 4, affiche le bracket et le timer -->
@@ -134,7 +134,7 @@ onUnmounted(() => {
                     <div class="bracket">
                         <!-- Demi-finales -->
                         <div class="column one">
-                            <NeonText :position="{ top: 30, left: 27 }" :fontSize="1">Demi-finales</NeonText>
+                            <NeonText :position="{ top: 30, left: 27 }" :fontSize="1">{{ $t('semi_finals') }}</NeonText>
                             <div v-for="(match, index) in matches.slice(0, 2)" :key="index" class="match semi">
                                 <div class="match-top team">
                                     <span class="name">{{ match.team1 }}</span>
@@ -151,7 +151,7 @@ onUnmounted(() => {
                         <div class="column final">
                             <div v-for="(match, index) in matches.slice(3, 4)" :key="index" class="match big-final">
                                 <div v-if="match.team1 && match.team2">
-                                    <NeonText :position="{ top: 30, left: 46 }" :fontSize="1">Finale</NeonText>
+                                    <NeonText :position="{ top: 30, left: 46 }" :fontSize="1">{{ $t('final') }}</NeonText>
                                     <div class="match-top team">
                                         <span class="name">{{ match.team1 }}</span>
                                         <span class="score">{{ match.score1 ?? '-' }}</span>
@@ -162,8 +162,7 @@ onUnmounted(() => {
                                     </div>
                                 </div>
                                 <div v-else>
-                                    <span class="finale-text">Les matches pour les finales ne sont pas encore
-                                        définies.</span>
+                                    <span class="finale-text">{{ $t('matches_not_yet_decided') }}</span>
                                 </div>
                             </div>
                         </div>
@@ -172,7 +171,7 @@ onUnmounted(() => {
                         <div class="column third-place">
                             <div v-for="(match, index) in matches.slice(2, 3)" :key="index" class="match small-final">
                                 <div v-if="match.team1 && match.team2">
-                                    <NeonText :position="{ top: 30, left: 68 }" :fontSize="1">Petite finale</NeonText>
+                                    <NeonText :position="{ top: 30, left: 68 }" :fontSize="1">{{ $t('small_final') }}</NeonText>
                                     <div class="match-top team">
                                         <span class="name">{{ match.team1 }}</span>
                                         <span class="score">{{ match.score1 ?? '-' }}</span>

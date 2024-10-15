@@ -8,7 +8,7 @@
             <button class="button buttonText buttondropdown" @click="__goTo('/dashboard')">{{ $t('my_account') }}</button>
             <!-- Appel à la méthode toggleFriendsPopup pour afficher la popup -->
             <button class="button buttonText buttondropdown" @click="toggleFriendsPopup">{{ $t('friends') }}</button>
-            <button class="button buttonText buttondropdown" @click="__goTo('/leaderboard2')">{{ $t('leaderboard2') }}</button>
+            <button class="button buttonText buttondropdown" @click="__goTo('/leaderboard2')">{{ $t('leaderboard') }}</button>
             <button class="button buttonText buttondropdown" @click="handleLogout">{{ $t('logout') }}</button>
         </div>
 

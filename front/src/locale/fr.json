@@ -4,6 +4,7 @@
     "login": "Connexion",
     "my_account": "Mon compte",
     "friends": "Amis",
+    "leaderboard": "Classement",
     "logout": "Déconnexion",
 
     "my_friends": "Mes Amis",
@@ -60,6 +61,17 @@
     "play": "Jouer",
     "credits": "Crédits",
 
+    "LEADERBOARD": "CLASSEMENT",
+    "win_rate": "Taux de réussite",
+    "loose_rate": "Taux de défaite",
+    "victories": "Victoires",
+    "defeats": "Défaites",
+    "games": "Matchs",
+    "last_games": "Derniers matchs",
+    "no_games_to_display": "Aucun jeu récent à afficher.",
+
+    "RANK": "RANK",
+    
     "home": "Accueil",
     "play_again": "Rejouer",
     "congratulations": "Félicitations !",
@@ -99,6 +111,9 @@
 
     "to_pause_unpause": "pour mettre en pause/annuler",
     "to_mute_unmute": "pour activer/désactiver le son",
+
+    "add_participants": "Ajouter des participants",
+    "name_of_participant": "Nom du participant",
+    "validate_participants": "Valider les participants"
     
-    "leaderboard2": "Classement"
 }

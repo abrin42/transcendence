@@ -4,6 +4,7 @@
     "login": "Login",
     "my_account": "My Account",
     "friends": "Friends",
+    "leaderboard": "Leaderboard",
     "logout": "Logout",
     
     "my_friends": "My Friends",
@@ -60,6 +61,17 @@
     
     "play": "Play",
     "credits": "Credits",
+
+    "LEADERBOARD": "LEADERBOARD",
+    "win_rate": "Win rate",
+    "loose_rate": "Loose rate",
+    "victories": "Victories",
+    "defeats": "Defeats",
+    "games": "Games",
+    "last_games": "Last games",
+    "no_games_to_display": "No recent games to display.",
+
+    "RANK": "RANK",
     
     "home": "Home",
     "play_again": "Play again",
@@ -100,6 +112,8 @@
     
     "to_pause_unpause": "to Pause/Unpause",
     "to_mute_unmute": "to Mute/Unmute",
-    
-    "leaderboard2": "Leaderboard"
+
+    "add_participants": "Add participants",
+    "name_of_participant": "Name of participant",
+    "validate_participants": "Validate participants"
 }
