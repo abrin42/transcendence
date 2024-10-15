@@ -37,9 +37,7 @@ CSRF_COOKIE_SAMESITE = 'None'
 CSRF_COOKIE_SECURE = False
 
 # CSRF settings
-CSRF_TRUSTED_ORIGINS = ['https://localhost:8443',
-                        'https://10.11.1.11:8443',
-                        'https://10.11.1.10:8443',]
+CSRF_TRUSTED_ORIGINS = ['https://localhost:8443']
 
 
 
@@ -48,8 +46,6 @@ CSRF_TRUSTED_ORIGINS = ['https://localhost:8443',
 CORS_ALLOWED_ORIGINS = [
     "http://localhost:8080", #a tej ?
     "https://localhost:8443",
-    "https://10.11.1.11:8443",
-    'https://10.11.1.10:8443', 
 ]
 
 
@@ -203,12 +199,12 @@ APPEND_SLASH = False
 # WEBSOCKET_URL = '/ws/'
 # WEBSOCKET_REDIS_BROKER_URL = 'redis://localhost:6379/0'
 
-CHANNEL_LAYERS = {
-    'default': {
-        'BACKEND': 'channels_redis.core.RedisChannelLayer',
-        'CONFIG': {
-            "hosts": [('redis', 6379)],
-            "capacity": 100000,
-        },
-    },
-}
+# CHANNEL_LAYERS = {
+#     'default': {
+#         'BACKEND': 'channels_redis.core.RedisChannelLayer',
+#         'CONFIG': {
+#             "hosts": [('redis', 6379)],
+#             "capacity": 100000,
+#         },
+#     },
+# }
