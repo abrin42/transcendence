@@ -227,8 +227,7 @@ async function getAllUsers() {
             throw new Error(`HTTP error! Status: ${response.status}`);
         }
         const users = await response.json();
-        if (users.data) {
-            const userData = JSON.parse(users.data);
+            const userData = JSON.parse(users);
             userData.forEach((element) => {
                 var obj = {}
                 obj['username'] = element.fields.username;
@@ -241,7 +240,6 @@ async function getAllUsers() {
                 allPlayers.value.push(obj);
             });
             console.log("all user", allPlayers._rawValue)
-        }
     } catch (error) {
         console.error('Error retrieving user data:', error);
     }

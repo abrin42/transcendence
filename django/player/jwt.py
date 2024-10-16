@@ -14,7 +14,7 @@ User = get_user_model()
 def update_user_zero():
     ano = Player.objects.filter(username='anonymous', email='cyberpong16@gmail.com')
     if len(ano) != 1:
-        ano = Player(username='anonymous', email='cyberpong16@gmail.com',nickname="anonymous")
+        ano = Player(username='anonymous', email='cyberpong16@gmail.com',nickname="anonymous",rank=0)
         ano.save()
 
 def generate_jwt(user):
