@@ -1,4 +1,3 @@
-<!-- @lribette todo translate -->
 <script setup>
 import { ref, computed, defineEmits, onMounted } from 'vue';
 import CreateDropupButton from '../components/CreateDropupButton.vue';

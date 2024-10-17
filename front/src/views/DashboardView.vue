@@ -9,6 +9,7 @@
     import Input from '../components/Input.vue';
     import { useRouter } from 'vue-router';
     import { ref, onMounted } from 'vue';
+    import i18n from '../i18n.js'
     
     ////////////////////////////////////////////////
     /////// GET USER ///////////////////////////////
@@ -62,11 +63,11 @@
             } else {
                 console.log(userAccount.nickname);
                 const responseData = await response.json();
-                alert('Account updated successfully!');
+                alert(i18n.global.t('account_updated_successfully'));
             }
         } catch (error) {
             console.error('Error updating account:', error);
-            alert('An error occurred during account update.');
+            alert(i18n.global.t('error_account_update'));
         }
     }
 

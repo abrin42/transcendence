@@ -39,6 +39,7 @@
     import { ref, reactive, onMounted, watch, defineEmits } from 'vue';
     import $ from 'jquery';
     import { useRouter } from 'vue-router';
+    import i18n from '../i18n.js'
 
     ////////////////////////////////////////////////
     /////// GET USER ///////////////////////////////
@@ -193,7 +194,7 @@ async function insertPlayer() {
         }
     } catch (error) {
         console.error('Erreur lors de la connexion:', error);
-        alert('An error occurred while logging in');
+        alert(i18n.global.t('error_login'));
     }
 }
 

@@ -5,6 +5,7 @@ import CreateHomeButton from '../components/CreateHomeButton.vue';
 import Input from '../components/Input.vue';
 import { useRouter } from 'vue-router';
 import { ref, onMounted } from 'vue';
+import i18n from '../i18n.js'
 
 ////////////////////////////////////////////////
 /////// GET USER ///////////////////////////////
@@ -38,7 +39,7 @@ function handleEnter(event) {
 // Fonctions existantes (login, login42, etc.)
 async function login() {
     if (!username.value || !password.value) {
-        alert('Please enter an email address and a password.');
+        alert(i18n.global.t('please_enter_email_password'));
         return;
     }
     try {
@@ -69,13 +70,13 @@ async function login() {
             } else {
                 __goTo('/');
             }
-            alert('Login successful!');
+            alert(i18n.global.t('login_successful'));
         } else {
-            alert('User data not found!');
+            alert(i18n.global.t('error_user_data_not_found'));
         }
     } catch (error) {
         console.error('Erreur lors de la connexion /login:', error);
-        alert('An error occurred during login.');
+        alert(i18n.global.t('error_login'));
     }
 }
 
@@ -111,12 +112,12 @@ async function login42() {
         if (data.url) {
             window.location.href = data.url;
         } else {
-            alert('Could not get URL for login');
+            alert(i18n.global.t('error_invalid_URL_login'));
         }
 
     } catch (error) {
         console.error('Error during login:', error);
-        alert('An error occurred during login');
+        alert(i18n.global.t('error_login'));
     }
 }
 

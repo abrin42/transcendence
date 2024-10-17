@@ -88,9 +88,6 @@
     "online": "O'r briik",
     "tourney": "Kyrbej",
 
-    "password_do_not_match": "The passwords do not match.",
-    "error_account_creation": "An error occurred during account creation.",
-    "account_created_successfully": "Account created successfully!",
     "SIGN_UP": "TION'CUY",
     "create_account": "Gotal'ur gar solegot",
     "confirm_password": "Jor'lekir miit'ranov'la",
@@ -114,5 +111,40 @@
 
     "add_participants": "Majycir verda",
     "name_of_participant": "Ika be verd",
-    "validate_participants": "Vorer verda"
+    "validate_participants": "Vorer verda",
+
+
+
+    "error_adding_a_friend": "Trattok'or'yc ru banar vaal majyc'yc be burc'ya.",
+    "error_already_sent_invitation": "Nu'ibic maan sha ca'nara meg gar me'dinuri dinui shal ibic verd.",
+    "invitation_sent_to": "Dinui me'dinuri sha",
+    "to_play": "par oya'karir.",
+    "error_user_data_not_found": "Nu verd data mar'eyc!",
+    "invalid_data_received": "Nu'serim data parji'la!",
+    "error_login": "Trattok'or'yc ru banar vaal to.",
+    "error_OTPPP_setup": "Trattok'or'yc ru banar vaal OTPPP setup",
+    "error_TFA_setup": "Trattok'or'yc ru banar vaal TFA setup",
+    "resend_code": "Me'dinurir dadita!",
+    "account_updated_successfully": "Solegot gotal'ur'la bralov'yc!",
+    "error_account_update": "Trattok'or'yc ru banar vaal solegot gotal'ur.",
+    "please_enter_email_password": "Gedet'ye miit'gaanar lenedat bal miit'ranov'la.",
+    "login_successful": "To bralov'yc!",
+    "error_invalid_URL_login": "Nu ru lise parjir to URL.",
+    "please_complete_required_fields": "Gedet'ye miit'gaanar an vhetin.",
+    "please_enter_valid_email": "Gedet'ye miit'gaanar vorer'yc lenedat.",
+    "please_enter_valid_phone_number": "Gedet'ye miit'gaanar vorer'yc comlink to (majycir '+33' sha ne'kyr).",
+    "please_accept_terms_of_use": "Gedet'ye vorer ke'gyce.",
+    "error_passwords_do_not_match": "Nu miite'ranov'lase slanar.",
+    "should_contain_capital_letter": "Enteyor ganar solus muninar aliik\n",
+    "should_contain_lower_case_letter": "Enteyor ganar solus kih aliik\n",
+    "should_contain_number": "Enteyor ganar solus cuir\n",
+    "should_contain_special_character": "Enteyor ganar solus vutyc aliik\n",
+    "should_be_8_characters_long": "Enteyor ganar sh'ehn aliik munit",
+    "successful_registration": "Bralov'yc tion'cuy!",
+    "network_error_occurred": "To trattok'or'yc ru banar. Gedet'ye kebbur tug'yc.",
+    "error_key_already_in_use": "Ibic dadita sha ca'nara o'r pirimmur.",
+    "error_cannot_use_same_key": "Nu arasuum'yc verd liser pirimmur arasuum'yc dadita par payt bal staabi.",
+    "error_cannot_use_same_nickname": "Nu gar liser pirimmur arasuum'yc ika par ori'shya solus verd.",
+    "please_enter_4_valid_names": "Gedet'ye miit'gaanar cuir vorer'yc verd ikase.",
+    "GAME_STARTS_SOON": "GEROYA NE'KYRIR!"
 }

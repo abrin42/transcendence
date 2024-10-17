@@ -7,6 +7,7 @@ import Input from '@/components/Input.vue'; // Assurez-vous que ce composant Inp
 import { useRouter } from 'vue-router';
 import { onMounted, ref, watch, onUnmounted } from 'vue';
 import { useUser } from '../useUser.js';
+import i18n from '../i18n.js';
 
 const { getUser } = useUser();
 const router = useRouter();
@@ -71,13 +72,13 @@ function addParticipants() {
     if (filteredParticipants.length === 4) {
         const participantsWithoutDuplicates = new Set(filteredParticipants);
         if (participantsWithoutDuplicates.size !== filteredParticipants.length) {
-            alert("You can't use the same nickname for more than one player.");
-            return ;
+            alert(i18n.global.t('error_cannot_use_same_nickname'));
+        } else {
+            participants.value = filteredParticipants.map(name => ({ name }));
+            startTournament();
         }
-        participants.value = filteredParticipants.map(name => ({ name }));
-        startTournament();
     } else {
-        alert("Please enter 4 valid participant names.");
+        alert(i18n.global.t('please_enter_4_valid_names'));
     }
 }
 
@@ -98,7 +99,7 @@ function startTimer() {
         interval = setInterval(() => {
             timer.value--;
             if (timer.value === -1) {
-                alert("STARTING GAME SOON.");
+                alert(i18n.global.t('GAME_STARTS_SOON'));
                 stopTimer();
             }
         }, 1000);

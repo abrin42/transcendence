@@ -89,9 +89,6 @@
     "online": "Online",
     "tourney": "Tourney",
     
-    "password_do_not_match": "The passwords do not match.",
-    "error_account_creation": "An error occurred during account creation.",
-    "account_created_successfully": "Account created successfully!",
     "SIGN_UP": "SIGN UP",
     "create_account": "Create your account",
     "confirm_password": "Confirm password",
@@ -115,5 +112,40 @@
 
     "add_participants": "Add participants",
     "name_of_participant": "Name of participant",
-    "validate_participants": "Validate participants"
+    "validate_participants": "Validate participants",
+
+
+
+    "error_adding_a_friend": "An error occurred while adding a friend.",
+    "error_already_sent_invitation": "You have already sent an invitation to this user.",
+    "invitation_sent_to": "Invitation sent to",
+    "to_play": "to play.",
+    "error_user_data_not_found": "User data not found!",
+    "invalid_data_received": "Invalid data received!",
+    "error_login": "An error occurred while logging in.",
+    "error_OTPPP_setup": "An error occurred during OTPPP setup",
+    "error_TFA_setup": "An error occurred during TFA setup",
+    "resend_code": "Resend code!",
+    "account_updated_successfully": "Account updated successfully!",
+    "error_account_update": "An error occurred during account update.",
+    "please_enter_email_password": "Please enter an email address and a password.",
+    "login_successful": "Login successful!",
+    "error_invalid_URL_login": "Could not get the login URL.",
+    "please_complete_required_fields": "Please complete all required fields.",
+    "please_enter_valid_email": "Please enter a valid email address.",
+    "please_enter_valid_phone_number": "Please enter a valid telephone number (add '+33' at the beginning).",
+    "please_accept_terms_of_use": "Please accept the terms of use.",
+    "error_passwords_do_not_match": "The passwords do not match.",
+    "should_contain_capital_letter": "Should contain at least one capital letter\n",
+    "should_contain_lower_case_letter": "Should contain at least one lower case letter\n",
+    "should_contain_number": "Should contain at least one number\n",
+    "should_contain_special_character": "Should contain at least one special character\n",
+    "should_be_8_characters_long": "Should be at least eight characters long",
+    "successful_registration": "Successful registration!",
+    "network_error_occurred": "A network error has occurred. Please try again.",
+    "error_key_already_in_use": "This key is already in use.",
+    "error_cannot_use_same_key": "The same player cannot use the same key for left and right.",
+    "error_cannot_use_same_nickname": "You can't use the same nickname for more than one player.",
+    "please_enter_4_valid_names": "Please enter four valid participant names.",
+    "GAME_STARTS_SOON": "GAME STARTS SOON!"
 }
