@@ -30,6 +30,7 @@
     const phone_number = ref('');
     const password1 = ref('');
     const password2 = ref('');
+    const acceptTerms = ref(false);
 
     defineExpose({
         username,
@@ -64,20 +65,25 @@
 
     async function createAccount() {
         if (!username.value || !email.value || !password1.value || !password2.value) {
-            alert('Veuillez remplir tous les champs requis.');
+            alert('Please fill in all the required fields.');
             return;
         }
         
         if (!isValidEmail(email.value)) {
-            alert('Veuillez entrer une adresse e-mail valide.');
+            alert('Please enter a valid e-mail address.');
             return;
         }
         
         if (phone_number.value) {
             if (!isValidPhoneNumber(phone_number.value)) {
-                alert('Veuillez entrer un numéro de téléphone valide (ajoutez "+33" au debut).');
+                alert('Please enter a valid telephone number (add ‘+33’ at the beginning).');
                 return;
             }
+        }
+
+        if (!acceptTerms.value) {
+            alert('Veuillez accepter les conditions d\'utilisation.'); // todo translate
+            return;
         }
         
         if (password1.value !== password2.value) {
@@ -115,7 +121,7 @@
             if (response.ok) {
                 const responseData = await response.json();
                 console.log('Account created successfully!', responseData);
-                alert('Inscription réussie!');
+                alert('Successful registration!');
                 __goTo('/')
             } else {
                 const errorData = await response.json();
@@ -124,13 +130,13 @@
                 const errorMessage = 
                     errorData.error || errorData.detail || 
                     errorData.non_field_errors?.join(', ') || 
-                    'Une erreur inconnue est survenue';
-                alert('Erreur: ' + errorMessage);
+                    'An unknown error has occurred';
+                alert('Error: ' + errorMessage);
             }
         } catch (error) {
             console.error('Network error:', error);
-            alert('Une erreur réseau est survenue. Veuillez réessayer.');
-        }
+            alert('A network error has occurred. Please try again.');
+}
     }
 
     function getCsrfToken() {
@@ -144,12 +150,20 @@
 
 <template>
     <main>
-        <div id="wrapper">
+        <!-- Ajout de @keydown.enter sur le conteneur principal -->
+        <div id="wrapper" @keydown.enter="handleEnter">
             <h1>{{ $t('SIGN_UP') }}</h1>
             <div class="logContainer">
                 <button class="button button-login" @click="__goTo('/log')">
                     <span class="buttonText buttonTextSize">{{ $t('login') }}</span>
                 </button>
+
+                <!-- Checkbox pour les conditions d'utilisation -->
+                <div class="terms-container">
+                    <input type="checkbox" id="terms" v-model="acceptTerms" />
+                    <label for="terms">J'accepte les <a href="/terms">conditions d'utilisation</a></label>
+                </div>
+
                 <button class="button button-createAccount" @click="createAccount">
                     <span class="buttonText buttonTextSize">{{ $t('create_account') }}</span>
                 </button>
@@ -160,7 +174,8 @@
                 <Input iconClass="fa-envelope" :placeholderText="`*${$t('email')}`" v-model="email" />
                 <Input iconClass="fa-phone" :placeholderText="`${$t('phone_number')}`" v-model="phone_number" />
                 <Input iconClass="fa-lock" :placeholderText="`*${$t('password')}`" isPassword v-model="password1" />
-                <Input iconClass="fa-lock" :placeholderText="`*${$t('confirm_password')}`" isPassword v-model="password2" />
+                <Input iconClass="fa-lock" :placeholderText="`*${$t('confirm_password')}`" isPassword
+                    v-model="password2" />
             </div>
 
             <div class="buttonContainer">
@@ -245,7 +260,7 @@ h1 {
     width: 15vw;
     height: 6vh;
     left: 42.5%;
-    top: 30%;
+    top: 26.5%;
 
     background-color: rgba(0, 0, 0, 0.5);
     border: 0.15vw solid rgba(0, 0, 0, 0.25);
@@ -270,7 +285,7 @@ h1 {
     transition: border-color, background-color 0.5s;
 }
 
-.button-createAccount:hover{
+.button-createAccount:hover {
     border-color: rgb(185, 248, 252);
     text-decoration-color: rgb(185, 248, 252);
     background-color: rgba(0, 204, 227, 0.247);
@@ -287,5 +302,38 @@ h1 {
 .button-createAccount:hover .buttonText {
     font-size: 23px;
     transition: color 0.3s ease, font-size 0.3s ease;
+}
+
+.terms-container {
+    position: fixed;
+    left: 40%;
+    top: 69%;
+    display: flex;
+    align-items: center;
+    font-size: 1.2vw;
+    color: #fff;
+}
+
+.terms-container input[type="checkbox"] {
+    margin-right: 0.5vw;
+}
+
+.terms-container a {
+    color: #0dcaf0;
+    text-decoration: none;
+}
+
+.terms-container a:hover {
+    text-decoration: underline;
+}
+
+.button-createAccount {
+    top: 73%;
+    /* Ajusté pour rapprocher le bouton de la checkbox */
+}
+
+.__inputInfo {
+    top: 35%;
+    /* Vous pouvez ajuster selon votre design global */
 }
 </style>

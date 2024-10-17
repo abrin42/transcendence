@@ -25,6 +25,9 @@ import RegisterView from '../views/RegisterView.vue'
 import DashboardView from '../views/DashboardView.vue'
 import IAPongView from '../views/IAPongView.vue'
 import TwoFaView from '../views/2faView.vue'
+import TermsView from '../views/TermsView.vue'
+import LeaderboardView2 from '../views/LeaderboardView2.vue'
+import NotFound from '../views/NotFound.vue'
 
 const router = createRouter({
   history: createWebHistory(),
@@ -95,8 +98,8 @@ const router = createRouter({
       component: MatchmakingView
     },
     {
-      path: '/cyberpong',
-      name: 'cyberpong',
+      path: '/cyberpong-ia',
+      name: 'cyberpong-ia',
       component: CyberPongView
     },
     {
@@ -120,26 +123,40 @@ const router = createRouter({
       component: LegacyRecapView
     },
     {
-      path: '/IA',
-      name: 'IA',
+      path: '/ia',
+      name: 'ia',
       component: IAPongView
     },
-		{
-			path: '/2fa',
-			name: '2fa',
-			component: TwoFaView
-		},
     {
-			path: '/matchmaking',
-			name: 'matchmaking',
-			component: MatchmakingView
-		},
+      path: '/2fa',
+      name: '2fa',
+      component: TwoFaView
+    },
+    {
+      path: '/matchmaking',
+      name: 'matchmaking',
+      component: MatchmakingView
+    },
     {
       // path: '/leaderboard', // for testing front end
       path: '/leaderboard/:username',
       name: 'leaderboard',
       component: LeaderboardView
     },
+    {
+      path: '/terms',
+      name: 'terms',
+      component: TermsView
+    },
+    {
+      path: '/leaderboard2',
+      name: 'leaderboard2',
+      component: LeaderboardView2
+    },
+    {
+      path: '/:pathMatch(.*)*', // Cela correspond à toute route non définie
+      component: NotFound
+    }
   ]
 })
 

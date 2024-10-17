@@ -159,10 +159,10 @@
 
                     <div class="___btn-click">
                         <button class="button button-update" @click="updateAccount">
-                            <span class="buttonText buttonTextSize" style="font-size: medium;">{{ $t('Update your account') }}</span>
+                            <span class="buttonText buttonTextSize" style="font-size: medium;">{{ $t('update_account') }}</span>
                         </button>
                         <button class="button button-logout" @click="handleLogout">
-                            <span class="buttonText buttonTextSize" style="font-size: medium;">Logout</span>
+                            <span class="buttonText buttonTextSize" style="font-size: medium;">{{ $t('logout') }}</span>
                         </button>
                         <button class="button button-logout" @click="handleDelete">
                             <span class="buttonText buttonTextSize" style="font-size: medium;">{{ $t('delete_account') }}</span>
@@ -218,6 +218,17 @@ h1,
             0 0 60px rgba(255, 20, 147, 0.8),
             0 0 70px rgba(255, 20, 147, 0.8);
     }
+}
+
+#wrapper {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    height: 100vh;
+    background-color: rgba(0, 0, 0, 0.8);
+    padding: 20px;
 }
 
 .containerDashboard {
@@ -298,6 +309,12 @@ h1,
 
 .custom-file-upload i {
     margin-right: 0.5vw;
+}
+
+.custom-file-upload:hover {
+    border-color: rgba(255, 255, 255, 1);
+    background-color: rgba(255, 255, 255, 0.4);
+    transition: border-color, background-color 0.5s;
 }
 
 .editable-input-container {

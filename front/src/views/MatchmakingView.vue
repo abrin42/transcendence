@@ -193,7 +193,7 @@ async function insertPlayer() {
         }
     } catch (error) {
         console.error('Erreur lors de la connexion:', error);
-        alert('An error occurred during login2222');
+        alert('An error occurred while logging in');
     }
 }
 

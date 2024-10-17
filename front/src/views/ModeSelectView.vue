@@ -42,10 +42,6 @@
     function goToMulti() {
         router.push('/multimode');
     }
-
-    function goToTournoi() {
-        router.push('/tourney');
-    }
 </script>
 
 <template>

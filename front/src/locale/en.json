@@ -9,6 +9,9 @@
     "my_friends": "My Friends",
     "search_for_a_player": "Search for a player ...",
     "no_players_found": "No players found.",
+    "friend_requests": "Friend requests",
+    "no_friend_requests": "You haven't received any friend requests",
+    
     
     "modify_the_value": "Modify the value:",
     "save": "Save",
@@ -86,5 +89,17 @@
     "RIGHT": "RIGHT",
     "LEFT": "LEFT",
     "PAUSE_GAME": "PAUSE GAME",
-    "MUTE_SOUND": "MUTE SOUND"
+    "MUTE_SOUND": "MUTE SOUND",
+
+    "please_wait": "Please wait",
+    "number_of_participants": "The number of participants must be exactly 4 to start the tournament.",
+    "semi_finals": "Semi-finals",
+    "final": "Final",
+    "matches_not_yet_decided": "The matches for the finals have not yet been decided.",
+    "small_final": "Small final",
+    
+    "to_pause_unpause": "to Pause/Unpause",
+    "to_mute_unmute": "to Mute/Unmute",
+    
+    "leaderboard2": "Leaderboard"
 }
