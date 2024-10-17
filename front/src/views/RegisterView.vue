@@ -1,5 +1,3 @@
-<!-- @lribette -->
-
 <script setup>
     import CreateDropupButton from '../components/CreateDropupButton.vue';
     import CreateBackButton from '../components/CreateBackButton.vue';
@@ -164,7 +162,7 @@
                 <!-- Checkbox pour les conditions d'utilisation -->
                 <div class="terms-container">
                     <input type="checkbox" id="terms" v-model="acceptTerms" />
-                    <label for="terms">J'accepte les <a href="/terms">conditions d'utilisation</a></label>
+                    <label for="terms">{{ $t('i_accept_the') }}<a href="/terms">{{ $t('terms_of_use') }}</a></label>
                 </div>
 
                 <button class="button button-createAccount" @click="createAccount">

@@ -88,7 +88,12 @@
     "online": "O'r briik",
     "tourney": "Kyrbej",
 
+    "ERROR_404": "TRATTOK'OR'YC 404 - NU MAR'EYI'LA",
+    "contact_devs": "Gedet'ye lenedatir alore meh gar mirdi ibic trattok'or'yc.",
+
     "SIGN_UP": "TION'CUY",
+    "i_accept_the": "Ni vore ",
+    "terms_of_use": "ke'gycese.",
     "create_account": "Gotal'ur gar solegot",
     "confirm_password": "Jor'lekir miit'ranov'la",
 
@@ -133,7 +138,7 @@
     "please_complete_required_fields": "Gedet'ye miit'gaanar an vhetin.",
     "please_enter_valid_email": "Gedet'ye miit'gaanar vorer'yc lenedat.",
     "please_enter_valid_phone_number": "Gedet'ye miit'gaanar vorer'yc comlink to (majycir '+33' sha ne'kyr).",
-    "please_accept_terms_of_use": "Gedet'ye vorer ke'gyce.",
+    "please_accept_terms_of_use": "Gedet'ye vorer ke'gycese.",
     "error_passwords_do_not_match": "Nu miite'ranov'lase slanar.",
     "should_contain_capital_letter": "Enteyor ganar solus muninar aliik\n",
     "should_contain_lower_case_letter": "Enteyor ganar solus kih aliik\n",

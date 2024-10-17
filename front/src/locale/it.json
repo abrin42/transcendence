@@ -88,7 +88,12 @@
     "online": "In linea",
     "tourney": "Torneo",
 
+    "ERROR_404": "ERRORE 404 - PAGINA NON TROVATA",
+    "contact_devs": "Contattare gli sviluppatori se si ritiene che si tratti di un errore.",
+
     "SIGN_UP": "ISCRIVITI",
+    "i_accept_the": "Accetto le ",
+    "terms_of_use": "condizioni di utilizzo.",
     "create_account": "Crea il tuo account",
     "confirm_password": "Confermare la password",
 

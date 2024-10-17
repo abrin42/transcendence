@@ -89,7 +89,12 @@
     "online": "Online",
     "tourney": "Tourney",
     
+    "ERROR_404": "ERROR 404 - PAGE NOT FOUND",
+    "contact_devs": "Please contact the developers if you think this is a mistake.",
+
     "SIGN_UP": "SIGN UP",
+    "i_accept_the": "I accept the ",
+    "terms_of_use": "terms of use.",
     "create_account": "Create your account",
     "confirm_password": "Confirm password",
 

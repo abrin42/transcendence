@@ -1,11 +1,10 @@
-<!-- @lribette todo translate -->
 <template>
     <main>
         <div id="wrapper">
             <div class="theme">
                 <div class="custom-content">
-                    <h1>ERROR 404 - NOT FOUND</h1>
-                    <p>Please contact the developers if you think this is a mistake.</p>
+                    <h1>{{ $t('ERROR_404') }}</h1>
+                    <p>{{ $t('contact_devs') }}</p>
                 </div>
             </div>
         </div>
