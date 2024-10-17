@@ -36,7 +36,7 @@ const newParticipants = ref(["", "", "", ""]);
 const matches = ref([
     { round: 'SEMI', team1: '', team2: '', score1: 0, score2: 0, winner: '', loser: '' },
     { round: 'SEMI', team1: '', team2: '', score1: 0, score2: 0, winner: '', loser: '' },
-    { round: 'THIRD_PLACE', team1: '', team2: '', score1: 0, score2: 0, winner: '', loser: '' },
+    { round: 'SMALL_FINAL', team1: '', team2: '', score1: 0, score2: 0, winner: '', loser: '' },
     { round: 'FINAL', team1: '', team2: '', score1: 0, score2: 0, winner: '', loser: '' }
 ]);
 
@@ -49,11 +49,20 @@ function shuffleParticipants() {
 }
 
 // Démarrer le tournoi si le nombre de participants est de 4
-function startTournament() {
+async function startTournament() {
     if (participants.value.length === 4) {
         shuffleParticipants(); // Mélange les participants
         setupSemiFinals(); // Configure les demi-finales
-        startTimer();
+        await new Promise(resolve => setTimeout(resolve, 1000));
+        updateScore(0);
+        await new Promise(resolve => setTimeout(resolve, 1000));
+        updateScore(1);
+        await new Promise(resolve => setTimeout(resolve, 1000));
+        updateScore(2);
+        await new Promise(resolve => setTimeout(resolve, 1000));
+        updateScore(3);
+        // updateFinals();
+        // startTimer();
     }
 }
 
@@ -79,6 +88,31 @@ function addParticipants() {
         }
     } else {
         alert(i18n.global.t('please_enter_4_valid_names'));
+    }
+}
+
+// Mettre à jour les finales
+function updateScore(match_index) {
+    matches.value[match_index].score1 = 8;
+    matches.value[match_index].score2 = 10;
+    if (matches.value[match_index].score1 > matches.value[match_index].score2) {
+        matches.value[match_index].winner = matches.value[match_index].team1;
+        matches.value[match_index].loser = matches.value[match_index].team2;
+    } else {
+        matches.value[match_index].winner = matches.value[match_index].team2;
+        matches.value[match_index].loser = matches.value[match_index].team1;
+    }
+    switch (match_index) {
+        case 0:
+            matches.value[2].team1 = matches.value[match_index].loser;
+            matches.value[3].team1 = matches.value[match_index].winner;
+            break;
+        case 1:
+            matches.value[2].team2 = matches.value[match_index].loser;
+            matches.value[3].team2 = matches.value[match_index].winner;
+            break;
+        default:
+            break;
     }
 }
 

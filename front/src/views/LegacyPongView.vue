@@ -6,7 +6,7 @@
           <canvas id ="board" data-glow></canvas>
         </div>
         <div>
-          <h2 id="mute">[{{ userAccount.mute }}] to Mute/Unmute</h2>
+          <h2 id="mute">[{{ userAccount.mute }}] {{ $t('to_mute_unmute') }}</h2>
         </div>
       </div>
     </div>

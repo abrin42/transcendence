@@ -49,11 +49,11 @@
     let endgamemessage;
     if (result == "win")
     {
-        endgamemessage = "congratulations";
+        endgamemessage = 'congratulations';
     }
     else
     {
-        endgamemessage = "wasted";
+        endgamemessage = 'wasted';
     }
 
 </script>
@@ -71,7 +71,7 @@
                     <span class="buttonText">{{ $t('play_again') }}</span>
                 </button>
                 <p id="score">You {{result}} {{ scoreplayer1 }} - {{ scoreplayer2 }}</p>
-                <p id="endgame-message">{{ $t(endgamemessage) }}</p>
+                <!-- <p id="endgame-message">{{ $t(endgamemessage) }}</p> -->
                 <div>
                     <CreateSoundButton />
                 </div>
