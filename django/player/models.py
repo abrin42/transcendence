@@ -32,7 +32,7 @@ class Player(AbstractUser):
     player2Up = models.CharField(blank=True, null=True, max_length=18, default="ArrowUp")
     player2Down = models.CharField(blank=True, null=True, max_length=18, default="ArrowDown")
     pause = models.CharField(blank=True, null=True, max_length=18, default="KeyP")
-    mute = models.CharField(blank=True, null=True, max_length=18)
+    mute = models.CharField(blank=True, null=True, max_length=18, default="KeyM")
 
     def __str__(self):
         return self.username
