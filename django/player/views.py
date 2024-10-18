@@ -28,6 +28,7 @@ import asyncio
 
 matchmaking = deque()
 
+
 def register_view(request):
     if request.method == 'POST':
         try:
@@ -49,12 +50,7 @@ def register_view(request):
                 username=username,
                 defaults={'email': email}
             )
-            user.moveUpP1 = 'KeyW'
-            user.moveDownP1 = 'KeyS'
-            user.moveUpP2 = 'ArrowUp'
-            user.moveDownP2 = 'ArrowDown'
-            user.pause = 'KeyP'
-            user.mute = 'KeyM'
+
             user.email = email
             user.phone_number = phone_number  # Ensure this field exists in your model
             user.set_password(password)
@@ -63,6 +59,8 @@ def register_view(request):
             print(user.password)
             authenticated_user = authenticate(username=user.username, password=password)
             if authenticated_user:
+                set_user_keys(user)
+            
                 login(request, authenticated_user)
                 authenticated_user.nickname = user.username[1:]  # Remove leading underscore
                 authenticated_user.save()
@@ -82,6 +80,15 @@ def register_view(request):
 
     return JsonResponse({'error': 'Méthode non autorisée.'}, status=405)
 
+def set_user_keys(user):
+    user.player1Up = 'KeyW'
+    user.player1Down = 'KeyS'
+    user.player2Up = 'ArrowUp'
+    user.player2Down = 'ArrowDown'
+    user.pause = 'KeyP'
+    user.mute = 'KeyM'
+    user.save()
+
 def login_view(request):
     if request.method != "POST":
         return JsonResponse({'error': 'Invalid request method'}, status=405)
@@ -94,12 +101,12 @@ def login_view(request):
         if not username or not password:
             return JsonResponse({'error': 'Username and password required'}, status=400)
 
-        player = authenticate(request, username=username, password=password)
-        if not player:
+        player = get_object_or_404(Player, username=username)
+        if not check_password(password, player.password):
             return JsonResponse({'error': 'Invalid username or password'}, status=401)
-        login(request, player)
-
+        
         print(f'username: {player.username}, email_2fa_active: {player.email_2fa_active}')
+        login(request, player)
 
         if not player.email_2fa_active and not player.sms_2fa_active:
             token = generate_jwt(player)
@@ -118,11 +125,12 @@ def login_view(request):
         player_data = serializers.serialize('json', [player])
         return JsonResponse({
             'player_data': player_data,
-            'redirect_url': '/2fa/'
+            'redirect_url': '/2fa'
         }, content_type='application/json')
 
     except json.JSONDecodeError:
         return JsonResponse({'error': 'Invalid request body'}, status=400)
+
 
 def login42_view(request):
     if request.method == "POST":
@@ -130,11 +138,13 @@ def login42_view(request):
         return JsonResponse({'url': oauth_url}, status=200)
     return JsonResponse({'error': 'Invalid request method'}, status=405)
 
+
 @login_required
 def tfa_view(request):
     if request.method == "POST":
         try:
             user = get_object_or_404(Player, username=request.user.username)
+            print(f"2fa user: {user}")
             create_otp(request, user)
             return JsonResponse({'message': 'Code sent successfully', 'redirect_url': '/2fa'}, status=200)
         except Player.DoesNotExist:
@@ -240,10 +250,11 @@ def auth_42_callback(request):
     
     if user is not None:
         user.student = True
-        user.nickname = user.username
-        user.save()
-        #if profile_picture: 
+        if user.nickname is None:
+            user.nickname = user.username
+        #if profile_picture and user.profile_picture is None: 
         #    set_picture_42(request, user, profile_picture)
+        user.save()
         token = generate_jwt(user)
         response = redirect('/')
         set_jwt_token(response, token)
@@ -257,10 +268,6 @@ def delete_p(request):
     user = token_user(request)
     user.delete()
 
-@login_required
-def delete_p(request):
-    user = token_user(request)
-    user.delete()
 
 @login_required
 def logout_view(request):
@@ -281,14 +288,13 @@ def delete_account(request):
     user.delete()
     return JsonResponse({'redirect_url': '/log'}, status=200)
 
-@login_required
 def connected_user(request):
     user = token_user(request)
     if user:
         user_data = json.loads(serialize('json', [user]))[0]['fields']
         return JsonResponse(user_data, safe=True) 
     else:
-        return JsonResponse({'error': 'User not found'}, status=404)
+        return JsonResponse({'msg': 'User not found'}, status=204)
 
 def get_all_user(request):
     data = Player.objects.all()

@@ -354,8 +354,8 @@ onMounted(async () => {
 
     /////Game controls//////
     let moveUpP1 = "KeyW";
-    let moveDownP1 =  "KeyS";
-    let moveUpP2 =  "KeyE";
+    let moveDownP1 = "KeyS";
+    let moveUpP2 = "KeyE";
     let moveDownP2 = "KeyD";
     let mute = userAccount.mute;
 

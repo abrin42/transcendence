@@ -27,19 +27,12 @@ class Player(AbstractUser):
     lose = models.IntegerField(default=0)
     balls_returned = models.IntegerField(default=0)
 
-    moveUpP1 = models.CharField(blank=True, null=True, max_length=18, default="KeyW")
-    moveUpP2 = models.CharField(blank=True, null=True, max_length=18, default="KeyS")
-    moveDownP1 = models.CharField(blank=True, null=True, max_length=18, default="ArrowUp")
-    moveDownP2 = models.CharField(blank=True, null=True, max_length=18, default="ArrowDown")
+    player1Up = models.CharField(blank=True, null=True, max_length=18, default="KeyW")
+    player1Down = models.CharField(blank=True, null=True, max_length=18, default="KeyS")
+    player2Up = models.CharField(blank=True, null=True, max_length=18, default="ArrowUp")
+    player2Down = models.CharField(blank=True, null=True, max_length=18, default="ArrowDown")
     pause = models.CharField(blank=True, null=True, max_length=18, default="KeyP")
-    mute = models.CharField(blank=True, null=True, max_length=18, default="KeyM")
-
-    moveUpP1 = models.CharField(blank=True, null=True, max_length=18, default='KeyW')
-    moveUpP2 = models.CharField(blank=True, null=True, max_length=18, default='KeyS')
-    moveDownP1 = models.CharField(blank=True, null=True, max_length=18, default='ArrowUp')
-    moveDownP2 = models.CharField(blank=True, null=True, max_length=18, default='ArrowDown')
-    pause = models.CharField(blank=True, null=True, max_length=18, default='KeyP')
-    mute = models.CharField(blank=True, null=True, max_length=18, default='KeyM')
+    mute = models.CharField(blank=True, null=True, max_length=18)
 
     def __str__(self):
         return self.username

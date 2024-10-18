@@ -43,30 +43,50 @@ def update_language(request):
         return JsonResponse({'error': 'Invalid request method'}, status=405)
     return JsonResponse({'error': 'No user'}, status=405)
 
-@login_required
+#@login_required
 def update_keys(request):
     user = token_user(request)
-    if request.method == "POST":
-        try:
-            data = json.loads(request.body)
-            print(data)
-            print(f'Avant: {user.moveUpP1}')
-            user.moveUpP1 = data.get('moveUpP1')
-            user.moveDownP1 = data.get('moveDownP1')
-            user.moveUpP2 = data.get('moveUpP2')
-            user.moveDownP2 = data.get('moveDownP2')
-            user.pause = data.get('pause')
-            user.mute = data.get('mute')
-            user.save()
-            print(f'Apres: {user.moveUpP1}')
-            return JsonResponse({'Message' : 'Key changed successfully'}, status=200)
-        except json.JSONDecodeError:
-            return JsonResponse({'error': 'Invalid request body'}, status=400)
-    return JsonResponse({'error': 'Invalid request method'}, status=405)
+    if user:
+        if request.method == "POST":
+            try:
+                data = json.loads(request.body)
+                print(data)
+                
+                print(f'Avant: {user.player1Up}')
+                print(f'Avant: {user.player2Up}')
+
+                moveUpP1 = data.get('moveUpP1')
+                if moveUpP1:
+                    user.player1Up = moveUpP1
+                moveDownP1 = data.get('moveDownP1')
+                if moveDownP1:
+                    user.player1Down = moveDownP1
+                moveUpP2 = data.get('moveUpP2')
+                if moveUpP2:
+                    user.player2Up = moveUpP2
+                moveDownP2 = data.get('moveDownP2')
+                if moveDownP2:
+                    user.player2Down = moveDownP2
+                pause = data.get('pause')
+                if pause:
+                    user.pause = pause
+                mute = data.get('mute')
+                if mute:
+                    user.mute = mute
+                user.save()
+
+                print(f'Apres: {user.player1Up}')
+                print(f'Apres: {user.player2Up}')
+
+                return JsonResponse({'Message' : 'Key changed successfully'}, status=200)
+            except json.JSONDecodeError:
+                return JsonResponse({'error': 'Invalid request body'}, status=400)
+        return JsonResponse({'error': 'Invalid request method'}, status=405)
+    return JsonResponse({'error': 'No user'}, status=405)
 
 @login_required
 def update_user(request):
-    user = token_user(request)  # Ensure this function is implemented correctly.
+    user = token_user(request)
     
     if request.method != "POST":
         return JsonResponse({'error': 'Invalid request method'}, status=405)
@@ -74,7 +94,7 @@ def update_user(request):
     try:
         data = json.loads(request.body)
 
-        print(user.username)  # For debugging, consider logging instead.
+        print(user.username) 
         user.nickname = data.get('nickname', user.nickname)
         user.email = data.get('email', user.email)
         
@@ -87,7 +107,7 @@ def update_user(request):
         user.email_2fa_active = data.get('email_2fa_active', user.email_2fa_active)
         user.sms_2fa_active = data.get('sms_2fa_active', user.sms_2fa_active)
         user.anonymized = data.get('anonymized', user.anonymized)
-        print(user.anonymized)  # For debugging.
+        print(user.anonymized)
         if user.anonymized:
             anonymize_data(user)
 
@@ -109,7 +129,7 @@ def mask_phone_number(phone):
 
 def mask_email(email):
     if not email or '@' not in email:
-        return ''  # Handle invalid email formats.
+        return ''
     username, domain = email.split('@')
     masked_username = username[:2] + '****'
     return f"{masked_username}@{domain}"
@@ -118,6 +138,5 @@ def hash_value(value):
     return hashlib.sha256(value.encode()).hexdigest()
 
 def anonymize_data(user):
-    """Anonymize the user's phone number and email."""
     user.email = mask_email(user.email)
     user.phone_number = mask_phone_number(user.phone_number)

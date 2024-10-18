@@ -299,7 +299,7 @@ let moveInterval2down = null;
 let tickPadel = 10;
 /////Game controls//////
 let moveUpP1 = userAccount.moveUpP1;
-let moveDownP1 =  userAccount.moveDownP1;
+let moveDownP1 = userAccount.moveDownP1;
 let mute = userAccount.mute;
 
 function movePlayer1down(e) {

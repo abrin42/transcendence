@@ -31,8 +31,6 @@ const { getUser, userAccount, is_connected } = useUser();
 
     onMounted(async () => {
         await getUser();
-        if (is_connected.value === false)
-            __goTo('/')
     });
 
 ////////////////////////////////////////////////

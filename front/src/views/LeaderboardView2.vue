@@ -134,7 +134,7 @@ async function getAllUsers() {
             });
         }
     } catch (error) {
-        console.error('Error retrieving user data:', error);
+        console.error('Error retrieving user data /Leaderboard:', error);
     }
 }
 
