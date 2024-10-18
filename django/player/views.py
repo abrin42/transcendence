@@ -1,33 +1,23 @@
-from django.shortcuts import render, redirect, get_object_or_404
-from django.contrib import messages
+from django.shortcuts import redirect, get_object_or_404
 from django.contrib.auth import login, authenticate, logout
-from django.contrib.auth.forms import AuthenticationForm
 from django.contrib.auth.decorators import login_required
-from django.core.exceptions import ImproperlyConfigured
-from django.core.files.base import ContentFile
+from django.contrib.auth.hashers import check_password
 from django.core import serializers
 from django.core.serializers import serialize
-from django.http import JsonResponse, HttpResponse, HttpResponseForbidden
-from django.middleware.csrf import get_token
+from django.http import JsonResponse
 from django.conf import settings
-from django.urls import reverse
 from django.views.decorators.csrf import csrf_exempt
-from .otp import send_otp, create_otp
-from .jwt import generate_jwt, decode_jwt, token_user, set_jwt_token
+from .otp import create_otp
+from .jwt import generate_jwt, token_user, set_jwt_token
 from .models import Player, BlacklistedToken
-from .utils import set_picture_42, username_underscore, verify_user
-from datetime import datetime, timedelta
-import os
+from datetime import datetime
 import pyotp
 import requests
-import jwt
 import json
-import logging
 from collections import deque
 import asyncio
 
 matchmaking = deque()
-
 
 def register_view(request):
     if request.method == 'POST':
@@ -264,12 +254,6 @@ def auth_42_callback(request):
     return redirect('/log/')
 
 @login_required
-def delete_p(request):
-    user = token_user(request)
-    user.delete()
-
-
-@login_required
 def logout_view(request):
     if request.method == "POST":
         token = request.COOKIES.get('jwt')
@@ -282,6 +266,15 @@ def logout_view(request):
         return response
     return JsonResponse({'error': 'Invalid request method'}, status=405)
 
+
+
+
+
+@login_required
+def delete_p(request):
+    user = token_user(request)
+    user.delete()
+
 @login_required
 def delete_account(request):
     user = token_user(request)
@@ -290,16 +283,19 @@ def delete_account(request):
 
 def connected_user(request):
     user = token_user(request)
-    if user:
+    if user is not None:
         user_data = json.loads(serialize('json', [user]))[0]['fields']
         return JsonResponse(user_data, safe=True) 
-    else:
-        return JsonResponse({'msg': 'User not found'}, status=204)
+    return JsonResponse({'msg': 'User not found'}, status=204)
 
 def get_all_user(request):
     data = Player.objects.all()
     data = serializers.serialize('json', data)
     return JsonResponse(data, safe=False) 
+
+
+
+
 
 def enter_matchmaking(request):
     user = token_user(request)

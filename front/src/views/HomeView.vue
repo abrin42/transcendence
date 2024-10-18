@@ -10,6 +10,31 @@
 
     const router = useRouter();
 
+    onMounted(async () => {
+        await submitForm();
+    });
+
+    async function submitForm() {
+        try {
+            const response = await fetch('api/get_csrf_token/', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                credentials: 'include',
+            });
+            
+            if (!response.ok) {
+                throw new Error('Network response was not ok');
+            }
+            
+            const data = await response.json();
+            console.log('Response data:', data);
+            
+        } catch (error) {
+            console.error('Error during fetch operation:', error);
+        }
+    }
 
     var myVideo = document.getElementById('videoBG');
     myVideo.playbackRate = 1;

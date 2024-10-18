@@ -1,13 +1,12 @@
-from django.shortcuts import redirect, get_object_or_404
+from django.contrib.auth.decorators import login_required
+from django.shortcuts import get_object_or_404
 from django.conf import settings
 from django.core import serializers
-from django.core.serializers import serialize
-from django.http import JsonResponse, HttpResponse, HttpResponseForbidden
+from django.core.files.base import ContentFile
+from django.http import JsonResponse
 from .models import Player
 import os
-import json
 import requests
-from django.contrib.auth.decorators import login_required
 
 
 def username_underscore(request):

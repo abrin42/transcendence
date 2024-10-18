@@ -1,28 +1,9 @@
-from django.shortcuts import render, redirect, get_object_or_404
-from django.contrib import messages
-from django.contrib.auth import login, authenticate, logout
-from django.contrib.auth.forms import AuthenticationForm
 from django.contrib.auth.decorators import login_required
-from django.core import serializers
-from django.core.exceptions import ImproperlyConfigured
-from django.core.files.base import ContentFile
-from django.http import JsonResponse, HttpResponse, HttpResponseForbidden
-from django.middleware.csrf import get_token
+from django.http import JsonResponse
 from django.conf import settings
-from django.urls import reverse
 from django.views.decorators.csrf import csrf_exempt
-from .otp import send_otp, create_otp
-from .jwt import generate_jwt, decode_jwt, token_user, set_jwt_token
-from .forms import RegisterForm, ChangePasswordForm, UpdateForm
-from .models import Player, BlacklistedToken
-from .utils import set_picture_42, username_underscore, verify_user
-from datetime import datetime, timedelta
-import os
-import pyotp
-import requests
-import jwt
+from .jwt import token_user
 import json
-import logging
 import hashlib
 
 @login_required
@@ -116,6 +97,7 @@ def update_user(request):
 
     except json.JSONDecodeError:
         return JsonResponse({'error': 'Invalid request body'}, status=400)
+
 
 #####################################################
 #                   ANONYMIZATION                   #

@@ -32,18 +32,17 @@ ALLOWED_HOSTS = ["localhost", 'api',
 
 DATA_UPLOAD_MAX_MEMORY_SIZE = None
 
-CORS_ALLOW_ALL_ORIGINS = True
-CSRF_COOKIE_SAMESITE = 'None'
-CSRF_COOKIE_SECURE = False
 
-# CSRF settings
 CSRF_TRUSTED_ORIGINS = ['https://localhost:8443',
                         'https://10.11.1.11:8443',
                         'https://10.11.1.10:8443',]
 
+CSRF_COOKIE_HTTPONLY = False
+CSRF_COOKIE_SAMESITE = 'Lax'
+CSRF_COOKIE_SECURE = True
 
 
-
+CORS_ALLOW_ALL_ORIGINS = True
 #maybe enlever 8080
 CORS_ALLOWED_ORIGINS = [
     "http://localhost:8080", #a tej ?
@@ -67,7 +66,7 @@ INSTALLED_APPS = [
     'game',
     'channels',
     'corsheaders',
-    'api',
+    #'api',
     'rest_framework',
 ]
 

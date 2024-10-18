@@ -1,10 +1,7 @@
 import pyotp
 import vonage
-import smtplib
 import json
 from datetime import datetime, timedelta
-from email.mime.multipart import MIMEMultipart
-from email.mime.text import MIMEText
 from django.conf import settings
 from django.core.mail import send_mail
 

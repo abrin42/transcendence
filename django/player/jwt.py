@@ -1,15 +1,12 @@
 from django.conf import settings
-from django.contrib.auth import get_user_model
-from django.contrib.auth import login, authenticate, logout
 from django.http import JsonResponse
-from django.shortcuts import redirect
-from django.urls import reverse
+from django.utils.timezone import now
 from .models import BlacklistedToken, Player
 import jwt
 import datetime
-from django.utils import timezone
 
-User = get_user_model()
+
+#User = get_user_model()
 
 def update_user_zero():
     ano = Player.objects.filter(username='anonymous', email='cyberpong16@gmail.com')
@@ -46,18 +43,10 @@ def token_user(request):
     token = request.COOKIES.get('jwt')
     print(token)
     if not token:
-        JsonResponse({'valid': False, 'message': 'No token found'}, status=401)
-        print("No token")
         return None
     user = decode_jwt(token)
-    if user is None:
-        print("No user")
-        JsonResponse({'valid': False, 'message': 'Invalid or expired token'}, status=401)
+    if not user or user is None:
         return None
-    print(user)
-    print(f"(token_user) {user}")
-    # user.last_login = timezone.now()
-    # user.save()
     return user
 
 def set_jwt_token(response, token):
