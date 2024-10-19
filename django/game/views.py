@@ -27,6 +27,35 @@ def game(request):
 
 #     return (JsonResponse({'message': 'gameIDInfo', 'gameID': game.id}, status=200))
 
+
+def creat_game_local(request):
+    if request.method == 'POST':
+        try:
+            data = json.loads(request.body)
+            username1 = data.get('username1')
+            username2 = data.get('username2')
+            print("----username----")
+            print(username1)
+            print(username2)
+            player1 = get_object_or_404(Player, username=username1)
+            player2 = get_object_or_404(Player, username=username2)
+            print("----obj player----")
+            print(player1)
+            print(player2)
+            latest_game = Game.objects.create(state='waiting', player1=player1, scorep1=0, player2=player2, scorep2=0)
+            print("----obj game----")
+            print(latest_game)
+
+            serializer = GameSerializer(latest_game)
+            data = serializer.data
+            print("----serializer date ----")
+            print(data)
+            return JsonResponse(data, safe=False, content_type='application/json')
+        except json.JSONDecodeError:
+            return JsonResponse({'error': 'Invalid request body'}, status=400)
+    return JsonResponse({'error': 'Invalid request method'}, status=405)
+
+        
 def insertPlayer(request):
     if request.method == 'POST':
         try:
@@ -62,25 +91,27 @@ def insertPlayer(request):
 def update_game(request):
     if request.method == "POST":
         try:
-            latest_game = Game.objects.order_by('-id').first()
-            if not latest_game:
+            # game = Game.objects.order_by('-id').first()
+            data = json.loads(request.body)
+            id = data.get('id')
+            game = get_object_or_404(Game, id=id)
+            if not game:
                 return JsonResponse({'error': 'No game found to update.'}, status=404)
 
             #game_id = data.get('gameID')
             #print(game_id)
             #game = get_object_or_404(Game, id=game_id)
             
-            data = json.loads(request.body)
-            latest_game.mode = data.get('mode')
-            latest_game.scorep1 = data.get('scorep1')
-            latest_game.scorep2 = data.get('scorep2')
-            latest_game.save()
+            game.mode = data.get('mode')
+            game.scorep1 = data.get('scorep1')
+            game.scorep2 = data.get('scorep2')
+            game.save()
 
-            print(latest_game.scorep1)
-            print(latest_game.scorep2)
-            print(latest_game.mode)
-            print(latest_game.player1)
-            print(latest_game.player2)
+            print(game.scorep1)
+            print(game.scorep2)
+            print(game.mode)
+            print(game.player1)
+            print(game.player2)
             
             return JsonResponse({'message': 'Registration successful'}, status=200)
         except json.JSONDecodeError:

@@ -15,8 +15,8 @@
 
     onMounted(async () => {
         await getUser();
-        if (is_connected.value === false)
-            __goTo('/')
+        // if (is_connected.value === false)
+        //     __goTo('/')
     });
 
     ////////////////////////////////////////////////

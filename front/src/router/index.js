@@ -108,7 +108,7 @@ const router = createRouter({
       component: CyberRecapView
     },
     {
-      path: '/legacy',
+      path: '/legacy/:id',
       name: 'legacy',
       component: LegacyPongView
     },
@@ -118,7 +118,7 @@ const router = createRouter({
       component: legacy_remote
     },
     {
-      path: '/legacyrecap',
+      path: '/legacyrecap/:id',
       name: 'legacyrecap',
       component: LegacyRecapView
     },
