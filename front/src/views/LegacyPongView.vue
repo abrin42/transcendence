@@ -297,8 +297,24 @@ function sendMessage(msg) {
   }
 }
 
+let animationFrameId = null;
+
 onUnmounted(() => {
   updateGameInfo();
+  document.removeEventListener("keydown", movePlayer1up);
+  document.removeEventListener("keydown", movePlayer1down);
+  document.removeEventListener("keydown", movePlayer2up);
+  document.removeEventListener("keydown", movePlayer2down);
+  document.removeEventListener("keydown", muteSound);
+  document.removeEventListener('keyup', stopPlayer);
+  moveInterval1up = null;
+  moveInterval1down = null;
+  moveInterval2up = null;
+  moveInterval2down = null;
+  if (animationFrameId) {
+    cancelAnimationFrame(animationFrameId);
+    animationFrameId = null;
+  }
   if (socket.value) {
     socket.value.close();
   }
@@ -316,7 +332,7 @@ onMounted(async () => {
 
   context.fillStyle = "white";
   context.fillRect(player1.x, player1.y, player1.width, player1.height);
-  requestAnimationFrame(update); // Gameloop
+  animationFrameId = requestAnimationFrame(update); // Gameloop
   document.addEventListener("keydown", movePlayer1up);
   document.addEventListener("keydown", movePlayer1down);
   document.addEventListener("keydown", movePlayer2up);
@@ -327,7 +343,8 @@ onMounted(async () => {
 
     function update() 
     {
-        requestAnimationFrame(update);
+        console.log("boucle game update");
+        animationFrameId = requestAnimationFrame(update);
         console.log();
         context.clearRect(0, 0, board.width, board.height); // clear rectangle after movement (remove previous paddle position)
         context.fillRect(player1.x, player1.y, player1.width, player1.height); 
@@ -453,22 +470,22 @@ onMounted(async () => {
 
 
     function stopPlayer(e) {
-      if (e.code == "KeyW")
+      if (e.code == moveUpP1)
       {  
         clearInterval(moveInterval1up);
         moveInterval1up = null;
       }
-      else if(e.code == "KeyS")
+      else if(e.code == moveDownP1)
       {
         clearInterval(moveInterval1down);
         moveInterval1down = null;
       }
-      else if (e.code == "ArrowUp")
+      else if (e.code == moveUpP2)
       {  
         clearInterval(moveInterval2up);
         moveInterval2up = null;
       }
-      else if (e.code == "ArrowDown")
+      else if (e.code == moveDownP2)
       {
         clearInterval(moveInterval2down);
         moveInterval2down = null;
