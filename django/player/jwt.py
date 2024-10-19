@@ -26,18 +26,18 @@ def generate_jwt(user):
 
 def decode_jwt(token):
     if BlacklistedToken.objects.filter(token=token).exists():
-        return {'error': 'Token is blacklisted'}
+        return None
     
     try:
         payload = jwt.decode(token, settings.JWT_SECRET_KEY, algorithms=['HS256'])
         user = Player.objects.get(id=payload['user_id'])
         return user
     except jwt.ExpiredSignatureError:
-        return {'error': 'Token has expired'}
+        return None
     except jwt.DecodeError:
-        return {'error': 'Token is invalid'}
+        return None
     except Player.DoesNotExist:
-        return {'error': 'User not found'}
+        return None
 
 def token_user(request):
     token = request.COOKIES.get('jwt')
@@ -45,6 +45,7 @@ def token_user(request):
     if not token:
         return None
     user = decode_jwt(token)
+    print(user)
     if not user or user is None:
         return None
     return user
