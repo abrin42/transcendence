@@ -4,6 +4,7 @@
     "login": "To",
     "my_account": "Ner Solegot", 
     "friends": "Burc'yase",
+    "leaderboard": "Jatnese be te jatnese verda",
     "logout": "Ba'slanar",
 
     "my_friends": "Ner Burc'yase",
@@ -60,6 +61,17 @@
     "play": "Geroya",
     "credits": "Waadas",
 
+    "LEADERBOARD": "JATNESE BE TE JATNESE VERDA",
+    "win_rate": "Tion'solet be parjaise",
+    "loose_rate": "Tion'solet be rohake",
+    "victories": "Parjaise",
+    "defeats": "Rohake",
+    "games": "Geroyase",
+    "last_games": "Kyr'yc geroyase",
+    "no_games_to_display": "Naasad nu'ruug'la geroyase haa'taylyc.",
+
+    "RANK": "RANK",
+    
     "home": "Yaim",
     "play_again": "Geroya tug'yc",
     "congratulations": "K'oyacyi!",
@@ -70,7 +82,7 @@
     "enter_username": "Ke miit'gaanar gar gai",
     
     "solo": "Solus",
-    "multiplayer": "Birov verde",
+    "multiplayer": "Birov verda",
 
     "local": "Yaim'la",
     "online": "O'r briik",
@@ -99,6 +111,8 @@
 
     "to_pause_unpause": "par Gev/Slanar",
     "to_mute_unmute": "par Hokaanir/Goorar kaab",
-    
-    "leaderboard2": "Verd'la"
+
+    "add_participants": "Majycir verda",
+    "name_of_participant": "Ika be verd",
+    "validate_participants": "Vorer verda"
 }

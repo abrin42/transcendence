@@ -133,11 +133,6 @@ const router = createRouter({
       component: TwoFaView
     },
     {
-      path: '/matchmaking',
-      name: 'matchmaking',
-      component: MatchmakingView
-    },
-    {
       // path: '/leaderboard', // for testing front end
       path: '/leaderboard/:username',
       name: 'leaderboard',

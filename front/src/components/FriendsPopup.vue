@@ -156,7 +156,7 @@ async function getFriendsRequest() {
              friendRequests.value.push(obj);
          }
     } catch (error) {
-        console.error('Error retrieving user data:', error);
+        console.error('Error retrieving user data /getFriendsRequest:', error);
     }
 }
 
@@ -216,7 +216,7 @@ function declineRequest(id) {
     console.log('Demande d\'ami refusée pour ID:', id);
 }
 
-// const allPlayers = ref([]);
+//const allPlayers = ref([]);
 
 async function getAllUsers() {
     try {
@@ -224,7 +224,7 @@ async function getAllUsers() {
             method: 'GET',
         });
         if (!response.ok) {
-            throw new Error(`HTTP error! Status: ${response.status}`);
+            return;
         }
         const users = await response.json();
         if (users.data) {
@@ -232,8 +232,8 @@ async function getAllUsers() {
             userData.forEach((element) => {
                 var obj = {}
                 obj['username'] = element.fields.username;
-                obj['last_login'] =  element.fields.last_login;
                 obj['nickname'] = element.fields.nickname;
+                obj['last_login'] =  element.fields.last_login;
 
                 obj['rank'] = element.fields.rank;
                 obj['win'] = element.fields.win;
@@ -243,7 +243,7 @@ async function getAllUsers() {
             console.log("all user", allPlayers._rawValue)
         }
     } catch (error) {
-        console.error('Error retrieving user data:', error);
+        console.error('Error retrieving user data /getAllUsers:', error);
     }
 }
 
@@ -254,7 +254,7 @@ async function getFriends() {
         });
 
         if (!response.ok) {
-            throw new Error(`HTTP error! Status: ${response.status}`);
+            return;
         }
         const users = await response.json();
         let users_data = JSON.parse(users)
@@ -278,7 +278,7 @@ async function getFriends() {
             friends.value.push(obj);
         }
     } catch (error) {
-        console.error('Error retrieving user data:', error);
+        console.error('Error retrieving user data /getFriends:', error);
     }
 }
 
@@ -304,7 +304,7 @@ async function deleteFriend(playerUsername) {
             })
         });
         if (!response.ok) {
-            throw new Error(`HTTP error! Status: ${response.status}`);
+            return;
         }
         friends.value = friends.value.filter(request => request.username !== playerUsername);
     } catch (error) {

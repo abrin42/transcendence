@@ -1,13 +1,12 @@
-from django.shortcuts import redirect, get_object_or_404
+from django.contrib.auth.decorators import login_required
+from django.shortcuts import get_object_or_404
 from django.conf import settings
 from django.core import serializers
-from django.core.serializers import serialize
-from django.http import JsonResponse, HttpResponse, HttpResponseForbidden
+from django.core.files.base import ContentFile
+from django.http import JsonResponse
 from .models import Player
 import os
-import json
 import requests
-from django.contrib.auth.decorators import login_required
 
 
 def username_underscore(request):
@@ -30,14 +29,6 @@ def set_picture_42(request, user, profile_picture):
             user.profile_picture.save(picture_name, ContentFile(response.content), save=True)
     else:
         print(f"Failed to fetch profile picture, status code: {response.status_code}")
-
-def is_auth(request):
-    player = verify_user(request)
-    print(player)
-    if player:
-        player_data = serializers.serialize('json', [player])
-    player_data = json.dumps({'error': 'User not found'})
-    return JsonResponse({'player_data': player_data}, content_type='application/json')
 
 @login_required
 def verify_user(request):

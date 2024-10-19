@@ -37,7 +37,6 @@ class PongConsumer(AsyncWebsocketConsumer):
                 self.ball_last_direction = 1
             await self.ai_get_future_position()
             self.random_paddle_pos = random.random() * 1000 % self.paddle_height
-            # await self.sendinfo_back("random",self.random_paddle_pos, 0)
 
     async def ai_back_to_center(self):
         if (self.ball_last_direction == -1):

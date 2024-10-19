@@ -4,6 +4,7 @@
     "login": "Login",
     "my_account": "Il Mio Account",
     "friends": "Gli Amici",
+    "leaderboard": "Classifica",
     "logout": "Disconnessione",
 
     "my_friends": "I Miei Amici",
@@ -60,6 +61,17 @@
     "play": "Giocare",
     "credits": "Ringraziamenti",
 
+    "LEADERBOARD": "CLASSIFICA",
+    "win_rate": "Tasso di vincita",
+    "loose_rate": "Tasso di sconfitta",
+    "victories": "Vittorie",
+    "defeats": "Sconfitte",
+    "games": "Partite",
+    "last_games": "Ultime partite",
+    "no_games_to_display": "Non ci sono giochi recenti da visualizzare.",
+
+    "RANK": "RANK",
+    
     "home": "Casa",
     "play_again": "Riproduzione",
     "congratulations": "Congratulazioni!",
@@ -99,6 +111,8 @@
 
     "to_pause_unpause": "per mettere in pausa/disattivare",
     "to_mute_unmute": "per silenziare/disattivare",
-    
-    "leaderboard2": "Classifica"
+
+    "add_participants": "Aggiungi partecipanti",
+    "name_of_participant": "Nome del partecipante",
+    "validate_participants": "Convalidare i partecipanti"
 }

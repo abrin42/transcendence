@@ -4,6 +4,7 @@
     "login": "Anmelden",
     "my_account": "Mein Konto",
     "friends": "Freunde",
+    "leaderboard": "Bestenliste",
     "logout": "Sich Abmelden",
 
     "my_friends": "Meine Freunde",
@@ -60,6 +61,17 @@
     "play": "Spielen",
     "credits": "Danksagung",
 
+    "LEADERBOARD": "BESTENLISTE",
+    "win_rate": "Gewinnrate",
+    "loose_rate": "Rate der Niederlagen",
+    "victories": "Siege",
+    "defeats": "Besiegt",
+    "games": "Spiele",
+    "last_games": "Letzte Spiele",
+    "no_games_to_display": "Es werden keine aktuellen Spiele angezeigt.",
+
+    "RANK": "RANK",
+    
     "home": "Startseite",
     "play_again": "Erneut spielen",
     "congratulations": "Herzlichen Glückwunsch!",
@@ -99,6 +111,8 @@
 
     "to_pause_unpause": "zu Pause/Unterbrechung",
     "to_mute_unmute": "Stummschalten/Stummschaltung aufheben",
-    
-    "leaderboard2": "Bestenliste"
+
+    "add_participants": "Teilnehmer hinzufügen",
+    "name_of_participant": "Name des Teilnehmers",
+    "validate_participants": "Teilnehmer validieren"
 }

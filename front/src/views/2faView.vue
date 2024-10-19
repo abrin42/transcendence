@@ -164,7 +164,7 @@
             alert('An error occurred during TFA setup');
         }
     }
-    function resendCode() {
+    function resendCode(method) {
         choose_tfa(method);
         alert('Resend code!');
     }
@@ -191,10 +191,10 @@
         </div>
 
         <Popup v-if="showPhonePopup" @close="closePopup">
-            <h2 class="__title-popup">{{ $t('phone_authentication') }}</h2>
+            <h2 class="__title-popup">{{  $t('phone_authentication') }}</h2>
             <p>{{ $t('enter_sms') }}</p>
             <Input iconClass="fa-shield" :placeholderText="$t('enter_your_code')" v-model="code" />
-            <button class="button __button-send-code" @click="resendCode">
+            <button class="button __button-send-code" @click="resendCode('sms')">
                 <span>{{ $t('resend_the_code') }}</span>
             </button>
             <button class="button __button-next" @click="handleNext">
@@ -206,7 +206,7 @@
             <h2 class="__title-popup">{{ $t('email_authentication') }}</h2>
             <p>{{ $t('enter_mail') }}</p>
             <Input iconClass="fa-shield" :placeholderText="$t('enter_your_code')" v-model="code" />
-            <button class="button __button-send-code" @click="resendCode">
+            <button class="button __button-send-code" @click="resendCode('email')">
                 <span>{{ $t('resend_the_code') }}</span>
             </button>
             <button class="button __button-next" @click="handleNext">

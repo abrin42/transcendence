@@ -1,29 +1,19 @@
-from django.shortcuts import render, redirect, get_object_or_404
-from django.contrib import messages
+from django.shortcuts import redirect, get_object_or_404
 from django.contrib.auth import login, authenticate, logout
-from django.contrib.auth.forms import AuthenticationForm
 from django.contrib.auth.decorators import login_required
-from django.core.exceptions import ImproperlyConfigured
-from django.core.files.base import ContentFile
+from django.contrib.auth.hashers import check_password
 from django.core import serializers
 from django.core.serializers import serialize
-from django.http import JsonResponse, HttpResponse, HttpResponseForbidden
-from django.middleware.csrf import get_token
+from django.http import JsonResponse
 from django.conf import settings
-from django.urls import reverse
 from django.views.decorators.csrf import csrf_exempt
-from .otp import send_otp, create_otp
-from .jwt import generate_jwt, decode_jwt, token_user, set_jwt_token
-from .forms import RegisterForm, ChangePasswordForm, UpdateForm
+from .otp import create_otp
+from .jwt import generate_jwt, token_user, set_jwt_token
 from .models import Player, BlacklistedToken
-from .utils import set_picture_42, username_underscore, verify_user
-from datetime import datetime, timedelta
-import os
+from datetime import datetime
 import pyotp
 import requests
-import jwt
 import json
-import logging
 from collections import deque
 import asyncio
 
@@ -59,6 +49,8 @@ def register_view(request):
             print(user.password)
             authenticated_user = authenticate(username=user.username, password=password)
             if authenticated_user:
+                set_user_keys(user)
+            
                 login(request, authenticated_user)
                 authenticated_user.nickname = user.username[1:]  # Remove leading underscore
                 authenticated_user.save()
@@ -78,6 +70,14 @@ def register_view(request):
 
     return JsonResponse({'error': 'Méthode non autorisée.'}, status=405)
 
+def set_user_keys(user):
+    user.player1Up = 'KeyW'
+    user.player1Down = 'KeyS'
+    user.player2Up = 'ArrowUp'
+    user.player2Down = 'ArrowDown'
+    user.pause = 'KeyP'
+    user.mute = 'KeyM'
+    user.save()
 
 def login_view(request):
     if request.method != "POST":
@@ -92,11 +92,10 @@ def login_view(request):
             return JsonResponse({'error': 'Username and password required'}, status=400)
 
         player = get_object_or_404(Player, username=username)
-        if not player:
+        if not check_password(password, player.password):
             return JsonResponse({'error': 'Invalid username or password'}, status=401)
-
+        
         print(f'username: {player.username}, email_2fa_active: {player.email_2fa_active}')
-
         login(request, player)
 
         if not player.email_2fa_active and not player.sms_2fa_active:
@@ -116,7 +115,7 @@ def login_view(request):
         player_data = serializers.serialize('json', [player])
         return JsonResponse({
             'player_data': player_data,
-            'redirect_url': '/2fa/'
+            'redirect_url': '/2fa'
         }, content_type='application/json')
 
     except json.JSONDecodeError:
@@ -135,6 +134,7 @@ def tfa_view(request):
     if request.method == "POST":
         try:
             user = get_object_or_404(Player, username=request.user.username)
+            print(f"2fa user: {user}")
             create_otp(request, user)
             return JsonResponse({'message': 'Code sent successfully', 'redirect_url': '/2fa'}, status=200)
         except Player.DoesNotExist:
@@ -240,10 +240,11 @@ def auth_42_callback(request):
     
     if user is not None:
         user.student = True
-        user.nickname = user.username
-        user.save()
-        #if profile_picture: 
+        if user.nickname is None:
+            user.nickname = user.username
+        #if profile_picture and user.profile_picture is None: 
         #    set_picture_42(request, user, profile_picture)
+        user.save()
         token = generate_jwt(user)
         response = redirect('/')
         set_jwt_token(response, token)
@@ -251,60 +252,6 @@ def auth_42_callback(request):
         user = token_user(request)
         return response
     return redirect('/log/')
-
-
-@login_required
-def account_view(request):
-    user = token_user(request)
-    if user is None: 
-        return redirect(reverse('player:login'))
-
-    if request.method == 'POST':
-        email_2fa_active = 'email_2fa_active' in request.POST
-        sms_2fa_active = 'sms_2fa_active' in request.POST
-
-        user.email_2fa_active = email_2fa_active
-        if user.phone_number:
-            user.sms_2fa_active = sms_2fa_active
-        user.save()
-    return render(request, 'player/account.html', {'user': user})
-
-@login_required
-def update_view(request):
-    user = token_user(request)
-    if user is None: 
-        return redirect(reverse('player:login'))
-    if request.method == 'POST':
-        form = UpdateForm(request.POST, request.FILES, instance=user)
-        if form.is_valid():
-            form.save()
-            return redirect('/api/player/account/')
-    else:
-        form = UpdateForm(instance=user)
-    return render(request, 'player/update.html', {'form': form})
-
-@login_required
-def update_password_view(request):
-    user = token_user(request)
-    if user is None: 
-        return redirect(reverse('player:login'))
-
-    if request.method == 'POST':
-        form = ChangePasswordForm(user, request.POST)
-        if form.is_valid():
-            form.save()
-            login(request, user)
-            return redirect('/api/player/account/')
-        else:
-            return render(request, 'player/update_password.html', {"form": form})
-    else:
-        form = ChangePasswordForm(user)
-        return render(request, 'player/update_password.html', {"form": form})
-
-@login_required
-def delete_p(request):
-    user = token_user(request)
-    user.delete()
 
 @login_required
 def logout_view(request):
@@ -319,28 +266,36 @@ def logout_view(request):
         return response
     return JsonResponse({'error': 'Invalid request method'}, status=405)
 
+
+
+
+
+@login_required
+def delete_p(request):
+    user = token_user(request)
+    user.delete()
+
 @login_required
 def delete_account(request):
     user = token_user(request)
     user.delete()
     return JsonResponse({'redirect_url': '/log'}, status=200)
-    # if user is None: 
-        # return redirect(reverse('player:login'))
-    # return render(request, 'player/delete_account.html')
 
-@login_required
 def connected_user(request):
     user = token_user(request)
-    if user:
+    if user is not None:
         user_data = json.loads(serialize('json', [user]))[0]['fields']
         return JsonResponse(user_data, safe=True) 
-    else:
-        return JsonResponse({'error': 'User not found'}, status=404)
+    return JsonResponse({'msg': 'User not found'}, status=204)
 
 def get_all_user(request):
     data = Player.objects.all()
     data = serializers.serialize('json', data)
     return JsonResponse(data, safe=False) 
+
+
+
+
 
 def enter_matchmaking(request):
     user = token_user(request)
@@ -356,15 +311,11 @@ def quit_matchmaking(request):
     matchmaking.remove(user)
     return JsonResponse({'redirect_url': '/'}, status=302)
 
-
-#quand les 2 sont trouvé on lance la partie sinon on attend 0.5s et relance la page matchma 
 async def get_match(request):
     if len(matchmaking) >= 2:
         data = matchmaking[0]
         data.append(matchmaking[1])
-        #creatgame(data)
         data = serializers.serialize('json', data)
-        #return HttpResponse(data, content_type='application/json')
         return JsonResponse(data, safe=False, content_type='application/json')
 
     await asyncio.sleep(0.5)

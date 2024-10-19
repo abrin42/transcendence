@@ -134,7 +134,7 @@ async function getAllUsers() {
             });
         }
     } catch (error) {
-        console.error('Error retrieving user data:', error);
+        console.error('Error retrieving user data /Leaderboard:', error);
     }
 }
 
@@ -152,7 +152,7 @@ onMounted(async () => {
         <div id="wrapper">
             <CreateBackButton />
             <CreateDropupButton />
-            <h2 class="category-title">LEADERBOARD</h2>
+            <h2 class="category-title">{{ $t('LEADERBOARD') }}</h2>
             <div class="leaderboardContainer">
                 <div class="latestGame">
                     <div v-if="lengthOfAllPlayers() > 0">
@@ -166,12 +166,12 @@ onMounted(async () => {
                                     <i v-if="index < 3" class="fa-solid fa-trophy trophy-icon"></i>
                                 </span>
                                 <!-- Utilisez la méthode formatPoints ici -->
-                                <div class="points-right">{{ formatPoints(game.rank) }} RANK</div>
+                                <div class="points-right">{{ formatPoints(game.rank) }} {{ $t('RANK') }}</div>
                             </button>
                         </div>
                     </div>
                     <div class="game-info" v-else>
-                        <p>Aucune partie récente à afficher.</p>
+                        <p>{{ $t('no_games_to_display') }}</p>
                     </div>
                 </div>
             </div>

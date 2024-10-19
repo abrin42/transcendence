@@ -6,8 +6,7 @@
           <canvas id ="board" data-glow></canvas>
         </div>
         <div>
-          <h2 id="pause">[P] to Pause/Unpause</h2>
-          <h2 id="mute">[M] to Mute/Unmute</h2>
+          <h2 id="mute">[{{ userAccount.mute }}] to Mute/Unmute</h2>
         </div>
       </div>
     </div>
@@ -19,12 +18,6 @@ body {
   text-align: center;
 }
 
-#pause {
-  color: rgb(114, 114, 114);
-  font-size: 25px;
-  left: 20%;
-  top: 70%;
-}
 
 #mute {
   color: rgb(114, 114, 114);
@@ -61,11 +54,11 @@ import wallHitSound from '../assets/wall_hit.mp3'
   import { useUser } from '../useUser.js'; 
   const { getUser, userAccount, is_connected } = useUser(); 
 
-  onMounted(async () => {
-      await getUser();
-      if (is_connected.value === false)
-        __goTo('/')
-  });
+  // onMounted(async () => {
+  //     await getUser();
+  //     if (is_connected.value === false)
+  //       __goTo('/')
+  // });
 
   ////////////////////////////////////////////////
   ////////////////////////////////////////////////
@@ -291,18 +284,12 @@ function connectWebSocket() {
 }
 
 function sendMessage(msg) {
-  // console.log(msg);
   if (socket.value && socket.value.readyState === WebSocket.OPEN) 
   {
-    // console.log("---SEND MESSAGE---");
-    // console.log(msg.type);
-    // console.log(msg.player);
-    // console.log(msg.posPad);
     socket.value.send(JSON.stringify({
       'type': msg.type,
       'player': msg.player,
     }));
-    // console.log("---END SEND MESSAGE---");
   }
   else 
   {
@@ -317,9 +304,12 @@ onUnmounted(() => {
   }
 });
 
-onMounted(() => {
+onMounted(async () => {
+      await getUser();
+      if (is_connected.value === false)
+        __goTo('/')
   connectWebSocket();
-  board = document.getElementById("board"); //link board element in template to board variable
+  board = document.getElementById("board");
   board.height = boardHeight;
   board.width = boardWidth;
   context = board.getContext("2d"); //Drawing on board
@@ -332,8 +322,6 @@ onMounted(() => {
   document.addEventListener("keydown", movePlayer2up);
   document.addEventListener("keydown", movePlayer2down);
   document.addEventListener("keydown", muteSound);
-  document.addEventListener("keydown", pauseGame);
-  //document.addEventListener("keydown", surpriiise);
   document.addEventListener('keyup', stopPlayer);
 });
 
@@ -367,10 +355,9 @@ onMounted(() => {
     /////Game controls//////
     let moveUpP1 = "KeyW";
     let moveDownP1 = "KeyS";
-    let moveUpP2 = "ArrowUp";
-    let moveDownP2 = "ArrowDown";
-    let pause = "KeyP";
-    let mute = "KeyM";
+    let moveUpP2 = "KeyE";
+    let moveDownP2 = "KeyD";
+    let mute = userAccount.mute;
 
     function movePlayer1up(e)
     {
@@ -454,19 +441,6 @@ onMounted(() => {
       }
     }
 
-    function pauseGame(e)
-    {
-      if (e.code == pause)
-      {
-        const message = 
-            {
-              type: "pause",
-              player: "2",
-            };
-            sendMessage(message);        
-      }
-    }
-
     function muteSound(e)
     {
       if (e.code == mute)
@@ -477,13 +451,6 @@ onMounted(() => {
       }
     }
 
-    function surpriiise(e)
-    {
-      if (e.code == "KeyC")
-      {
-        // A faire plus tard
-      }
-    }
 
     function stopPlayer(e) {
       if (e.code == "KeyW")

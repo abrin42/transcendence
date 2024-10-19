@@ -1,15 +1,12 @@
 from django.conf import settings
-from django.contrib.auth import get_user_model
-from django.contrib.auth import login, authenticate, logout
 from django.http import JsonResponse
-from django.shortcuts import redirect
-from django.urls import reverse
+from django.utils.timezone import now
 from .models import BlacklistedToken, Player
 import jwt
 import datetime
-from django.utils import timezone
 
-User = get_user_model()
+
+#User = get_user_model()
 
 def update_user_zero():
     ano = Player.objects.filter(username='anonymous', email='cyberpong16@gmail.com')
@@ -29,35 +26,28 @@ def generate_jwt(user):
 
 def decode_jwt(token):
     if BlacklistedToken.objects.filter(token=token).exists():
-        return {'error': 'Token is blacklisted'}
+        return None
     
     try:
         payload = jwt.decode(token, settings.JWT_SECRET_KEY, algorithms=['HS256'])
         user = Player.objects.get(id=payload['user_id'])
         return user
     except jwt.ExpiredSignatureError:
-        return {'error': 'Token has expired'}
+        return None
     except jwt.DecodeError:
-        return {'error': 'Token is invalid'}
+        return None
     except Player.DoesNotExist:
-        return {'error': 'User not found'}
+        return None
 
 def token_user(request):
     token = request.COOKIES.get('jwt')
     print(token)
     if not token:
-        JsonResponse({'valid': False, 'message': 'No token found'}, status=401)
-        print("No token")
         return None
     user = decode_jwt(token)
-    if user is None:
-        print("No user")
-        JsonResponse({'valid': False, 'message': 'Invalid or expired token'}, status=401)
-        return None
     print(user)
-    print(f"(token_user) {user}")
-    # user.last_login = timezone.now()
-    # user.save()
+    if not user or user is None:
+        return None
     return user
 
 def set_jwt_token(response, token):

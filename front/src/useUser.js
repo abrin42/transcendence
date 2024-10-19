@@ -4,51 +4,32 @@ import { onMounted } from 'vue';
 import { ref, reactive } from 'vue';
 
 export function useUser() {
+    const router = useRouter();
+    
     const is_connected = ref(false);
     const userAccount = reactive({
-        date_joined: "",
+        username: "",
+        nickname: "",
+        phone_number: "",
         email: "",
+        password: "",
         email_2fa_active: "",
         sms_2fa_active: "",
-        nickname: "",
-        password: "",
+        profilePicture: "",
         student:"",
         language:"",
-        phone_number: "",
-        profilePicture: "",
+        date_joined: "",
         rank: "",
-        username: "",
         lose: "",
         win: "",
+        player1Up: "KeyW",
+        player1Down: "KeyS",
+        player2Up: "ArrowUp",
+        player2Down: "ArrowDown",
+        pause: "KeyP",
+        mute: "KeyM",
+        anonymized: "",
     });
-
-    const router = useRouter();
-
-    onMounted(async () => {
-        await submitForm();
-    });
-
-    async function submitForm() {
-    try {
-        const response = await fetch('api/test-csrf/', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            credentials: 'include',
-        });
-        
-        if (!response.ok) {
-            throw new Error('Network response was not ok');
-        }
-        
-        const data = await response.json();
-        console.log('Response data:', data);
-        
-    } catch (error) {
-        console.error('Error during fetch operation:', error);
-    }
-}
 
     function updateUserAccount(user) {
         userAccount.nickname = user.nickname;
@@ -61,19 +42,11 @@ export function useUser() {
         userAccount.student = user.student;
         userAccount.language = user.language;
         userAccount.profilePicture = user.profile_picture;
+        userAccount.anonymized = user.anonymized;
+        
         userAccount.win = user.win;
         userAccount.lose = user.lose;
         userAccount.rank = user.rank;
-        // console.log("updateUserAccount.nickname: " + userAccount.nickname);
-        // console.log("updateUserAccount.username: " + userAccount.username);
-        // console.log("updateUserAccount.email: " + userAccount.email);
-        // console.log("updateUserAccount.password: " + userAccount.password);
-        // console.log("updateUserAccount.phone_number: " + userAccount.phone_number);
-        // console.log("updateUserAccount.email_2fa_active: " + userAccount.email_2fa_active);
-        // console.log("updateUserAccount.sms_2fa_active: " + userAccount.sms_2fa_active);
-        // console.log("updateUserAccount.student: " + userAccount.student);
-        // console.log("updateUserAccount.language: " + userAccount.language);
-        //console.log("updateUserAccount.profilePicture: " + userAccount.profilePicture);
 
         userAccount.player1Up = user.player1Up;
         userAccount.player1Down = user.player1Down;
@@ -91,41 +64,33 @@ export function useUser() {
         console.log("updateUserAccount.sms_2fa_active: " + userAccount.sms_2fa_active);
         console.log("updateUserAccount.student: " + userAccount.student);
         console.log("updateUserAccount.language: " + userAccount.language);
+
+        console.log("updateUserAccount.mute: " + userAccount.mute);
+        console.log("updateUserAccount.player1Up: " + userAccount.player1Up);
     }
 
     async function getUser() {
         try {
             const response = await fetch(`api/player/connected_user/`, {
                 method: 'GET',
-                //credentials: 'include',
+                credentials: 'include',
             });
-    
-            if (!response.ok) {
-                console.warn(`HTTP error! Status: ${response.status}`);
-                const text = await response.text();  // Try to log the raw HTML response
-                console.error('Response text:', text);
+            if (response.status == 204) {
                 is_connected.value = false;
                 return;
             }
-    
-            let user_data;
-            try {
-                user_data = await response.json();
-            } catch (jsonError) {
-                console.error('Invalid JSON response:', jsonError);
-                is_connected.value = false;
-                return;
-            }
-    
-            if (user_data && user_data.is_active) {
-                updateUserAccount(user_data);
+            const user = await response.json();
+            if (user && !user.error) {
+                updateUserAccount(user);
+                console.log("updateuser ok")
                 is_connected.value = true;
+                console.log("is_connected.value: " + is_connected.value)
             } else {
-                console.log('User is inactive or not found.');
+                console.log('No user data retrieved.');
                 is_connected.value = false;
             }
         } catch (error) {
-            console.error('Error retrieving user data:', error);
+            console.error('Error retrieving user data /useUser:', error);
             is_connected.value = false;
         }
     }

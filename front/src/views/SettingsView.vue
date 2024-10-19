@@ -25,14 +25,14 @@
     router.push(page);
     }
 
-    const keys = reactive({
-        player1Up: 'W',
-        player1Down: 'S',
-        player2Up: 'ArrowUp',
-        player2Down: 'ArrowDown',
-        pause: 'P',
-        mute: 'M',
-    });
+    const keys = {
+        player1Up: userAccount.player1Up,
+        player1Down: userAccount.player1Down,
+        player2Up: userAccount.player2Up,
+        player2Down: userAccount.player2Down,
+        pause: userAccount.pause,
+        mute: userAccount.mute,
+    };
 
     async function update_keys() {
     try {
@@ -61,7 +61,7 @@
         
     } catch (error) {
         console.error('Could not change', error);
-        alert('An error occurred during login.');
+        alert('An error occurred during updating keys.');
     }
 }
 
@@ -88,12 +88,12 @@
             return;
         }
         if (
-            (selectedKey.value === 'player1Down' && newKey === keys.player1Up) ||
-            (selectedKey.value === 'player1Up' && newKey === keys.player1Down) ||
-            (selectedKey.value === 'player2Down' && newKey === keys.player2Up) ||
-            (selectedKey.value === 'player2Up' && newKey === keys.player2Down) ||
-            (selectedKey.value === 'pause' && newKey === keys.pause) ||
-            (selectedKey.value === 'mute' && newKey === keys.mute)
+            (selectedKey.value === 'player1Down' && newKey === userAccount.player1Up) ||
+            (selectedKey.value === 'player1Up' && newKey === userAccount.player1Down) ||
+            (selectedKey.value === 'player2Down' && newKey === userAccount.player2Up) ||
+            (selectedKey.value === 'player2Up' && newKey === userAccount.player2Down) ||
+            (selectedKey.value === 'pause' && newKey === userAccount.pause) ||
+            (selectedKey.value === 'mute' && newKey === userAccount.mute)
         ) {
             alert('The same player cannot use the same key for left and right.');
             return;
@@ -142,7 +142,6 @@
                     <span>{{ $t('player') }} 1 - {{ $t('DOWN') }}</span>
                     <span>{{ $t('player') }} 2 - {{ $t('UP') }}</span>
                     <span>{{ $t('player') }} 2 - {{ $t('DOWN') }}</span>
-                    <span>{{ $t('PAUSE_GAME') }}</span>
                     <span>{{ $t('MUTE_SOUND') }}</span>
                 </div>
                 <div class="buttonContainer">
@@ -157,9 +156,6 @@
                     </button>
                     <button id="bouton-touche" class="button" @click="changeKey('player2Down')">
                         <span class="buttonText">{{ keys.player2Down }}</span>
-                    </button>
-                    <button id="bouton-touche" class="button" @click="changeKey('pause')">
-                        <span class="buttonText">{{ keys.pause }}</span>
                     </button>
                     <button id="bouton-touche" class="button" @click="changeKey('mute')">
                         <span class="buttonText">{{ keys.mute }}</span>

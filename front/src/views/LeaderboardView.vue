@@ -98,7 +98,7 @@ const playerWinLoss = ref(playerStats.value.getStats());
             <CreateBackButton />
             <CreateDropupButton />
 
-            <h2 class="category-title">LEADERBOARD</h2>
+            <h2 class="category-title">{{ $t('LEADERBOARD') }}</h2>
             <div class="leaderbaordContainer">
                 <div>
                     <button class="button">
@@ -114,9 +114,9 @@ const playerWinLoss = ref(playerStats.value.getStats());
                 <!-- Section des statistiques stylisée -->
                 <div class="stats-grid">
                     <div class="stat-row">
-                        <div class="category-title stat-col">Win rate</div>
-                        <div class="category-title stat-col">Rank</div>
-                        <div class="category-title stat-col">Loose rate</div>
+                        <div class="category-title stat-col">{{ $t('win_rate') }}</div>
+                        <div class="category-title stat-col">{{ $t('rank') }}</div>
+                        <div class="category-title stat-col">{{ $t('loose_rate') }}</div>
                     </div>
                     <div class="stat-row">
                         <div class="stat-col">{{ playerWinLoss.winRate }}%</div>
@@ -124,9 +124,9 @@ const playerWinLoss = ref(playerStats.value.getStats());
                         <div class="stat-col">{{ playerWinLoss.looseRate }}%</div>
                     </div>
                     <div class="stat-row">
-                        <div class="category-title stat-col">Victory</div>
-                        <div class="category-title stat-col">Defeats</div>
-                        <div class="category-title stat-col">Game</div>
+                        <div class="category-title stat-col">{{ $t('victories') }}</div>
+                        <div class="category-title stat-col">{{ $t('defeats') }}</div>
+                        <div class="category-title stat-col">{{ $t('games') }}</div>
                     </div>
                     <div class="stat-row">
                         <div class="stat-col">{{ playerWinLoss.wins }}</div>
@@ -137,7 +137,7 @@ const playerWinLoss = ref(playerStats.value.getStats());
 
                 <!-- Dernières parties -->
                 <div class="latestGame">
-                    <span class="category-title latestGameTitle">Dernières parties</span>
+                    <span class="category-title latestGameTitle">{{ $t('last_games') }}</span>
                     <div v-if="latestGames.length > 0">
                         <div v-for="game in latestGames" :key="game.id">
                             <button class="game-button">
@@ -152,7 +152,7 @@ const playerWinLoss = ref(playerStats.value.getStats());
                         </div>
                     </div>
                     <div class="game-button game-info" v-else>
-                        <p>Aucun partie récente à afficher.</p>
+                        <p>{{ $t('no_games_to_display') }}</p>
                     </div>
                 </div>
             </div>

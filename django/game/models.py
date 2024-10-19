@@ -3,7 +3,6 @@ from player.models import Player
 
 def set_ano():
     return Player.objects.get(username='anonymous')
-# Create your models here.
 
 class Game(models.Model):
     # id cree par django

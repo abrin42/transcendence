@@ -15,44 +15,44 @@
     });
 
     async function submitForm() {
-    try {
-        const response = await fetch('api/test-csrf/', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            credentials: 'include',
-        });
-        
-        if (!response.ok) {
-            throw new Error('Network response was not ok');
+        try {
+            const response = await fetch('api/get_csrf_token/', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                credentials: 'include',
+            });
+            
+            if (!response.ok) {
+                throw new Error('Network response was not ok');
+            }
+            
+            const data = await response.json();
+            console.log('Response data:', data);
+            
+        } catch (error) {
+            console.error('Error during fetch operation:', error);
         }
-        
-        const data = await response.json();
-        console.log('Response data:', data);
-        
-    } catch (error) {
-        console.error('Error during fetch operation:', error);
     }
-}
 
-var myVideo = document.getElementById('videoBG');
-myVideo.playbackRate = 1;
+    var myVideo = document.getElementById('videoBG');
+    myVideo.playbackRate = 1;
 
-function goToModeSelect() {
-    router.push('/modeselect');
-}
-
-function goToCredits() {
-    router.push('/credits');
-}
-
-function __goTo(page) {
-    if (page == null) {
-        return;
+    function goToModeSelect() {
+        router.push('/modeselect');
     }
-    router.push(page);
-}
+
+    function goToCredits() {
+        router.push('/credits');
+    }
+
+    function __goTo(page) {
+        if (page == null) {
+            return;
+        }
+        router.push(page);
+    }
 </script>
 
 <template>

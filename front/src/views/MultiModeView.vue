@@ -35,12 +35,8 @@
         router.push(page);
     }
 
-    function goToGameSelect() {
+    function goToLegacy() {
         router.push('/legacy');
-    }
-
-    function goToMatchmaking() {
-        router.push('/matchmaking');
     }
 
     function goToTourney() {
@@ -52,11 +48,8 @@
     <main>
         <div id="wrapper">
             <div class="buttonContainer">
-                <button class="button button-credits" @click="goToGameSelect()">
+                <button class="button button-credits" @click="goToLegacy()">
                     <span class="buttonText">{{ $t('local') }}</span>
-                </button>
-                <button class="button button-credits" @click="goToMatchmaking()">
-                    <span class="buttonText">{{ $t('online') }}</span>
                 </button>
                 <button class="button button-credits" @click="goToTourney()">
                     <span class="buttonText">{{ $t('tourney') }}</span>

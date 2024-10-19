@@ -5,32 +5,62 @@ import CreateHomeButton from '../components/CreateHomeButton.vue';
 import Input from '../components/Input.vue';
 import { useRouter } from 'vue-router';
 import { ref, onMounted } from 'vue';
-import { useUser } from '../useUser.js';
 
-const { getUser, updateUserAccount, userAccount, is_connected } = useUser();
+////////////////////////////////////////////////
+/////// GET USER ///////////////////////////////
+////////////////////////////////////////////////
+
+import { useUser } from '../useUser.js'; 
+
+const { getUser, updateUserAccount, userAccount, is_connected } = useUser(); 
+
+onMounted(async () => {
+    await getUser();  
+    console.log("onMounted/is_connected: " + is_connected.value);  
+    console.log("onMounted/username: " + userAccount.username);
+    if (is_connected.value === true)
+        __goTo('/')
+});
+
+////////////////////////////////////////////////
+////////////////////////////////////////////////
+////////////////////////////////////////////////
+
 const router = useRouter();
+
+function __goTo(page) {
+    if (page == null)
+        return;
+    router.push(page);
+}
+
+function getCsrfToken() {
+    const cookieValue = document.cookie
+        .split('; ')
+        .find(row => row.startsWith('csrftoken='))
+        ?.split('=')[1];
+    return cookieValue || '';
+}
+
+////////////////////////////////////////////////
+////////////////////////////////////////////////
+////////////////////////////////////////////////
+
 const username = ref('');
 const password = ref('');
 
-// Fonction pour gérer la touche "Enter"
-function handleEnter(event) {
-    if (event.key === 'Enter') {
-        login();
-    }
-}
-
-// Fonctions existantes (login, login42, etc.)
 async function login() {
     if (!username.value || !password.value) {
-        alert('Please enter an email address and a password.');
+        alert('Veuillez entrer un email et un mot de passe.');
         return;
     }
+
     try {
         const response = await fetch('api/player/login/', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
-                'X-CSRFToken': getCsrfToken(),
+                'X-CSRFToken': getCsrfToken(), // Assuming CSRF protection is enabled
             },
             body: JSON.stringify({
                 username: username.value,
@@ -43,46 +73,25 @@ async function login() {
         }
 
         const data = await response.json();
-        const playerData = JSON.parse(data.player_data);
-        if (playerData && playerData.length > 0) {
-            const user = playerData[0];
-            updateUserAccount(user.fields);
 
-            if (user.fields.email_2fa_active === true || user.fields.sms_2fa_active === true) {
-                __goTo('/2fa/');
-            } else {
-                __goTo('/');
-            }
-            alert('Login successful!');
-        } else {
+        if (data.redirect_url) {
+            __goTo(data.redirect_url); 
+            return;
+        }
+
+         else {
             alert('User data not found!');
         }
     } catch (error) {
         console.error('Erreur lors de la connexion /login:', error);
-        alert('An error occurred during login.');
+        alert('Invalid username or password');
     }
 }
 
-function __goTo(page) {
-    if (page) {
-        router.push(page);
-    }
-}
-
-// Fonction pour obtenir le CSRF token
-function getCsrfToken() {
-    const cookieValue = document.cookie
-        .split('; ')
-        .find(row => row.startsWith('csrftoken='))
-        ?.split('=')[1];
-    return cookieValue || '';
-}
-
-// Autres fonctions, comme login42...
 async function login42() {
     try {
         const response = await fetch('api/player/login42/', {
-            method: 'POST',
+            method: 'POST', 
             headers: {
                 'Content-Type': 'application/json',
                 'X-CSRFToken': getCsrfToken()
@@ -97,7 +106,7 @@ async function login42() {
         } else {
             alert('Could not get URL for login');
         }
-
+        
     } catch (error) {
         console.error('Error during login:', error);
         alert('An error occurred during login');
@@ -108,9 +117,8 @@ async function login42() {
 
 <template>
     <main>
-        <!-- Ajout de l'événement keydown.enter sur le conteneur -->
-        <div id="wrapper" @keydown.enter="handleEnter">
-            <h1>{{ $t('SIGN_UP') }}</h1>
+        <div id="wrapper">
+            <h1>{{ $t('LOGIN') }}</h1>
 
             <div class="logContainer">
                 <button class="button button-log42" @click="login42">
@@ -119,7 +127,7 @@ async function login42() {
                 <button class="button button-register" @click="__goTo('/register')">
                     <span class="buttonText buttonTextSize">{{ $t('sign_up') }}</span>
                 </button>
-                <button class="button button-connect" @click="login" type="submit">
+                <button class="button button-connect" @click="login">
                     <span class="buttonText buttonTextSize">{{ $t('login') }}</span>
                 </button>
             </div>
@@ -137,6 +145,7 @@ async function login42() {
         </div>
     </main>
 </template>
+
 
 <style scoped>
 h1 {
