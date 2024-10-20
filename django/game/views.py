@@ -28,28 +28,33 @@ def game(request):
 #     return (JsonResponse({'message': 'gameIDInfo', 'gameID': game.id}, status=200))
 
 
+def getGameInfo(request):
+    if request.method == 'POST':
+        try:
+            data = json.loads(request.body)
+            id = data.get('id')
+            game = get_object_or_404(Game, id=id)
+
+            serializer = GameSerializer(game)
+            data = serializer.data
+            return JsonResponse(data, safe=False, content_type='application/json')
+        except json.JSONDecodeError:
+            return JsonResponse({'error': 'Invalid request body'}, status=400)
+    return JsonResponse({'error': 'Invalid request method'}, status=405)
+
+
 def creat_game_local(request):
     if request.method == 'POST':
         try:
             data = json.loads(request.body)
             username1 = data.get('username1')
             username2 = data.get('username2')
-            print("----username----")
-            print(username1)
-            print(username2)
             player1 = get_object_or_404(Player, username=username1)
             player2 = get_object_or_404(Player, username=username2)
-            print("----obj player----")
-            print(player1)
-            print(player2)
             latest_game = Game.objects.create(state='waiting', player1=player1, scorep1=0, player2=player2, scorep2=0)
-            print("----obj game----")
-            print(latest_game)
 
             serializer = GameSerializer(latest_game)
             data = serializer.data
-            print("----serializer date ----")
-            print(data)
             return JsonResponse(data, safe=False, content_type='application/json')
         except json.JSONDecodeError:
             return JsonResponse({'error': 'Invalid request body'}, status=400)
@@ -105,19 +110,35 @@ def update_game(request):
             game.mode = data.get('mode')
             game.scorep1 = data.get('scorep1')
             game.scorep2 = data.get('scorep2')
+            game.state = 'active'
+            if (game.scorep1 == 10 or game.scorep2 == 10):
+                game.state = 'end'
             game.save()
-
-            print(game.scorep1)
-            print(game.scorep2)
-            print(game.mode)
-            print(game.player1)
-            print(game.player2)
-            
             return JsonResponse({'message': 'Registration successful'}, status=200)
         except json.JSONDecodeError:
             return JsonResponse({'error': 'Invalid request body'}, status=400)
     return JsonResponse({'error': 'Invalid request method'}, status=405)
 
+
+def getIsPlayer(request):
+    if request.method == "POST":
+        try:
+            # game = Game.objects.order_by('-id').first()
+            data = json.loads(request.body)
+            id = data.get('id')
+            player = data.get('player')
+            game = get_object_or_404(Game, id=id)
+
+            if not game:
+                return JsonResponse({'error': 'No game found to update.'}, status=404)
+
+            if (player == game.player1.username or player == game.player2.username):
+                return JsonResponse({'message': 'isPlayer'}, status=200)
+            else:
+                return JsonResponse({'message': 'isSpec'}, status=200)
+        except json.JSONDecodeError:
+            return JsonResponse({'error': 'Invalid request body'}, status=400)
+    return JsonResponse({'error': 'Invalid request method'}, status=405)
 
 
 #changer le thread de la balle pour pouvoir le meme pour les deux 

@@ -4,7 +4,7 @@
     import CreateBackButton from '../components/CreateBackButton.vue';
     import CreateSoundButton from '../components/CreateSoundButton.vue';
     import { useRouter } from 'vue-router';
-    import { onMounted } from 'vue';
+    import { onMounted, ref } from 'vue';
 
     ////////////////////////////////////////////////
     /////// GET USER ///////////////////////////////
@@ -12,9 +12,14 @@
 
     import { useUser } from '../useUser.js'; 
     const { getUser, userAccount, is_connected } = useUser(); 
-
+    const currentUrl = window.location.href; 
+    const lastSegment = currentUrl.split('/').filter(Boolean).pop();
+    
+    let scoreplayer1 = ref(0);
+    let scoreplayer2 = ref(0);
     onMounted(async () => {
         await getUser();
+        await getGameInfo();
         // if (is_connected.value === false)
         //     __goTo('/')
     });
@@ -41,12 +46,50 @@
     function goToGameSelect() {
         router.push('/gameselect');
     }
-
-    let scoreplayer1 = 10; //remplacer par fetch score p1
-    let scoreplayer2 = 1; //remplacer par fetch score p2
+    
+    function getCsrfToken() {
+        const cookieValue = document.cookie
+            .split('; ')
+            .find(row => row.startsWith('csrftoken='))
+            ?.split('=')[1];
+        return cookieValue || '';
+    }
 
     let result = "win"; //fetch 'win' ou 'lose'
     let endgamemessage;
+    
+
+    async function getGameInfo() {
+    try {
+        const response = await fetch('/api/game/getGameInfo/', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRFToken': getCsrfToken(),
+            },
+            body: JSON.stringify({
+                id: lastSegment,
+            }),
+        });
+        if (response.ok) {
+            const responseData = await response.json();
+            scoreplayer1.value = responseData.scorep1;
+            scoreplayer2.value = responseData.scorep2;
+            console.log('Game updated successfully!', responseData);
+        }
+        else if (response.status === 404) {
+            goToHome();
+        }
+        else
+        {
+            const errorData = await response.json();
+            console.error('Error:', errorData.error);
+        }
+    } catch (error) {
+        console.error('Error updating game:', error);
+    }
+  }
+    
     if (result == "win")
     {
         endgamemessage = "congratulations";

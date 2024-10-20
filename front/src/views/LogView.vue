@@ -56,7 +56,7 @@ async function login() {
     }
 
     try {
-        const response = await fetch('api/player/login/', {
+        const response = await fetch('/api/player/login/', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -90,7 +90,7 @@ async function login() {
 
 async function login42() {
     try {
-        const response = await fetch('api/player/login42/', {
+        const response = await fetch('/api/player/login42/', {
             method: 'POST', 
             headers: {
                 'Content-Type': 'application/json',

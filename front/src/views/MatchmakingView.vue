@@ -36,7 +36,7 @@
     import CreateBackButton from '../components/CreateBackButton.vue';
     import CreateSoundButton from '../components/CreateSoundButton.vue';
     import CreateHomeButton from '../components/CreateHomeButton.vue';
-    import { ref, reactive, onMounted, watch, defineEmits } from 'vue';
+    import { ref, reactive, onMounted, onUnmounted, watch, defineEmits } from 'vue';
     import $ from 'jquery';
     import { useRouter } from 'vue-router';
 
@@ -47,6 +47,11 @@
     import { useUser } from '../useUser.js'; 
     const { getUser, userAccount, is_connected } = useUser(); 
 
+    onUnmounted(() => {
+        stopLoading();
+
+    });
+
     onMounted(async () => {
         await getUser();
         if (is_connected.value === false)
@@ -56,6 +61,11 @@
 
     });
 
+
+    function stopLoading() {
+        clearInterval(dots);  // Stop the interval
+        console.log("Loading stopped.");
+}
     ////////////////////////////////////////////////
     ////////////////////////////////////////////////
     ////////////////////////////////////////////////
@@ -89,7 +99,10 @@
     let waitingPlayer = 1;
 
     function goToLegacy(id) {
+        console.log("id hereee");
+        console.log(id);
         router.push(`/legacy/${id}`);
+        // router.push(`/matchmaking`);
     }
 
 let loadingmodule = true;
@@ -97,7 +110,7 @@ let loadingmodule = true;
 async function creatGameLocal()
 {
     try {
-        const response = await fetch('api/game/creat_game_local/', {
+        const response = await fetch('/api/game/creat_game_local/', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -158,7 +171,7 @@ async function creatGameLocal()
 
 async function insertPlayer() {
     try {
-        const response = await fetch('api/game/insertplayer/', {
+        const response = await fetch('/api/game/insertplayer/', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -268,9 +281,10 @@ async function insertPlayer() {
 
     //dynamic "loading" dots 
     console.log(loadingmodule);
+    let dots;
     if (loadingmodule == true)
     {
-        var dots = window.setInterval( function() {
+        dots = window.setInterval( function() {
         var wait = document.getElementById('loading');
         console.log(wait);
         if ( wait.innerHTML.length >= 3 ) 

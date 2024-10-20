@@ -57,7 +57,7 @@
 
 	async function setLanguage(new_language) {
 		try {
-			await fetch('api/player/update_language/', {
+			await fetch('/api/player/update_language/', {
 				method: 'POST',
 				headers: {
 					'Content-Type': 'application/json',

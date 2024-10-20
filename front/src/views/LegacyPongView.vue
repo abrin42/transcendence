@@ -42,10 +42,10 @@ body {
 
 <script setup>
 import { ref, onMounted, onUnmounted } from 'vue';
-import { useRouter } from 'vue-router';
 import paddleHitSound from '../assets/paddle_hit.mp3'
 import pointScoredSound from '../assets/point_scored.mp3'
 import wallHitSound from '../assets/wall_hit.mp3'
+import { useRouter } from 'vue-router';
 
   ////////////////////////////////////////////////
   /////// GET USER ///////////////////////////////
@@ -60,6 +60,56 @@ import wallHitSound from '../assets/wall_hit.mp3'
   //       __goTo('/')
   // });
 
+
+
+  onUnmounted(() => {
+  if (canPlay.value == 1)
+  {
+    document.removeEventListener("keydown", movePlayer1up);
+    document.removeEventListener("keydown", movePlayer1down);
+    document.removeEventListener("keydown", movePlayer2up);
+    document.removeEventListener("keydown", movePlayer2down);
+    document.removeEventListener("keydown", muteSound);
+    document.removeEventListener('keyup', stopPlayer);
+  }
+  moveInterval1up = null;
+  moveInterval1down = null;
+  moveInterval2up = null;
+  moveInterval2down = null;
+  if (animationFrameId) {
+    cancelAnimationFrame(animationFrameId);
+    animationFrameId = null;
+  }
+  if (socket.value) {
+    socket.value.close();
+  }
+});
+
+onMounted(async () => {
+  await getUser();
+  if (is_connected.value === false)
+    __goTo('/');
+  getIsPlayer();
+  connectWebSocket();
+  board = document.getElementById("board");
+  board.height = boardHeight;
+  board.width = boardWidth;
+  context = board.getContext("2d"); //Drawing on board
+
+  context.fillStyle = "white";
+  context.fillRect(player1.x, player1.y, player1.width, player1.height);
+  animationFrameId = requestAnimationFrame(update); // Gameloop
+  if (canPlay.value == 1)
+  {
+    document.addEventListener("keydown", movePlayer1up);
+    document.addEventListener("keydown", movePlayer1down);
+    document.addEventListener("keydown", movePlayer2up);
+    document.addEventListener("keydown", movePlayer2down);
+    document.addEventListener("keydown", muteSound);
+    document.addEventListener('keyup', stopPlayer);
+  }
+});
+
   ////////////////////////////////////////////////
   ////////////////////////////////////////////////
   ////////////////////////////////////////////////
@@ -70,6 +120,7 @@ import wallHitSound from '../assets/wall_hit.mp3'
   const messages = ref([]);
   const connectionStatus = ref('');
   let connection = 0;
+  let canPlay = ref(0);
 
 ////////////Audio Variables///////////////
 const wallHitAudio = new Audio(wallHitSound);
@@ -93,9 +144,50 @@ function __goTo(page) {
         return cookieValue || '';
     }
 
+
+    async function getIsPlayer() {
+    try {
+        const response = await fetch('/api/game/getIsPlayer/', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRFToken': getCsrfToken(),
+            },
+            body: JSON.stringify({
+                player: userAccount.username,
+                id: lastSegment,
+            }),
+        });
+        if (response.ok) {
+            const responseData = await response.json();
+            console.log('Game updated successfully!', responseData);
+
+            if (responseData.message == 'isPlayer')
+            {
+              canPlay.value = 1;
+              console.log ("is player");
+            }
+            else if (responseData.message == 'isSpec')
+            {
+              canPlay.value = 0;
+              console.log ("is spec");
+            }
+
+
+        }
+        else
+        {
+            const errorData = await response.json();
+            console.error('Error:', errorData.error);
+        }
+    } catch (error) {
+        console.error('Error updating game:', error);
+    }
+  }
+  
   async function updateGameInfo() {
     try {
-        const response = await fetch('api/game/update_game/', {
+        const response = await fetch('/api/game/update_game/', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -164,8 +256,8 @@ function __goTo(page) {
 
 function  updatePoints(player, updatePts)
 {
-  console.log(player);
-  console.log(updatePts);
+  // console.log(player);
+  // console.log(updatePts);
   if (player == 1)
   {
     player1Score = updatePts;
@@ -178,8 +270,6 @@ function  updatePoints(player, updatePts)
 
 function  updatePadel(player, newY)
 {
-  // console.log(player);
-  // console.log(newY);
   if (player == 1)
   {
     player1.y = newY;
@@ -199,7 +289,7 @@ function updateBaal(x, y)
 
 function connectWebSocket() {
   console.log(lastSegment);
-  socket.value = new WebSocket(`wss://localhost:8443/ws/websockets/?page=${encodeURIComponent(gamePage)}`); 
+  socket.value = new WebSocket(`wss://localhost:8443/ws/websockets/?page=${encodeURIComponent(gamePage)}`);
   socket.value.onopen = () => {
     console.log('WebSocket connecté');
     console.log(socket.value);
@@ -226,7 +316,8 @@ function connectWebSocket() {
       // console.log(data.player);
       updatePoints(data.player, data.updatePts);
       if (soundOnOff == true)
-        pointScoredAudio.play();
+      pointScoredAudio.play();
+      await updateGameInfo();
     } 
     else if (data.type == 'mouvUp' || data.type == 'mouvDown')
     {
@@ -242,12 +333,12 @@ function connectWebSocket() {
     else if (data.type == 'endGame')
     {
       connection = 0;
-      await updateGameInfo();
       // console.log(data.type);
       router.push(`/legacyrecap/${lastSegment}`);
     }
     else if (data.type == 'startGame')
     {
+      await updateGameInfo();
       // console.log(data.type);
     }
     else if (data.type == 'paddleHit')
@@ -302,46 +393,6 @@ function sendMessage(msg) {
 
 let animationFrameId = null;
 
-onUnmounted(() => {
-  document.removeEventListener("keydown", movePlayer1up);
-  document.removeEventListener("keydown", movePlayer1down);
-  document.removeEventListener("keydown", movePlayer2up);
-  document.removeEventListener("keydown", movePlayer2down);
-  document.removeEventListener("keydown", muteSound);
-  document.removeEventListener('keyup', stopPlayer);
-  moveInterval1up = null;
-  moveInterval1down = null;
-  moveInterval2up = null;
-  moveInterval2down = null;
-  if (animationFrameId) {
-    cancelAnimationFrame(animationFrameId);
-    animationFrameId = null;
-  }
-  if (socket.value) {
-    socket.value.close();
-  }
-});
-
-onMounted(async () => {
-      await getUser();
-      if (is_connected.value === false)
-        __goTo('/');
-  connectWebSocket();
-  board = document.getElementById("board");
-  board.height = boardHeight;
-  board.width = boardWidth;
-  context = board.getContext("2d"); //Drawing on board
-
-  context.fillStyle = "white";
-  context.fillRect(player1.x, player1.y, player1.width, player1.height);
-  animationFrameId = requestAnimationFrame(update); // Gameloop
-  document.addEventListener("keydown", movePlayer1up);
-  document.addEventListener("keydown", movePlayer1down);
-  document.addEventListener("keydown", movePlayer2up);
-  document.addEventListener("keydown", movePlayer2down);
-  document.addEventListener("keydown", muteSound);
-  document.addEventListener('keyup', stopPlayer);
-});
 
     function update() 
     {

@@ -165,7 +165,7 @@ async function getFriendsRequest() {
 async function acceptRequest(playerUsername) {
     try {
         console.log('Inviting player with ID:', playerUsername);
-        const response = await fetch('api/friend/help/', {
+        const response = await fetch('/api/friend/help/', {
             method: 'POST', // Change to POST to match the Django view
             headers: {
                 'Content-Type': 'application/json',
@@ -188,7 +188,7 @@ async function acceptRequest(playerUsername) {
 async function invitePlayer(playerUsername) {
     try {
         console.log('Inviting player with ID:', playerUsername);
-        const response = await fetch('api/friend/add/', {
+        const response = await fetch('/api/friend/add/', {
             method: 'POST', // Change to POST to match the Django view
             headers: {
                 'Content-Type': 'application/json',
@@ -294,7 +294,7 @@ function closePopup() {
 async function deleteFriend(playerUsername) {
     try {
         console.log('delete player with :', playerUsername);
-        const response = await fetch('api/friend/delete/', {
+        const response = await fetch('/api/friend/delete/', {
             method: 'POST', // Change to POST to match the Django view
             headers: {
                 'Content-Type': 'application/json',

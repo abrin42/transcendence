@@ -36,7 +36,7 @@
 
     async function update_keys() {
     try {
-        const response = await fetch('api/player/update_keys/', {
+        const response = await fetch('/api/player/update_keys/', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
