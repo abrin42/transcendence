@@ -102,6 +102,14 @@ import Input from './Input.vue';
 import { useUser } from '../useUser.js';
 const { getUser, userAccount } = useUser();
 
+function getCsrfToken() {
+    const cookieValue = document.cookie
+        .split('; ')
+        .find(row => row.startsWith('csrftoken='))
+        ?.split('=')[1];
+    return cookieValue || '';
+}
+
 ////////////////////////////////////////////////
 ////////////////////////////////////////////////
 ////////////////////////////////////////////////
@@ -169,6 +177,7 @@ async function acceptRequest(playerUsername) {
             method: 'POST', // Change to POST to match the Django view
             headers: {
                 'Content-Type': 'application/json',
+                'X-CSRFToken': getCsrfToken(),
             },
             body: JSON.stringify({
                 username: playerUsername,
@@ -192,6 +201,7 @@ async function invitePlayer(playerUsername) {
             method: 'POST', // Change to POST to match the Django view
             headers: {
                 'Content-Type': 'application/json',
+                'X-CSRFToken': getCsrfToken(),
             },
             body: JSON.stringify({
                 username: playerUsername,
@@ -296,6 +306,7 @@ async function deleteFriend(playerUsername) {
             method: 'POST', // Change to POST to match the Django view
             headers: {
                 'Content-Type': 'application/json',
+                'X-CSRFToken': getCsrfToken(),
             },
             body: JSON.stringify({
                 username: playerUsername,

@@ -146,19 +146,19 @@
                 </div>
                 <div class="buttonContainer">
                     <button id="bouton-touche" class="button" @click="changeKey('player1Up')">
-                        <span class="buttonText">{{ keys.player1Up }}</span>
+                        <span class="buttonText">{{ userAccount.player1Up }}</span>
                     </button>
                     <button id="bouton-touche" class="button" @click="changeKey('player1Down')">
-                        <span class="buttonText">{{ keys.player1Down }}</span>
+                        <span class="buttonText">{{ userAccount.player1Down }}</span>
                     </button>
                     <button id="bouton-touche" class="button" @click="changeKey('player2Up')">
-                        <span class="buttonText">{{ keys.player2Up }}</span>
+                        <span class="buttonText">{{ userAccount.player2Up }}</span>
                     </button>
                     <button id="bouton-touche" class="button" @click="changeKey('player2Down')">
-                        <span class="buttonText">{{ keys.player2Down }}</span>
+                        <span class="buttonText">{{ userAccount.player2Down }}</span>
                     </button>
                     <button id="bouton-touche" class="button" @click="changeKey('mute')">
-                        <span class="buttonText">{{ keys.mute }}</span>
+                        <span class="buttonText">{{ userAccount.mute }}</span>
                     </button>
                     
                 </div>
