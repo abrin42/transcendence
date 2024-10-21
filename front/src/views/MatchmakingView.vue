@@ -12,7 +12,7 @@
             <div class="button-container-mm">
                 <img id="versus-image" src="../assets/vs_text.png"/>
                 <div class="stuff-to-move">
-                    <img id="player1-picture" class="profile-picture-matchmaking-left" src="../assets/Chachou.png"/>
+                    <img id="player1-picture" class="profile-picture-matchmaking-left" :src="profilePicture"/>
                     <p id="player1-name" class="profile-text-left">{{playerName1}}</p>
                     <p id="player1-rank" class="rank-text-left">{{playerRank1}}</p>
                 </div>
@@ -20,7 +20,7 @@
                     <p id="opponent-text" class="opponent-text">Looking for an opponent...</p>
                 </div>
                 <div id="stuff-to-show">
-                    <img id="player2-picture" class="profile-picture-matchmaking-right" src="../assets/Chachou.png"/>
+                    <img id="player2-picture" class="profile-picture-matchmaking-right" :src="profilePicture"/>
                     <p id="player2-name" class="profile-text-right">{{playerName2}}</p>
                     <p id="player2-rank" class="rank-text-right">{{playerRank2}}</p>
                 </div>
@@ -40,6 +40,7 @@
     import $ from 'jquery';
     import { useRouter } from 'vue-router';
     import i18n from '../i18n.js'
+    import profilePicture from '@/assets/img/default-profile.png';
 
     ////////////////////////////////////////////////
     /////// GET USER ///////////////////////////////
