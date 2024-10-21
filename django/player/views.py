@@ -289,7 +289,7 @@ def connected_user(request):
     return JsonResponse({'msg': 'User not found'}, status=204)
 
 def get_all_user(request):
-    data = Player.objects.all()
+    data = Player.objects.all().order_by("-rank")
     data = serializers.serialize('json', data)
     return JsonResponse(data, safe=False) 
 

@@ -13,7 +13,7 @@ import requests
 from django.http import JsonResponse, HttpResponse, HttpResponseForbidden
 from datetime import datetime, timedelta
 from .serialize import FriendshipSerializer
-
+from django.views.decorators.csrf import csrf_exempt
 
 def index(request):
     user = token_user(request)
@@ -21,7 +21,7 @@ def index(request):
         return redirect(reverse('player:login'))
     return render(request, "friend/index.html")
 
-
+@csrf_exempt
 def add(request):
     user = token_user(request)
     if user is None: 
@@ -40,7 +40,7 @@ def add(request):
         return JsonResponse({'redirect_url': '/'}, status=200)
     return JsonResponse({'error': "Invalid request methode"}, status=405)
 
-
+@csrf_exempt
 def delete(request):
     user = token_user(request)
     if user is None: 
@@ -53,7 +53,7 @@ def delete(request):
     #return redirect("friend:list")
     return JsonResponse({'redirect_url': '/'}, status=200)
 
-
+@csrf_exempt
 def help(request):
     user = token_user(request)
     if user is None: 
@@ -71,7 +71,7 @@ def help(request):
         return JsonResponse({'redirect_url': '/'}, status=200)
     return JsonResponse({'error': "Invalid request methode"}, status=405)
 
-
+@csrf_exempt
 def refuse(request, id_friendship):
     user = token_user(request)
     if user is None: 
@@ -81,7 +81,7 @@ def refuse(request, id_friendship):
     request.save()
     return redirect("friend:pending")
 
-
+@csrf_exempt
 def list(request):
     you = token_user(request)
     friends = Friendship.objects.filter(Q(user=you, status='accepted') | Q(friend=you, status='accepted'))
@@ -91,7 +91,7 @@ def list(request):
     return JsonResponse(data, safe=False, content_type='application/json')
     
 
-
+@csrf_exempt
 def pending(request):
     you = token_user(request)
     friends = Friendship.objects.filter(Q(friend=you, status='pending'))
@@ -101,7 +101,7 @@ def pending(request):
     data = serializers.serialize('json', friends, use_natural_foreign_keys=True, use_natural_primary_keys=True)
     return JsonResponse(data, safe=False, content_type='application/json')
 
-
+@csrf_exempt
 def refused(request):
     you = token_user(request)
     friends = Friendship.objects.filter(Q(friend=you, status='refused'))
