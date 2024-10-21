@@ -3,6 +3,7 @@
     import CreateBackButton from '../components/CreateBackButton.vue';
     import CreateDropupButton from '@/components/CreateDropupButton.vue';
     import CreateHomeButton from '@/components/CreateHomeButton.vue';
+    import i18n from '../i18n.js'
 
     ////////////////////////////////////////////////
     /////// GET USER ///////////////////////////////
@@ -84,7 +85,7 @@
     const setKey = (event) => {
         const newKey = event.key.toUpperCase();
         if (isKeyAlreadyUsed(newKey)) {
-            alert('This key is already in use.');
+            alert(i18n.global.t('error_key_already_in_use'));
             return;
         }
         if (
@@ -95,7 +96,7 @@
             (selectedKey.value === 'pause' && newKey === userAccount.pause) ||
             (selectedKey.value === 'mute' && newKey === userAccount.mute)
         ) {
-            alert('The same player cannot use the same key for left and right.');
+            alert(i18n.global.t('error_cannot_use_same_key'));
             return;
         }
 

@@ -88,10 +88,12 @@
     "online": "Online",
     "tourney": "Turnier",
 
-    "password_do_not_match": "The passwords do not match.",
-    "error_account_creation": "An error occurred during account creation.",
-    "account_created_successfully": "Account created successfully!",
+    "ERROR_404": "FEHLER 404 - SEITE NICHT GEFUNDEN",
+    "contact_devs": "Bitte kontaktieren Sie die Entwickler, wenn Sie glauben, dass dies ein Fehler ist.",
+
     "SIGN_UP": "EINSCHREIBEN",
+    "i_accept_the": "Ich akzeptiere die ",
+    "terms_of_use": "Benutzungsbedingungen.",
     "create_account": "Ihr Konto erstellen",
     "confirm_password": "Bestätigen Sie das Passwort",
 
@@ -114,5 +116,40 @@
 
     "add_participants": "Teilnehmer hinzufügen",
     "name_of_participant": "Name des Teilnehmers",
-    "validate_participants": "Teilnehmer validieren"
+    "validate_participants": "Teilnehmer validieren",
+
+
+
+    "error_adding_a_friend": "Beim Hinzufügen eines Freundes ist ein Fehler aufgetreten.",
+    "error_already_sent_invitation": "Sie haben bereits eine Einladung an diesen Benutzer gesendet.",
+    "invitation_sent_to": "Einladung gesendet an",
+    "to_play": "zu spielen.",
+    "error_user_data_not_found": "Benutzerdaten nicht gefunden!",
+    "invalid_data_received": "Ungültige Daten empfangen!",
+    "error_login": "Beim Einloggen ist ein Fehler aufgetreten.",
+    "error_OTPPP_setup": "Bei der OTPPP-Einrichtung ist ein Fehler aufgetreten",
+    "error_TFA_setup": "Bei der TFA-Einrichtung ist ein Fehler aufgetreten",
+    "resend_code": "Code erneut senden!",
+    "account_updated_successfully": "Konto erfolgreich aktualisiert!",
+    "error_account_update": "Bei der Aktualisierung des Kontos ist ein Fehler aufgetreten.",
+    "please_enter_email_password": "Bitte geben Sie eine E-Mail-Adresse und ein Passwort ein.",
+    "login_successful": "Anmeldung erfolgreich!",
+    "error_invalid_URL_login": "Die Anmelde-URL konnte nicht abgerufen werden.",
+    "please_complete_required_fields": "Bitte füllen Sie alle erforderlichen Felder aus.",
+    "please_enter_valid_email": "Bitte geben Sie eine gültige E-Mail Adresse ein.",
+    "please_enter_valid_phone_number": "Bitte geben Sie eine gültige Telefonnummer ein (fügen Sie '+33' am Anfang ein).",
+    "please_accept_terms_of_use": "Bitte akzeptieren Sie die Nutzungsbedingungen.",
+    "error_passwords_do_not_match": "Die Kennwörter stimmen nicht überein.",
+    "should_contain_capital_letter": "Sollte mindestens einen Großbuchstaben enthalten\n",
+    "should_contain_lower_case_letter": "Sollte mindestens einen Kleinbuchstaben enthalten\n",
+    "should_contain_number": "Sollte mindestens eine Zahl enthalten\n",
+    "should_contain_special_character": "Sollte mindestens ein Sonderzeichen enthalten\n",
+    "should_be_8_characters_long": "Sollte mindestens acht Zeichen lang sein",
+    "successful_registration": "Erfolgreiche Registrierung!",
+    "network_error_occurred": "Es ist ein Netzwerkfehler aufgetreten. Bitte versuchen Sie es erneut.",
+    "error_key_already_in_use": "Dieser Schlüssel ist bereits in Gebrauch.",
+    "error_cannot_use_same_key": "Ein und derselbe Spieler kann nicht die gleiche Taste für links und rechts verwenden.",
+    "error_cannot_use_same_nickname": "Du kannst nicht denselben Spitznamen für mehrere Spieler verwenden.",
+    "please_enter_4_valid_names": "Bitte geben Sie vier gültige Teilnehmernamen ein.",
+    "GAME_STARTS_SOON": "DAS SPIEL BEGINNT BALD!"
 }

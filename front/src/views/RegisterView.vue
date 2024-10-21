@@ -5,6 +5,7 @@
     import Input from '../components/Input.vue';
     import { useRouter } from 'vue-router';
     import { ref, onMounted } from 'vue';
+    import i18n from '../i18n.js'
 
     ////////////////////////////////////////////////
     /////// GET USER ///////////////////////////////
@@ -65,39 +66,39 @@
 
     async function createAccount() {
         if (!username.value || !email.value || !password1.value || !password2.value) {
-            alert('Please fill in all the required fields.');
+            alert(i18n.global.t('please_complete_required_fields'));
             return;
         }
         
         if (!isValidEmail(email.value)) {
-            alert('Please enter a valid e-mail address.');
+            alert(i18n.global.t('please_enter_valid_email'));
             return;
         }
         
         if (phone_number.value) {
             if (!isValidPhoneNumber(phone_number.value)) {
-                alert('Please enter a valid telephone number (add ‘+33’ at the beginning).');
+                alert(i18n.global.t('please_enter_valid_phone_number'));
                 return;
             }
         }
 
         if (!acceptTerms.value) {
-            alert('Veuillez accepter les conditions d\'utilisation.'); // todo translate
+            alert(i18n.global.t('please_accept_terms_of_use'));
             return;
         }
         
         if (password1.value !== password2.value) {
-            alert('The passwords do not match.');
+            alert(i18n.global.t('error_passwords_do_not_match'));
             return;
         }
 
         if (!isValidPassword(password1.value)) {
             alert(
-                `Should contain at least a capital letter\n` +
-                `Should contain at least a small letter\n` +
-                `Should contain at least a number\n` +
-                `Should contain at least a special character\n` +
-                `Should contain 8 minimum length`
+                i18n.global.t('should_contain_capital_letter') +
+                i18n.global.t('should_contain_lower_case_letter') +
+                i18n.global.t('should_contain_number') +
+                i18n.global.t('should_contain_special_character') +
+                i18n.global.t('should_be_8_characters_long')
             );
             return;
         }
@@ -121,7 +122,7 @@
             if (response.ok) {
                 const responseData = await response.json();
                 console.log('Account created successfully!', responseData);
-                alert('Successful registration!');
+                alert(i18n.global.t('successful_registration'));
                 __goTo('/')
             } else {
                 const errorData = await response.json();
@@ -135,7 +136,7 @@
             }
         } catch (error) {
             console.error('Network error:', error);
-            alert('A network error has occurred. Please try again.');
+            alert(i18n.global.t('network_error_occurred'));
 }
     }
 
@@ -161,7 +162,7 @@
                 <!-- Checkbox pour les conditions d'utilisation -->
                 <div class="terms-container">
                     <input type="checkbox" id="terms" v-model="acceptTerms" />
-                    <label for="terms">J'accepte les <a href="/terms">conditions d'utilisation</a></label>
+                    <label for="terms">{{ $t('i_accept_the') }}<a href="/terms">{{ $t('terms_of_use') }}</a></label>
                 </div>
 
                 <button class="button button-createAccount" @click="createAccount">

@@ -5,6 +5,7 @@
     import CreateBackButton from '../components/CreateBackButton.vue';
     import { useRouter } from 'vue-router';
     import { reactive, onMounted, ref } from 'vue';
+    import i18n from '../i18n.js';
 
     ////////////////////////////////////////////////
     /////// GET USER ///////////////////////////////
@@ -104,14 +105,14 @@
                 console.log('email 2FA Active:', email2FA);
 
             } else {
-                alert('User data not found!');
+                alert(i18n.global.t('error_user_data_not_found'));
             }
         } else {
-            alert('Invalid data received!');
+            alert(i18n.global.t('invalid_data_received'));
         }
     } catch (error) {
         console.error('Error during 2FA user fetch:', error);
-        alert('An error occurred during login.');
+        alert(i18n.global.t('error_login'));
     }
 }
 
@@ -137,7 +138,7 @@
 
         } catch (error) {
             console.error('Error during OTPPP setup:', error);
-            alert('An error occurred during OTPPP setup');
+            alert(i18n.global.t('error_OTPPP_setup'));
         }
     }
 
@@ -161,12 +162,12 @@
             }
         } catch (error) {
             console.error('Error during TFA setup:', error);
-            alert('An error occurred during TFA setup');
+            alert(i18n.global.t('error_TFA_setup'));
         }
     }
     function resendCode(method) {
         choose_tfa(method);
-        alert('Resend code!');
+        alert(i18n.global.t('resend_code'));
     }
 </script>
 
