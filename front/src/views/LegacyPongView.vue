@@ -89,7 +89,7 @@ onMounted(async () => {
   await getUser();
   if (is_connected.value === false)
     __goTo('/');
-  getIsPlayer();
+  await getIsPlayer();
   connectWebSocket();
   board = document.getElementById("board");
   board.height = boardHeight;
