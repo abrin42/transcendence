@@ -35,8 +35,8 @@
         router.push(page);
     }
 
-    function goToLegacy() {
-        router.push('/legacy');
+    function goToMatchMakingLocal() {
+        router.push('/matchmaking');
     }
 
     function goToTourney() {
@@ -48,7 +48,7 @@
     <main>
         <div id="wrapper">
             <div class="buttonContainer">
-                <button class="button button-credits" @click="goToLegacy()">
+                <button class="button button-credits" @click="goToMatchMakingLocal()">
                     <span class="buttonText">{{ $t('local') }}</span>
                 </button>
                 <button class="button button-credits" @click="goToTourney()">

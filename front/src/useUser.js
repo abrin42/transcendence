@@ -74,6 +74,10 @@ export function useUser() {
             const response = await fetch(`/api/player/connected_user/`, {
                 method: 'GET',
                 credentials: 'include',
+                headers: {
+                    'Cache-Control': 'no-cache',  // Désactiver le cache
+                    'Pragma': 'no-cache',
+                },
             });
             if (response.status == 204) {
                 is_connected.value = false;

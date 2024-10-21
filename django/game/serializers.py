@@ -4,7 +4,7 @@ from .models import Game, Player
 class PlayerSerializer(serializers.ModelSerializer):
     class Meta:
         model = Player
-        fields = ['id', 'username', 'nickname', 'rank', 'win', 'lose']  # Sélectionnez les champs nécessaires
+        fields = ['id', 'username', 'nickname', 'rank', 'win', 'lose', 'profile_picture']  # Sélectionnez les champs nécessaires
 
 class GameSerializer(serializers.ModelSerializer):
     player1 = PlayerSerializer()  # Sérialiser le joueur 1

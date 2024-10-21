@@ -42,10 +42,10 @@ body {
 
 <script setup>
 import { ref, onMounted, onUnmounted } from 'vue';
-import { useRouter } from 'vue-router';
 import paddleHitSound from '../assets/paddle_hit.mp3'
 import pointScoredSound from '../assets/point_scored.mp3'
 import wallHitSound from '../assets/wall_hit.mp3'
+import { useRouter } from 'vue-router';
 
   ////////////////////////////////////////////////
   /////// GET USER ///////////////////////////////
@@ -60,6 +60,56 @@ import wallHitSound from '../assets/wall_hit.mp3'
   //       __goTo('/')
   // });
 
+
+
+  onUnmounted(() => {
+  if (canPlay.value == 1)
+  {
+    document.removeEventListener("keydown", movePlayer1up);
+    document.removeEventListener("keydown", movePlayer1down);
+    document.removeEventListener("keydown", movePlayer2up);
+    document.removeEventListener("keydown", movePlayer2down);
+    document.removeEventListener("keydown", muteSound);
+    document.removeEventListener('keyup', stopPlayer);
+  }
+  moveInterval1up = null;
+  moveInterval1down = null;
+  moveInterval2up = null;
+  moveInterval2down = null;
+  if (animationFrameId) {
+    cancelAnimationFrame(animationFrameId);
+    animationFrameId = null;
+  }
+  if (socket.value) {
+    socket.value.close();
+  }
+});
+
+onMounted(async () => {
+  await getUser();
+  if (is_connected.value === false)
+    __goTo('/');
+  await getIsPlayer();
+  connectWebSocket();
+  board = document.getElementById("board");
+  board.height = boardHeight;
+  board.width = boardWidth;
+  context = board.getContext("2d"); //Drawing on board
+
+  context.fillStyle = "white";
+  context.fillRect(player1.x, player1.y, player1.width, player1.height);
+  animationFrameId = requestAnimationFrame(update); // Gameloop
+  if (canPlay.value == 1)
+  {
+    document.addEventListener("keydown", movePlayer1up);
+    document.addEventListener("keydown", movePlayer1down);
+    document.addEventListener("keydown", movePlayer2up);
+    document.addEventListener("keydown", movePlayer2down);
+    document.addEventListener("keydown", muteSound);
+    document.addEventListener('keyup', stopPlayer);
+  }
+});
+
   ////////////////////////////////////////////////
   ////////////////////////////////////////////////
   ////////////////////////////////////////////////
@@ -70,12 +120,16 @@ import wallHitSound from '../assets/wall_hit.mp3'
   const messages = ref([]);
   const connectionStatus = ref('');
   let connection = 0;
+  let canPlay = ref(0);
 
 ////////////Audio Variables///////////////
 const wallHitAudio = new Audio(wallHitSound);
 const paddleHitAudio = new Audio(paddleHitSound);
 const pointScoredAudio = new Audio(pointScoredSound);
 let soundOnOff = true;
+const currentUrl = window.location.href; 
+const lastSegment = currentUrl.split('/').filter(Boolean).pop();
+const gamePage = `game_${lastSegment}`;
 
 function __goTo(page) {
   if (page == null)
@@ -90,6 +144,47 @@ function __goTo(page) {
         return cookieValue || '';
     }
 
+
+    async function getIsPlayer() {
+    try {
+        const response = await fetch('/api/game/getIsPlayer/', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRFToken': getCsrfToken(),
+            },
+            body: JSON.stringify({
+                player: userAccount.username,
+                id: lastSegment,
+            }),
+        });
+        if (response.ok) {
+            const responseData = await response.json();
+            console.log('Game updated successfully!', responseData);
+
+            if (responseData.message == 'isPlayer')
+            {
+              canPlay.value = 1;
+              console.log ("is player");
+            }
+            else if (responseData.message == 'isSpec')
+            {
+              canPlay.value = 0;
+              console.log ("is spec");
+            }
+
+
+        }
+        else
+        {
+            const errorData = await response.json();
+            console.error('Error:', errorData.error);
+        }
+    } catch (error) {
+        console.error('Error updating game:', error);
+    }
+  }
+  
   async function updateGameInfo() {
     try {
         const response = await fetch('/api/game/update_game/', {
@@ -102,6 +197,7 @@ function __goTo(page) {
                 mode: "legacy",
                 scorep1: player1Score,
                 scorep2: player2Score,
+                id: lastSegment,
             }),
         });
         if (response.ok) {
@@ -160,8 +256,8 @@ function __goTo(page) {
 
 function  updatePoints(player, updatePts)
 {
-  console.log(player);
-  console.log(updatePts);
+  // console.log(player);
+  // console.log(updatePts);
   if (player == 1)
   {
     player1Score = updatePts;
@@ -174,8 +270,6 @@ function  updatePoints(player, updatePts)
 
 function  updatePadel(player, newY)
 {
-  // console.log(player);
-  // console.log(newY);
   if (player == 1)
   {
     player1.y = newY;
@@ -192,19 +286,17 @@ function updateBaal(x, y)
   ball.y = y;
 }
 
+
 function connectWebSocket() {
-  const currentUrl = window.location.href; 
-  const lastSegment = currentUrl.split('/').filter(Boolean).pop();
-  const gamePage = `game_${lastSegment}`;
   console.log(lastSegment);
-  socket.value = new WebSocket(`wss://localhost:8443/ws/websockets/?page=${encodeURIComponent(gamePage)}`); 
+  socket.value = new WebSocket(`wss://localhost:8443/ws/websockets/?page=${encodeURIComponent(gamePage)}`);
   socket.value.onopen = () => {
     console.log('WebSocket connecté');
     console.log(socket.value);
   };
   
   
-  socket.value.onmessage = (event) => {
+  socket.value.onmessage = async (event) => {
     // console.log("---ON MESSAGE---");
     
     const data = JSON.parse(event.data);
@@ -219,12 +311,13 @@ function connectWebSocket() {
     }
     else if (data.type == 'updatePts') //sound
     {
-      console.log(data.type);
-      console.log(data.updatePts);
-      console.log(data.player);
+      // console.log(data.type);
+      // console.log(data.updatePts);
+      // console.log(data.player);
       updatePoints(data.player, data.updatePts);
       if (soundOnOff == true)
-        pointScoredAudio.play();
+      pointScoredAudio.play();
+      await updateGameInfo();
     } 
     else if (data.type == 'mouvUp' || data.type == 'mouvDown')
     {
@@ -240,31 +333,32 @@ function connectWebSocket() {
     else if (data.type == 'endGame')
     {
       connection = 0;
-      router.push('/legacyrecap');
-      console.log(data.type);
+      // console.log(data.type);
+      router.push(`/legacyrecap/${lastSegment}`);
     }
     else if (data.type == 'startGame')
     {
-      console.log(data.type);
+      await updateGameInfo();
+      // console.log(data.type);
     }
     else if (data.type == 'paddleHit')
     {
-      console.log(data.type);
+      // console.log(data.type);
       if (soundOnOff == true)
         paddleHitAudio.play();
     }
     else if (data.type == 'wallHit')
     { 
-      console.log(data.type);
+      // console.log(data.type);
       if (soundOnOff == true)
         wallHitAudio.play();
     }
     else if (data.type == 'info_back') //a enlever test
     {
-      console.log(data.type);
-      console.log(data.value_back1);
-      console.log(data.value_back2);
-      console.log(data.value_back3);
+      // console.log(data.type);
+      // console.log(data.value_back1);
+      // console.log(data.value_back2);
+      // console.log(data.value_back3);
     }
     // console.log("---END ON MESSAGE---");
   };
@@ -297,37 +391,13 @@ function sendMessage(msg) {
   }
 }
 
-onUnmounted(() => {
-  updateGameInfo();
-  if (socket.value) {
-    socket.value.close();
-  }
-});
+let animationFrameId = null;
 
-onMounted(async () => {
-      await getUser();
-      if (is_connected.value === false)
-        __goTo('/')
-  connectWebSocket();
-  board = document.getElementById("board");
-  board.height = boardHeight;
-  board.width = boardWidth;
-  context = board.getContext("2d"); //Drawing on board
-
-  context.fillStyle = "white";
-  context.fillRect(player1.x, player1.y, player1.width, player1.height);
-  requestAnimationFrame(update); // Gameloop
-  document.addEventListener("keydown", movePlayer1up);
-  document.addEventListener("keydown", movePlayer1down);
-  document.addEventListener("keydown", movePlayer2up);
-  document.addEventListener("keydown", movePlayer2down);
-  document.addEventListener("keydown", muteSound);
-  document.addEventListener('keyup', stopPlayer);
-});
 
     function update() 
     {
-        requestAnimationFrame(update);
+        // console.log("boucle game update");
+        animationFrameId = requestAnimationFrame(update);
         console.log();
         context.clearRect(0, 0, board.width, board.height); // clear rectangle after movement (remove previous paddle position)
         context.fillRect(player1.x, player1.y, player1.width, player1.height); 
@@ -453,22 +523,22 @@ onMounted(async () => {
 
 
     function stopPlayer(e) {
-      if (e.code == "KeyW")
+      if (e.code == moveUpP1)
       {  
         clearInterval(moveInterval1up);
         moveInterval1up = null;
       }
-      else if(e.code == "KeyS")
+      else if(e.code == moveDownP1)
       {
         clearInterval(moveInterval1down);
         moveInterval1down = null;
       }
-      else if (e.code == "ArrowUp")
+      else if (e.code == moveUpP2)
       {  
         clearInterval(moveInterval2up);
         moveInterval2up = null;
       }
-      else if (e.code == "ArrowDown")
+      else if (e.code == moveDownP2)
       {
         clearInterval(moveInterval2down);
         moveInterval2down = null;
