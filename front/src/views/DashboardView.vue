@@ -38,7 +38,7 @@
 
     async function updateAccount() {
         try {
-            const response = await fetch('api/player/update_user/', {
+            const response = await fetch('/api/player/update_user/', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',

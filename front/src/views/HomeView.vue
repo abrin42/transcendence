@@ -16,7 +16,7 @@
 
     async function submitForm() {
         try {
-            const response = await fetch('api/get_csrf_token/', {
+            const response = await fetch('/api/get_csrf_token/', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',

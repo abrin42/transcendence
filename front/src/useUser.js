@@ -71,7 +71,7 @@ export function useUser() {
 
     async function getUser() {
         try {
-            const response = await fetch(`api/player/connected_user/`, {
+            const response = await fetch(`/api/player/connected_user/`, {
                 method: 'GET',
                 credentials: 'include',
             });

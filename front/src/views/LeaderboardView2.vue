@@ -113,7 +113,7 @@ const formatPoints = (points) => {
 
 async function getAllUsers() {
     try {
-        const response = await fetch(`api/player/get_all_user/`, {
+        const response = await fetch(`/api/player/get_all_user/`, {
             method: 'GET',
         });
 

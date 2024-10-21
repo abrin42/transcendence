@@ -92,7 +92,7 @@ function __goTo(page) {
 
   async function updateGameInfo() {
     try {
-        const response = await fetch('api/game/update_game/', {
+        const response = await fetch('/api/game/update_game/', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',

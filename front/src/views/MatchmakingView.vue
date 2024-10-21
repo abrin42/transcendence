@@ -94,7 +94,7 @@ let loadingmodule = true;
 
 async function insertPlayer() {
     try {
-        const response = await fetch('api/game/insertplayer/', {
+        const response = await fetch('/api/game/insertplayer/', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
