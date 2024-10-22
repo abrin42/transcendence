@@ -59,7 +59,7 @@
         if (is_connected.value === false)
             __goTo('/')
         // await insertPlayer();
-        await creatGameLocal();
+        // await creatGameLocal();
 
     });
 
@@ -92,10 +92,10 @@
     let player1;
     let player2;
     let gamemode = "legacy"; //fetch game mode selected?
-    let playerName1 = "Chachou";
-    let playerName2 = "Chachou2";
-    let playerRank1 = "Noob";
-    let playerRank2 = "Beginner";
+    let playerName1 = "";
+    let playerName2 = "";
+    let playerRank1 = "";
+    let playerRank2 = "";
     const router = useRouter();
 
     let waitingPlayer = 1;
@@ -108,6 +108,10 @@
     }
 
 let loadingmodule = true;
+
+async function setPlayer1() {
+    
+}
 
 async function creatGameLocal()
 {
@@ -171,112 +175,112 @@ async function creatGameLocal()
     }
 }
 
-async function insertPlayer() {
-    try {
-        const response = await fetch('/api/game/insertplayer/', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                'X-CSRFToken': getCsrfToken() // Assuming you have CSRF protection enabled
-            },
-            body: JSON.stringify({
-                username: userAccount.username,
-            })
-        });
-        if (response.ok) {
-            const data = await response.json();
+// async function insertPlayer() {
+//     try {
+//         const response = await fetch('/api/game/insertplayer/', {
+//             method: 'POST',
+//             headers: {
+//                 'Content-Type': 'application/json',
+//                 'X-CSRFToken': getCsrfToken() // Assuming you have CSRF protection enabled
+//             },
+//             body: JSON.stringify({
+//                 username: userAccount.username,
+//             })
+//         });
+//         if (response.ok) {
+//             const data = await response.json();
 
-            if (data.serializer_data) {
-                const gameData = JSON.parse(data.serializer_data);  
-                console.log('Player Data:', gameData);
+//             if (data.serializer_data) {
+//                 const gameData = JSON.parse(data.serializer_data);  
+//                 console.log('Player Data:', gameData);
           
-                if (gameData.length > 0) {
-                    const game = gameData[0].fields;  
-                    console.log('game:', game);
-                    if (game.player2 == null) {
-                        waitingPlayer = 1;
-                        await new Promise(resolve => setTimeout(resolve, 1000));
-                        insertPlayer();
-                    } 
-                    else 
-                    {
-                        waitingPlayer = 0;
+//                 if (gameData.length > 0) {
+//                     const game = gameData[0].fields;  
+//                     console.log('game:', game);
+//                     if (game.player2 == null) {
+//                         waitingPlayer = 1;
+//                         await new Promise(resolve => setTimeout(resolve, 1000));
+//                         insertPlayer();
+//                     } 
+//                     else 
+//                     {
+//                         waitingPlayer = 0;
         
-                        //slide first player
-                        const player1_pic = document.getElementById('player1-picture');
-                        player1_pic.classList.add(...['slide-left']);
-                        const player1_name = document.getElementById('player1-name');
-                        player1_name.classList.add(...['slide-left']);
-                        const player1_rank = document.getElementById('player1-rank');
-                        player1_rank.classList.add(...['slide-left']);
+//                         //slide first player
+//                         const player1_pic = document.getElementById('player1-picture');
+//                         player1_pic.classList.add(...['slide-left']);
+//                         const player1_name = document.getElementById('player1-name');
+//                         player1_name.classList.add(...['slide-left']);
+//                         const player1_rank = document.getElementById('player1-rank');
+//                         player1_rank.classList.add(...['slide-left']);
         
-                        //fadein second player
-                        const player2_pic = document.getElementById('player2-picture');
-                        player2_pic.classList.add(...['fade-in']);
-                        const player2_name = document.getElementById('player2-name');
-                        player2_name.classList.add(...['fade-in']);
-                        const player2_rank = document.getElementById('player2-rank');
-                        player2_rank.classList.add(...['fade-in']);
-                        const versus_text = document.getElementById('versus-text');
-                        versus_text.classList.add(...['fade-in']);
+//                         //fadein second player
+//                         const player2_pic = document.getElementById('player2-picture');
+//                         player2_pic.classList.add(...['fade-in']);
+//                         const player2_name = document.getElementById('player2-name');
+//                         player2_name.classList.add(...['fade-in']);
+//                         const player2_rank = document.getElementById('player2-rank');
+//                         player2_rank.classList.add(...['fade-in']);
+//                         const versus_text = document.getElementById('versus-text');
+//                         versus_text.classList.add(...['fade-in']);
                         
-                        //fadeout loading assets
-                        loadingmodule = false;
-                        const dotdotdot = document.getElementById('loading');
-                        dotdotdot.classList.add(...['fade-out']);
-                        const waiting_text = document.getElementById('opponent-text');
-                        waiting_text.classList.add(...['fade-out']);
+//                         //fadeout loading assets
+//                         loadingmodule = false;
+//                         const dotdotdot = document.getElementById('loading');
+//                         dotdotdot.classList.add(...['fade-out']);
+//                         const waiting_text = document.getElementById('opponent-text');
+//                         waiting_text.classList.add(...['fade-out']);
         
-                        console.log("lancement dans 3");
-                        await new Promise(resolve => setTimeout(resolve, 1000));
-                        console.log("lancement dans 2");
-                        await new Promise(resolve => setTimeout(resolve, 1000));
-                        console.log("lancement dans 1");
-                        await new Promise(resolve => setTimeout(resolve, 1000));
-                        //goToLegacy(data.id);
-                    }
-                }
-            }
-            else
-            {
-                waitingPlayer = 0;
+//                         console.log("lancement dans 3");
+//                         await new Promise(resolve => setTimeout(resolve, 1000));
+//                         console.log("lancement dans 2");
+//                         await new Promise(resolve => setTimeout(resolve, 1000));
+//                         console.log("lancement dans 1");
+//                         await new Promise(resolve => setTimeout(resolve, 1000));
+//                         //goToLegacy(data.id);
+//                     }
+//                 }
+//             }
+//             else
+//             {
+//                 waitingPlayer = 0;
 
-                //slide first player
-                const player1_pic = document.getElementById('player1-picture');
-                player1_pic.classList.add(...['slide-left']);
-                const player1_name = document.getElementById('player1-name');
-                player1_name.classList.add(...['slide-left']);
-                const player1_rank = document.getElementById('player1-rank');
-                player1_rank.classList.add(...['slide-left']);
+//                 //slide first player
+//                 const player1_pic = document.getElementById('player1-picture');
+//                 player1_pic.classList.add(...['slide-left']);
+//                 const player1_name = document.getElementById('player1-name');
+//                 player1_name.classList.add(...['slide-left']);
+//                 const player1_rank = document.getElementById('player1-rank');
+//                 player1_rank.classList.add(...['slide-left']);
 
-                //fadein second player
-                const player2_pic = document.getElementById('player2-picture');
-                player2_pic.classList.add(...['fade-in']);
-                const player2_name = document.getElementById('player2-name');
-                player2_name.classList.add(...['fade-in']);
-                const player2_rank = document.getElementById('player2-rank');
-                player2_rank.classList.add(...['fade-in']);
-                const versus_text = document.getElementById('versus-image');
-                versus_text.classList.add(...['fade-in']);
+//                 //fadein second player
+//                 const player2_pic = document.getElementById('player2-picture');
+//                 player2_pic.classList.add(...['fade-in']);
+//                 const player2_name = document.getElementById('player2-name');
+//                 player2_name.classList.add(...['fade-in']);
+//                 const player2_rank = document.getElementById('player2-rank');
+//                 player2_rank.classList.add(...['fade-in']);
+//                 const versus_text = document.getElementById('versus-image');
+//                 versus_text.classList.add(...['fade-in']);
 
                 
-                //fadeout loading assets
-                loadingmodule = false;
-                const dotdotdot = document.getElementById('loading');
-                dotdotdot.classList.add(...['fade-out']);
-                const waiting_text = document.getElementById('opponent-text');
-                waiting_text.classList.add(...['fade-out']);
+//                 //fadeout loading assets
+//                 loadingmodule = false;
+//                 const dotdotdot = document.getElementById('loading');
+//                 dotdotdot.classList.add(...['fade-out']);
+//                 const waiting_text = document.getElementById('opponent-text');
+//                 waiting_text.classList.add(...['fade-out']);
 
-                await setTimeout(4000);
-                // goToLegacy(data.id);
-            }
+//                 await setTimeout(4000);
+//                 // goToLegacy(data.id);
+//             }
 
-        }
-    } catch (error) {
-        console.error('Erreur lors de la connexion:', error);
-        alert(i18n.global.t('error_login'));
-    }
-}
+//         }
+//     } catch (error) {
+//         console.error('Erreur lors de la connexion:', error);
+//         alert(i18n.global.t('error_login'));
+//     }
+// }
 
 
     ///////////////////////////////////////////////

@@ -7,6 +7,7 @@ from player.models import Player
 from django.core import serializers
 import asyncio
 from .serializers import GameSerializer
+from .serializers import PlayerSerializer
 
 def game(request):
     return render(request, 'game/game.html')
@@ -42,6 +43,40 @@ def getGameInfo(request):
             return JsonResponse({'error': 'Invalid request body'}, status=400)
     return JsonResponse({'error': 'Invalid request method'}, status=405)
 
+
+def creatFalsePlayer(request):
+    if request.method == 'POST':
+        try:
+            data = json.loads(request.body)
+            user1 = data.get('username1')
+            user2 = data.get('username2')
+            user3 = data.get('username3')
+            user4 = data.get('username4')
+            
+
+            player1, _ = Player.objects.get_or_create(
+                username=user1,
+                defaults={'username': user1}
+            )
+            player2, _ = Player.objects.get_or_create(
+                username=user2,
+                defaults={'username': user2}
+            )
+            player3, _ = Player.objects.get_or_create(
+                username=user3,
+                defaults={'username': user3}
+            )
+            player4, _ = Player.objects.get_or_create(
+                username=user4,
+                defaults={'username': user4}
+            )
+            players = [player1, player2, player3, player4]
+            serialized_players = PlayerSerializer(players, many=True)            
+            
+            return JsonResponse({'players': serialized_players.data}, status=200)
+        except json.JSONDecodeError:
+            return JsonResponse({'error': 'Invalid request body'}, status=400)
+    return JsonResponse({'error': 'Invalid request method'}, status=405)
 
 def creat_game_local(request):
     if request.method == 'POST':
