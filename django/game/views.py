@@ -8,6 +8,8 @@ from django.core import serializers
 import asyncio
 from .serializers import GameSerializer
 from .serializers import PlayerSerializer
+from django.core.serializers import serialize
+
 
 def game(request):
     return render(request, 'game/game.html')
@@ -43,6 +45,29 @@ def getGameInfo(request):
             return JsonResponse({'error': 'Invalid request body'}, status=400)
     return JsonResponse({'error': 'Invalid request method'}, status=405)
 
+
+def creatOneFalsePlayer(request):
+    if request.method == 'POST':
+        try:
+            data = json.loads(request.body)
+            user1 = data.get('username1')
+            
+
+            player1, _ = Player.objects.get_or_create(
+                username=user1,
+                defaults={'username': user1}
+            )
+            print("-------------------------------------------------------------")
+            print(player1)
+            print(player1.username)
+            print("-------------------------------------------------------------")
+            user_data = json.loads(serialize('json', [player1]))[0]['fields']
+            return JsonResponse(user_data, safe=True, content_type='application/json') 
+            # serialized_players = PlayerSerializer(player1)            
+            # return JsonResponse({'player': serialized_players.data}, status=200)
+        except json.JSONDecodeError:
+            return JsonResponse({'error': 'Invalid request body'}, status=400)
+    return JsonResponse({'error': 'Invalid request method'}, status=405)
 
 def creatFalsePlayer(request):
     if request.method == 'POST':
@@ -81,11 +106,16 @@ def creatFalsePlayer(request):
 def creat_game_local(request):
     if request.method == 'POST':
         try:
+            print("fake 404 ?")
             data = json.loads(request.body)
             username1 = data.get('username1')
             username2 = data.get('username2')
             player1 = get_object_or_404(Player, username=username1)
+            print("le 1 ne fait pas de 404")
+            print(player1)
             player2 = get_object_or_404(Player, username=username2)
+            print("le 2 ne fait pas de 404")
+            print(player2)
             latest_game = Game.objects.create(state='waiting', player1=player1, scorep1=0, player2=player2, scorep2=0)
 
             serializer = GameSerializer(latest_game)

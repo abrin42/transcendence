@@ -21,8 +21,17 @@
                 </div>
                 <div id="stuff-to-show">
                     <img id="player2-picture" class="profile-picture-matchmaking-right" :src="profilePicture"/>
-                    <p id="player2-name" class="profile-text-right">{{playerName2}}</p>
-                    <p id="player2-rank" class="rank-text-right">{{playerRank2}}</p>
+
+                    <div v-if="validateGame">
+                        <p id="player2-name" class="profile-text-right">{{playerName2}}</p>
+                        <p id="player2-rank" class="rank-text-right">{{playerRank2}}</p>
+                    </div>
+                    <div v-else>
+                        <Input id="player2-name" class="input-right" placeholder-text="Entrez le pseudo du joueur." v-model="playerName2"></Input>
+                        <button class="button button-valid" @click="validGame">
+                            <span class="buttonText">Valider</span>
+                        </button>
+                    </div>
                 </div>
             </div>
         </div>
@@ -36,12 +45,14 @@
     import CreateBackButton from '../components/CreateBackButton.vue';
     import CreateSoundButton from '../components/CreateSoundButton.vue';
     import CreateHomeButton from '../components/CreateHomeButton.vue';
+    import Input from '../components/Input.vue';
     import { ref, reactive, onMounted, onUnmounted, watch, defineEmits } from 'vue';
     import $ from 'jquery';
     import { useRouter } from 'vue-router';
     import i18n from '../i18n.js'
     import profilePicture from '@/assets/img/default-profile.png';
 
+    let validateGame = false;
     ////////////////////////////////////////////////
     /////// GET USER ///////////////////////////////
     ////////////////////////////////////////////////
@@ -51,16 +62,14 @@
 
     onUnmounted(() => {
         stopLoading();
-
     });
 
     onMounted(async () => {
         await getUser();
         if (is_connected.value === false)
             __goTo('/')
-        // await insertPlayer();
+        await createPlyInput();
         // await creatGameLocal();
-
     });
 
 
@@ -92,10 +101,10 @@
     let player1;
     let player2;
     let gamemode = "legacy"; //fetch game mode selected?
-    let playerName1 = "";
-    let playerName2 = "";
-    let playerRank1 = "";
-    let playerRank2 = "";
+    let playerName1 = "Chachou";
+    let playerName2 = "Chachou2";
+    let playerRank1 = "Noob";
+    let playerRank2 = "Beginner";
     const router = useRouter();
 
     let waitingPlayer = 1;
@@ -109,14 +118,10 @@
 
 let loadingmodule = true;
 
-async function setPlayer1() {
-    
-}
-
 async function creatGameLocal()
 {
     try {
-        const response = await fetch('/api/game/creat_game_local/', {
+        const response = await fetch('/api/game/create_game_local/', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -124,7 +129,7 @@ async function creatGameLocal()
             },
             body: JSON.stringify({
                 username1: userAccount.username,
-                username2: userAccount.username, //change to seconde player
+                username2: player2.username, //change to seconde player
             })
         });
         if (response.ok) {
@@ -136,28 +141,28 @@ async function creatGameLocal()
             console.log("p1 =",data.player1);
             console.log("p2 =",data.player2);
 
-            const player1 = data.player1;
-            const player1_pic = document.getElementById('player1-picture');
-            const player1_name = document.getElementById('player1-name');
-            const player1_rank = document.getElementById('player1-rank');
-            const player2 = data.player2;
-            const player2_pic = document.getElementById('player2-picture');
-            const player2_name = document.getElementById('player2-name');
-            const player2_rank = document.getElementById('player2-rank');
+            // const player1 = data.player1;
+            // const player1_pic = document.getElementById('player1-picture');
+            // const player1_name = document.getElementById('player1-name');
+            // const player1_rank = document.getElementById('player1-rank');
+            // const player2 = data.player2;
+            // const player2_pic = document.getElementById('player2-picture');
+            // const player2_name = document.getElementById('player2-name');
+            // const player2_rank = document.getElementById('player2-rank');
 
-            player1_pic.src = player1.profile_picture;
-            player1_name.textContent = player1.username;
-            player1_rank.textContent = `Rank: ${player1.rank}`; 
-            player2_pic.src = player2.profile_picture;
-            player2_name.textContent = player2.username;
-            player2_rank.textContent = `Rank: ${player2.rank}`; 
+            // player1_pic.src = player1.profile_picture;
+            // player1_name.textContent = player1.username;
+            // player1_rank.textContent = `Rank: ${player1.rank}`; 
+            // player2_pic.src = player2.profile_picture;
+            // player2_name.textContent = player2.username;
+            // player2_rank.textContent = `Rank: ${player2.rank}`; 
 
-            player1_pic.classList.add(...['slide-left']);
-            player1_name.classList.add(...['slide-left']);
-            player1_rank.classList.add(...['slide-left']);
-            player2_pic.classList.add(...['fade-in']);
-            player2_name.classList.add(...['fade-in']);
-            player2_rank.classList.add(...['fade-in']);
+            // player1_pic.classList.add(...['slide-left']);
+            // player1_name.classList.add(...['slide-left']);
+            // player1_rank.classList.add(...['slide-left']);
+            // player2_pic.classList.add(...['fade-in']);
+            // player2_name.classList.add(...['fade-in']);
+            // player2_rank.classList.add(...['fade-in']);
 
 
             console.log("lancement dans 3");
@@ -189,23 +194,24 @@ async function creatGameLocal()
 //         });
 //         if (response.ok) {
 //             const data = await response.json();
-
+//
 //             if (data.serializer_data) {
-//                 const gameData = JSON.parse(data.serializer_data);  
+//                 const gameData = JSON.parse(data.serializer_data);
 //                 console.log('Player Data:', gameData);
-          
+//
 //                 if (gameData.length > 0) {
-//                     const game = gameData[0].fields;  
+//                     const game = gameData[0].fields;
 //                     console.log('game:', game);
+//                     game.player2 = "test 2"
 //                     if (game.player2 == null) {
 //                         waitingPlayer = 1;
 //                         await new Promise(resolve => setTimeout(resolve, 1000));
 //                         insertPlayer();
-//                     } 
-//                     else 
+//                     }
+//                     else
 //                     {
 //                         waitingPlayer = 0;
-        
+//
 //                         //slide first player
 //                         const player1_pic = document.getElementById('player1-picture');
 //                         player1_pic.classList.add(...['slide-left']);
@@ -213,7 +219,7 @@ async function creatGameLocal()
 //                         player1_name.classList.add(...['slide-left']);
 //                         const player1_rank = document.getElementById('player1-rank');
 //                         player1_rank.classList.add(...['slide-left']);
-        
+//
 //                         //fadein second player
 //                         const player2_pic = document.getElementById('player2-picture');
 //                         player2_pic.classList.add(...['fade-in']);
@@ -221,16 +227,16 @@ async function creatGameLocal()
 //                         player2_name.classList.add(...['fade-in']);
 //                         const player2_rank = document.getElementById('player2-rank');
 //                         player2_rank.classList.add(...['fade-in']);
-//                         const versus_text = document.getElementById('versus-text');
+//                         const versus_text = document.getElementById('console.log');
 //                         versus_text.classList.add(...['fade-in']);
-                        
+//
 //                         //fadeout loading assets
 //                         loadingmodule = false;
 //                         const dotdotdot = document.getElementById('loading');
 //                         dotdotdot.classList.add(...['fade-out']);
 //                         const waiting_text = document.getElementById('opponent-text');
 //                         waiting_text.classList.add(...['fade-out']);
-        
+//
 //                         console.log("lancement dans 3");
 //                         await new Promise(resolve => setTimeout(resolve, 1000));
 //                         console.log("lancement dans 2");
@@ -244,7 +250,7 @@ async function creatGameLocal()
 //             else
 //             {
 //                 waitingPlayer = 0;
-
+//
 //                 //slide first player
 //                 const player1_pic = document.getElementById('player1-picture');
 //                 player1_pic.classList.add(...['slide-left']);
@@ -252,7 +258,7 @@ async function creatGameLocal()
 //                 player1_name.classList.add(...['slide-left']);
 //                 const player1_rank = document.getElementById('player1-rank');
 //                 player1_rank.classList.add(...['slide-left']);
-
+//
 //                 //fadein second player
 //                 const player2_pic = document.getElementById('player2-picture');
 //                 player2_pic.classList.add(...['fade-in']);
@@ -262,19 +268,19 @@ async function creatGameLocal()
 //                 player2_rank.classList.add(...['fade-in']);
 //                 const versus_text = document.getElementById('versus-image');
 //                 versus_text.classList.add(...['fade-in']);
-
-                
+//
+//
 //                 //fadeout loading assets
 //                 loadingmodule = false;
 //                 const dotdotdot = document.getElementById('loading');
 //                 dotdotdot.classList.add(...['fade-out']);
 //                 const waiting_text = document.getElementById('opponent-text');
 //                 waiting_text.classList.add(...['fade-out']);
-
+//
 //                 await setTimeout(4000);
 //                 // goToLegacy(data.id);
 //             }
-
+//
 //         }
 //     } catch (error) {
 //         console.error('Erreur lors de la connexion:', error);
@@ -282,17 +288,16 @@ async function creatGameLocal()
 //     }
 // }
 
-
     ///////////////////////////////////////////////
 
     //dynamic "loading" dots 
-    console.log(loadingmodule);
+    // console.log(loadingmodule);
     let dots;
     if (loadingmodule == true)
     {
         dots = window.setInterval( function() {
         var wait = document.getElementById('loading');
-        console.log(wait);
+        // console.log(wait);
         if ( wait.innerHTML.length >= 3 ) 
             wait.innerHTML = ".";
         else 
@@ -312,6 +317,151 @@ async function creatGameLocal()
         'Burc\'ya vaal burk\'yc, burc\'ya veman'
     ];
     var tipdisplayed = tips[Math.floor(Math.random()*tips.length)];
+
+    function createPlyInput() {
+        waitingPlayer = 0;
+
+        const player1_pic = document.getElementById('player1-picture');
+        const player1_name = document.getElementById('player1-name');
+        const player1_rank = document.getElementById('player1-rank');
+
+        player1_pic.src = userAccount.profilePicture;
+        player1_name.textContent = userAccount.username;
+        player1_rank.textContent = `Rank: ${userAccount.rank}`;
+
+        //slide first player
+        player1_pic.classList.add(...['slide-left']);
+        player1_name.classList.add(...['slide-left']);
+        player1_rank.classList.add(...['slide-left']);
+
+        //fadein second player
+        const player2_pic = document.getElementById('player2-picture');
+        player2_pic.classList.add(...['fade-in']);
+        const player2_name = document.getElementById('player2-name');
+        player2_name.classList.add(...['fade-in']);
+        const player2_rank = document.getElementById('player2-rank');
+        player2_rank.classList.add(...['fade-in']);
+        const versus_text = document.getElementById('versus-text');
+        versus_text.classList.add(...['fade-in']);
+
+        //fadeout loading assets
+        loadingmodule = false;
+        const dotdotdot = document.getElementById('loading');
+        dotdotdot.classList.add(...['fade-out']);
+        const waiting_text = document.getElementById('opponent-text');
+        waiting_text.classList.add(...['fade-out']);
+    }
+
+
+
+    // const player1_pic = document.getElementById('player1-picture');
+    //     const player1_name = document.getElementById('player1-name');
+    //     const player1_rank = document.getElementById('player1-rank');
+
+    //     player1_pic.src = userAccount.profilePicture;
+    //     player1_name.textContent = userAccount.username;
+    //     player1_rank.textContent = `Rank: ${userAccount.rank}`;
+
+    //     //slide first player
+    //     player1_pic.classList.add(...['slide-left']);
+    //     player1_name.classList.add(...['slide-left']);
+    //     player1_rank.classList.add(...['slide-left']);
+
+    //     //fadein second player
+    //     const player2_pic = document.getElementById('player2-picture');
+    //     player2_pic.classList.add(...['fade-in']);
+    //     const player2_name = document.getElementById('player2-name');
+    //     player2_name.classList.add(...['fade-in']);
+    //     const player2_rank = document.getElementById('player2-rank');
+    //     player2_rank.classList.add(...['fade-in']);
+    //     const versus_text = document.getElementById('versus-text');
+    //     versus_text.classList.add(...['fade-in']);
+
+    //     //fadeout loading assets
+    //     loadingmodule = false;
+    //     const dotdotdot = document.getElementById('loading');
+    //     dotdotdot.classList.add(...['fade-out']);
+    //     const waiting_text = document.getElementById('opponent-text');
+    //     waiting_text.classList.add(...['fade-out']);
+
+
+    async function validGame() {
+        console.log(playerName2);
+        validateGame = true;
+        try {
+        const response = await fetch('/api/game/creatOneFalsePlayer/', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRFToken': getCsrfToken()
+            },
+            body: JSON.stringify({
+                username1: playerName2,
+            })
+        });
+        if (response.ok) {
+
+
+            const user = await response.json();
+            if (user)
+            {
+                // console.log('Response data:', data);
+
+                console.log("hereee");
+                console.log(user);
+                console.log(user.username);
+                player2 = user
+                console.log("hereee222");
+                console.log(player2);
+                console.log(player2.username);
+                console.log(player2.rank);
+                console.log(player2.username);
+
+                    // const player2_pic = document.getElementById('player2-picture');
+                    const player2_name = document.getElementById('player2-name');
+                    // const player2_rank = document.getElementById('player2-rank');
+
+                    // player2_pic.src = player2.profile_picture;
+                    player2_name.textContent = player2.username;
+                    // player2_rank.textContent = `Rank: ${player2.rank}`; 
+
+                    // player2_pic.classList.add(...['fade-in']);
+                    player2_name.classList.add(...['fade-in']);
+                    // player2_rank.classList.add(...['fade-in']);
+
+                    await creatGameLocal();
+
+            }
+        }
+
+
+
+            // const data = await response.json();
+            // console.log('player Data:', data);
+
+            // player2 = data;
+
+            // console.log(player2);
+            // console.log(player2.username);
+            // // const player2_pic = document.getElementById('player2-picture');
+            // const player2_name = document.getElementById('player2-name');
+            // // const player2_rank = document.getElementById('player2-rank');
+
+            // // player2_pic.src = data.profile_picture;
+            // player2_name.textContent = data.username;
+            // // player2_rank.textContent = `Rank: ${data.rank}`; 
+
+            // // player2_pic.classList.add(...['fade-in']);
+            // // player2_name.classList.add(...['fade-in']);
+            // // player2_rank.classList.add(...['fade-in']);
+        
+    }
+    catch (error) {
+        console.error('Erreur lors de la connexion:', error);
+        alert('An error occurred while logging in');
+    }
+
+    }
 </script>
 
 
@@ -381,10 +531,8 @@ async function creatGameLocal()
 
 #versus-image-new{
     position: fixed;
-
     left: 50%;
     opacity: 1;
-
 }
 
 .profile-picture-matchmaking-left {
@@ -518,5 +666,25 @@ async function creatGameLocal()
     transform: translate(-50%, -50%);
     color: white;
     filter: drop-shadow(5px 5px 4px #0000003b);
+}
+
+.input-right {
+    position: fixed;
+    top: 68%;
+    left: 74%;
+    opacity: 0;
+}
+
+.button-valid {
+    position: fixed;
+    top: 74%;
+    left: 77%;
+    background-color: rgba(4, 255, 0, 0.25);
+}
+
+.button-valid:hover {
+    border-color: rgba(255, 255, 255, 1);
+    background-color: rgba(255, 255, 255, 0.4);
+    transition: border-color, background-color 0.5s;
 }
 </style>
