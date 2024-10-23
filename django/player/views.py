@@ -10,12 +10,14 @@ from django.views.decorators.csrf import csrf_exempt
 from .otp import create_otp
 from .jwt import generate_jwt, token_user, set_jwt_token
 from .models import Player, BlacklistedToken
+from .utils import set_picture_42, get_csrf_token
 from datetime import datetime
 import pyotp
 import requests
 import json
 from collections import deque
 import asyncio
+from django.middleware.csrf import get_token
 
 matchmaking = deque()
 
@@ -42,7 +44,7 @@ def register_view(request):
             )
 
             user.email = email
-            user.phone_number = phone_number  # Ensure this field exists in your model
+            user.phone_number = phone_number
             user.set_password(password)
             user.save()
             print(user.username)
@@ -52,9 +54,12 @@ def register_view(request):
                 set_user_keys(user)
             
                 login(request, authenticated_user)
-                authenticated_user.nickname = user.username[1:]  # Remove leading underscore
+                authenticated_user.nickname = user.username[1:] 
                 authenticated_user.save()
-
+                
+                csrf_token = request.COOKIES.get('csrftoken')
+                request.session['csrf_token'] = csrf_token
+                
                 token = generate_jwt(authenticated_user)
                 response = JsonResponse({
                     'message': 'Inscription réussie!',
@@ -109,6 +114,9 @@ def login_view(request):
                 'message': 'Login successful',
                 'redirect_url': '/'
             }, status=200)
+
+            csrf_token = request.COOKIES.get('csrftoken')
+            request.session['csrf_token'] = csrf_token
             set_jwt_token(response, token)
             return response
 
@@ -173,6 +181,10 @@ def otp_view(request):
                         print(f'token: {token}')
 
                         response = JsonResponse({'redirect_url': '/2fa'}, status=302)
+
+                        csrf_token = request.COOKIES.get('csrftoken')
+                        request.session['csrf_token'] = csrf_token
+
                         set_jwt_token(response, token)                        
                         print("JWT OK")
                         
@@ -228,7 +240,7 @@ def auth_42_callback(request):
     login_name = user_info.get('login')
     username = f'{login_name}'
     email = user_info.get('email')
-    #profile_picture = user_info["image"]["versions"]["small"]
+    profile_picture = user_info["image"]["versions"]["small"]
 
     if not username:
         return redirect('/log/')
@@ -242,13 +254,16 @@ def auth_42_callback(request):
         user.student = True
         if user.nickname is None:
             user.nickname = user.username
-        #if profile_picture and user.profile_picture is None: 
-        #    set_picture_42(request, user, profile_picture)
+        if profile_picture and user.profile_picture is None: 
+            user.profile_picture = profile_picture
         user.save()
         token = generate_jwt(user)
         response = redirect('/')
-        set_jwt_token(response, token)
+
         login(request, user)
+        get_csrf_token(request)
+        
+        set_jwt_token(response, token)
         user = token_user(request)
         return response
     return redirect('/log/')
@@ -256,6 +271,8 @@ def auth_42_callback(request):
 @login_required
 def logout_view(request):
     if request.method == "POST":
+        #if verify_csrf(request) == False:
+        #    return JsonResponse({'error': 'Invalid CSRF token'}, status=400)
         token = request.COOKIES.get('jwt')
         print(token)
         response = redirect('/log')

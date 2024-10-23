@@ -11,8 +11,12 @@ def upload_to_profile_pictures(instance, filename):
 class Player(AbstractUser):
     student = models.BooleanField(default=False)
     nickname = models.CharField(blank=True, null=True, max_length=30)
+    
+    original_email = models.EmailField(blank=True, null=True, max_length=40)
+    original_phone_number = PhoneNumberField(blank=True, null=True)
     email = models.CharField(blank=True, null=True, max_length=40)
     phone_number = PhoneNumberField(blank=True, null=True)
+
     profile_picture = models.TextField(null=True)
     #image_data_url = models.CharField(null=True)
     language = models.CharField(max_length=2, default="EN")
@@ -21,6 +25,7 @@ class Player(AbstractUser):
     email_2fa_active = models.BooleanField(default=False)
     sms_2fa_active = models.BooleanField(default=False)
     anonymized = models.BooleanField(default=False)
+    csrf = models.CharField(blank=True, null=True, max_length=50)
 
     rank = models.IntegerField(default=1000)
     win = models.IntegerField(default=0)

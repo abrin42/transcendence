@@ -80,6 +80,8 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'pong.csp_middleware.ContentSecurityPolicyMiddleware',
+
 ]
 
 ROOT_URLCONF = 'pong.urls'
@@ -196,7 +198,7 @@ ASGI_APPLICATION = 'pong.asgi.application'
 
 
 # settings.py test
-APPEND_SLASH = False
+APPEND_SLASH = True
 
 
 # WEBSOCKET_URL = '/ws/'
