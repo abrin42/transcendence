@@ -12,8 +12,8 @@ def update_language(request):
     user = token_user(request)
     if user:
         if request.method == "POST":
-            #if verify_csrf(request) == False:
-            #    return JsonResponse({'error': 'Invalid CSRF token'}, status=400)
+            if request.session.get('csrf') != request.COOKIES.get('csrftoken'):
+                return JsonResponse({'error': 'Invalid CSRF token'}, status=400)
             try:
                 data = json.loads(request.body)
                 language = data.get('language')
@@ -32,8 +32,8 @@ def update_keys(request):
     user = token_user(request)
     if user:
         if request.method == "POST":
-            #if verify_csrf(request) == False:
-             #   return JsonResponse({'error': 'Invalid CSRF token'}, status=400)
+            if request.session.get('csrf') != request.COOKIES.get('csrftoken'):
+                return JsonResponse({'error': 'Invalid CSRF token'}, status=400)
             try:
                 data = json.loads(request.body)
                 print(data)

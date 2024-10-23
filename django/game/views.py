@@ -95,8 +95,8 @@ def insertPlayer(request):
 #@login_required
 def update_game(request):
     if request.method == "POST":
-        #if verify_csrf(request) == False:
-        #    return JsonResponse({'error': 'Invalid CSRF token'}, status=400)
+        if request.session.get('csrf') != request.COOKIES.get('csrftoken'):
+            return JsonResponse({'error': 'Invalid CSRF token'}, status=400)
         try:
             # game = Game.objects.order_by('-id').first()
             data = json.loads(request.body)
@@ -124,8 +124,8 @@ def update_game(request):
 
 def getIsPlayer(request):
     if request.method == "POST":
-        #if verify_csrf(request) == False:
-        #    return JsonResponse({'error': 'Invalid CSRF token'}, status=400)
+        if request.session.get('csrf') != request.COOKIES.get('csrftoken'):
+            return JsonResponse({'error': 'Invalid CSRF token'}, status=400)
         try:
             # game = Game.objects.order_by('-id').first()
             data = json.loads(request.body)

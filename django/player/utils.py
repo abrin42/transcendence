@@ -12,37 +12,34 @@ import os
 import requests
 
 def verify_csrf(request):
-    user = token_user(request)
-    if not user.csrf:
-        return False
-    
-    csrf_session = request.session.get('csrf_token')
-    #print(f"/verify_csrf/csrf_session: {csrf_session}")
+    print(f"/logout/csrf_token: {csrf_token}")
+    print(f"/logout/user.username: {user.username}")
+    print(f"/logout/request.session['csrf']: {request.session.get('csrf')}")     
 
-    if user.csrf != csrf_session:
+    if request.session.get('csrf') != request.COOKIES.get('csrftoken'):
         return False
     return True
 
 def get_csrf_token(request):
     print(request)
     if request.method == 'GET':
-        csrf_token = get_token(request)
+        print(f"/getcsrf/request.session['username']: {request.session.get('username')}")
+        print(f"/getcsrf/request.session['csrf']: {request.session.get('csrf')}")     
+        print(f"/getcsrf/request.COOKIES.get('csrftoken'): {request.COOKIES.get('csrftoken')}")     
 
-        if not request.session.get('csrf_token'):
-            print(f"/get_csrf_token/csrf_token: {csrf_token}")
-            request.session['csrf_token'] = csrf_token
-            response = JsonResponse({'message': 'CSRF token generated'}, status=200)
-            response.set_cookie('csrftoken', csrf_token)
-            return response
+        if request.COOKIES.get('csrftoken') is None:
+            csrf_token = get_token(request)
+
+        if request.session.get('username') is None:
+            csrf_token = request.COOKIES.get('csrftoken')
+            print(f"callback/ csrf_token: {csrf_token}")     
+            request.session['csrf'] = csrf_token
+            print(f"callback/ request.session['csrf']: {request.session['csrf']}")     
         
-        user = token_user(request)
-        if user:
-            user.csrf = csrf_token
         response = JsonResponse({'message': 'CSRF token generated'}, status=200)
         response.set_cookie('csrftoken', csrf_token)
         return response
-        #return JsonResponse({'error': 'Invalid request la'}, status=400)
-    return JsonResponse({'error': 'Invalid request la'}, status=400)
+    return JsonResponse({'error': 'Invalid request method'}, status=400)
 
 def username_underscore(request):
     post_data = request.POST.copy()
@@ -64,7 +61,7 @@ def set_picture_42(request, user, profile_picture):
         print(f"Failed to fetch profile picture, status code: {response.status_code}")
 
 def verify_user(request):
-    if request.method == 'POST':
+    if request.method == 'GET':
         try:
             user = get_object_or_404(Player, username=request.user.username)
             player_data = serializers.serialize('json', [user])
@@ -76,5 +73,5 @@ def verify_user(request):
             return JsonResponse({'player_data': player_data}, content_type='application/json', status=200)
         except Player.DoesNotExist:
             return JsonResponse({'error': 'User not found'}, status=404)
-    return JsonResponse({'error': 'Invalid request la'}, status=400)
+    return JsonResponse({'error': 'Invalid request method'}, status=400)
 

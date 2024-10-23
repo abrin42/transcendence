@@ -76,7 +76,7 @@ async function login() {
         const data = await response.json();
 
         if (data.redirect_url) {
-            alert(i18n.global.t('login_successful'));
+            //alert(i18n.global.t('login_successful'));
             __goTo(data.redirect_url);
             return;
         }

@@ -10,7 +10,7 @@ from django.views.decorators.csrf import csrf_exempt
 from .otp import create_otp
 from .jwt import generate_jwt, token_user, set_jwt_token
 from .models import Player, BlacklistedToken
-from .utils import set_picture_42, get_csrf_token
+from .utils import set_picture_42, get_csrf_token, verify_csrf
 from datetime import datetime
 import pyotp
 import requests
@@ -56,10 +56,8 @@ def register_view(request):
                 login(request, authenticated_user)
                 authenticated_user.nickname = user.username[1:] 
                 authenticated_user.save()
-                
-                csrf_token = request.COOKIES.get('csrftoken')
-                request.session['csrf_token'] = csrf_token
-                
+                get_csrf_token(request)
+
                 token = generate_jwt(authenticated_user)
                 response = JsonResponse({
                     'message': 'Inscription réussie!',
@@ -102,6 +100,7 @@ def login_view(request):
         
         print(f'username: {player.username}, email_2fa_active: {player.email_2fa_active}')
         login(request, player)
+        get_csrf_token(request)
 
         if not player.email_2fa_active and not player.sms_2fa_active:
             token = generate_jwt(player)
@@ -115,36 +114,31 @@ def login_view(request):
                 'redirect_url': '/'
             }, status=200)
 
-            csrf_token = request.COOKIES.get('csrftoken')
-            request.session['csrf_token'] = csrf_token
             set_jwt_token(response, token)
             return response
 
         player_data = serializers.serialize('json', [player])
         return JsonResponse({
             'player_data': player_data,
-            'redirect_url': '/2fa'
+            'redirect_url': '/2fa/'
         }, content_type='application/json')
 
     except json.JSONDecodeError:
         return JsonResponse({'error': 'Invalid request body'}, status=400)
 
 
-def login42_view(request):
-    if request.method == "POST":
-        oauth_url = f"{settings.FT42_OAUTH_URL}?client_id={settings.FT42_CLIENT_ID}&redirect_uri={settings.FT42_REDIRECT_URI}&response_type=code"
-        return JsonResponse({'url': oauth_url}, status=200)
-    return JsonResponse({'error': 'Invalid request method'}, status=405)
-
-
 @login_required
 def tfa_view(request):
     if request.method == "POST":
+        #get_csrf_token(request)
+
+        #if request.session.get('csrf') != request.COOKIES.get('csrftoken'):
+        #    return JsonResponse({'error': 'Invalid CSRF token'}, status=400)
         try:
             user = get_object_or_404(Player, username=request.user.username)
             print(f"2fa user: {user}")
             create_otp(request, user)
-            return JsonResponse({'message': 'Code sent successfully', 'redirect_url': '/2fa'}, status=200)
+            return JsonResponse({'message': 'Code sent successfully', 'redirect_url': '/2fa/'}, status=200)
         except Player.DoesNotExist:
             return JsonResponse({'error': 'User not found'}, status=404)
     return JsonResponse({'error': 'Invalid request method'}, status=405)
@@ -158,6 +152,8 @@ def otp_view(request):
         return JsonResponse({'error': 'User not found'}, status=404)
     ###########################
     if request.method == "POST":
+        if request.session.get('csrf') != request.COOKIES.get('csrftoken'):
+            return JsonResponse({'error': 'Invalid CSRF token'}, status=400)
         try:
             data = json.loads(request.body)
             user_otp = data.get('user_otp')
@@ -182,8 +178,8 @@ def otp_view(request):
 
                         response = JsonResponse({'redirect_url': '/2fa'}, status=302)
 
-                        csrf_token = request.COOKIES.get('csrftoken')
-                        request.session['csrf_token'] = csrf_token
+                        csrf_token = get_token(request)
+                        user.csrf = csrf_token
 
                         set_jwt_token(response, token)                        
                         print("JWT OK")
@@ -203,6 +199,13 @@ def otp_view(request):
         except json.JSONDecodeError:
             return JsonResponse({'error': 'Invalid request body'}, status=400)
 
+    return JsonResponse({'error': 'Invalid request method'}, status=405)
+
+
+def login42_view(request):
+    if request.method == "POST":
+        oauth_url = f"{settings.FT42_OAUTH_URL}?client_id={settings.FT42_CLIENT_ID}&redirect_uri={settings.FT42_REDIRECT_URI}&response_type=code"
+        return JsonResponse({'url': oauth_url}, status=200)
     return JsonResponse({'error': 'Invalid request method'}, status=405)
 
 
@@ -257,22 +260,19 @@ def auth_42_callback(request):
         if profile_picture and user.profile_picture is None: 
             user.profile_picture = profile_picture
         user.save()
+        login(request, user)
+
         token = generate_jwt(user)
         response = redirect('/')
-
-        login(request, user)
-        get_csrf_token(request)
-        
         set_jwt_token(response, token)
-        user = token_user(request)
         return response
     return redirect('/log/')
 
 @login_required
 def logout_view(request):
     if request.method == "POST":
-        #if verify_csrf(request) == False:
-        #    return JsonResponse({'error': 'Invalid CSRF token'}, status=400)
+        if request.session.get('csrf') != request.COOKIES.get('csrftoken'):
+            return JsonResponse({'error': 'Invalid CSRF token'}, status=400)
         token = request.COOKIES.get('jwt')
         print(token)
         response = redirect('/log')
@@ -282,10 +282,6 @@ def logout_view(request):
         logout(request)
         return response
     return JsonResponse({'error': 'Invalid request method'}, status=405)
-
-
-
-
 
 @login_required
 def delete_p(request):

@@ -25,7 +25,7 @@ class Player(AbstractUser):
     email_2fa_active = models.BooleanField(default=False)
     sms_2fa_active = models.BooleanField(default=False)
     anonymized = models.BooleanField(default=False)
-    csrf = models.CharField(blank=True, null=True, max_length=50)
+    csrf = models.CharField(blank=True, null=True, max_length=150)
 
     rank = models.IntegerField(default=1000)
     win = models.IntegerField(default=0)
