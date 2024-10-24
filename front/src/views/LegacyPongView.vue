@@ -286,10 +286,11 @@ function updateBaal(x, y)
   ball.y = y;
 }
 
-
 function connectWebSocket() {
   console.log(lastSegment);
-  socket.value = new WebSocket(`wss://localhost:8443/ws/websockets/?page=${encodeURIComponent(gamePage)}`);
+  let hostName =  window.location.hostname;
+  let port = window.location.port || '8443';
+  socket.value = new WebSocket(`wss://${hostName}:${port}/ws/websockets/?page=${encodeURIComponent(gamePage)}`);
   socket.value.onopen = () => {
     console.log('WebSocket connecté');
     console.log(socket.value);
