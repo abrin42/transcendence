@@ -223,75 +223,30 @@ class PongConsumer(AsyncWebsocketConsumer):
                     'y': y ,
                 }
             )
-        # if game.is_online == 0:
-            # await game.wsj1.send(text_data=json.dumps({
-            #     'type': "updateBaal",
-            #     'x': x,
-            #     'y': y,
-            # }))
-            # await game.wsj2.send(text_data=json.dumps({
-            #     'type': "updateBaal",
-            #     'x': x,
-            #     'y': y,
-            # }))
+
+
+
+
+    # async def loop_game(self):
+    #     while self.Game_on != -1:
+    #         while(self.Game_on == 1):
+    #             await self.move_ball()
+    #             await self.sendBall(self.ball_x, self.ball_y)
+    #             await asyncio.sleep(self.tick_back)
+    #         await asyncio.sleep(0.5)
 
     async def loop_game_remote(self):
         print("*-*-*-*-*-*-*thread remote ball*-*-*-*-*-**")
-        # next_call = time.perf_counter()
-        while True:
-            # next_call += 0.01 
-            await self.move_ball_remote()
-            await self.sendBall_remote(lstgame[self.room_id]['ball_x'], lstgame[self.room_id]['ball_y'])
-            # sleep_time = max(0, next_call - time.perf_counter())
-            # time.sleep(sleep_time)
-            await asyncio.sleep(0.01)
+        while lstgame[self.room_id]['Game_on'] != -1:
+            while lstgame[self.room_id]['Game_on'] == 1:
+                await self.move_ball_remote()
+                await self.sendBall_remote(lstgame[self.room_id]['ball_x'], lstgame[self.room_id]['ball_y'])
+                await asyncio.sleep(0.01)
+            await asyncio.sleep(0.5)
 
-        # while game.Game_on != -1:
-        #     while(game.Game_on == 1):
-        #         # await game.sendPts("updatePts", "1")
-        #         await game.move_ball_remote()
-        #         # game.ball_x = game.ball_x + 1
-        #         await game.sendBall_remote(game.ball_x, game.ball_y)
-        #         await asyncio.sleep(game.tick_back)
-        #     await asyncio.sleep(0.5)
 
-    async def init_game(self):
-        self.game = {
-            # 'wsj1': None,
-            # 'wsj2': None,
-            # 'boardWidth': 700,
-            # 'boardHeight': 700,
-            # 'AI': 0,
-            # 'init_ball_speed': 4,
-            # 'tick_back': 0.01,
-            # 'Game_on': 0,
-            # 'nb_pts_for_win': 10,
-            # 'P1Ready': 0,
-            # 'P2Ready': 0,
-            # 'PTSp1': 0,
-            # 'PTSp2': 0,
-            # 'xPad1': 10,
-            # 'xPad2': 700 - 30,
-            # 'paddle_width': 20,
-            # 'paddle_height': 140,
-            # 'position_in_paddle': 0,
-            # 'init_pad': 700 / 2 - 140 / 2,
-            # 'posPad1': 700 / 2 - 140 / 2,
-            # 'posPad2': 700 / 2 - 140 / 2,
-            # 'startXBall': 350,
-            # 'startYBall': 350,
-            # 'ball_x': 350,
-            # 'ball_y': 350,
-            # 'future_x': 350,
-            # 'future_y': 350,
-            # 'ball_angle': 180 if random.random() > 0.5 else 0,
-            # 'ball_radius': 7.18,
-            # 'ball_speed': 4,
-            # 'board_y_max': 700,
-            # 'board_x_max': 700,
-            # 'board_min': 0,
-            # 'is_online': 1,
-        }
+
+
 
     async def initRemote(self, id):
         # self.redis = await get_redis()
@@ -299,10 +254,6 @@ class PongConsumer(AsyncWebsocketConsumer):
         self.P1Ready = 0
         self.P2Ready = 0
         self.Game_on = 0
-        # self.game['room_id'] = id
-        # self.game['P1Ready'] = 0
-        # self.game['P2Ready'] = 0
-        # self.game['Game_on'] = 0
         print("l'id est :")
         print(self.room_id)
 
@@ -344,7 +295,6 @@ class PongConsumer(AsyncWebsocketConsumer):
                 'is_online': 1,
             }
 
-        # await self.init_game()
         await self.channel_layer.group_add(
             self.room_id,
             self.channel_name
@@ -365,6 +315,12 @@ class PongConsumer(AsyncWebsocketConsumer):
             lstgame[self.room_id]['wsj2'] = self.channel_name
             print("+++++++++++++++++++j2 join+++++++++++++++")
             asyncio.ensure_future(self.loop_game_remote())
+
+    async def sendStartRemote(self):
+        await self.send(text_data=json.dumps({
+            'type': "startGame",
+        }))
+        lstgame[self.room_id]['Game_on'] = 1
 
 # ==========================================================================================================================
 # ==========================================================================================================================
@@ -581,7 +537,6 @@ class PongConsumer(AsyncWebsocketConsumer):
 
     async def sendPadUp(self, player):
         if self.is_online == 0:
-            print("apd up local")
             if player == 1:
                 self.P1Ready = 1
                 self.posPad1 -= 5
@@ -605,7 +560,6 @@ class PongConsumer(AsyncWebsocketConsumer):
                     'player': player,
                 }))
         else:
-            print("apd up remote")
             if player == 1:
                 lstgame[self.room_id]['P1Ready'] = 1
                 lstgame[self.room_id]['posPad1'] -= 5
@@ -645,7 +599,6 @@ class PongConsumer(AsyncWebsocketConsumer):
 
     async def sendPadDown(self, player):
         if self.is_online == 0:
-            print("apd down local")
             if player == 1:
                 self.P1Ready = 1
                 self.posPad1 += 5
@@ -669,7 +622,6 @@ class PongConsumer(AsyncWebsocketConsumer):
                     'player': player,
                 }))
         else:
-            print("apd down remote")
             if player == 1:
                 lstgame[self.room_id]['P1Ready'] = 1
                 lstgame[self.room_id]['posPad1'] += 5
@@ -724,32 +676,20 @@ class PongConsumer(AsyncWebsocketConsumer):
         )
 
         ###########################
-        if self.room_name.startswith("game_"):
+        if self.room_name.startswith("game_") or self.room_name.startswith("ia"):
             print("is local")
             await self.initForLocal()
             await self.accept()
-            await self.send_test_message()
+            await self.send(text_data=json.dumps({
+                'type': 'connection_success',
+                'message': 'Connexion réussie!'
+            })) 
         elif self.room_name.startswith("remote_"):
             print("is websocket")
             self.is_online = 1,
             page_url = self.room_name.replace("remote_", "")
-            print("lalalala----page url is -----lalalala")
             await self.initRemote(page_url)
 
-
-    async def send_test_message(self):
-        # Envoyer un message de test au groupe Redis
-        test_message = {
-            'type': 'test_message',
-            'content': 'Hello, Redis!'
-        }
-        await self.channel_layer.group_send(
-            self.room_group_name,
-            {
-                'type': 'receive_test_message',
-                'message': test_message
-            }
-        )
 
     async def receive_test_message(self, event):
         message = event['message']
@@ -772,9 +712,7 @@ class PongConsumer(AsyncWebsocketConsumer):
     async def receive(self, text_data):
         try:
             data = json.loads(text_data)
-
             type = data.get('type')
-            print("--------receive type---------")
             print(type)
             player = int(data.get('player', 0))
             if type and player:
@@ -790,6 +728,9 @@ class PongConsumer(AsyncWebsocketConsumer):
                 
             if self.P1Ready == 1 and self.P2Ready == 1 and self.Game_on == 0:
                 await self.sendStart()
+            if self.is_online == 1:
+                if lstgame[self.room_id]['P1Ready'] == 1 and lstgame[self.room_id]['P2Ready'] == 1 and lstgame[self.room_id]['Game_on'] == 0:
+                    await self.sendStartRemote()
 
         except json.JSONDecodeError:
             await self.send(text_data=json.dumps({
