@@ -295,11 +295,16 @@ def delete_account(request):
     return JsonResponse({'redirect_url': '/log'}, status=200)
 
 def connected_user(request):
-    user = token_user(request)
-    if user is not None:
-        user_data = json.loads(serialize('json', [user]))[0]['fields']
-        return JsonResponse(user_data, safe=True, content_type='application/json') 
-    return JsonResponse({'msg': 'User not found'}, status=204)
+    if request.method == 'GET':
+        try:
+            user = token_user(request)
+            if user is not None:
+                user_data = json.loads(serialize('json', [user]))[0]['fields']
+                return JsonResponse(user_data, safe=True, content_type='application/json') 
+            return JsonResponse({'msg': 'User not found'}, status=204)
+        except json.JSONDecodeError:
+            return JsonResponse({'error': 'Invalid request body'}, status=400)
+    return JsonResponse({'error': 'Invalid request method'}, status=405)
 
 def get_all_user(request):
     data = Player.objects.all().order_by("-rank")
