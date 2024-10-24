@@ -151,7 +151,12 @@ const router = createRouter({
     {
       path: '/:pathMatch(.*)*', // Cela correspond à toute route non définie
       component: NotFound
-    }
+    },
+    {
+      path: '/api/:pathMatch(.*)*', // Cela correspond à toute route non définie
+      component: NotFound
+    },
+
   ]
 })
 
