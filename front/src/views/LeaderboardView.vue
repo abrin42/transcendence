@@ -6,7 +6,7 @@ import profilePicture from '@/assets/img/default-profile.png';
 import { inject } from 'vue';
 
 const varySpeed = inject('varySpeed');
-varySpeed(0); 
+//varySpeed(0); 
 
 const currentUrl = window.location.href; 
 const lastSegment = currentUrl.split('/').filter(Boolean).pop();
@@ -170,9 +170,8 @@ const playerWinLoss = ref(playerStats.value.getStats());
 <template>
     <main>
         <div id="wrapper">
-            <CreateBackButton />
             <CreateDropupButton />
-
+            <CreateBackButton />
             <h2 class="category-title">{{ $t('LEADERBOARD') }}</h2>
             <div class="leaderboardContainer">
                 <div>
@@ -248,36 +247,13 @@ h1,
         0 0 30px rgba(255, 20, 147, 0.6),
         0 0 40px rgba(255, 20, 147, 0.6),
         0 0 50px rgba(255, 20, 147, 0.6),
-        0 0 60px rgba(255, 20, 147, 0.6);
-    animation: neon-glow 1.5s ease-in-out infinite alternate;
-}
-
-@keyframes neon-glow {
-    from {
-        text-shadow: 0 0 5px rgba(255, 255, 255, 0.8),
-            0 0 10px rgba(255, 255, 255, 0.6),
-            0 0 20px rgba(255, 20, 147, 0.6),
-            0 0 30px rgba(255, 20, 147, 0.6),
-            0 0 40px rgba(255, 20, 147, 0.6),
-            0 0 50px rgba(255, 20, 147, 0.6),
-            0 0 60px rgba(255, 20, 147, 0.6);
-    }
-
-    to {
-        text-shadow: 0 0 10px rgba(255, 255, 255, 1),
-            0 0 20px rgba(255, 255, 255, 0.8),
-            0 0 30px rgba(255, 20, 147, 0.8),
-            0 0 40px rgba(255, 20, 147, 0.8),
-            0 0 50px rgba(255, 20, 147, 0.8),
-            0 0 60px rgba(255, 20, 147, 0.8),
-            0 0 70px rgba(255, 20, 147, 0.8);
-    }
+        0 0 60px rgba(255, 20, 147, 0.6); 
 }
 
 .leaderboardContainer {
     position: fixed;
     height: 40vw;
-    width: 140vh;
+    width: 88%;
     top: 15%;
     border-radius: 0.5vw;
     padding: 1.5vw;
@@ -285,6 +261,14 @@ h1,
     border: 0.15vw solid rgba(0, 0, 0, 0.25);
     overflow-y: auto;
     overflow-x: hidden;
+}
+
+.overloadBtn {
+    position: fixed;
+    width: 3vw;
+    height: 6vh;
+    bottom: 93vh;
+    right: 95vw;
 }
 
 .profile-picture {

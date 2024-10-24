@@ -78,9 +78,9 @@
   }
 
     let result = "GAME IN PROGRESS";
-    if (scoreplayer1.value == 10)
+    if (scoreplayer1.value == 5)
         result = "PLAYER 1 WINS!";
-    if (scoreplayer2.value == 10)
+    if (scoreplayer2.value == 5)
         result = "PLAYER 2 WINS!";
 
 </script>

@@ -668,11 +668,17 @@ class PongConsumer(AsyncWebsocketConsumer):
         self.room_group_name = f"game_{self.room_name}"
 
         print("+++++++++++++++++++++++++++++++++++++++++++++++++++++++")
+        print(query_string)
+        print(query_params)
         print(self.room_name)
+        print(self.room_group_name)
+        print("+++++++++++++++++++++++++++++++++++++++++++++++++++++++")
+        print(self.room_name)
+        print(self.room_name.startswith("ia"))
         
         await self.channel_layer.group_add(
-            self.room_group_name,
-            self.channel_name
+           self.room_group_name,
+           self.channel_name
         )
 
         ###########################

@@ -44,7 +44,7 @@
     }
 
     function goToIA() {
-        router.push('/IA');
+        router.push('/legacy-ia');
         game.value = 'solo';
         gameSelection(game.value, mode.value);
     }
