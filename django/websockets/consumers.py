@@ -333,17 +333,17 @@ class PongConsumer(AsyncWebsocketConsumer):
 
 
     async def connect(self):
-        query_string = self.scope['query_string'].decode('utf-8')
-        query_params = urllib.parse.parse_qs(query_string)        
-        page_url = query_params.get('page', [''])[0]
-        page_url = page_url.replace("game_", "")
-        if (page_url == "legacy" or page_url == "ia"):
-            await self.initForLocal()
-            await self.accept()
-            await self.send(text_data=json.dumps({
-                'type': 'connection_success',
-                'message': 'Connexion réussie!'
-            }))
+        # query_string = self.scope['query_string'].decode('utf-8')
+        # query_params = urllib.parse.parse_qs(query_string)        
+        # page_url = query_params.get('page', [''])[0]
+        # page_url = page_url.replace("game_", "")
+        # if (page_url == "legacy" or page_url == "ia"):
+        await self.initForLocal()
+        await self.accept()
+        await self.send(text_data=json.dumps({
+            'type': 'connection_success',
+            'message': 'Connexion réussie!'
+        }))
     
 
     async def disconnect(self, close_code):

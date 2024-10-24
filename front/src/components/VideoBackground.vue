@@ -1,21 +1,18 @@
 <template>
     <div id ="wrapper">
         <div id="video">
-            <video id="videoBG" loop autoplay muted preload="true" class="flex">
-                <source src="./../assets/MainMenuScene.mp4" type="video/mp4">
-                    Your browser does not support the video element.
-            </video>
         </div>
     </div>
 
 </template>
 
-<script>
+<script setup>
+
 </script>
 
 <style>
     #video {
-        z-index: -1;
+        z-index: -3;
         position: absolute;
         width: auto;
         height: auto;

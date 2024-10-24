@@ -6,6 +6,8 @@
     import CreateHomeButton from '../components/CreateHomeButton.vue';
     import { useRouter } from 'vue-router';
     import { onMounted } from 'vue';
+    import { inject } from 'vue';
+
 
     ////////////////////////////////////////////////
     /////// GET USER ///////////////////////////////
@@ -26,8 +28,13 @@
 
     const router = useRouter();
 
-    var myVideo = document.getElementById('videoBG');
-    myVideo.playbackRate = 1.3;
+    const gameSelection = inject('gameSelection');
+    const varySpeed = inject('varySpeed');
+    const game = inject('game');
+    const mode = inject('mode');
+
+    varySpeed(1.6);
+    mode.value = ''; //resets mode in case user uses back"back"
 
     function __goTo(page) {
         if (page == null)
@@ -35,12 +42,22 @@
         router.push(page);
     }
 
-    function goToLegacy() {
-        router.push('/legacy');
+    function goToMatchMakingLocal() {
+        mode.value = 'local';
+        gameSelection(game.value, mode.value);
+        router.push('/gameselect');
     }
 
     function goToTourney() {
-        router.push('/tourney');
+        mode.value = 'tourney';
+        gameSelection(game.value, mode.value);
+        router.push('/gameselect');
+    }
+
+    function goToRemote() {
+        mode.value = 'remote';
+        gameSelection(game.value, mode.value);
+        router.push('/gameselect');
     }
 </script>
 
@@ -48,7 +65,7 @@
     <main>
         <div id="wrapper">
             <div class="buttonContainer">
-                <button class="button button-credits" @click="goToLegacy()">
+                <button class="button button-credits" @click="goToMatchMakingLocal()">
                     <span class="buttonText">{{ $t('local') }}</span>
                 </button>
                 <button class="button button-credits" @click="goToTourney()">

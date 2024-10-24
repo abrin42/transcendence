@@ -1,4 +1,3 @@
-<!-- @lribette todo translate -->
 <template>
     <div>
         <!-- Popup des amis -->
@@ -94,6 +93,7 @@
 import { ref, computed, defineEmits, onMounted } from 'vue';
 import { useRouter } from 'vue-router';
 import Input from './Input.vue';
+import i18n from '../i18n.js';
 
 ////////////////////////////////////////////////
 /////// GET USER ///////////////////////////////
@@ -101,6 +101,14 @@ import Input from './Input.vue';
 
 import { useUser } from '../useUser.js';
 const { getUser, userAccount } = useUser();
+
+function getCsrfToken() {
+    const cookieValue = document.cookie
+        .split('; ')
+        .find(row => row.startsWith('csrftoken='))
+        ?.split('=')[1];
+    return cookieValue || '';
+}
 
 ////////////////////////////////////////////////
 ////////////////////////////////////////////////
@@ -135,7 +143,7 @@ const router = useRouter();
 
 async function getFriendsRequest() {
     try {
-        const response = await fetch(`api/friend/pending/`, {
+        const response = await fetch(`/api/friend/pending/`, {
             method: 'GET',
         });
 
@@ -165,10 +173,11 @@ async function getFriendsRequest() {
 async function acceptRequest(playerUsername) {
     try {
         console.log('Inviting player with ID:', playerUsername);
-        const response = await fetch('api/friend/help/', {
+        const response = await fetch('/api/friend/help/', {
             method: 'POST', // Change to POST to match the Django view
             headers: {
                 'Content-Type': 'application/json',
+                'X-CSRFToken': getCsrfToken(),
             },
             body: JSON.stringify({
                 username: playerUsername,
@@ -181,17 +190,18 @@ async function acceptRequest(playerUsername) {
         getFriends();
     } catch (error) {
         console.error('Error while adding friends:', error);
-        alert('An error occurred when adding a friend');
+        alert(i18n.global.t('error_adding_a_friend'));
     }
 }
 
 async function invitePlayer(playerUsername) {
     try {
         console.log('Inviting player with ID:', playerUsername);
-        const response = await fetch('api/friend/add/', {
+        const response = await fetch('/api/friend/add/', {
             method: 'POST', // Change to POST to match the Django view
             headers: {
                 'Content-Type': 'application/json',
+                'X-CSRFToken': getCsrfToken(),
             },
             body: JSON.stringify({
                 username: playerUsername,
@@ -202,9 +212,9 @@ async function invitePlayer(playerUsername) {
         }
     } catch (error) {
         if (error == "Error: HTTP error! Status: 400") {
-            alert('You have already sent an invitation to this user' );
+            alert(i18n.global.t('error_already_sent_invitation'));
         } else {
-            alert('An error occurred when adding a friend');
+            alert(i18n.global.t('error_adding_a_friend'));
         }
     }
     allPlayers.value = allPlayers.value.filter(request => request.username !== playerUsername);
@@ -220,15 +230,14 @@ function declineRequest(id) {
 
 async function getAllUsers() {
     try {
-        const response = await fetch(`api/player/get_all_user/`, {
+        const response = await fetch(`/api/player/get_all_user/`, {
             method: 'GET',
         });
         if (!response.ok) {
             return;
         }
         const users = await response.json();
-        if (users.data) {
-            const userData = JSON.parse(users.data);
+            const userData = JSON.parse(users);
             userData.forEach((element) => {
                 var obj = {}
                 obj['username'] = element.fields.username;
@@ -241,7 +250,6 @@ async function getAllUsers() {
                 allPlayers.value.push(obj);
             });
             console.log("all user", allPlayers._rawValue)
-        }
     } catch (error) {
         console.error('Error retrieving user data /getAllUsers:', error);
     }
@@ -249,7 +257,7 @@ async function getAllUsers() {
 
 async function getFriends() {
     try {
-        const response = await fetch(`api/friend/list/`, {
+        const response = await fetch(`/api/friend/list/`, {
             method: 'GET',
         });
 
@@ -294,10 +302,11 @@ function closePopup() {
 async function deleteFriend(playerUsername) {
     try {
         console.log('delete player with :', playerUsername);
-        const response = await fetch('api/friend/delete/', {
+        const response = await fetch('/api/friend/delete/', {
             method: 'POST', // Change to POST to match the Django view
             headers: {
                 'Content-Type': 'application/json',
+                'X-CSRFToken': getCsrfToken(),
             },
             body: JSON.stringify({
                 username: playerUsername,
@@ -309,13 +318,13 @@ async function deleteFriend(playerUsername) {
         friends.value = friends.value.filter(request => request.username !== playerUsername);
     } catch (error) {
         console.error('Error while adding friends:', error);
-        alert('An error occurred when adding a friend');
+        alert(i18n.global.t('error_adding_a_friend'));
     }
 }
 
 function inviteFriendToPlay(friendId) {
     console.log('Inviting friend with ID:', friendId, 'to play');
-    alert(`Invitation sent to  ${friends.value.find(friend => friend.id === friendId).name} to play.`);
+    alert(`${i18n.global.t('invitation_sent_to')} ${friends.value.find(friend => friend.id === friendId).name} ${i18n.global.t('to_play')}`);
 }
 
 const filteredPlayers = computed(() => {

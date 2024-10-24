@@ -12,7 +12,7 @@
             <div class="button-container-mm">
                 <img id="versus-image" src="../assets/vs_text.png"/>
                 <div class="stuff-to-move">
-                    <img id="player1-picture" class="profile-picture-matchmaking-left" src="../assets/Chachou.png"/>
+                    <img id="player1-picture" class="profile-picture-matchmaking-left" :src="profilePicture"/>
                     <p id="player1-name" class="profile-text-left">{{playerName1}}</p>
                     <p id="player1-rank" class="rank-text-left">{{playerRank1}}</p>
                 </div>
@@ -20,7 +20,7 @@
                     <p id="opponent-text" class="opponent-text">Looking for an opponent...</p>
                 </div>
                 <div id="stuff-to-show">
-                    <img id="player2-picture" class="profile-picture-matchmaking-right" src="../assets/Chachou.png"/>
+                    <img id="player2-picture" class="profile-picture-matchmaking-right" :src="profilePicture"/>
                     <p id="player2-name" class="profile-text-right">{{playerName2}}</p>
                     <p id="player2-rank" class="rank-text-right">{{playerRank2}}</p>
                 </div>
@@ -36,9 +36,11 @@
     import CreateBackButton from '../components/CreateBackButton.vue';
     import CreateSoundButton from '../components/CreateSoundButton.vue';
     import CreateHomeButton from '../components/CreateHomeButton.vue';
-    import { ref, reactive, onMounted, watch, defineEmits } from 'vue';
+    import { ref, reactive, onMounted, onUnmounted, watch, defineEmits } from 'vue';
     import $ from 'jquery';
     import { useRouter } from 'vue-router';
+    import i18n from '../i18n.js'
+    import profilePicture from '@/assets/img/default-profile.png';
 
     ////////////////////////////////////////////////
     /////// GET USER ///////////////////////////////
@@ -47,13 +49,25 @@
     import { useUser } from '../useUser.js'; 
     const { getUser, userAccount, is_connected } = useUser(); 
 
+    onUnmounted(() => {
+        stopLoading();
+
+    });
+
     onMounted(async () => {
         await getUser();
         if (is_connected.value === false)
             __goTo('/')
-        await insertPlayer();
+        // await insertPlayer();
+        await creatGameLocal();
+
     });
 
+
+    function stopLoading() {
+        clearInterval(dots);  // Stop the interval
+        console.log("Loading stopped.");
+}
     ////////////////////////////////////////////////
     ////////////////////////////////////////////////
     ////////////////////////////////////////////////
@@ -87,14 +101,79 @@
     let waitingPlayer = 1;
 
     function goToLegacy(id) {
-        router.push(`/legacy_remote/${id}`);
+        console.log("id hereee");
+        console.log(id);
+        router.push(`/legacy/${id}`);
+        // router.push(`/matchmaking`);
     }
 
 let loadingmodule = true;
 
+async function creatGameLocal()
+{
+    try {
+        const response = await fetch('/api/game/creat_game_local/', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRFToken': getCsrfToken() // Assuming you have CSRF protection enabled
+            },
+            body: JSON.stringify({
+                username1: userAccount.username,
+                username2: userAccount.username, //change to seconde player
+            })
+        });
+        if (response.ok) {
+            const data = await response.json();
+            console.log('Game Data:', data);
+
+            console.log('data:', data);
+            console.log("game id", data.id);
+            console.log("p1 =",data.player1);
+            console.log("p2 =",data.player2);
+
+            const player1 = data.player1;
+            const player1_pic = document.getElementById('player1-picture');
+            const player1_name = document.getElementById('player1-name');
+            const player1_rank = document.getElementById('player1-rank');
+            const player2 = data.player2;
+            const player2_pic = document.getElementById('player2-picture');
+            const player2_name = document.getElementById('player2-name');
+            const player2_rank = document.getElementById('player2-rank');
+
+            player1_pic.src = player1.profile_picture;
+            player1_name.textContent = player1.username;
+            player1_rank.textContent = `Rank: ${player1.rank}`; 
+            player2_pic.src = player2.profile_picture;
+            player2_name.textContent = player2.username;
+            player2_rank.textContent = `Rank: ${player2.rank}`; 
+
+            player1_pic.classList.add(...['slide-left']);
+            player1_name.classList.add(...['slide-left']);
+            player1_rank.classList.add(...['slide-left']);
+            player2_pic.classList.add(...['fade-in']);
+            player2_name.classList.add(...['fade-in']);
+            player2_rank.classList.add(...['fade-in']);
+
+
+            console.log("lancement dans 3");
+            await new Promise(resolve => setTimeout(resolve, 1000));
+            console.log("lancement dans 2");
+            await new Promise(resolve => setTimeout(resolve, 1000));
+            console.log("lancement dans 1");
+            await new Promise(resolve => setTimeout(resolve, 1000));
+            goToLegacy(data.id);
+        }
+    }
+    catch (error) {
+        console.error('Erreur lors de la connexion:', error);
+        alert('An error occurred while logging in');
+    }
+}
+
 async function insertPlayer() {
     try {
-        const response = await fetch('api/game/insertplayer/', {
+        const response = await fetch('/api/game/insertplayer/', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -118,7 +197,9 @@ async function insertPlayer() {
                         waitingPlayer = 1;
                         await new Promise(resolve => setTimeout(resolve, 1000));
                         insertPlayer();
-                    } else {
+                    } 
+                    else 
+                    {
                         waitingPlayer = 0;
         
                         //slide first player
@@ -187,13 +268,13 @@ async function insertPlayer() {
                 waiting_text.classList.add(...['fade-out']);
 
                 await setTimeout(4000);
-                goToLegacy(data.id);
+                // goToLegacy(data.id);
             }
 
         }
     } catch (error) {
         console.error('Erreur lors de la connexion:', error);
-        alert('An error occurred while logging in');
+        alert(i18n.global.t('error_login'));
     }
 }
 
@@ -202,9 +283,10 @@ async function insertPlayer() {
 
     //dynamic "loading" dots 
     console.log(loadingmodule);
+    let dots;
     if (loadingmodule == true)
     {
-        var dots = window.setInterval( function() {
+        dots = window.setInterval( function() {
         var wait = document.getElementById('loading');
         console.log(wait);
         if ( wait.innerHTML.length >= 3 ) 

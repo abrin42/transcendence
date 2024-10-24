@@ -5,6 +5,7 @@ import CreateHomeButton from '../components/CreateHomeButton.vue';
 import Input from '../components/Input.vue';
 import { useRouter } from 'vue-router';
 import { ref, onMounted } from 'vue';
+import i18n from '../i18n.js'
 
 ////////////////////////////////////////////////
 /////// GET USER ///////////////////////////////
@@ -51,12 +52,12 @@ const password = ref('');
 
 async function login() {
     if (!username.value || !password.value) {
-        alert('Veuillez entrer un email et un mot de passe.');
+        alert(i18n.global.t('please_enter_email_password'));
         return;
     }
 
     try {
-        const response = await fetch('api/player/login/', {
+        const response = await fetch('/api/player/login/', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -75,22 +76,25 @@ async function login() {
         const data = await response.json();
 
         if (data.redirect_url) {
-            __goTo(data.redirect_url); 
+            alert(i18n.global.t('login_successful'));
+            __goTo(data.redirect_url);
             return;
         }
 
-         else {
-            alert('User data not found!');
+        else {
+    //          alert('User data not found!');
+            alert(i18n.global.t('error_user_data_not_found'));
         }
     } catch (error) {
         console.error('Erreur lors de la connexion /login:', error);
-        alert('Invalid username or password');
+        alert(i18n.global.t('error_login'));
+    //     alert('Invalid username or password');
     }
 }
 
 async function login42() {
     try {
-        const response = await fetch('api/player/login42/', {
+        const response = await fetch('/api/player/login42/', {
             method: 'POST', 
             headers: {
                 'Content-Type': 'application/json',
@@ -104,12 +108,12 @@ async function login42() {
         if (data.url) {
             window.location.href = data.url;
         } else {
-            alert('Could not get URL for login');
+            alert(i18n.global.t('error_invalid_URL_login'));
         }
         
     } catch (error) {
         console.error('Error during login:', error);
-        alert('An error occurred during login');
+        alert(i18n.global.t('error_login'));
     }
 }
 
