@@ -363,20 +363,8 @@ function connectWebSocket() {
     }
     // console.log("---END ON MESSAGE---");
   };
-
-  socket.value.onerror = (error) => {
-    console.error('Erreur WebSocket:', error);
-  };
-
-  socket.value.onclose = () => {
-    console.log('WebSocket déconnecté, tentative de reconnexion...');
-    setTimeout(() => 
-    {
-      if (connection != 0)
-        connectWebSocket();
-    }, 3000);
-  };
 }
+
 
 function sendMessage(msg) {
   if (socket.value && socket.value.readyState === WebSocket.OPEN) 

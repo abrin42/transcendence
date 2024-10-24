@@ -1,55 +1,84 @@
 <script setup>
-//imports
-import CreateDropupButton from '../components/CreateDropupButton.vue';
-import CreateBackButton from '../components/CreateBackButton.vue';
-import CreateSoundButton from '../components/CreateSoundButton.vue';
-import CreateHomeButton from '../components/CreateHomeButton.vue';
-import { useRouter } from 'vue-router';
-import { onMounted } from 'vue';
+    //imports
+    import CreateDropupButton from '../components/CreateDropupButton.vue';
+    import CreateBackButton from '../components/CreateBackButton.vue';
+    import CreateSoundButton from '../components/CreateSoundButton.vue';
+    import CreateHomeButton from '../components/CreateHomeButton.vue';
+    import { useRouter } from 'vue-router';
+    import { onMounted } from 'vue';
+    import { inject } from 'vue';
 
-const router = useRouter();
 
-////////////////////////////////////////////////
-/////// GET USER ///////////////////////////////
-////////////////////////////////////////////////
+    const router = useRouter();
+    const gameSelection = inject('gameSelection');
+    const varySpeed = inject('varySpeed');
+    const game = inject('game');
+    const mode = inject('mode');
 
-import { useUser } from '../useUser.js';
-const { getUser, is_connected } = useUser();
+    ////////////////////////////////////////////////
+    /////// GET USER ///////////////////////////////
+    ////////////////////////////////////////////////
 
-onMounted(async () => {
-    await getUser();
-    if (is_connected.value === false)
-        __goTo('/')
-});
+    import { useUser } from '../useUser.js';
+    const { getUser, is_connected } = useUser();
 
-////////////////////////////////////////////////
-////////////////////////////////////////////////
-////////////////////////////////////////////////
+    onMounted(async () => {
+        await getUser();
+        if (is_connected.value === false)
+            __goTo('/')
+    });
 
-function __goTo(page) {
-    if (page == null)
-        return;
-    router.push(page);
-}
+    ////////////////////////////////////////////////
+    ////////////////////////////////////////////////
+    ////////////////////////////////////////////////
 
-var myVideo = document.getElementById('videoBG');
-myVideo.playbackRate = 1.3;
+    function __goTo(page) {
+        if (page == null)
+            return;
+        router.push(page);
+    }
 
-function goToMatchmaking() {
-    router.push('/matchmaking');
-}
+    function goToLegacy() {
+        // go to Legacy IA
+        if(game.value == 'solo')
+            router.push('/legacy-ia');
+        // go to Legacy multi local
+        else if(game.value == 'multi' && mode.value == 'local')
+            router.push('/legacy-local/:id');
+        // go to legacy multi remote
+        else if(game.value == 'multi' && mode.value == 'tourney')
+            router.push('/legacy-tourney');
+        // go to legacy tourney 
+        else if(game.value == 'multi' && mode.value == 'remote')
+            router.push('/legacy-remote/:id');
+        else
+            console.error("Error with game selection");
+    }
 
-function goToLegacy() {
-    router.push('/ia');
-}
+    function goToCyber() {
+        // go to Cyber IA
+        if(game.value == 'solo')
+            router.push('/cyberpong-ia');
+        // go to Cyber multi local
+        else if(game.value == 'multi' && mode.value == 'local')
+            router.push('/cyberpong-local/:id');
+        // go to Cyber multi remote
+        else if(game.value == 'multi' && mode.value == 'tourney')
+            router.push('/cyber-tourney');
+        // go to legacy tourney 
+        else if(game.value == 'multi' && mode.value == 'remote')
+            router.push('/cyber-remote/:id');
+        else
+            console.error("Error with game selection");
+    }
 
-function goToCyber() {
-    router.push('/cyberpong-ia');
-}
-
-function goToThree() {
-    router.push('/legacy');
-}
+    function goToThree() {
+        // go to Three IA
+        if(game.value == 'solo')
+            router.push('/threepong-ia');
+        else
+            console.error("Error with game selection");
+    }
 </script>
 
 <template>
@@ -63,6 +92,11 @@ function goToThree() {
                 </button>
 
                 <button class="button button-cyber" @click="goToCyber">
+                    <i class="fa-solid fa-hippo" style="margin-right: 1vw;"></i>
+                    <span class="buttonText">CyberPong</span>
+                </button>
+
+                <button  v-if="game.value == 'solo'" class="button button-cyber" @click="goToThree">
                     <i class="fa-solid fa-hippo" style="margin-right: 1vw;"></i>
                     <span class="buttonText">CyberPong</span>
                 </button>

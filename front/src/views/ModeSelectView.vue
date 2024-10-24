@@ -6,6 +6,7 @@
     import CreateHomeButton from '../components/CreateHomeButton.vue';
     import { useRouter } from 'vue-router';
     import { onMounted } from 'vue';
+    import { inject } from 'vue';
 
     ////////////////////////////////////////////////
     /////// GET USER ///////////////////////////////
@@ -25,9 +26,16 @@
     ////////////////////////////////////////////////
     
     const router = useRouter();
-    
-    var myVideo = document.getElementById('videoBG');
-    myVideo.playbackRate = 1.3;
+
+    const gameSelection = inject('gameSelection');
+    const varySpeed = inject('varySpeed');
+    const game = inject('game');
+    const mode = inject('mode');
+
+    varySpeed(1.3);
+    game.value = ''; //resets game in case user uses "back"
+    mode.value = ''; //resets mode in case user uses back"back"
+
     
     function __goTo(page) {
         if (page == null)
@@ -37,10 +45,14 @@
 
     function goToIA() {
         router.push('/IA');
+        game.value = 'solo';
+        gameSelection(game.value, mode.value);
     }
 
     function goToMulti() {
         router.push('/multimode');
+        game.value = 'multi';
+        gameSelection(game.value, mode.value);
     }
 </script>
 

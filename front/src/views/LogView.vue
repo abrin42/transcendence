@@ -82,7 +82,7 @@ async function login() {
         }
 
         else {
-    //          alert('User data not found!');
+            // alert('User data not found!');
             alert(i18n.global.t('error_user_data_not_found'));
         }
     } catch (error) {

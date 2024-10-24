@@ -3,6 +3,10 @@ import { ref, onMounted } from 'vue';
 import CreateDropupButton from '../components/CreateDropupButton.vue';
 import CreateBackButton from '../components/CreateBackButton.vue';
 import profilePicture from '@/assets/img/default-profile.png';
+import { inject } from 'vue';
+
+const varySpeed = inject('varySpeed');
+varySpeed(0); 
 
 const currentUrl = window.location.href; 
 const lastSegment = currentUrl.split('/').filter(Boolean).pop();
@@ -135,15 +139,6 @@ const latestGames = ref([
     { id: 2, host: "_johndoe", rival: "abrin", score: { host: 2, rival: 5 }, date: "13/12/1200" },
     { id: 2, host: "_johndoe", rival: "abrin", score: { host: 2, rival: 5 }, date: "13/12/1200" },
     { id: 2, host: "_johndoe", rival: "abrin", score: { host: 2, rival: 5 }, date: "13/12/1200" },
-    { id: 2, host: "_johndoe", rival: "abrin", score: { host: 2, rival: 5 }, date: "13/12/1200" },
-    { id: 2, host: "_johndoe", rival: "abrin", score: { host: 2, rival: 5 }, date: "13/12/1200" },
-    { id: 2, host: "_johndoe", rival: "abrin", score: { host: 2, rival: 5 }, date: "13/12/1200" },
-    { id: 2, host: "_johndoe", rival: "abrin", score: { host: 2, rival: 5 }, date: "13/12/1200" },
-    { id: 2, host: "_johndoe", rival: "abrin", score: { host: 2, rival: 5 }, date: "13/12/1200" },
-    { id: 2, host: "_johndoe", rival: "abrin", score: { host: 2, rival: 5 }, date: "13/12/1200" },
-    { id: 2, host: "_johndoe", rival: "abrin", score: { host: 2, rival: 5 }, date: "13/12/1200" },
-    { id: 2, host: "_johndoe", rival: "abrin", score: { host: 2, rival: 5 }, date: "13/12/1200" },
-    { id: 2, host: "_johndoe", rival: "abrin", score: { host: 2, rival: 5 }, date: "13/12/1200" },
     { id: 1, host: "_johndoe", rival: "abrin", score: { host: 5, rival: 1 }, date: "12/12/1200" },
     { id: 1, host: "_johndoe", rival: "abrin", score: { host: 5, rival: 1 }, date: "12/12/1200" },
     { id: 1, host: "_johndoe", rival: "abrin", score: { host: 5, rival: 1 }, date: "12/12/1200" },
@@ -151,14 +146,6 @@ const latestGames = ref([
     { id: 1, host: "_johndoe", rival: "abrin", score: { host: 5, rival: 1 }, date: "12/12/1200" },
     { id: 1, host: "_johndoe", rival: "abrin", score: { host: 5, rival: 1 }, date: "12/12/1200" },
     { id: 1, host: "_johndoe", rival: "abrin", score: { host: 5, rival: 1 }, date: "12/12/1200" },
-    { id: 2, host: "_johndoe", rival: "abrin", score: { host: 2, rival: 5 }, date: "13/12/1200" },
-    { id: 2, host: "_johndoe", rival: "abrin", score: { host: 2, rival: 5 }, date: "13/12/1200" },
-    { id: 2, host: "_johndoe", rival: "abrin", score: { host: 2, rival: 5 }, date: "13/12/1200" },
-    { id: 2, host: "_johndoe", rival: "abrin", score: { host: 2, rival: 5 }, date: "13/12/1200" },
-    { id: 2, host: "_johndoe", rival: "abrin", score: { host: 2, rival: 5 }, date: "13/12/1200" },
-    { id: 2, host: "_johndoe", rival: "abrin", score: { host: 2, rival: 5 }, date: "13/12/1200" },
-    { id: 2, host: "_johndoe", rival: "abrin", score: { host: 2, rival: 5 }, date: "13/12/1200" },
-    { id: 2, host: "_johndoe", rival: "abrin", score: { host: 2, rival: 5 }, date: "13/12/1200" },
     { id: 2, host: "_johndoe", rival: "abrin", score: { host: 2, rival: 5 }, date: "13/12/1200" },
     { id: 2, host: "_johndoe", rival: "abrin", score: { host: 2, rival: 5 }, date: "13/12/1200" },
     { id: 2, host: "_johndoe", rival: "abrin", score: { host: 2, rival: 5 }, date: "13/12/1200" },
@@ -187,7 +174,7 @@ const playerWinLoss = ref(playerStats.value.getStats());
             <CreateDropupButton />
 
             <h2 class="category-title">{{ $t('LEADERBOARD') }}</h2>
-            <div class="leaderbaordContainer">
+            <div class="leaderboardContainer">
                 <div>
                     <button class="button">
                         <img :src="user[0].profilePicture || profilePicture" class="profile-picture" />
@@ -287,10 +274,10 @@ h1,
     }
 }
 
-.leaderbaordContainer {
+.leaderboardContainer {
     position: fixed;
     height: 40vw;
-    width: 120vh;
+    width: 140vh;
     top: 15%;
     border-radius: 0.5vw;
     padding: 1.5vw;
@@ -453,7 +440,6 @@ h1,
     text-align: center;
     position: absolute;
     width: 65%;
-
 }
 
 .stat-row {

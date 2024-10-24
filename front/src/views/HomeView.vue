@@ -7,8 +7,19 @@
     import CreateHomeButton from '../components/CreateHomeButton.vue';
     import { useRouter } from 'vue-router';
     import { onMounted } from 'vue';
+    import { inject } from 'vue';
 
     const router = useRouter();
+    const gameSelection = inject('gameSelection');
+    const varySpeed = inject('varySpeed');
+    const game = inject('game');
+    const mode = inject('mode');
+
+    game.value = '';
+    mode.value = '';
+    
+    varySpeed(1); //sets speed to average in App.vue
+    gameSelection(game.value, mode.value); //sets game selected back to empty if user uses back button
 
     onMounted(async () => {
         await getCSRF();
@@ -36,9 +47,6 @@
         }
     }
     
-
-    var myVideo = document.getElementById('videoBG');
-    myVideo.playbackRate = 1;
 
     function goToModeSelect() {
         router.push('/modeselect');
