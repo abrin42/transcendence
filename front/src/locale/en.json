@@ -130,7 +130,7 @@
     "error_login": "An error occurred while logging in.",
     "error_OTPPP_setup": "An error occurred during OTPPP setup",
     "error_TFA_setup": "An error occurred during TFA setup",
-    "resend_code": "Resend code!",
+    "resend_code": "Code sent again!",
     "account_updated_successfully": "Account updated successfully!",
     "error_account_update": "An error occurred during account update.",
     "please_enter_email_password": "Please enter an email address and a password.",

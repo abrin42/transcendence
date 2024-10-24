@@ -11,35 +11,22 @@ from .jwt import token_user
 import os
 import requests
 
-def verify_csrf(request):
-    print(f"/logout/csrf_token: {csrf_token}")
-    print(f"/logout/user.username: {user.username}")
-    print(f"/logout/request.session['csrf']: {request.session.get('csrf')}")     
-
-    if request.session.get('csrf') != request.COOKIES.get('csrftoken'):
-        return False
-    return True
-
 def get_csrf_token(request):
     print(request)
-    if request.method == 'GET':
-        print(f"/getcsrf/request.session['username']: {request.session.get('username')}")
-        print(f"/getcsrf/request.session['csrf']: {request.session.get('csrf')}")     
-        print(f"/getcsrf/request.COOKIES.get('csrftoken'): {request.COOKIES.get('csrftoken')}")     
+    print(f"/getcsrf/request.session['csrf']: {request.session.get('csrf')}")     
+    print(f"/getcsrf/request.COOKIES.get('csrftoken'): {request.COOKIES.get('csrftoken')}")     
 
-        if request.COOKIES.get('csrftoken') is None:
-            csrf_token = get_token(request)
+    if request.COOKIES.get('csrftoken') is None:
+        csrf_token = get_token(request)
 
-        if request.session.get('username') is None:
-            csrf_token = request.COOKIES.get('csrftoken')
-            print(f"callback/ csrf_token: {csrf_token}")     
-            request.session['csrf'] = csrf_token
-            print(f"callback/ request.session['csrf']: {request.session['csrf']}")     
-        
-        response = JsonResponse({'message': 'CSRF token generated'}, status=200)
-        response.set_cookie('csrftoken', csrf_token)
-        return response
-    return JsonResponse({'error': 'Invalid request method'}, status=400)
+    csrf_token = request.COOKIES.get('csrftoken')
+    print(f"callback/ csrf_token: {csrf_token}")     
+    request.session['csrf'] = csrf_token
+    print(f"callback/ request.session.get['csrf']: {request.session.get('csrf')}")     
+    
+    response = JsonResponse({'message': 'CSRF token generated'}, status=200)
+    response.set_cookie('csrftoken', csrf_token)
+    return response
 
 def username_underscore(request):
     post_data = request.POST.copy()
