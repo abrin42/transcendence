@@ -93,10 +93,19 @@ class PongConsumer(AsyncWebsocketConsumer):
 
     async def endGame_remote(self):
         lstgame[self.room_id]['Game_on']= -1
-        await self.disconnect(1000)
+        await self.channel_layer.group_send(
+            self.room_id,
+            {
+                'type': 'gameEnded',
+            }
+        )
+
+    async def gameEnded(self, event):
         await self.send(text_data=json.dumps({
-            'type': "endGame",
+            'type': 'endGame',
         }))
+        await self.disconnect(1000)
+
 
     async def sendPts_remote(self, type, player):
         if player == "1":
@@ -109,7 +118,7 @@ class PongConsumer(AsyncWebsocketConsumer):
         await self.channel_layer.group_send(
             self.room_id,
             {
-                'type': 'update_points',
+                'type': 'updatePts',
                 'updatePts': updatePts,
                 'player': player,
             }
@@ -119,7 +128,7 @@ class PongConsumer(AsyncWebsocketConsumer):
             lstgame[self.room_id]['PTSp2'] == lstgame[self.room_id]['nb_pts_for_win']:
             await self.endGame_remote()
 
-    async def update_points(self, event):
+    async def updatePts(self, event):
         await self.send(text_data=json.dumps({
             'type': event['type'],
             'updatePts': event['updatePts'],
@@ -445,10 +454,10 @@ class PongConsumer(AsyncWebsocketConsumer):
 
     async def endGame(self):
         self.Game_on = -1
-        await self.disconnect(1000)
         await self.send(text_data=json.dumps({
             'type': "endGame",
         }))
+        await self.disconnect(1000)
 
     async def sendPadInit(self):
         await self.send(text_data=json.dumps({
