@@ -27,15 +27,20 @@ SECRET_KEY = os.environ.get('secret_key')
 DEBUG = True
 
 # ALLOWED_HOSTS = ['api']
-ALLOWED_HOSTS = ["localhost", 'api',
-                "10.11.1.11" ]
+ALLOWED_HOSTS = [
+                "localhost", 
+                 "api",
+                 "10.11.*.*",
+                 "10.11.7.13",
+                ]
 
 DATA_UPLOAD_MAX_MEMORY_SIZE = None
 
 
 CSRF_TRUSTED_ORIGINS = ['https://localhost:8443',
-                        'https://10.11.1.11:8443',
-                        'https://10.11.1.10:8443',]
+                        'https://10.11.*.*:8443',
+                        'https://10.11.7.13:8443',
+                        ]
 
 CSRF_COOKIE_HTTPONLY = False
 CSRF_COOKIE_SAMESITE = 'Lax'
@@ -47,8 +52,8 @@ CORS_ALLOW_ALL_ORIGINS = True
 CORS_ALLOWED_ORIGINS = [
     "http://localhost:8080", #a tej ?
     "https://localhost:8443",
-    "https://10.11.1.11:8443",
-    'https://10.11.1.10:8443', 
+    'https://10.11.*.*:8443',
+    'https://10.11.7.13:8443',
 ]
 
 
@@ -202,12 +207,12 @@ APPEND_SLASH = False
 # WEBSOCKET_URL = '/ws/'
 # WEBSOCKET_REDIS_BROKER_URL = 'redis://localhost:6379/0'
 
-# CHANNEL_LAYERS = {
-#     'default': {
-#         'BACKEND': 'channels_redis.core.RedisChannelLayer',
-#         'CONFIG': {
-#             "hosts": [('redis', 6379)],
-#             "capacity": 100000,
-#         },
-#     },
-# }
+CHANNEL_LAYERS = {
+    'default': {
+        'BACKEND': 'channels_redis.core.RedisChannelLayer',
+        'CONFIG': {
+            "hosts": [('redis', 6379)],
+            "capacity": 100000,
+        },
+    },
+}

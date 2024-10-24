@@ -319,7 +319,7 @@ function connectWebSocket() {
       pointScoredAudio.play();
       await updateGameInfo();
     } 
-    else if (data.type == 'mouvUp' || data.type == 'mouvDown')
+    else if (data.type == 'updatePaddle')
     {
       updatePadel(data.player, data.newY);
       // messages.value.push(data.type);

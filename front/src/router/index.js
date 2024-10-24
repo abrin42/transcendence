@@ -13,6 +13,7 @@ import ThreePongView from '../views/ThreePongView.vue'
 import LeaderboardView from '../views/LeaderboardView.vue'
 import LoginView from '../views/LoginView.vue'
 import MatchmakingView from '../views/MatchmakingView.vue'
+import MatchmakingRemoteView from '../views/MatchmakingRemoteView.vue'
 import MyAccountView from '../views/MyAccountView.vue'
 import TourneyView from '../views/TourneyView.vue'
 import MultiModeView from '../views/MultiModeView.vue'
@@ -96,6 +97,11 @@ const router = createRouter({
       path: '/matchmaking',
       name: 'matchmaking',
       component: MatchmakingView
+    },
+    {
+      path: '/matchmakingRemote',
+      name: 'matchmakingRemote',
+      component: MatchmakingRemoteView
     },
     {
       path: '/cyberpong-ia',
