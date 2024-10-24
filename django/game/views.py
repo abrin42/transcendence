@@ -27,6 +27,13 @@ def game(request):
 
 #     return (JsonResponse({'message': 'gameIDInfo', 'gameID': game.id}, status=200))
 
+def get_all_games(request):
+    if request.method == 'GET':
+        data = Game.objects.all().order_by("-created_at")
+        data = serializers.serialize('json', data, use_natural_foreign_keys=True, use_natural_primary_keys=True)
+        return JsonResponse(data, safe=False)
+    return JsonResponse({'error': 'Invalid request method'}, status=405)
+
 
 def getGameInfo(request):
     if request.method == 'POST':

@@ -10,6 +10,6 @@ urlpatterns = [
     path('creat_game_local/', views.creat_game_local, name='creat_game_local'),
     path('getGameInfo/', views.getGameInfo, name='getGameInfo'),
     path('getIsPlayer/', views.getIsPlayer, name='getIsPlayer'),
-
+    path('get_all_games/', views.get_all_games, name="get_all_games"),
     # path('getgameid/', views.getgameid, name="getgameid"),
 ]
