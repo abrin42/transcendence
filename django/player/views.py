@@ -152,8 +152,8 @@ def otp_view(request):
         return JsonResponse({'error': 'User not found'}, status=404)
     ###########################
     if request.method == "POST":
-        if request.session.get('csrf') != request.COOKIES.get('csrftoken'):
-            return JsonResponse({'error': 'Invalid CSRF token'}, status=400)
+        #if request.session.get('csrf') != request.COOKIES.get('csrftoken'):
+         #   return JsonResponse({'error': 'Invalid CSRF token'}, status=400)
         try:
             data = json.loads(request.body)
             user_otp = data.get('user_otp')
@@ -271,8 +271,8 @@ def auth_42_callback(request):
 @login_required
 def logout_view(request):
     if request.method == "POST":
-        if request.session.get('csrf') != request.COOKIES.get('csrftoken'):
-            return JsonResponse({'error': 'Invalid CSRF token'}, status=400)
+        #if request.session.get('csrf') != request.COOKIES.get('csrftoken'):
+         #   return JsonResponse({'error': 'Invalid CSRF token'}, status=400)
         token = request.COOKIES.get('jwt')
         print(token)
         response = redirect('/log')
