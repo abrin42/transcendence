@@ -713,7 +713,6 @@ class PongConsumer(AsyncWebsocketConsumer):
         try:
             data = json.loads(text_data)
             type = data.get('type')
-            print(type)
             player = int(data.get('player', 0))
             if type and player:
                 if type == "mouvUp":
