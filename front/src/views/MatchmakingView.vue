@@ -46,7 +46,7 @@
     import CreateSoundButton from '../components/CreateSoundButton.vue';
     import CreateHomeButton from '../components/CreateHomeButton.vue';
     import Input from '../components/Input.vue';
-    import { ref, reactive, onMounted, onUnmounted, watch, defineEmits } from 'vue';
+    import { ref, reactive, onMounted, onUnmounted, onBeforeMount, watch, defineEmits } from 'vue';
     import $ from 'jquery';
     import { useRouter } from 'vue-router';
     import i18n from '../i18n.js'
@@ -64,15 +64,17 @@
         stopLoading();
     });
 
-    onMounted(async () => {
+    onBeforeMount(async () => {
         await getUser();
         if (is_connected.value === false)
-            __goTo('/')
-        await createPlyInput();
+            __goTo('/');
+    });
+
+    onMounted(async () => {
+        createPlyInput();
         // await creatGameLocal();
         // await insertPlayer();
         await creatGameLocal();
-
     });
 
 

@@ -18,7 +18,7 @@
 </template>
 
 <script setup>
-    import { ref, onMounted, watch } from 'vue';
+    import { ref, onMounted, onBeforeMount, watch } from 'vue';
     import { useRouter } from 'vue-router';
     import FriendsPopup from './FriendsPopup.vue'; 
 
@@ -26,10 +26,10 @@
 /////// GET USER ///////////////////////////////
 ////////////////////////////////////////////////
 
-import { useUser } from '../useUser.js';
-const { getUser, userAccount, is_connected } = useUser();
+    import { useUser } from '../useUser.js';
+    const { getUser, userAccount, is_connected } = useUser();
 
-    onMounted(async () => {
+    onBeforeMount(async () => {
         await getUser();
     });
 

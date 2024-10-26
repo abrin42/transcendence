@@ -4,7 +4,7 @@
     import CreateBackButton from '../components/CreateBackButton.vue';
     import CreateSoundButton from '../components/CreateSoundButton.vue';
     import { useRouter } from 'vue-router';
-    import { onMounted, ref } from 'vue';
+    import { onBeforeMount, ref } from 'vue';
 
     ////////////////////////////////////////////////
     /////// GET USER ///////////////////////////////
@@ -17,12 +17,11 @@
     
     let scoreplayer1 = ref(0);
     let scoreplayer2 = ref(0);
-    onMounted(async () => {
+    onBeforeMount(async () => {
         await getUser();
-        await getGameInfo();
-        // if (is_connected.value === false)
-        //     __goTo('/')
-    });
+        if (is_connected.value === false)
+            __goTo('/');
+     });
 
     ////////////////////////////////////////////////
     ////////////////////////////////////////////////

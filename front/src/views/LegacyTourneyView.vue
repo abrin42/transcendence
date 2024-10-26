@@ -5,7 +5,7 @@ import NeonText from '@/components/NeonText.vue';
 import Input from '@/components/Input.vue'; // Assurez-vous que ce composant Input existe
 
 import { useRouter } from 'vue-router';
-import { onMounted, ref, watch, onUnmounted } from 'vue';
+import { onBeforeMount, ref, watch, onUnmounted } from 'vue';
 import { useUser } from '../useUser.js';
 import i18n from '../i18n.js';
 
@@ -15,8 +15,10 @@ const timer = ref(10);
 let interval = null;
 
 // Charger les utilisateurs et démarrer le timer si 4 participants
-onMounted(async () => {
-    await getUser();
+onBeforeMount(async () => {
+  await getUser();
+  if (is_connected.value === false)
+    __goTo('/');
 });
 
 // Navigation vers une autre page

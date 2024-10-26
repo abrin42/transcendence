@@ -36,7 +36,7 @@
     import CreateBackButton from '../components/CreateBackButton.vue';
     import CreateSoundButton from '../components/CreateSoundButton.vue';
     import CreateHomeButton from '../components/CreateHomeButton.vue';
-    import { ref, reactive, onMounted, onUnmounted, watch, defineEmits } from 'vue';
+    import { ref, reactive, onMounted, onUnmounted, onBeforeMount, watch, defineEmits } from 'vue';
     import $ from 'jquery';
     import { useRouter } from 'vue-router';
     import profilePicture from '@/assets/img/default-profile.png';
@@ -51,14 +51,16 @@ import { compileScript } from 'vue/compiler-sfc';
 
     onUnmounted(() => {
         stopLoading();
+    });
 
+    onBeforeMount(async () => {
+        await getUser();
+        if (is_connected.value === false)
+            __goTo('/');
     });
 
     onMounted(async () => {
-        await getUser();
-        if (is_connected.value === false)
-            __goTo('/')
-        await createPlyInput();
+        createPlyInput();
         await insertPlayer();
         // await creatGameLocal();
     });

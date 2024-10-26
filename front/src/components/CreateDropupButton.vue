@@ -15,8 +15,9 @@
 <script setup>
 	import { ref } from 'vue';
 	import { useI18n } from 'vue-i18n';
-	import { inject, onMounted } from 'vue';
-    const current_flag = inject('current_flag');
+	import { inject, onBeforeMount } from 'vue';
+    
+	const current_flag = inject('current_flag');
     const toggle_flag = inject('toggle_flag');
 
 	const current_lang = inject('current_lang');
@@ -42,7 +43,7 @@
 	import { useUser } from '../useUser.js'; 
 	const { getUser, userAccount, is_connected } = useUser(); 
 	
-	onMounted(async () => {
+	onBeforeMount(async () => {
 		await getUser();
 		if (is_connected.value == true)
 			switchLang(userAccount.language);

@@ -90,7 +90,7 @@
 </template>
 
 <script setup>
-import { ref, computed, defineEmits, onMounted } from 'vue';
+import { ref, computed, defineEmits, onMounted, onBeforeMount } from 'vue';
 import { useRouter } from 'vue-router';
 import Input from './Input.vue';
 import i18n from '../i18n.js';
@@ -357,8 +357,11 @@ function goProfile(_username) {
     __goTo(`/leaderboard/${_username}`);
 }
 
-onMounted(async () => {
+onBeforeMount(async () => {
     await getUser();
+});
+
+onMounted(async () => {
     await getAllUsers();
     await getFriends();
     await getFriendsRequest();

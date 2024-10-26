@@ -50,7 +50,7 @@ body {
 </style>
 
 <script setup>
-  import { ref, onMounted, onUnmounted } from 'vue';
+  import { ref, onMounted, onUnmounted, onBeforeMount } from 'vue';
   import paddleHitSound from '../assets/paddle_hit.mp3'
   import pointScoredSound from '../assets/point_scored.mp3'
   import wallHitSound from '../assets/wall_hit.mp3'
@@ -276,12 +276,13 @@ body {
     }
   }
   //////////////////////////////////////////////////
-
-  /////////////MOUNTED/////////////
-  onMounted(async () => {
+  onBeforeMount(async () => {
     await getUser();
     if (is_connected.value === false)
-    __goTo('/');
+      __goTo('/');
+  });
+  /////////////MOUNTED/////////////
+  onMounted(async () => {
     await getIsPlayer();
     connectWebSocket();
     board = document.getElementById("board");

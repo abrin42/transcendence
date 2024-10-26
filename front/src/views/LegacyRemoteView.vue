@@ -41,7 +41,7 @@ body {
 </style>
 
 <script setup>
-import { ref, onMounted, onUnmounted } from 'vue';
+import { ref, onMounted, onUnmounted, onBeforeMount } from 'vue';
 import paddleHitSound from '../assets/paddle_hit.mp3'
 import pointScoredSound from '../assets/point_scored.mp3'
 import wallHitSound from '../assets/wall_hit.mp3'
@@ -54,13 +54,11 @@ import { useRouter } from 'vue-router';
   import { useUser } from '../useUser.js'; 
   const { getUser, userAccount, is_connected } = useUser(); 
 
-  // onMounted(async () => {
-  //     await getUser();
-  //     if (is_connected.value === false)
-  //       __goTo('/')
-  // });
-
-
+  onBeforeMount(async () => {
+    await getUser();
+    if (is_connected.value === false)
+      __goTo('/');
+  });
 
   onUnmounted(() => {
   if (canPlay.value == 1 || canPlay.value == 2)
@@ -95,9 +93,6 @@ import { useRouter } from 'vue-router';
 });
 
 onMounted(async () => {
-  await getUser();
-  if (is_connected.value === false)
-    __goTo('/');
   await getIsPlayer();
   connectWebSocket();
   board = document.getElementById("board");

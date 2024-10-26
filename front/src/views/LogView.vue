@@ -4,7 +4,7 @@ import CreateBackButton from '../components/CreateBackButton.vue';
 import CreateHomeButton from '../components/CreateHomeButton.vue';
 import Input from '../components/Input.vue';
 import { useRouter } from 'vue-router';
-import { ref, onMounted } from 'vue';
+import { ref, onBeforeMount } from 'vue';
 import i18n from '../i18n.js'
 
 ////////////////////////////////////////////////
@@ -15,12 +15,10 @@ import { useUser } from '../useUser.js';
 
 const { getUser, updateUserAccount, userAccount, is_connected } = useUser(); 
 
-onMounted(async () => {
-    await getUser();  
-    console.log("onMounted/is_connected: " + is_connected.value);  
-    console.log("onMounted/username: " + userAccount.username);
+onBeforeMount(async () => {
+    await getUser();
     if (is_connected.value === true)
-        __goTo('/')
+        __goTo('/');
 });
 
 ////////////////////////////////////////////////
