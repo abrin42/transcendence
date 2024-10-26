@@ -64,10 +64,6 @@ def creatOneFalsePlayer(request):
                 username=user1,
                 defaults={'username': user1}
             )
-            print("-------------------------------------------------------------")
-            print(player1)
-            print(player1.username)
-            print("-------------------------------------------------------------")
             user_data = json.loads(serialize('json', [player1]))[0]['fields']
             return JsonResponse(user_data, safe=True, content_type='application/json') 
             # serialized_players = PlayerSerializer(player1)            
@@ -113,16 +109,11 @@ def creatFalsePlayer(request):
 def creat_game_local(request):
     if request.method == 'POST':
         try:
-            print("fake 404 ?")
             data = json.loads(request.body)
             username1 = data.get('username1')
             username2 = data.get('username2')
             player1 = get_object_or_404(Player, username=username1)
-            print("le 1 ne fait pas de 404")
-            print(player1)
             player2 = get_object_or_404(Player, username=username2)
-            print("le 2 ne fait pas de 404")
-            print(player2)
             latest_game = Game.objects.create(state='waiting', player1=player1, scorep1=0, player2=player2, scorep2=0)
 
             serializer = GameSerializer(latest_game)
@@ -239,8 +230,10 @@ def getIsPlayer(request):
             if not game:
                 return JsonResponse({'error': 'No game found to update.'}, status=404)
 
-            if (player == game.player1.username or player == game.player2.username):
-                return JsonResponse({'message': 'isPlayer'}, status=200)
+            if (player == game.player1.username):
+                return JsonResponse({'message': 'isFirstPlayer'}, status=200)
+            elif (player == game.player2.username):
+                return JsonResponse({'message': 'isSecondePlayer'}, status=200)
             else:
                 return JsonResponse({'message': 'isSpec'}, status=200)
         except json.JSONDecodeError:

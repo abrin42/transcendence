@@ -63,7 +63,7 @@ import { useRouter } from 'vue-router';
 
 
   onUnmounted(() => {
-  if (canPlay.value == 1)
+  if (canPlay.value == 1 || canPlay.value == 2)
   {
     clearInterval(moveInterval1up);
     moveInterval1up = null;
@@ -77,7 +77,8 @@ import { useRouter } from 'vue-router';
     clearInterval(moveInterval2down);
     moveInterval2down = null;
     document.removeEventListener("keydown", movePlayer2down);
-    document.removeEventListener('keyup', stopPlayer);
+    document.removeEventListener('keyup', stopPlayer1);
+    document.removeEventListener('keyup', stopPlayer2);
     document.removeEventListener("keydown", muteSound);
   }
   moveInterval1up = null;
@@ -107,15 +108,6 @@ onMounted(async () => {
   context.fillStyle = "white";
   context.fillRect(player1.x, player1.y, player1.width, player1.height);
   animationFrameId = requestAnimationFrame(update); // Gameloop
-  if (canPlay.value == 1)
-  {
-    document.addEventListener("keydown", movePlayer1up);
-    document.addEventListener("keydown", movePlayer1down);
-    document.addEventListener("keydown", movePlayer2up);
-    document.addEventListener("keydown", movePlayer2down);
-    document.addEventListener("keydown", muteSound);
-    document.addEventListener('keyup', stopPlayer);
-  }
 });
 
   ////////////////////////////////////////////////
@@ -152,7 +144,6 @@ function __goTo(page) {
         return cookieValue || '';
     }
 
-
     async function getIsPlayer() {
     try {
         const response = await fetch('/api/game/getIsPlayer/', {
@@ -169,10 +160,24 @@ function __goTo(page) {
         if (response.ok) {
             const responseData = await response.json();
             console.log('Game updated successfully!', responseData);
-            if (responseData.message == 'isPlayer')
+            if (responseData.message == 'isFirstPlayer')
             {
+              document.addEventListener("keydown", movePlayer1up);
+              document.addEventListener("keydown", movePlayer1down);
+              document.addEventListener("keydown", muteSound);
+              document.addEventListener('keyup', stopPlayer1);
               canPlay.value = 1;
-              console.log ("is player");
+              console.log ("is first player");
+            }
+            else if (responseData.message == 'isSecondePlayer')
+            {
+              document.addEventListener("keydown", movePlayer2up);
+              document.addEventListener("keydown", movePlayer2down);
+              document.addEventListener("keydown", muteSound);
+              document.addEventListener('keyup', stopPlayer2);
+
+              canPlay.value = 2;
+              console.log ("is seconde player");
             }
             else if (responseData.message == 'isSpec')
             {
@@ -480,7 +485,7 @@ let animationFrameId = null;
     {
       if (!moveInterval2up)
       {
-        if (e.code == moveUpP2)
+        if (e.code == moveUpP1)
         {
           moveInterval2up = setInterval(() => 
           {
@@ -501,7 +506,7 @@ let animationFrameId = null;
     {
       if (!moveInterval2down)
       {
-        if (e.code == moveDownP2)
+        if (e.code == moveDownP1)
         {
           moveInterval2down = setInterval(() => 
           {
@@ -527,8 +532,7 @@ let animationFrameId = null;
       }
     }
 
-
-    function stopPlayer(e) {
+    function stopPlayer1(e) {
       if (e.code == moveUpP1)
       {  
         clearInterval(moveInterval1up);
@@ -539,12 +543,15 @@ let animationFrameId = null;
         clearInterval(moveInterval1down);
         moveInterval1down = null;
       }
-      else if (e.code == moveUpP2)
+    }
+
+    function stopPlayer2(e) {
+      if (e.code == moveUpP1)
       {  
         clearInterval(moveInterval2up);
         moveInterval2up = null;
       }
-      else if (e.code == moveDownP2)
+      else if (e.code == moveDownP1)
       {
         clearInterval(moveInterval2down);
         moveInterval2down = null;
