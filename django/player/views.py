@@ -10,7 +10,7 @@ from django.views.decorators.csrf import csrf_exempt
 from .otp import create_otp
 from .jwt import generate_jwt, token_user, set_jwt_token
 from .models import Player, BlacklistedToken
-from .utils import set_picture_42, get_csrf_token
+from .utils import set_picture_42, get_csrf_token, verify_csrf
 from datetime import datetime
 import pyotp
 import requests

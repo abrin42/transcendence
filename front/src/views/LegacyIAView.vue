@@ -85,6 +85,10 @@ import { useRouter } from 'vue-router';
   }
 });
 
+let moveUpP1;
+let moveDownP1;
+let mute;
+
 onMounted(async () => {
   await getUser();
   if (is_connected.value === false)
@@ -96,6 +100,11 @@ onMounted(async () => {
   board.height = boardHeight;
   board.width = boardWidth;
   context = board.getContext("2d"); //Drawing on board
+
+  /////Game controls//////
+  moveUpP1 = userAccount.player1Up;
+  moveDownP1 = userAccount.player1Down;
+  mute = userAccount.mute;
 
   context.fillStyle = "white";
   context.fillRect(player1.x, player1.y, player1.width, player1.height);
@@ -425,11 +434,6 @@ let animationFrameId = null;
     let moveInterval1up = null;
     let moveInterval1down = null;
     let tickPadel = 10;
-
-    /////Game controls//////
-    let moveUpP1 = "KeyW";
-    let moveDownP1 = "KeyS";
-    let mute = userAccount.mute;
 
     function movePlayer1up(e)
     {

@@ -254,7 +254,6 @@ class PongConsumer(AsyncWebsocketConsumer):
         self.P1Ready = 0
         self.P2Ready = 0
         self.Game_on = 0
-
         print("l'id est :")
         print(self.room_id)
 
