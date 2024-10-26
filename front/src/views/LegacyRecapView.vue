@@ -17,6 +17,7 @@
     
     let scoreplayer1 = ref(0);
     let scoreplayer2 = ref(0);
+
     onMounted(async () => {
         await getUser();
         await getGameInfo();

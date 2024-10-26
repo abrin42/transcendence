@@ -42,8 +42,8 @@ def getGameInfo(request):
     if request.method == 'POST':
         try:
             data = json.loads(request.body)
-            id = data.get('id')
-            game = get_object_or_404(Game, id=id)
+            game_id = data.get('id')
+            game = get_object_or_404(Game, id=game_id)
 
             serializer = GameSerializer(game)
             data = serializer.data
@@ -230,8 +230,8 @@ def update_game(request):
         try:
             # game = Game.objects.order_by('-id').first()
             data = json.loads(request.body)
-            id = data.get('id')
-            game = get_object_or_404(Game, id=id)
+            game_id = data.get('id')
+            game = get_object_or_404(Game, id=game_id)
             if not game:
                 return JsonResponse({'error': 'No game found to update.'}, status=404)
 
