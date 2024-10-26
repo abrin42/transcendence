@@ -65,17 +65,21 @@ import { useRouter } from 'vue-router';
   onUnmounted(() => {
   if (canPlay.value == 1)
   {
+    clearInterval(moveInterval1up);
+    moveInterval1up = null;
     document.removeEventListener("keydown", movePlayer1up);
+    clearInterval(moveInterval1down);
+    moveInterval1down = null;
     document.removeEventListener("keydown", movePlayer1down);
+    clearInterval(moveInterval2up);
+    moveInterval2up = null;
     document.removeEventListener("keydown", movePlayer2up);
+    clearInterval(moveInterval2down);
+    moveInterval2down = null;
     document.removeEventListener("keydown", movePlayer2down);
-    document.removeEventListener("keydown", muteSound);
     document.removeEventListener('keyup', stopPlayer);
+    document.removeEventListener("keydown", muteSound);
   }
-  moveInterval1up = null;
-  moveInterval1down = null;
-  moveInterval2up = null;
-  moveInterval2down = null;
   if (animationFrameId) {
     cancelAnimationFrame(animationFrameId);
     animationFrameId = null;
@@ -335,6 +339,7 @@ function connectWebSocket() {
     {
       connection = 0;
       // console.log(data.type);
+      // socket.value.close();
       router.push(`/legacyrecap/${lastSegment}`);
     }
     else if (data.type == 'startGame')

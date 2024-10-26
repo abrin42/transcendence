@@ -254,6 +254,7 @@ class PongConsumer(AsyncWebsocketConsumer):
         self.P1Ready = 0
         self.P2Ready = 0
         self.Game_on = 0
+
         print("l'id est :")
         print(self.room_id)
 
@@ -267,7 +268,7 @@ class PongConsumer(AsyncWebsocketConsumer):
                 'init_ball_speed': 4,
                 'tick_back': 0.01,
                 'Game_on': 0,
-                'nb_pts_for_win': 10,
+                'nb_pts_for_win': 2,
                 'P1Ready': 0,
                 'P2Ready': 0,
                 'PTSp1': 0,
@@ -494,7 +495,7 @@ class PongConsumer(AsyncWebsocketConsumer):
         self.tick_back = 0.01
 
         self.Game_on = 0
-        self.nb_pts_for_win = 10
+        self.nb_pts_for_win = 2
 
         self.P1Ready = 0
         self.P2Ready = 0
@@ -666,15 +667,6 @@ class PongConsumer(AsyncWebsocketConsumer):
         query_params = urllib.parse.parse_qs(query_string)
         self.room_name = query_params.get('page', [''])[0]
         self.room_group_name = f"game_{self.room_name}"
-
-        print("+++++++++++++++++++++++++++++++++++++++++++++++++++++++")
-        print(query_string)
-        print(query_params)
-        print(self.room_name)
-        print(self.room_group_name)
-        print("+++++++++++++++++++++++++++++++++++++++++++++++++++++++")
-        print(self.room_name)
-        print(self.room_name.startswith("ia"))
         
         await self.channel_layer.group_add(
            self.room_group_name,
@@ -692,7 +684,7 @@ class PongConsumer(AsyncWebsocketConsumer):
             })) 
         elif self.room_name.startswith("remote_"):
             print("is websocket")
-            self.is_online = 1,
+            self.is_online = 1
             page_url = self.room_name.replace("remote_", "")
             await self.initRemote(page_url)
 
