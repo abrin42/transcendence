@@ -151,7 +151,7 @@ function __goTo(page) {
     async function getIsPlayer() {
     try {
         const response = await fetch('/api/game/getIsPlayer/', {
-            method: 'POST',
+            method: "POST",
             headers: {
                 'Content-Type': 'application/json',
                 'X-CSRFToken': getCsrfToken(),
@@ -191,7 +191,7 @@ function __goTo(page) {
   async function updateGameInfo() {
     try {
         const response = await fetch('/api/game/update_game/', {
-            method: 'POST',
+            method: "PUT",
             headers: {
                 'Content-Type': 'application/json',
                 'X-CSRFToken': getCsrfToken(),

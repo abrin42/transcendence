@@ -40,7 +40,7 @@
     async function updateAccount() {
         try {
             const response = await fetch('/api/player/update_user/', {
-                method: 'POST',
+                method: "PUT",
                 headers: {
                     'Content-Type': 'application/json',
                     'X-CSRFToken': getCsrfToken(),
@@ -82,7 +82,7 @@
     const handleLogout = async () => {
         try {
             await fetch("api/player/logout/", {
-                method: 'POST',
+                method: "POST",
                 headers: {
                     'Content-Type': 'application/json',
                     'X-CSRFToken': getCsrfToken()
@@ -97,7 +97,7 @@
     const handleDelete = async () => {
         try {
             await fetch("api/player/delete_account/", {
-                method: 'POST',
+                method: "POST",
                 headers: {
                     'Content-Type': 'application/json',
                     'X-CSRFToken': getCsrfToken()

@@ -107,7 +107,7 @@ body {
   async function getIsPlayer() {
     try {
         const response = await fetch('/api/game/getIsPlayer/', {
-            method: 'POST',
+            method: "POST",
             headers: {
                 'Content-Type': 'application/json',
                 'X-CSRFToken': getCsrfToken(),
@@ -121,7 +121,7 @@ body {
             const responseData = await response.json();
             console.log('Game updated successfully!', responseData);
 
-            if (responseData.message == 'isFirstPlayer' || responseData.message == 'isSecondePlayer')
+            if (responseData.message == 'isPlayer')
             {
               canPlay.value = 1;
               console.log ("is player");
@@ -149,7 +149,7 @@ body {
   async function updateGameInfo() {
     try {
       const response = await fetch('/api/game/update_game/', {
-        method: 'POST',
+        method: "PUT",
         headers: {
           'Content-Type': 'application/json',
           'X-CSRFToken': getCsrfToken(),

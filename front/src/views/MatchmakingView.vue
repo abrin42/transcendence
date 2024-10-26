@@ -127,7 +127,7 @@ async function creatGameLocal()
 {
     try {
         const response = await fetch('/api/game/create_game_local/', {
-            method: 'POST',
+            method: "POST",
             headers: {
                 'Content-Type': 'application/json',
                 'X-CSRFToken': getCsrfToken() // Assuming you have CSRF protection enabled
@@ -188,7 +188,7 @@ async function creatGameLocal()
 async function insertPlayer() {
     try {
         const response = await fetch('/api/game/insertplayer/', {
-            method: 'POST',
+            method: "POST",
             headers: {
                 'Content-Type': 'application/json',
                 'X-CSRFToken': getCsrfToken() // Assuming you have CSRF protection enabled
@@ -298,7 +298,7 @@ async function insertPlayer() {
 // async function insertPlayer() {
 //     try {
 //         const response = await fetch('/api/game/insertplayer/', {
-//             method: 'POST',
+//             method: "POST",
 //             headers: {
 //                 'Content-Type': 'application/json',
 //                 'X-CSRFToken': getCsrfToken() // Assuming you have CSRF protection enabled
@@ -504,8 +504,8 @@ async function insertPlayer() {
         console.log(playerName2);
         validateGame = true;
         try {
-        const response = await fetch('/api/game/creatOneFalsePlayer/', {
-            method: 'POST',
+        const response = await fetch('/api/game/createOneFalsePlayer/', {
+            method: "POST",
             headers: {
                 'Content-Type': 'application/json',
                 'X-CSRFToken': getCsrfToken()

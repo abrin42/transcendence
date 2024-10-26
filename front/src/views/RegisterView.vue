@@ -105,7 +105,7 @@
 
         try {
             const response = await fetch('/api/player/register/', {
-                method: 'POST',
+                method: "POST",
                 headers: {
                     'Content-usernameType': 'application/json',
                     'X-CSRFToken': getCsrfToken()

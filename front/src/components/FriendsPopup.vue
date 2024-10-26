@@ -174,7 +174,7 @@ async function acceptRequest(playerUsername) {
     try {
         console.log('Inviting player with ID:', playerUsername);
         const response = await fetch('/api/friend/help/', {
-            method: 'POST', // Change to POST to match the Django view
+            method: "POST",
             headers: {
                 'Content-Type': 'application/json',
                 'X-CSRFToken': getCsrfToken(),
@@ -198,7 +198,7 @@ async function invitePlayer(playerUsername) {
     try {
         console.log('Inviting player with ID:', playerUsername);
         const response = await fetch('/api/friend/add/', {
-            method: 'POST', // Change to POST to match the Django view
+            method: "POST",
             headers: {
                 'Content-Type': 'application/json',
                 'X-CSRFToken': getCsrfToken(),
@@ -303,7 +303,7 @@ async function deleteFriend(playerUsername) {
     try {
         console.log('delete player with :', playerUsername);
         const response = await fetch('/api/friend/delete/', {
-            method: 'POST', // Change to POST to match the Django view
+            method: "POST",
             headers: {
                 'Content-Type': 'application/json',
                 'X-CSRFToken': getCsrfToken(),

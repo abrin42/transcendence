@@ -38,7 +38,7 @@
     async function update_keys() {
     try {
         const response = await fetch('/api/player/update_keys/', {
-            method: 'POST',
+            method: "PUT",
             headers: {
                 'Content-Type': 'application/json',
                 'X-CSRFToken': getCsrfToken(), // Assuming CSRF protection is enabled

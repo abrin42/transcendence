@@ -20,7 +20,7 @@
         await getUser();
             if (is_connected.value === true)
                 __goTo('/')
-        });
+    });
 
     ////////////////////////////////////////////////
     ////////////////////////////////////////////////
@@ -117,7 +117,7 @@
     async function handleNext() {
         try {
             const response = await fetch('/api/player/otp/', {
-                method: 'POST',
+                method: "POST",
                 headers: {
                     'Content-Type': 'application/json',
                     'X-CSRFToken': getCsrfToken(),
@@ -143,7 +143,7 @@
     async function choose_tfa(method) {
         try {
             const response = await fetch('/api/player/tfa/', {
-                method: 'POST',
+                method: "POST",
                 headers: {
                     'Content-Type': 'application/json',
                     'X-CSRFToken': getCsrfToken(),

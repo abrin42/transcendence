@@ -11,17 +11,22 @@
     ////////////////////////////////////////////////
 
     import { useUser } from '../useUser.js'; 
-    const { getUser, userAccount, is_connected } = useUser(); 
+    const { getUser, is_connected } = useUser(); 
     const currentUrl = window.location.href; 
     const lastSegment = currentUrl.split('/').filter(Boolean).pop();
     
     let scoreplayer1 = ref(0);
     let scoreplayer2 = ref(0);
+
     onBeforeMount(async () => {
         await getUser();
         if (is_connected.value === false)
             __goTo('/');
-     });
+    });
+
+    onMounted(async () => {
+        await getGameInfo();
+    });
 
     ////////////////////////////////////////////////
     ////////////////////////////////////////////////
@@ -48,7 +53,7 @@
     async function getGameInfo() {
     try {
         const response = await fetch('/api/game/getGameInfo/', {
-            method: 'POST',
+            method: "GET",
             headers: {
                 'Content-Type': 'application/json',
                 'X-CSRFToken': getCsrfToken(),

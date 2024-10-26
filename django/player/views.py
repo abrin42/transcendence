@@ -22,7 +22,7 @@ from django.middleware.csrf import get_token
 matchmaking = deque()
 
 def register_view(request):
-    if request.method == 'POST':
+    if request.method == "POST":
         try:
             data = json.loads(request.body)
             username = f"_{data.get('username')}"

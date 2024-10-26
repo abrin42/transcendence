@@ -56,7 +56,7 @@ async function login() {
 
     try {
         const response = await fetch('/api/player/login/', {
-            method: 'POST',
+            method: "POST",
             headers: {
                 'Content-Type': 'application/json',
                 'X-CSRFToken': getCsrfToken(), // Assuming CSRF protection is enabled
@@ -93,7 +93,7 @@ async function login() {
 async function login42() {
     try {
         const response = await fetch('/api/player/login42/', {
-            method: 'POST', 
+            method: "POST", 
             headers: {
                 'Content-Type': 'application/json',
                 'X-CSRFToken': getCsrfToken()

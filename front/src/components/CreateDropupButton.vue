@@ -59,7 +59,7 @@
 	async function setLanguage(new_language) {
 		try {
 			await fetch('/api/player/update_language/', {
-				method: 'POST',
+				method: "PUT",
 				headers: {
 					'Content-Type': 'application/json',
 					'X-CSRFToken': getCsrfToken()

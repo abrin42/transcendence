@@ -25,7 +25,7 @@ def add(request):
     user = token_user(request)
     if user is None: 
         return redirect(reverse('player:login'))
-    if request.method == 'POST':
+    if request.method == "POST":
         data = json.loads(request.body)
         username = data.get('username')
         if username == user.username:
@@ -55,7 +55,7 @@ def help(request):
     user = token_user(request)
     if user is None: 
         return redirect(reverse('player:login'))
-    if request.method == 'POST':
+    if request.method == "POST":
         data = json.loads(request.body)
         username = data.get('username')
         users = Player.objects.filter(username=username)

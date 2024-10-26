@@ -116,8 +116,8 @@ let loadingmodule = true;
 async function creatGameLocal()
 {
     try {
-        const response = await fetch('/api/game/creat_game_local/', {
-            method: 'POST',
+        const response = await fetch('/api/game/create_game_local/', {
+            method: "POST",
             headers: {
                 'Content-Type': 'application/json',
                 'X-CSRFToken': getCsrfToken() // Assuming you have CSRF protection enabled
@@ -178,7 +178,7 @@ async function creatGameLocal()
 async function insertPlayer() {
     try {
         const response = await fetch('/api/game/insertplayer/', {
-            method: 'POST',
+            method: "POST",
             headers: {
                 'Content-Type': 'application/json',
                 'X-CSRFToken': getCsrfToken() // Assuming you have CSRF protection enabled

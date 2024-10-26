@@ -54,7 +54,7 @@ const router = useRouter();
     const handleLogout = async () => {
         try {
             await fetch("/api/player/logout/", {
-                method: 'POST',
+                method: "POST",
                 headers: {
                     'Content-Type': 'application/json',
                     'X-CSRFToken': getCsrfToken()

@@ -39,7 +39,7 @@ def get_all_games(request):
 
 
 def getGameInfo(request):
-    if request.method == 'POST':
+    if request.method == "GET":
         try:
             data = json.loads(request.body)
             id = data.get('id')
@@ -53,8 +53,8 @@ def getGameInfo(request):
     return JsonResponse({'error': 'Invalid request method'}, status=405)
 
 
-def creatOneFalsePlayer(request):
-    if request.method == 'POST':
+def createOneFalsePlayer(request):
+    if request.method == "POST":
         try:
             data = json.loads(request.body)
             user1 = data.get('username1')
@@ -72,8 +72,8 @@ def creatOneFalsePlayer(request):
             return JsonResponse({'error': 'Invalid request body'}, status=400)
     return JsonResponse({'error': 'Invalid request method'}, status=405)
 
-def creatFalsePlayer(request):
-    if request.method == 'POST':
+def createFalsePlayer(request):
+    if request.method == "POST":
         try:
             data = json.loads(request.body)
             user1 = data.get('username1')
@@ -106,8 +106,8 @@ def creatFalsePlayer(request):
             return JsonResponse({'error': 'Invalid request body'}, status=400)
     return JsonResponse({'error': 'Invalid request method'}, status=405)
 
-def creat_game_local(request):
-    if request.method == 'POST':
+def create_game_local(request):
+    if request.method == "POST":
         try:
             print("fake 404 ?")
             data = json.loads(request.body)
@@ -130,7 +130,7 @@ def creat_game_local(request):
 
         
 # def insertPlayer(request):
-#     if request.method == 'POST':
+#     if request.method == "POST":
 #         try:
 #             data = json.loads(request.body)
 #             username = data.get('username')
@@ -161,7 +161,7 @@ def creat_game_local(request):
 #     return JsonResponse({'error': 'Invalid request method'}, status=405)
 
 def insertPlayer(request):
-    if request.method == 'POST':
+    if request.method == "POST":
         try:
             data = json.loads(request.body)
             username = data.get('username')
@@ -192,7 +192,7 @@ def insertPlayer(request):
     return JsonResponse({'error': 'Invalid request method'}, status=405)
 
 # def insertPlayer(request):
-#     if request.method == 'POST':
+#     if request.method == "POST":
 #         try:
 #             data = json.loads(request.body)
 #             username = data.get('username')
@@ -224,7 +224,7 @@ def insertPlayer(request):
 
 #@login_required
 def update_game(request):
-    if request.method == "POST":
+    if request.method == "PUT":
         if request.session.get('csrf') != request.COOKIES.get('csrftoken'):
             return JsonResponse({'error': 'Invalid CSRF token'}, status=400)
         try:
@@ -253,7 +253,7 @@ def update_game(request):
 
 
 def getIsPlayer(request):
-    if request.method == "POST":
+    if request.method == "GET":
         if request.session.get('csrf') != request.COOKIES.get('csrftoken'):
             return JsonResponse({'error': 'Invalid CSRF token'}, status=400)
         try:
