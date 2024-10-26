@@ -5,7 +5,7 @@
     import CreateSoundButton from '../components/CreateSoundButton.vue';
     import CreateHomeButton from '../components/CreateHomeButton.vue';
     import { useRouter } from 'vue-router';
-    import { onBeforeMount } from 'vue';
+    import { onMounted } from 'vue';
 
     const router = useRouter();
 
@@ -16,10 +16,10 @@
     import { useUser } from '../useUser.js'; 
     const { getUser, is_connected } = useUser(); 
     
-    onBeforeMount(async () => {
+    onMounted(async () => {
         await getUser();
         if (is_connected.value === false)
-            __goTo('/');
+            __goTo('/')
     });
 
     ////////////////////////////////////////////////

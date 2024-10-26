@@ -50,7 +50,7 @@ body {
 </style>
 
 <script setup>
-  import { ref, onMounted, onUnmounted, onBeforeMount } from 'vue';
+  import { ref, onMounted, onUnmounted } from 'vue';
   import paddleHitSound from '../assets/paddle_hit.mp3'
   import pointScoredSound from '../assets/point_scored.mp3'
   import wallHitSound from '../assets/wall_hit.mp3'
@@ -59,15 +59,9 @@ body {
   ////////////////////////////////////////////////
   /////// GET USER ///////////////////////////////
   ////////////////////////////////////////////////
-  
+
   import { useUser } from '../useUser.js'; 
   const { getUser, userAccount, is_connected } = useUser(); 
-  
-  onBeforeMount(async () => {
-    await getUser();
-    if (is_connected.value === false)
-      __goTo('/');
-  });
 
   ////////////////////////////////////////////////
   ////////////////////////////////////////////////
@@ -113,7 +107,7 @@ body {
   async function getIsPlayer() {
     try {
         const response = await fetch('/api/game/getIsPlayer/', {
-            method: "GET",
+            method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
                 'X-CSRFToken': getCsrfToken(),
@@ -127,7 +121,7 @@ body {
             const responseData = await response.json();
             console.log('Game updated successfully!', responseData);
 
-            if (responseData.message == 'isPlayer')
+            if (responseData.message == 'isFirstPlayer' || responseData.message == 'isSecondePlayer')
             {
               canPlay.value = 1;
               console.log ("is player");
@@ -155,7 +149,7 @@ body {
   async function updateGameInfo() {
     try {
       const response = await fetch('/api/game/update_game/', {
-        method: "PUT",
+        method: 'POST',
         headers: {
           'Content-Type': 'application/json',
           'X-CSRFToken': getCsrfToken(),
@@ -281,8 +275,13 @@ body {
       console.error('WebSocket non connecté');
     }
   }
+  //////////////////////////////////////////////////
+
   /////////////MOUNTED/////////////
   onMounted(async () => {
+    await getUser();
+    if (is_connected.value === false)
+    __goTo('/');
     await getIsPlayer();
     connectWebSocket();
     board = document.getElementById("board");

@@ -11,7 +11,7 @@ import hashlib
 def update_language(request):
     user = token_user(request)
     if user:
-        if request.method == "PUT":
+        if request.method == "POST":
             if request.session.get('csrf') != request.COOKIES.get('csrftoken'):
                 return JsonResponse({'error': 'Invalid CSRF token'}, status=400)
             try:
@@ -31,7 +31,7 @@ def update_language(request):
 def update_keys(request):
     user = token_user(request)
     if user:
-        if request.method == "PUT":
+        if request.method == "POST":
             if request.session.get('csrf') != request.COOKIES.get('csrftoken'):
                 return JsonResponse({'error': 'Invalid CSRF token'}, status=400)
             try:
@@ -74,7 +74,7 @@ def update_keys(request):
 def update_user(request):
     user = token_user(request)
     
-    if request.method != "PUT":
+    if request.method != "POST":
         return JsonResponse({'error': 'Invalid request method'}, status=405)
 
     try:

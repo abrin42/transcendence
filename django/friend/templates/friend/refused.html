@@ -1,0 +1,14 @@
+{% extends 'layout.html' %}
+
+{% block title %}
+    Refused List
+{% endblock %}
+
+{% block content %}
+    {% for elem in friends %}
+
+        <p>{{elem.user.username}}
+        | 
+        <a href= "{% url 'friend:accept' elem.id %}">accept</a>
+    {% endfor %}
+{% endblock %}

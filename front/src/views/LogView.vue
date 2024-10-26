@@ -4,7 +4,7 @@ import CreateBackButton from '../components/CreateBackButton.vue';
 import CreateHomeButton from '../components/CreateHomeButton.vue';
 import Input from '../components/Input.vue';
 import { useRouter } from 'vue-router';
-import { ref, onBeforeMount } from 'vue';
+import { ref, onMounted } from 'vue';
 import i18n from '../i18n.js'
 
 ////////////////////////////////////////////////
@@ -15,10 +15,12 @@ import { useUser } from '../useUser.js';
 
 const { getUser, updateUserAccount, userAccount, is_connected } = useUser(); 
 
-onBeforeMount(async () => {
-    await getUser();
+onMounted(async () => {
+    await getUser();  
+    console.log("onMounted/is_connected: " + is_connected.value);  
+    console.log("onMounted/username: " + userAccount.username);
     if (is_connected.value === true)
-        __goTo('/');
+        __goTo('/')
 });
 
 ////////////////////////////////////////////////
@@ -56,7 +58,7 @@ async function login() {
 
     try {
         const response = await fetch('/api/player/login/', {
-            method: "POST",
+            method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
                 'X-CSRFToken': getCsrfToken(), // Assuming CSRF protection is enabled
@@ -93,7 +95,7 @@ async function login() {
 async function login42() {
     try {
         const response = await fetch('/api/player/login42/', {
-            method: "POST", 
+            method: 'POST', 
             headers: {
                 'Content-Type': 'application/json',
                 'X-CSRFToken': getCsrfToken()

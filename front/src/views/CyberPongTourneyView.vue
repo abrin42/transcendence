@@ -5,7 +5,7 @@ import NeonText from '@/components/NeonText.vue';
 import Input from '@/components/Input.vue'; // Assurez-vous que ce composant Input existe
 
 import { useRouter } from 'vue-router';
-import { onBeforeMount, ref, watch, onUnmounted } from 'vue';
+import { onMounted, ref, watch, onUnmounted } from 'vue';
 import { useUser } from '../useUser.js';
 import i18n from '../i18n.js';
 
@@ -15,10 +15,8 @@ const timer = ref(10);
 let interval = null;
 
 // Charger les utilisateurs et démarrer le timer si 4 participants
-onBeforeMount(async () => {
-  await getUser();
-  if (is_connected.value === false)
-    __goTo('/');
+onMounted(async () => {
+    await getUser();
 });
 
 // Navigation vers une autre page
@@ -84,11 +82,11 @@ function getCsrfToken() {
         return cookieValue || '';
     }
 
-async function createFalsePlayer(user1, user2, user3 ,user4)
+async function creatFalsePlayer(user1, user2, user3 ,user4)
 {
     try {
-        const response = await fetch('/api/game/createFalsePlayer/', {
-            method: "POST",
+        const response = await fetch('/api/game/creatFalsePlayer/', {
+            method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
                 'X-CSRFToken': getCsrfToken(),
@@ -122,7 +120,7 @@ async function addParticipants() {
             alert(i18n.global.t('error_cannot_use_same_nickname'));
         } else {
             participants.value = filteredParticipants.map(name => ({ name }));
-            await createFalsePlayer(filteredParticipants[0], filteredParticipants[1], filteredParticipants[2], filteredParticipants[3]);
+            await creatFalsePlayer(filteredParticipants[0], filteredParticipants[1], filteredParticipants[2], filteredParticipants[3]);
             startTournament();
         }
     } else {

@@ -1,5 +1,5 @@
 <script setup>
-    import { reactive, ref, onBeforeUnmount, onBeforeMount } from 'vue';
+    import { reactive, ref, onBeforeUnmount, onMounted } from 'vue';
     import CreateBackButton from '../components/CreateBackButton.vue';
     import CreateDropupButton from '@/components/CreateDropupButton.vue';
     import CreateHomeButton from '@/components/CreateHomeButton.vue';
@@ -12,7 +12,7 @@
     import { useUser } from '../useUser.js'; 
     const { getUser, userAccount, is_connected } = useUser(); 
 
-    onBeforeMount(async () => {
+    onMounted(async () => {
         await getUser();
     });
 
@@ -38,7 +38,7 @@
     async function update_keys() {
     try {
         const response = await fetch('/api/player/update_keys/', {
-            method: "PUT",
+            method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
                 'X-CSRFToken': getCsrfToken(), // Assuming CSRF protection is enabled

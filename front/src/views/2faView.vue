@@ -4,7 +4,7 @@
     import CreateDropupButton from '../components/CreateDropupButton.vue';
     import CreateBackButton from '../components/CreateBackButton.vue';
     import { useRouter } from 'vue-router';
-    import { onBeforeMount, ref } from 'vue';
+    import { reactive, onMounted, ref } from 'vue';
     import i18n from '../i18n.js';
 
     ////////////////////////////////////////////////
@@ -13,13 +13,15 @@
 
     import { useUser } from '../useUser.js'; 
     
-    const { getUser, is_connected } = useUser(); 
+    const { getUser, userAccount, is_connected } = useUser(); 
 
-    onBeforeMount(async () => {
+    onMounted(async () => {
         await get2FAUser();
         await getUser();
-            if (is_connected.value === true)
-                __goTo('/')
+        if (is_connected.value === true)
+            __goTo('/')
+        console.log("onMounted/is_connected: " + is_connected.value);  
+        console.log("onMounted/username: " + userAccount.username);
     });
 
     ////////////////////////////////////////////////
@@ -117,7 +119,7 @@
     async function handleNext() {
         try {
             const response = await fetch('/api/player/otp/', {
-                method: "POST",
+                method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
                     'X-CSRFToken': getCsrfToken(),
@@ -143,7 +145,7 @@
     async function choose_tfa(method) {
         try {
             const response = await fetch('/api/player/tfa/', {
-                method: "POST",
+                method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
                     'X-CSRFToken': getCsrfToken(),

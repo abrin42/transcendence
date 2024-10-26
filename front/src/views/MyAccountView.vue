@@ -4,7 +4,7 @@
     import CreateDropupButton from '../components/CreateDropupButton.vue';
     import CreateSettingsButton from '../components/CreateSettingsButton.vue';
     import { useRouter } from 'vue-router';
-    import { onBeforeMount } from 'vue';
+    import { onMounted } from 'vue';
 
     ////////////////////////////////////////////////
     /////// GET USER ///////////////////////////////
@@ -13,10 +13,10 @@
     import { useUser } from '../useUser.js'; 
     const { getUser, userAccount, is_connected } = useUser(); 
 
-    onBeforeMount(async () => {
+    onMounted(async () => {
         await getUser();
         if (is_connected.value === false)
-            __goTo('/');
+            __goTo('/')
     });
 
     ////////////////////////////////////////////////

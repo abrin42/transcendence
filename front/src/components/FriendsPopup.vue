@@ -90,7 +90,7 @@
 </template>
 
 <script setup>
-import { ref, computed, defineEmits, onMounted, onBeforeMount } from 'vue';
+import { ref, computed, defineEmits, onMounted } from 'vue';
 import { useRouter } from 'vue-router';
 import Input from './Input.vue';
 import i18n from '../i18n.js';
@@ -174,7 +174,7 @@ async function acceptRequest(playerUsername) {
     try {
         console.log('Inviting player with ID:', playerUsername);
         const response = await fetch('/api/friend/help/', {
-            method: "POST",
+            method: 'POST', // Change to POST to match the Django view
             headers: {
                 'Content-Type': 'application/json',
                 'X-CSRFToken': getCsrfToken(),
@@ -198,7 +198,7 @@ async function invitePlayer(playerUsername) {
     try {
         console.log('Inviting player with ID:', playerUsername);
         const response = await fetch('/api/friend/add/', {
-            method: "POST",
+            method: 'POST', // Change to POST to match the Django view
             headers: {
                 'Content-Type': 'application/json',
                 'X-CSRFToken': getCsrfToken(),
@@ -303,7 +303,7 @@ async function deleteFriend(playerUsername) {
     try {
         console.log('delete player with :', playerUsername);
         const response = await fetch('/api/friend/delete/', {
-            method: "POST",
+            method: 'POST', // Change to POST to match the Django view
             headers: {
                 'Content-Type': 'application/json',
                 'X-CSRFToken': getCsrfToken(),
@@ -357,11 +357,8 @@ function goProfile(_username) {
     __goTo(`/leaderboard/${_username}`);
 }
 
-onBeforeMount(async () => {
-    await getUser();
-});
-
 onMounted(async () => {
+    await getUser();
     await getAllUsers();
     await getFriends();
     await getFriendsRequest();

@@ -36,7 +36,7 @@
     import CreateBackButton from '../components/CreateBackButton.vue';
     import CreateSoundButton from '../components/CreateSoundButton.vue';
     import CreateHomeButton from '../components/CreateHomeButton.vue';
-    import { ref, reactive, onMounted, onUnmounted, onBeforeMount, watch, defineEmits } from 'vue';
+    import { ref, reactive, onMounted, onUnmounted, watch, defineEmits } from 'vue';
     import $ from 'jquery';
     import { useRouter } from 'vue-router';
     import profilePicture from '@/assets/img/default-profile.png';
@@ -51,16 +51,14 @@ import { compileScript } from 'vue/compiler-sfc';
 
     onUnmounted(() => {
         stopLoading();
-    });
 
-    onBeforeMount(async () => {
-        await getUser();
-        if (is_connected.value === false)
-            __goTo('/');
     });
 
     onMounted(async () => {
-        createPlyInput();
+        await getUser();
+        if (is_connected.value === false)
+            __goTo('/')
+        await createPlyInput();
         await insertPlayer();
         // await creatGameLocal();
     });
@@ -116,8 +114,8 @@ let loadingmodule = true;
 async function creatGameLocal()
 {
     try {
-        const response = await fetch('/api/game/create_game_local/', {
-            method: "POST",
+        const response = await fetch('/api/game/creat_game_local/', {
+            method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
                 'X-CSRFToken': getCsrfToken() // Assuming you have CSRF protection enabled
@@ -178,7 +176,7 @@ async function creatGameLocal()
 async function insertPlayer() {
     try {
         const response = await fetch('/api/game/insertplayer/', {
-            method: "POST",
+            method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
                 'X-CSRFToken': getCsrfToken() // Assuming you have CSRF protection enabled

@@ -46,7 +46,7 @@
     import CreateSoundButton from '../components/CreateSoundButton.vue';
     import CreateHomeButton from '../components/CreateHomeButton.vue';
     import Input from '../components/Input.vue';
-    import { ref, reactive, onMounted, onUnmounted, onBeforeMount, watch, defineEmits } from 'vue';
+    import { ref, reactive, onMounted, onUnmounted, watch, defineEmits } from 'vue';
     import $ from 'jquery';
     import { useRouter } from 'vue-router';
     import i18n from '../i18n.js'
@@ -64,17 +64,15 @@
         stopLoading();
     });
 
-    onBeforeMount(async () => {
+    onMounted(async () => {
         await getUser();
         if (is_connected.value === false)
-            __goTo('/');
-    });
-
-    onMounted(async () => {
-        createPlyInput();
+            __goTo('/')
+        await createPlyInput();
         // await creatGameLocal();
         // await insertPlayer();
         await creatGameLocal();
+
     });
 
 
@@ -127,7 +125,7 @@ async function creatGameLocal()
 {
     try {
         const response = await fetch('/api/game/create_game_local/', {
-            method: "POST",
+            method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
                 'X-CSRFToken': getCsrfToken() // Assuming you have CSRF protection enabled
@@ -188,7 +186,7 @@ async function creatGameLocal()
 async function insertPlayer() {
     try {
         const response = await fetch('/api/game/insertplayer/', {
-            method: "POST",
+            method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
                 'X-CSRFToken': getCsrfToken() // Assuming you have CSRF protection enabled
@@ -298,7 +296,7 @@ async function insertPlayer() {
 // async function insertPlayer() {
 //     try {
 //         const response = await fetch('/api/game/insertplayer/', {
-//             method: "POST",
+//             method: 'POST',
 //             headers: {
 //                 'Content-Type': 'application/json',
 //                 'X-CSRFToken': getCsrfToken() // Assuming you have CSRF protection enabled
@@ -504,8 +502,8 @@ async function insertPlayer() {
         console.log(playerName2);
         validateGame = true;
         try {
-        const response = await fetch('/api/game/createOneFalsePlayer/', {
-            method: "POST",
+        const response = await fetch('/api/game/creatOneFalsePlayer/', {
+            method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
                 'X-CSRFToken': getCsrfToken()

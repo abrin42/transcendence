@@ -4,7 +4,7 @@
     import CreateHomeButton from '../components/CreateHomeButton.vue';
     import Input from '../components/Input.vue';
     import { useRouter } from 'vue-router';
-    import { ref, onBeforeMount } from 'vue';
+    import { ref, onMounted } from 'vue';
     import i18n from '../i18n.js'
 
     ////////////////////////////////////////////////
@@ -14,10 +14,10 @@
     import { useUser } from '../useUser.js'; 
     const { getUser, is_connected } = useUser(); 
 
-    onBeforeMount(async () => {
+    onMounted(async () => {
         await getUser();
         if (is_connected.value === true)
-            __goTo('/');
+            __goTo('/')
     });
 
     ////////////////////////////////////////////////
@@ -105,7 +105,7 @@
 
         try {
             const response = await fetch('/api/player/register/', {
-                method: "POST",
+                method: 'POST',
                 headers: {
                     'Content-usernameType': 'application/json',
                     'X-CSRFToken': getCsrfToken()
@@ -122,7 +122,7 @@
             if (response.ok) {
                 const responseData = await response.json();
                 console.log('Account created successfully!', responseData);
-                //alert(i18n.global.t('successful_registration'));
+                alert(i18n.global.t('successful_registration'));
                 __goTo('/')
             } else {
                 const errorData = await response.json();

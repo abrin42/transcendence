@@ -1,6 +1,11 @@
+
+import { useRouter } from 'vue-router';
+import { onMounted } from 'vue';
 import { ref, reactive } from 'vue';
 
 export function useUser() {
+    const router = useRouter();
+    
     const is_connected = ref(false);
     const userAccount = reactive({
         username: "",

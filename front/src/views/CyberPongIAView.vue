@@ -82,10 +82,10 @@ body {
 </style>
 
 <script setup>
-import { ref, inject, onMounted, onUnmounted, onBeforeMount } from 'vue';
-import paddleHitSound from '../assets/paddle_hit.mp3'
-import pointScoredSound from '../assets/point_scored.mp3'
-import wallHitSound from '../assets/wall_hit.mp3'
+import { ref, inject, onMounted, onUnmounted } from 'vue';
+import paddleHitSound from '../assets/cyber_paddle_hit.mp3'
+import pointScoredSound from '../assets/cyber_point_scored.mp3'
+import wallHitSound from '../assets/cyber_wall_hit.mp3'
 import CreateSoundButton from '../components/CreateSoundButton.vue';
 import { useRouter } from 'vue-router';
 
@@ -95,6 +95,12 @@ import { useRouter } from 'vue-router';
 
   import { useUser } from '../useUser.js'; 
   const { getUser, userAccount, is_connected } = useUser(); 
+
+  // onMounted(async () => {
+  //     await getUser();
+  //     if (is_connected.value === false)
+  //       __goTo('/')
+  // });
 
   onUnmounted(() => {
   if (canPlay.value == 1)
@@ -119,13 +125,11 @@ let moveUpP1;
 let moveDownP1;
 let mute;
 
-onBeforeMount(async () => {
+onMounted(async () => {
   await getUser();
   if (is_connected.value === false)
     __goTo('/');
-});
-
-onMounted(async () => {
+  // await getIsPlayer();
   canPlay.value = 1;
   connectWebSocket();
   board = document.getElementById("board-cyber");
@@ -200,7 +204,7 @@ function __goTo(page) {
     async function getIsPlayer() {
     try {
         const response = await fetch('/api/game/getIsPlayer/', {
-            method: "POST",
+            method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
                 'X-CSRFToken': getCsrfToken(),
@@ -240,7 +244,7 @@ function __goTo(page) {
   async function updateGameInfo() {
     try {
         const response = await fetch('/api/game/update_game/', {
-            method: "PUT",
+            method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
                 'X-CSRFToken': getCsrfToken(),

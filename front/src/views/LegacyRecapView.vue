@@ -4,28 +4,24 @@
     import CreateBackButton from '../components/CreateBackButton.vue';
     import CreateSoundButton from '../components/CreateSoundButton.vue';
     import { useRouter } from 'vue-router';
-    import { onBeforeMount, ref } from 'vue';
+    import { onMounted, ref } from 'vue';
 
     ////////////////////////////////////////////////
     /////// GET USER ///////////////////////////////
     ////////////////////////////////////////////////
 
     import { useUser } from '../useUser.js'; 
-    const { getUser, is_connected } = useUser(); 
+    const { getUser, userAccount, is_connected } = useUser(); 
     const currentUrl = window.location.href; 
     const lastSegment = currentUrl.split('/').filter(Boolean).pop();
     
     let scoreplayer1 = ref(0);
     let scoreplayer2 = ref(0);
-
-    onBeforeMount(async () => {
-        await getUser();
-        if (is_connected.value === false)
-            __goTo('/');
-    });
-
     onMounted(async () => {
+        await getUser();
         await getGameInfo();
+        // if (is_connected.value === false)
+        //     __goTo('/')
     });
 
     ////////////////////////////////////////////////
@@ -53,7 +49,7 @@
     async function getGameInfo() {
     try {
         const response = await fetch('/api/game/getGameInfo/', {
-            method: "GET",
+            method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
                 'X-CSRFToken': getCsrfToken(),

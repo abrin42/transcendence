@@ -1,0 +1,73 @@
+{% extends 'layout.html' %}
+
+{% block title %}
+    MY ACCOUNT
+{% endblock %}
+
+{% block content %}
+<br>
+<p>Check out my <a href="/api">Home page</a>.</p>
+<h1>MY ACCOUNT</h1>
+<br>
+<h2>Infos</h2>
+<br>
+
+{% if user.profile_picture %}
+    <img src="{{ user.profile_picture.url }}" alt="Profile Picture of {{ user.username }}" width ='200' height='150'>
+    <br>
+{% endif %}
+
+<p>Nickname: {{ user.nickname }}</p>
+<p>Username: {{ user.username }}</p>
+<p>Email: {{ user.email }}</p>
+<p>Phone: {{ user.phone_number }}</p>
+<p>ID: {{ user.id }}</p>
+<p>Student: {{ user.student }}</p>
+<p>Email 2FA: {{ user.email_2fa_active }}</p>
+<p>SMS 2FA: {{ user.sms_2fa_active }}</p>
+<br>
+
+{% if not user.student %}
+<a href="{% url 'player:update' %}">Edit info</a> <br>
+<a href="{% url 'player:update_password' %}">Change password</a>
+<br>
+<br><hr>
+<br>
+<h2>Set 2FA (Double authentication)</h2>
+<br>
+
+<form method="post">
+    {% csrf_token %}
+    <h3>Email method</h3>
+    <label>
+        <input type="checkbox" id="email_2fa_active" name="email_2fa_active" {% if user.email_2fa_active %}checked{% endif %}>
+        Activate Email 2FA
+    </label>
+    <br><br>
+
+    {% if user.phone_number %}
+    <h3>SMS method</h3>
+    <label>
+        <input type="checkbox" id="sms_2fa_active" name="sms_2fa_active" {% if user.sms_2fa_active %}checked{% endif %}>
+        Activate SMS 2FA
+        </label>
+    <br><br>
+    {% endif %}
+
+    <button type="submit">Save</button>
+</form>
+<br>
+
+{% endif %}
+
+<hr>
+<br>
+<a href="{% url 'player:logout' %}">Log out</a> <br>
+
+<br>
+<a href="{% url 'player:delete_account' %}">Delete account</a> <br>
+
+<br>
+<a href="/privacy-policy">Privacy policy</a>
+
+{% endblock %}

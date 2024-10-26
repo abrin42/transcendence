@@ -8,7 +8,7 @@
     import CreateHomeButton from '../components/CreateHomeButton.vue';
     import Input from '../components/Input.vue';
     import { useRouter } from 'vue-router';
-    import { ref, onBeforeMount } from 'vue';
+    import { ref, onMounted } from 'vue';
     import i18n from '../i18n.js'
     
     ////////////////////////////////////////////////
@@ -18,10 +18,10 @@
     import { useUser } from '../useUser.js'; 
     const { getUser, userAccount, is_connected } = useUser(); 
     
-    onBeforeMount(async () => {
+    onMounted(async () => {
         await getUser();
         if (is_connected.value === false)
-            __goTo('/');
+            __goTo('/')
     });
 
     ////////////////////////////////////////////////
@@ -40,7 +40,7 @@
     async function updateAccount() {
         try {
             const response = await fetch('/api/player/update_user/', {
-                method: "PUT",
+                method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
                     'X-CSRFToken': getCsrfToken(),
@@ -82,7 +82,7 @@
     const handleLogout = async () => {
         try {
             await fetch("api/player/logout/", {
-                method: "POST",
+                method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
                     'X-CSRFToken': getCsrfToken()
@@ -97,7 +97,7 @@
     const handleDelete = async () => {
         try {
             await fetch("api/player/delete_account/", {
-                method: "POST",
+                method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
                     'X-CSRFToken': getCsrfToken()

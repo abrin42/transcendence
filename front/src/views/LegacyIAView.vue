@@ -41,7 +41,7 @@ body {
 </style>
 
 <script setup>
-import { ref, onMounted, onUnmounted, onBeforeMount } from 'vue';
+import { ref, onMounted, onUnmounted } from 'vue';
 import paddleHitSound from '../assets/paddle_hit.mp3'
 import pointScoredSound from '../assets/point_scored.mp3'
 import wallHitSound from '../assets/wall_hit.mp3'
@@ -54,11 +54,13 @@ import { useRouter } from 'vue-router';
   import { useUser } from '../useUser.js'; 
   const { getUser, userAccount, is_connected } = useUser(); 
 
-  onBeforeMount(async () => {
-    await getUser();
-    if (is_connected.value === false)
-      __goTo('/');
-  });
+  // onMounted(async () => {
+  //     await getUser();
+  //     if (is_connected.value === false)
+  //       __goTo('/')
+  // });
+
+
 
   onUnmounted(() => {
   if (canPlay.value == 1)
@@ -88,7 +90,10 @@ let moveDownP1;
 let mute;
 
 onMounted(async () => {
-
+  await getUser();
+  if (is_connected.value === false)
+    __goTo('/');
+  // await getIsPlayer();
   canPlay.value = 1;
   connectWebSocket();
   board = document.getElementById("board");
@@ -151,7 +156,7 @@ function __goTo(page) {
     async function getIsPlayer() {
     try {
         const response = await fetch('/api/game/getIsPlayer/', {
-            method: "POST",
+            method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
                 'X-CSRFToken': getCsrfToken(),
@@ -191,7 +196,7 @@ function __goTo(page) {
   async function updateGameInfo() {
     try {
         const response = await fetch('/api/game/update_game/', {
-            method: "PUT",
+            method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
                 'X-CSRFToken': getCsrfToken(),
