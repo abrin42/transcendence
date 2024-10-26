@@ -166,7 +166,7 @@ function __goTo(page) {
             const responseData = await response.json();
             console.log('Game updated successfully!', responseData);
 
-            if (responseData.message == 'isPlayer')
+            if (responseData.message == 'isFirstPlayer' || responseData.message == 'isSecondePlayer')
             {
               canPlay.value = 1;
               console.log ("is player");
