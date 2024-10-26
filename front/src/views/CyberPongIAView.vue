@@ -82,18 +82,11 @@ body {
 </style>
 
 <script setup>
-<<<<<<< Updated upstream
-import { ref, inject, onMounted, onUnmounted } from 'vue';
-import paddleHitSound from '../assets/cyber_paddle_hit.mp3'
-import pointScoredSound from '../assets/cyber_point_scored.mp3'
-import wallHitSound from '../assets/cyber_wall_hit.mp3'
-import CreateSoundButton from '../components/CreateSoundButton.vue';
-=======
-import { ref, onMounted, onUnmounted, onBeforeMount } from 'vue';
+import { ref, inject, onMounted, onUnmounted, onBeforeMount } from 'vue';
 import paddleHitSound from '../assets/paddle_hit.mp3'
 import pointScoredSound from '../assets/point_scored.mp3'
 import wallHitSound from '../assets/wall_hit.mp3'
->>>>>>> Stashed changes
+import CreateSoundButton from '../components/CreateSoundButton.vue';
 import { useRouter } from 'vue-router';
 
   ////////////////////////////////////////////////
@@ -102,15 +95,6 @@ import { useRouter } from 'vue-router';
 
   import { useUser } from '../useUser.js'; 
   const { getUser, userAccount, is_connected } = useUser(); 
-
-<<<<<<< Updated upstream
-  // onMounted(async () => {
-  //     await getUser();
-  //     if (is_connected.value === false)
-  //       __goTo('/')
-  // });
-=======
->>>>>>> Stashed changes
 
   onUnmounted(() => {
   if (canPlay.value == 1)
@@ -131,15 +115,11 @@ import { useRouter } from 'vue-router';
   }
 });
 
-<<<<<<< Updated upstream
 let moveUpP1;
 let moveDownP1;
 let mute;
 
-onMounted(async () => {
-=======
 onBeforeMount(async () => {
->>>>>>> Stashed changes
   await getUser();
   if (is_connected.value === false)
     __goTo('/');
