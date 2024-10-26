@@ -91,6 +91,7 @@ import { compileScript } from 'vue/compiler-sfc';
     myVideo.playbackRate = 2;
     let player1;
     let player2;
+    let isPlayer2 = 1;
     let gamemode = "legacy"; //fetch game mode selected?
     let playerName1 = "Chachou";
     let playerName2 = "Chachou2";
@@ -103,7 +104,7 @@ import { compileScript } from 'vue/compiler-sfc';
     function goToLegacy(id) {
         console.log("id hereee");
         console.log(id);
-        router.push(`/legacy_remote/${id}`);
+        router.push(`/legacy-remote/${id}`);
         // router.push(`/legacy/${id}`);
         // router.push(`/matchmaking`);
     }
@@ -195,11 +196,13 @@ async function insertPlayer() {
 
             if (game.player2 == null) {
                 waitingPlayer = 1;
+                isPlayer2 = 0;
                 await new Promise(resolve => setTimeout(resolve, 1000));
                 insertPlayer();
             } 
             else 
             {
+                //les deux joueurs son rediriger
                 waitingPlayer = 0;
 
                 //fadein second player

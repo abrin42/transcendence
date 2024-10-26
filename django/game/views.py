@@ -133,37 +133,6 @@ def creat_game_local(request):
     return JsonResponse({'error': 'Invalid request method'}, status=405)
 
         
-# def insertPlayer(request):
-#     if request.method == 'POST':
-#         try:
-#             data = json.loads(request.body)
-#             username = data.get('username')
-
-#             player = get_object_or_404(Player, username=username)
-#             latest_game = Game.objects.order_by('-id').first()
-#             # if game state est != wating cree une nouvelle game 
-#             if latest_game.mode == 'waiting':
-#                 # if latest_game is None or latest_game.player2 is not None and latest_game.player1 != player:
-#                     # latest_game = Game.objects.create(state='waiting', player1=player, scorep1=0)
-#                 if latest_game.player1 != player:
-#                     latest_game.player2 = player
-#                     latest_game.state = 'active'
-#                     latest_game.scorep2 = 0
-#                     latest_game.save()
-#                 serializer = GameSerializer(latest_game)
-#                 data = serializer.data
-#                 return JsonResponse(data, safe=False, content_type='application/json')
-                
-#             elif latest_game.player1 != player:
-#                 latest_game = Game.objects.create(state='waiting', player1=player, scorep1=0)
-
-#             serializer = GameSerializer(latest_game)
-#             data = serializer.data
-#             return JsonResponse(data, safe=False, content_type='application/json')
-#         except json.JSONDecodeError:
-#             return JsonResponse({'error': 'Invalid request body'}, status=400)
-#     return JsonResponse({'error': 'Invalid request method'}, status=405)
-
 def insertPlayer(request):
     if request.method == 'POST':
         try:
@@ -172,28 +141,59 @@ def insertPlayer(request):
 
             player = get_object_or_404(Player, username=username)
             latest_game = Game.objects.order_by('-id').first()
-
             if latest_game is None:
                 latest_game = Game.objects.create(state='waiting', player1=player, scorep1=0)
-            elif latest_game.player1 != player and (latest_game.player2 is None or latest_game.player2 != player):
-                if latest_game.player2 is not None:
-                    latest_game = Game.objects.create(state='waiting', player1=player, scorep1=0)
-                else:
+                serializer = GameSerializer(latest_game)
+                data = serializer.data
+                return JsonResponse(data, safe=False, content_type='application/json')
+            if latest_game.state == 'waiting':
+                if latest_game.player1 != player and latest_game.player2 is None:
                     latest_game.player2 = player
-                    latest_game.state = 'active'  # Vous pouvez également changer l'état si nécessaire
                     latest_game.scorep2 = 0
                     latest_game.save()
-
-            data = serializers.serialize('json', [latest_game])
+                serializer = GameSerializer(latest_game)
+                data = serializer.data
+                return JsonResponse(data, safe=False, content_type='application/json')
+                
+            elif latest_game.state != 'waiting':
+                latest_game = Game.objects.create(state='waiting', player1=player, scorep1=0)
+            serializer = GameSerializer(latest_game)
+            data = serializer.data
             return JsonResponse(data, safe=False, content_type='application/json')
-
-            #serializer = GameSerializer(latest_game)
-            #serializer_data = json.loads(serialize('json', [serializer]))[0]['fields']
-            #return JsonResponse(serializer_data, safe=False) 
-            # return HttpResponse(data,content_type='application/json')
         except json.JSONDecodeError:
             return JsonResponse({'error': 'Invalid request body'}, status=400)
     return JsonResponse({'error': 'Invalid request method'}, status=405)
+
+# def insertPlayer(request):
+#     if request.method == 'POST':
+#         try:
+#             data = json.loads(request.body)
+#             username = data.get('username')
+
+#             player = get_object_or_404(Player, username=username)
+#             latest_game = Game.objects.order_by('-id').first()
+
+#             if latest_game is None:
+#                 latest_game = Game.objects.create(state='waiting', player1=player, scorep1=0)
+#             elif latest_game.player1 != player and (latest_game.player2 is None or latest_game.player2 != player):
+#                 if latest_game.player2 is not None:
+#                     latest_game = Game.objects.create(state='waiting', player1=player, scorep1=0)
+#                 else:
+#                     latest_game.player2 = player
+#                     latest_game.state = 'active'  # Vous pouvez également changer l'état si nécessaire
+#                     latest_game.scorep2 = 0
+#                     latest_game.save()
+
+#             # data = serializers.serialize('json', [latest_game])
+#             # return JsonResponse(data, safe=False, content_type='application/json')
+
+
+#             serializer = GameSerializer(latest_game)
+#             data = serializer.data
+#             return JsonResponse(data, safe=False, content_type='application/json')
+#         except json.JSONDecodeError:
+#             return JsonResponse({'error': 'Invalid request body'}, status=400)
+#     return JsonResponse({'error': 'Invalid request method'}, status=405)
 
 #@login_required
 def update_game(request):

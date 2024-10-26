@@ -115,7 +115,7 @@
     function goToLegacy(id) {
         console.log("id hereee");
         console.log(id);
-        router.push(`/legacy/${id}`);
+        router.push(`/legacy-local/${id}`);
         // router.push(`/matchmaking`);
     }
 
@@ -132,7 +132,7 @@ async function creatGameLocal()
             },
             body: JSON.stringify({
                 username1: userAccount.username,
-                username2: userAccount.username, //change to seconde player
+                username2: playerName2, //change to seconde player
             })
         });
         if (response.ok) {
@@ -144,28 +144,28 @@ async function creatGameLocal()
             console.log("p1 =",data.player1);
             console.log("p2 =",data.player2);
 
-            const player1 = data.player1;
-            const player1_pic = document.getElementById('player1-picture');
-            const player1_name = document.getElementById('player1-name');
-            const player1_rank = document.getElementById('player1-rank');
-            const player2 = data.player2;
-            const player2_pic = document.getElementById('player2-picture');
-            const player2_name = document.getElementById('player2-name');
-            const player2_rank = document.getElementById('player2-rank');
+            // const player1 = data.player1;
+            // const player1_pic = document.getElementById('player1-picture');
+            // const player1_name = document.getElementById('player1-name');
+            // const player1_rank = document.getElementById('player1-rank');
+            // const player2 = data.player2;
+            // const player2_pic = document.getElementById('player2-picture');
+            // const player2_name = document.getElementById('player2-name');
+            // const player2_rank = document.getElementById('player2-rank');
 
-            player1_pic.src = player1.profile_picture;
-            player1_name.textContent = player1.username;
-            player1_rank.textContent = `Rank: ${player1.rank}`; 
-            player2_pic.src = player2.profile_picture;
-            player2_name.textContent = player2.username;
-            player2_rank.textContent = `Rank: ${player2.rank}`; 
+            // player1_pic.src = player1.profile_picture;
+            // player1_name.textContent = player1.username;
+            // player1_rank.textContent = `Rank: ${player1.rank}`; 
+            // player2_pic.src = player2.profile_picture;
+            // player2_name.textContent = player2.username;
+            // player2_rank.textContent = `Rank: ${player2.rank}`; 
 
-            player1_pic.classList.add(...['slide-left']);
-            player1_name.classList.add(...['slide-left']);
-            player1_rank.classList.add(...['slide-left']);
-            player2_pic.classList.add(...['fade-in']);
-            player2_name.classList.add(...['fade-in']);
-            player2_rank.classList.add(...['fade-in']);
+            // player1_pic.classList.add(...['slide-left']);
+            // player1_name.classList.add(...['slide-left']);
+            // player1_rank.classList.add(...['slide-left']);
+            // player2_pic.classList.add(...['fade-in']);
+            // player2_name.classList.add(...['fade-in']);
+            // player2_rank.classList.add(...['fade-in']);
 
 
             console.log("lancement dans 3");
