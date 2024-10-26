@@ -4,7 +4,7 @@
     import CreateHomeButton from '../components/CreateHomeButton.vue';
     import Input from '../components/Input.vue';
     import { useRouter } from 'vue-router';
-    import { ref, onMounted } from 'vue';
+    import { ref, onBeforeMount } from 'vue';
     import i18n from '../i18n.js'
 
     ////////////////////////////////////////////////
@@ -14,7 +14,7 @@
     import { useUser } from '../useUser.js'; 
     const { getUser, is_connected } = useUser(); 
 
-    onMounted(async () => {
+    onBeforeMount(async () => {
         await getUser();
         if (is_connected.value === true)
             __goTo('/')

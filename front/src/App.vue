@@ -3,7 +3,7 @@
   import { RouterLink, RouterView } from 'vue-router';
   import AudioBackground from './components/AudioBackground.vue';
   import VideoBackground from './components/VideoBackground.vue';
-  import { ref, provide, onMounted } from 'vue';
+  import { ref, provide } from 'vue';
   
   // provide to inject 'isPlaying' in CreateSoundButton component
   let isPlaying = ref(false);

@@ -225,6 +225,7 @@ def insertPlayer(request):
 #@login_required
 def update_game(request):
     if request.method == "POST":
+        
         if request.session.get('csrf') != request.COOKIES.get('csrftoken'):
             return JsonResponse({'error': 'Invalid CSRF token'}, status=400)
         try:

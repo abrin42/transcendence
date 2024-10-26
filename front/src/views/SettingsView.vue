@@ -1,5 +1,5 @@
 <script setup>
-    import { reactive, ref, onBeforeUnmount, onMounted } from 'vue';
+    import { ref, onBeforeUnmount, onBeforeMount } from 'vue';
     import CreateBackButton from '../components/CreateBackButton.vue';
     import CreateDropupButton from '@/components/CreateDropupButton.vue';
     import CreateHomeButton from '@/components/CreateHomeButton.vue';
@@ -12,7 +12,7 @@
     import { useUser } from '../useUser.js'; 
     const { getUser, userAccount, is_connected } = useUser(); 
 
-    onMounted(async () => {
+    onBeforeMount(async () => {
         await getUser();
     });
 

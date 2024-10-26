@@ -4,7 +4,7 @@
     import CreateDropupButton from '../components/CreateDropupButton.vue';
     import CreateBackButton from '../components/CreateBackButton.vue';
     import { useRouter } from 'vue-router';
-    import { reactive, onMounted, ref } from 'vue';
+    import { onBeforeMount, ref } from 'vue';
     import i18n from '../i18n.js';
 
     ////////////////////////////////////////////////
@@ -13,15 +13,13 @@
 
     import { useUser } from '../useUser.js'; 
     
-    const { getUser, userAccount, is_connected } = useUser(); 
+    const { getUser, is_connected } = useUser(); 
 
-    onMounted(async () => {
+    onBeforeMount(async () => {
         await get2FAUser();
         await getUser();
         if (is_connected.value === true)
             __goTo('/')
-        console.log("onMounted/is_connected: " + is_connected.value);  
-        console.log("onMounted/username: " + userAccount.username);
     });
 
     ////////////////////////////////////////////////
