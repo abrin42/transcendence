@@ -286,7 +286,84 @@ function updateBaal(x, y)
   ball.y = y;
 }
 
+function connectWebSocket() {
+  console.log(lastSegment);
+  let hostName =  window.location.hostname;
+  let port = window.location.port || '8443';
+  socket.value = new WebSocket(`wss://${hostName}:${port}/ws/websockets/?page=${encodeURIComponent(gamePage)}`);
+  socket.value.onopen = () => {
+    console.log('WebSocket connecté');
+    console.log(socket.value);
+  };
+  
+  
+  socket.value.onmessage = async (event) => {
+    // console.log("---ON MESSAGE---");
+    
+    const data = JSON.parse(event.data);
+    
+    if (data.type == 'connection_success') 
+    {
 
+      // console.log(data.type);
+      // console.log(data.message);
+      // connectionStatus.value = data.message;
+      connection = 1;
+    }
+    else if (data.type == 'updatePts') //sound
+    {
+      // console.log(data.type);
+      // console.log(data.updatePts);
+      // console.log(data.player);
+      updatePoints(data.player, data.updatePts);
+      if (soundOnOff == true)
+      pointScoredAudio.play();
+      await updateGameInfo();
+    } 
+    else if (data.type == 'updatePaddle')
+    {
+      updatePadel(data.player, data.newY);
+      // messages.value.push(data.type);
+    }
+    else if (data.type == 'updateBaal')
+    {
+      // console.log(data.x);
+      // console.log(data.y);
+      updateBaal(data.x, data.y);
+    }
+    else if (data.type == 'endGame')
+    {
+      connection = 0;
+      // console.log(data.type);
+      router.push(`/legacyrecap/${lastSegment}`);
+    }
+    else if (data.type == 'startGame')
+    {
+      await updateGameInfo();
+      // console.log(data.type);
+    }
+    else if (data.type == 'paddleHit')
+    {
+      // console.log(data.type);
+      if (soundOnOff == true)
+        paddleHitAudio.play();
+    }
+    else if (data.type == 'wallHit')
+    { 
+      // console.log(data.type);
+      if (soundOnOff == true)
+        wallHitAudio.play();
+    }
+    else if (data.type == 'info_back') //a enlever test
+    {
+      // console.log(data.type);
+      // console.log(data.value_back1);
+      // console.log(data.value_back2);
+      // console.log(data.value_back3);
+    }
+    // console.log("---END ON MESSAGE---");
+  };
+}
 
 
 function sendMessage(msg) {

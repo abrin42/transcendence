@@ -12,12 +12,12 @@
   import CreateLobbyView from '../views/CreateLobbyView.vue'
   import JoinLobbyView from '../views/JoinLobbyView.vue'
   import MatchmakingView from '../views/MatchmakingView.vue'
+  import MatchmakingRemoteView from '../views/MatchmakingRemoteView.vue'
   import TwoFaView from '../views/2faView.vue'
   import LeaderboardView from '../views/LeaderboardView.vue'
   import LeaderboardView2 from '../views/LeaderboardView2.vue'
   import TermsView from '../views/TermsView.vue'
   import NotFound from '../views/NotFound.vue'
-  import MyAccountView from '../views/MyAccountView.vue'// ca sert a quoi???
   /**************GAMES*************/
   /*************LEGACY*************/
   import LegacyIAView from '../views/LegacyIAView.vue'
@@ -98,6 +98,11 @@
       path: '/matchmaking',
       name: 'matchmaking',
       component: MatchmakingView
+    },
+    {
+      path: '/matchmakingRemote',
+      name: 'matchmakingRemote',
+      component: MatchmakingRemoteView
     },
     {
       path: '/2fa',

@@ -74,8 +74,44 @@ function setupSemiFinals() {
     matches.value[1].team2 = participants.value[3].name;
 }
 
+function getCsrfToken() {
+        const cookieValue = document.cookie
+            .split('; ')
+            .find(row => row.startsWith('csrftoken='))
+            ?.split('=')[1];
+        return cookieValue || '';
+    }
+
+async function creatFalsePlayer(user1, user2, user3 ,user4)
+{
+    try {
+        const response = await fetch('/api/game/creatFalsePlayer/', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRFToken': getCsrfToken(),
+            },
+            body: JSON.stringify({
+                username1: user1,
+                username2: user2,
+                username3: user3,
+                username4: user4,
+            })
+        });
+        if (response.ok) {
+            const data = await response.json();
+            console.log('Game Data:', data);
+        }
+    }
+    catch (error) {
+        console.error('Erreur lors de la connexion:', error);
+        alert('An error occurred while logging in');
+    }
+}
+
+
 // Fonction pour ajouter les participants
-function addParticipants() {
+async function addParticipants() {
     const filteredParticipants = newParticipants.value.filter(name => name.trim() !== "");
 
     if (filteredParticipants.length === 4) {
@@ -84,6 +120,7 @@ function addParticipants() {
             alert(i18n.global.t('error_cannot_use_same_nickname'));
         } else {
             participants.value = filteredParticipants.map(name => ({ name }));
+            await creatFalsePlayer(filteredParticipants[0], filteredParticipants[1], filteredParticipants[2], filteredParticipants[3]);
             startTournament();
         }
     } else {
