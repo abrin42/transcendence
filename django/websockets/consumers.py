@@ -114,6 +114,18 @@ class PongConsumer(AsyncWebsocketConsumer):
         elif player == "2":
             lstgame[self.room_id]['PTSp2'] += 1
             updatePts = lstgame[self.room_id]['PTSp2']
+        else:
+            updatePts = lstgame[self.room_id]['PTSp1']
+            await self.channel_layer.group_send(
+                self.room_id,
+                {
+                    'type': 'updatePts',
+                    'updatePts': updatePts,
+                    'player': "1",
+                }
+            )
+            player = "2"
+            updatePts = lstgame[self.room_id]['PTSp2']
 
         await self.channel_layer.group_send(
             self.room_id,
@@ -299,7 +311,9 @@ class PongConsumer(AsyncWebsocketConsumer):
             self.room_id,
             self.channel_name
         )
-        self.isRemote = 1           
+        self.isRemote = 1        
+        await self.sendPts_remote("updatePts", "0")
+   
 
 
         await self.accept()
@@ -385,9 +399,18 @@ class PongConsumer(AsyncWebsocketConsumer):
     #         'player': event['player'],
     #     }))
 
+    async def update_Pts(self, event):
+        updatePts = event['updatePts']
+        player = event['player']
 
+        await self.send(text_data=json.dumps({
+            'type': "updatePts",
+            'updatePts': updatePts,
+            'player': player,
+        }))
 
     async def sendPts(self, type, player):
+
         if player == "1":
             self.PTSp1 = self.PTSp1 + 1
             await self.send(text_data=json.dumps({
@@ -395,6 +418,22 @@ class PongConsumer(AsyncWebsocketConsumer):
                 'updatePts': self.PTSp1,
                 'player': player,
             }))
+            # await self.channel_layer.group_send(
+            #     self.room_id,
+            #     {
+            #         'type': 'update_Pts',
+            #         'updatePts':  self.PTSp1,
+            #         'player': "1",
+            #     }
+            # )
+        #     await self.channel_layer.group_send(
+        #     self.room_group_name,
+        #     {
+        #         'type': "update_Pts",
+        #         'x': x,
+        #         'y': y,
+        #     }
+        # )
             if (self.PTSp1 == self.nb_pts_for_win):
                 await self.endGame()
         elif player == "2":
@@ -404,6 +443,22 @@ class PongConsumer(AsyncWebsocketConsumer):
                 'updatePts': self.PTSp2,
                 'player': player,
             }))
+            # await self.channel_layer.group_send(
+            #     self.room_id,
+            #     {
+            #         'type': 'update_Pts',
+            #         'updatePts':  self.PTSp2,
+            #         'player': "2",
+            #     }
+            # )
+            # await self.channel_layer.group_send(
+            #     self.room_id,
+            #     {
+            #         'type': 'updatePts',
+            #         'updatePts':  self.PTSp2,
+            #         'player': "2",
+            #     }
+            # )
             if (self.PTSp2 == self.nb_pts_for_win):
                 await self.endGame()
     
@@ -447,16 +502,19 @@ class PongConsumer(AsyncWebsocketConsumer):
         await self.disconnect(1000)
 
     async def sendPadInit(self):
-        await self.send(text_data=json.dumps({
-            'type': "updatePaddle",
-            'newY': self.init_pad,
-            'player': "1",
-        }))
-        await self.send(text_data=json.dumps({
-            'type': "updatePaddle",
-            'newY': self.init_pad,
-            'player': "2",
-        }))
+        # await self.send(text_data=json.dumps({
+        #     'type': "updatePaddle",
+        #     'newY': self.init_pad,
+        #     'player': "1",
+        # }))
+        await self.send_mouv_to_group(self.init_pad, "1")
+        await self.send_mouv_to_group(self.init_pad, "2")
+
+        # await self.send(text_data=json.dumps({
+        #     'type': "updatePaddle",
+        #     'newY': self.init_pad,
+        #     'player': "2",
+        # }))
 
     async def begin_point(self):
         self.posPad1 = self.init_pad
@@ -574,22 +632,25 @@ class PongConsumer(AsyncWebsocketConsumer):
                 if self.posPad1 < 0:
                     self.posPad1 = 0
                 newY = self.posPad1
-                await self.send(text_data=json.dumps({
-                    'type': 'updatePaddle',
-                    'newY': newY, 
-                    'player': player,
-                }))
+                # await self.send(text_data=json.dumps({
+                #     'type': 'updatePaddle',
+                #     'newY': newY, 
+                #     'player': player,
+                # }))
+                await self.send_mouv_to_group(newY, player)
             elif player == 2:
                 self.P2Ready = 1
                 self.posPad2 -= 5
                 if self.posPad2 < 0:
                     self.posPad2 = 0
                 newY = self.posPad2
-                await self.send(text_data=json.dumps({
-                    'type': 'updatePaddle',
-                    'newY': newY, 
-                    'player': player,
-                }))
+                # await self.send(text_data=json.dumps({
+                #     'type': 'updatePaddle',
+                #     'newY': newY, 
+                #     'player': player,
+                # }))
+                await self.send_mouv_to_group(newY, player)
+
         else:
             if player == 1:
                 lstgame[self.room_id]['P1Ready'] = 1
@@ -636,22 +697,24 @@ class PongConsumer(AsyncWebsocketConsumer):
                 if self.posPad1 > 560:
                     self.posPad1 = 560
                 newY = self.posPad1
-                await self.send(text_data=json.dumps({
-                    'type': 'updatePaddle',
-                    'newY': newY,
-                    'player': player,
-                }))
+                # await self.send(text_data=json.dumps({
+                    # 'type': 'updatePaddle',
+                    # 'newY': newY,
+                    # 'player': player,
+                # }))
+                await self.send_mouv_to_group(newY, player)
             if player == 2:
                 self.P2Ready = 1
                 self.posPad2 += 5
                 if self.posPad2 > 560:
                     self.posPad2 = 560
                 newY = self.posPad2
-                await self.send(text_data=json.dumps({
-                    'type': 'updatePaddle',
-                    'newY': newY,
-                    'player': player,
-                }))
+                # await self.send(text_data=json.dumps({
+                    # 'type': 'updatePaddle',
+                    # 'newY': newY,
+                    # 'player': player,
+                # }))
+                await self.send_mouv_to_group(newY, player)
         else:
             if player == 1:
                 lstgame[self.room_id]['P1Ready'] = 1
