@@ -7,17 +7,19 @@ from django.core.serializers import serialize
 from django.http import JsonResponse
 from django.conf import settings
 from django.views.decorators.csrf import csrf_exempt
+from django.middleware.csrf import get_token
+from datetime import datetime, date
+from collections import deque
+
 from .otp import create_otp
 from .jwt import generate_jwt, token_user, set_jwt_token
 from .models import Player, BlacklistedToken
 from .utils import set_picture_42, get_csrf_token
-from datetime import datetime
+
 import pyotp
 import requests
 import json
-from collections import deque
 import asyncio
-from django.middleware.csrf import get_token
 
 matchmaking = deque()
 
@@ -46,14 +48,15 @@ def register_view(request):
             user.email = email
             user.phone_number = phone_number
             user.set_password(password)
+            user.date_joined = date.today()
+            print(user.date_joined)
             user.save()
             print(user.username)
             print(user.password)
             authenticated_user = authenticate(username=user.username, password=password)
             if authenticated_user:
-                set_user_keys(user)
-            
                 login(request, authenticated_user)
+                set_user_keys(user)
                 authenticated_user.nickname = user.username[1:] 
                 authenticated_user.save()
                 get_csrf_token(request)

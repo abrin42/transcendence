@@ -38,6 +38,7 @@ export function useUser() {
         userAccount.language = user.language;
         userAccount.profilePicture = user.profile_picture;
         userAccount.anonymized = user.anonymized;
+        userAccount.date_joined = user.date_joined;
         
         userAccount.win = user.win;
         userAccount.lose = user.lose;
