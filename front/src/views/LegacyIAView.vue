@@ -147,8 +147,7 @@ function __goTo(page) {
         return cookieValue || '';
     }
 
-
-    async function getIsPlayer() {
+  async function getIsPlayer() {
     try {
         const response = await fetch('/api/game/getIsPlayer/', {
             method: 'POST',

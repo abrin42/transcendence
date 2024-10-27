@@ -72,9 +72,9 @@
 
     onMounted(async () => {
         createPlyInput();
-        // await creatGameLocal();
+        // await createGameLocal();
         // await insertPlayer();
-        await creatGameLocal();
+        await createGameLocal();
 
     });
 
@@ -123,8 +123,9 @@
     }
 
 let loadingmodule = true;
+let game_id;
 
-async function creatGameLocal()
+async function createGameLocal()
 {
     try {
         const response = await fetch('/api/game/create_game_local/', {
@@ -146,6 +147,7 @@ async function creatGameLocal()
             console.log("game id", data.id);
             console.log("p1 =",data.player1);
             console.log("p2 =",data.player2);
+            
 
             // const player1 = data.player1;
             // const player1_pic = document.getElementById('player1-picture');
@@ -505,7 +507,7 @@ async function insertPlayer() {
         console.log(playerName2);
         validateGame = true;
         try {
-        const response = await fetch('/api/game/creatOneFalsePlayer/', {
+        const response = await fetch('/api/game/createOneFalsePlayer/', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -545,7 +547,7 @@ async function insertPlayer() {
                     player2_name.classList.add(...['fade-in']);
                     // player2_rank.classList.add(...['fade-in']);
 
-                    await creatGameLocal();
+                    await createGameLocal();
 
             }
         }

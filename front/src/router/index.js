@@ -132,7 +132,7 @@
     /*************GAMES*************/
     /************LEGACY*************/
     {
-      path: '/legacy-ia',
+      path: '/legacy-ia/:id',
       name: 'legacy-ia',
       component: LegacyIAView
     },

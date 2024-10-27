@@ -62,7 +62,7 @@
     onMounted(async () => {
         createPlyInput();
         await insertPlayer();
-        // await creatGameLocal();
+        // await createGameLocal();
     });
 
 
@@ -113,10 +113,10 @@
 
 let loadingmodule = true;
 
-async function creatGameLocal()
+async function createGameLocal()
 {
     try {
-        const response = await fetch('/api/game/creat_game_local/', {
+        const response = await fetch('/api/game/create_game_local/', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',

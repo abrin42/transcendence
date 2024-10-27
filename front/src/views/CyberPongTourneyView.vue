@@ -82,10 +82,10 @@ function getCsrfToken() {
         return cookieValue || '';
     }
 
-async function creatFalsePlayer(user1, user2, user3 ,user4)
+async function createFalsePlayer(user1, user2, user3 ,user4)
 {
     try {
-        const response = await fetch('/api/game/creatFalsePlayer/', {
+        const response = await fetch('/api/game/createFalsePlayer/', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -120,7 +120,7 @@ async function addParticipants() {
             alert(i18n.global.t('error_cannot_use_same_nickname'));
         } else {
             participants.value = filteredParticipants.map(name => ({ name }));
-            await creatFalsePlayer(filteredParticipants[0], filteredParticipants[1], filteredParticipants[2], filteredParticipants[3]);
+            await createFalsePlayer(filteredParticipants[0], filteredParticipants[1], filteredParticipants[2], filteredParticipants[3]);
             startTournament();
         }
     } else {

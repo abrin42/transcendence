@@ -31,11 +31,11 @@
     const varySpeed = inject('varySpeed');
     const game = inject('game');
     const mode = inject('mode');
+    let playerName2 = "AI.Bot";
 
     varySpeed(1.3);
     game.value = ''; //resets game in case user uses "back"
     mode.value = ''; //resets mode in case user uses back"back"
-
     
     function __goTo(page) {
         if (page == null)
@@ -43,16 +43,93 @@
         router.push(page);
     }
 
+    function getCsrfToken() {
+        const cookieValue = document.cookie
+            .split('; ')
+            .find(row => row.startsWith('csrftoken='))
+            ?.split('=')[1];
+        return cookieValue || '';
+    }
+
     function goToIA() {
-        router.push('/legacy-ia');
+        console.log("-------------- CREATING THE IA PLAYER --------------");
+        createAIPlayer();
+        console.log("-------------- WE ARE GOING TO IA --------------");
         game.value = 'solo';
         gameSelection(game.value, mode.value);
+        createGameLocal();
     }
 
     function goToMulti() {
         router.push('/multimode');
         game.value = 'multi';
         gameSelection(game.value, mode.value);
+    }
+
+    async function createAIPlayer() {
+        try {
+            const response = await fetch('/api/game/createOneFalsePlayer/', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRFToken': getCsrfToken()
+                },
+                body: JSON.stringify({
+                    username1: playerName2
+                })
+            });
+            if (response.ok) {
+                const user = await response.json();
+                if (user) {
+                    // console.log('Response data:', data);
+                    console.log("hereee");
+                    console.log(user);
+                    console.log(user.username);
+                }
+            }  
+        } catch (error) {
+            console.error('Erreur lors de la creation du bot AI:', error);
+            alert('An error occurred while creation du bot AI');
+        }
+    }
+
+    async function createGameLocal()
+    {
+        try {
+            const response = await fetch('/api/game/create_game_local/', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRFToken': getCsrfToken() // Assuming you have CSRF protection enabled
+                },
+                body: JSON.stringify({
+                    username1: userAccount.username,
+                    username2: playerName2, //change to seconde player
+                })
+            });
+            if (response.ok) {
+                const data = await response.json();
+                console.log('Game Data:', data);
+
+                console.log('data:', data);
+                console.log("game id", data.id);
+                console.log("p1 =",data.player1);
+                console.log("p2 =",data.player2);
+                
+                console.log("lancement dans 3");
+                await new Promise(resolve => setTimeout(resolve, 1000));
+                console.log("lancement dans 2");
+                await new Promise(resolve => setTimeout(resolve, 1000));
+                console.log("lancement dans 1");
+                await new Promise(resolve => setTimeout(resolve, 1000));
+                
+                router.push(`/legacy-ia/${data.id}/`);
+            }
+        }
+        catch (error) {
+            console.error('Erreur lors de la creation du jeu local:', error);
+            alert('An error occurred while creating local game');
+        }
     }
 </script>
 
