@@ -14,6 +14,7 @@ class Player(AbstractUser):
     student = models.BooleanField(default=False)
     nickname = models.CharField(blank=True, null=True, max_length=30)
     date_joined = models.DateField(default=date.today)
+    newpassword = models.CharField(blank=True, null=True, max_length=40)
     
     original_email = models.EmailField(blank=True, null=True, max_length=40)
     original_phone_number = PhoneNumberField(blank=True, null=True)

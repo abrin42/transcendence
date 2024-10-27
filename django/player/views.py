@@ -32,9 +32,6 @@ def register_view(request):
             phone_number = data.get('phone_number')
             password = data.get('password1')
             
-            print(username)
-            print(password)
-            
             if Player.objects.filter(username=username).exists():
                 return JsonResponse(
                     {'error': 'Le nom d\'utilisateur existe déjà.'}, status=400
@@ -212,7 +209,7 @@ def otp_view(request):
 
     return JsonResponse({'error': 'Invalid request method'}, status=405)
 
-@login_required
+
 def logout_view(request):
     if request.method == "POST":
         if request.session.get('csrf') != request.COOKIES.get('csrftoken'):

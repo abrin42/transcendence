@@ -37,7 +37,6 @@ def get_all_games(request):
         return JsonResponse(data, safe=False)
     return JsonResponse({'error': 'Invalid request method'}, status=405)
 
-
 def getGameInfo(request):
     if request.method == 'POST':
         try:
@@ -52,23 +51,21 @@ def getGameInfo(request):
             return JsonResponse({'error': 'Invalid request body'}, status=400)
     return JsonResponse({'error': 'Invalid request method'}, status=405)
 
-
 def createOneFalsePlayer(request):
     if request.method == 'POST':
         try:
             data = json.loads(request.body)
-            user1 = data.get('username1')
-            print(user1)
+            username = f"#{data.get('username1')}"
+            print(username)
 
-            player1, _ = Player.objects.get_or_create(
-                username=user1,
-                defaults={'username': user1}
+            player1, created = Player.objects.get_or_create(
+                username=username,
+                defaults={'username':username}
             )
             print(player1.username)
+
             user = json.loads(serialize('json', [player1]))[0]['fields']
             return JsonResponse(user, safe=True, content_type='application/json') 
-            # serialized_players = PlayerSerializer(player1)            
-            # return JsonResponse({'player': serialized_players.data}, status=200)
         except json.JSONDecodeError:
             return JsonResponse({'error': 'Invalid request body'}, status=400)
     return JsonResponse({'error': 'Invalid request method'}, status=405)
@@ -77,25 +74,24 @@ def createFalsePlayer(request):
     if request.method == 'POST':
         try:
             data = json.loads(request.body)
-            user1 = data.get('username1')
-            user2 = data.get('username2')
-            user3 = data.get('username3')
-            user4 = data.get('username4')
-            
+            user1 = f"#{data.get('username1')}"
+            user2 = f"#{data.get('username2')}"
+            user3 = f"#{data.get('username3')}"
+            user4 = f"#{data.get('username4')}"
 
-            player1, _ = Player.objects.get_or_create(
+            player1, created = Player.objects.get_or_create(
                 username=user1,
                 defaults={'username': user1}
             )
-            player2, _ = Player.objects.get_or_create(
+            player2, created = Player.objects.get_or_create(
                 username=user2,
                 defaults={'username': user2}
             )
-            player3, _ = Player.objects.get_or_create(
+            player3, created = Player.objects.get_or_create(
                 username=user3,
                 defaults={'username': user3}
             )
-            player4, _ = Player.objects.get_or_create(
+            player4, created = Player.objects.get_or_create(
                 username=user4,
                 defaults={'username': user4}
             )

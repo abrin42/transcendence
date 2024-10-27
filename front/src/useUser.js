@@ -8,6 +8,7 @@ export function useUser() {
         phone_number: "",
         email: "",
         password: "",
+        newpassword: "",
         email_2fa_active: "",
         sms_2fa_active: "",
         profilePicture: "",
@@ -31,6 +32,7 @@ export function useUser() {
         userAccount.username = user.username;
         userAccount.email = user.email;
         userAccount.password = user.password;
+        userAccount.newpassword = user.newpassword;
         userAccount.phone_number = user.phone_number;
         userAccount.email_2fa_active = user.email_2fa_active;
         userAccount.sms_2fa_active = user.sms_2fa_active;

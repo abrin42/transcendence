@@ -26,13 +26,13 @@ SECRET_KEY = os.environ.get('secret_key')
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-# ALLOWED_HOSTS = ['api']
 ALLOWED_HOSTS = [
-                "localhost", 
-                 "api",
-                 "10.11.*.*",
-                 "10.11.7.13",
-                ]
+    "localhost", 
+    "api",
+    #"10.11.*.*",
+    #"10.11.7.13",
+    "*",
+]
 
 DATA_UPLOAD_MAX_MEMORY_SIZE = None
 

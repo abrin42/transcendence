@@ -12,7 +12,6 @@ import i18n from '../i18n.js'
 ////////////////////////////////////////////////
 
 import { useUser } from '../useUser.js'; 
-
 const { getUser, is_connected } = useUser(); 
 
 onBeforeMount(async () => {
@@ -53,7 +52,6 @@ async function login() {
         alert(i18n.global.t('please_enter_email_password'));
         return;
     }
-
     try {
         const response = await fetch('/api/player/login/', {
             method: 'POST',
@@ -72,21 +70,16 @@ async function login() {
         }
 
         const data = await response.json();
-
         if (data.redirect_url) {
-            //alert(i18n.global.t('login_successful'));
             __goTo(data.redirect_url);
             return;
-        }
-
-        else {
-            // alert('User data not found!');
+        } else {
             alert(i18n.global.t('error_user_data_not_found'));
         }
     } catch (error) {
         console.error('Erreur lors de la connexion /login:', error);
-        alert(i18n.global.t('error_login'));
-    //     alert('Invalid username or password');
+        //alert(i18n.global.t('error_login'));
+        alert('Invalid username or password');
     }
 }
 

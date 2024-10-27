@@ -17,8 +17,8 @@
 
     onBeforeMount(async () => {
         await getUser();
-        if (is_connected.value === false)
-            __goTo('/')
+        //if (is_connected.value === false)
+          //  __goTo('/')
     });
 
     ////////////////////////////////////////////////
@@ -115,13 +115,6 @@
                 console.log("game id", data.id);
                 console.log("p1 =",data.player1);
                 console.log("p2 =",data.player2);
-                
-                console.log("lancement dans 3");
-                await new Promise(resolve => setTimeout(resolve, 1000));
-                console.log("lancement dans 2");
-                await new Promise(resolve => setTimeout(resolve, 1000));
-                console.log("lancement dans 1");
-                await new Promise(resolve => setTimeout(resolve, 1000));
                 
                 router.push(`/legacy-ia/${data.id}/`);
             }
