@@ -267,7 +267,7 @@ class PongConsumer(AsyncWebsocketConsumer):
                 'init_ball_speed': 4,
                 'tick_back': 0.01,
                 'Game_on': 0,
-                'nb_pts_for_win': 10,
+                'nb_pts_for_win': 5,
                 'P1Ready': 0,
                 'P2Ready': 0,
                 'PTSp1': 0,
@@ -355,6 +355,37 @@ class PongConsumer(AsyncWebsocketConsumer):
             self.ball_x -= self.ball_radius / 10
             self.ball_speed += await self.speed_up_ball()
             await self.sendpaddleHit()
+
+
+    # async def sendPts_remote(self, type, player):
+    #     if player == "1":
+    #         lstgame[self.room_id]['PTSp1'] += 1
+    #         updatePts = lstgame[self.room_id]['PTSp1']
+    #     elif player == "2":
+    #         lstgame[self.room_id]['PTSp2'] += 1
+    #         updatePts = lstgame[self.room_id]['PTSp2']
+
+    #     await self.channel_layer.group_send(
+    #         self.room_id,
+    #         {
+    #             'type': 'updatePts',
+    #             'updatePts': updatePts,
+    #             'player': player,
+    #         }
+    #     )
+
+    #     if (lstgame[self.room_id]['PTSp1'] == lstgame[self.room_id]['nb_pts_for_win']) or \
+    #         lstgame[self.room_id]['PTSp2'] == lstgame[self.room_id]['nb_pts_for_win']:
+    #         await self.endGame_remote()
+
+    # async def updatePts(self, event):
+    #     await self.send(text_data=json.dumps({
+    #         'type': event['type'],
+    #         'updatePts': event['updatePts'],
+    #         'player': event['player'],
+    #     }))
+
+
 
     async def sendPts(self, type, player):
         if player == "1":
@@ -494,7 +525,7 @@ class PongConsumer(AsyncWebsocketConsumer):
         self.tick_back = 0.01
 
         self.Game_on = 0
-        self.nb_pts_for_win = 10
+        self.nb_pts_for_win = 5
 
         self.P1Ready = 0
         self.P2Ready = 0

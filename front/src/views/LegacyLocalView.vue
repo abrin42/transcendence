@@ -135,6 +135,8 @@ const currentUrl = window.location.href;
 const lastSegment = currentUrl.split('/').filter(Boolean).pop();
 const gamePage = `game_${lastSegment}`;
 
+
+
 function __goTo(page) {
   if (page == null)
       return;
@@ -148,7 +150,31 @@ function __goTo(page) {
         return cookieValue || '';
     }
 
-
+    async function setGameRank() {
+    try {
+        const response = await fetch('/api/game/setGameRank/', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRFToken': getCsrfToken(),
+            },
+            body: JSON.stringify({
+                id: lastSegment,
+            }),
+        });
+        if (response.ok) {
+            const responseData = await response.json();
+            console.log('rank updated successfully!', responseData);
+        }
+        else
+        {
+            const errorData = await response.json();
+            console.error('Error:', errorData.error);
+        }
+    } catch (error) {
+        console.error('Error updating game:', error);
+    }
+  }
     async function getIsPlayer() {
     try {
         const response = await fetch('/api/game/getIsPlayer/', {
@@ -166,6 +192,8 @@ function __goTo(page) {
             const responseData = await response.json();
             console.log('Game updated successfully!', responseData);
 
+            if (responseData.message == 'end')
+              __goTo('/');
             if (responseData.message == 'isFirstPlayer' || responseData.message == 'isSecondePlayer')
             {
               canPlay.value = 1;
@@ -176,8 +204,6 @@ function __goTo(page) {
               canPlay.value = 0;
               console.log ("is spec");
             }
-
-
         }
         else
         {
@@ -295,6 +321,7 @@ function connectWebSocket() {
   let hostName =  window.location.hostname;
   let port = window.location.port || '8443';
   socket.value = new WebSocket(`wss://${hostName}:${port}/ws/websockets/?page=${encodeURIComponent(gamePage)}`);
+
   socket.value.onopen = () => {
     console.log('WebSocket connecté');
     console.log(socket.value);
@@ -339,6 +366,8 @@ function connectWebSocket() {
     {
       connection = 0;
       // console.log(data.type);
+      await updateGameInfo();
+      await setGameRank();
       // socket.value.close();
       router.push(`/legacyrecap/${lastSegment}`);
     }

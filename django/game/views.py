@@ -38,6 +38,43 @@ def get_all_games(request):
     return JsonResponse({'error': 'Invalid request method'}, status=405)
 
 
+def setGameRank(request):
+    if request.method == 'POST':
+        try:
+            data = json.loads(request.body)
+            id = data.get('id')
+            game = get_object_or_404(Game, id=id)
+
+            print("-------------------------fetch set rank-------------------------")
+            print("score p1")
+            print(game.scorep1)
+            print("score p2")
+            print(game.scorep2)
+            game.state = 'end'
+            game.save()
+
+            if game.scorep1 == 5:
+                print("p1 win")
+                game.player1.win += 1
+                game.player2.lose += 1
+                newRank = (game.scorep1 - game.scorep2) * 10
+                game.player1.rank += newRank
+                game.player2.rank -= (newRank / 2)
+            elif game.scorep2 == 5:
+                print("p2 win")
+                game.player2.win += 1
+                game.player1.lose += 1
+                newRank = (game.scorep2 - game.scorep1) * 10
+                game.player2.rank += newRank
+                game.player1.rank -= (newRank / 2)
+            game.player1.save()
+            game.player2.save()
+            print("-------------------------end fetch set rank-------------------------")
+            return JsonResponse({'message': 'Registration successful'}, status=200)
+        except json.JSONDecodeError:
+            return JsonResponse({'error': 'Invalid request body'}, status=400)
+    return JsonResponse({'error': 'Invalid request method'}, status=405)
+
 def getGameInfo(request):
     if request.method == 'POST':
         try:
@@ -109,16 +146,11 @@ def creatFalsePlayer(request):
 def creat_game_local(request):
     if request.method == 'POST':
         try:
-            print("fake 404 ?")
             data = json.loads(request.body)
             username1 = data.get('username1')
             username2 = data.get('username2')
             player1 = get_object_or_404(Player, username=username1)
-            print("le 1 ne fait pas de 404")
-            print(player1)
             player2 = get_object_or_404(Player, username=username2)
-            print("le 2 ne fait pas de 404")
-            print(player2)
             latest_game = Game.objects.create(state='waiting', player1=player1, scorep1=0, player2=player2, scorep2=0)
 
             serializer = GameSerializer(latest_game)
@@ -262,16 +294,17 @@ def getIsPlayer(request):
             id = data.get('id')
             player = data.get('player')
             game = get_object_or_404(Game, id=id)
-
             if not game:
                 return JsonResponse({'error': 'No game found to update.'}, status=404)
 
-            if (player == game.player1.username):
-                return JsonResponse({'message': 'isFirstPlayer'}, status=200)
-            elif (player == game.player2.username):
-                return JsonResponse({'message': 'isSecondePlayer'}, status=200)
-            else:
-                return JsonResponse({'message': 'isSpec'}, status=200)
+            if game.state == 'active' or game.state == 'waiting':
+                if (player == game.player1.username):
+                    return JsonResponse({'message': 'isFirstPlayer'}, status=200)
+                elif (player == game.player2.username):
+                    return JsonResponse({'message': 'isSecondePlayer'}, status=200)
+                else:
+                    return JsonResponse({'message': 'isSpec'}, status=200)
+            return JsonResponse({'message': 'end'}, status=200)
         except json.JSONDecodeError:
             return JsonResponse({'error': 'Invalid request body'}, status=400)
     return JsonResponse({'error': 'Invalid request method'}, status=405)

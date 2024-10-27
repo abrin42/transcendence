@@ -153,6 +153,34 @@ function __goTo(page) {
     }
 
 
+
+    async function setGameRank() {
+    try {
+        const response = await fetch('/api/game/setGameRank/', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRFToken': getCsrfToken(),
+            },
+            body: JSON.stringify({
+                id: lastSegment,
+            }),
+        });
+        if (response.ok) {
+            const responseData = await response.json();
+            console.log('rank updated successfully!', responseData);
+        }
+        else
+        {
+            const errorData = await response.json();
+            console.error('Error:', errorData.error);
+        }
+    } catch (error) {
+        console.error('Error updating game:', error);
+    }
+  }
+
+
     async function getIsPlayer() {
     try {
         const response = await fetch('/api/game/getIsPlayer/', {
@@ -348,6 +376,9 @@ function connectWebSocket() {
     else if (data.type == 'endGame')
     {
       connection = 0;
+     
+      await updateGameInfo();
+      await setGameRank();
       // console.log(data.type);
       router.push(`/legacyrecap/${lastSegment}`);
     }
