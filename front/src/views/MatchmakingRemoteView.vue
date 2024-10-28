@@ -240,7 +240,7 @@ async function insertPlayer() {
 }
 
 
-function createPlyInput() {
+async function createPlyInput() {
         waitingPlayer = 0;
 
         const player1_pic = document.getElementById('player1-picture');
