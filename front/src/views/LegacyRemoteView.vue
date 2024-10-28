@@ -348,9 +348,9 @@ function connectWebSocket() {
     }
     else if (data.type == 'updatePts') //sound
     {
-      console.log(data.type);
-      console.log(data.updatePts);
-      console.log(data.player);
+      // console.log(data.type);
+      // console.log(data.updatePts);
+      // console.log(data.player);
       updatePoints(data.player, data.updatePts);
       if (soundOnOff == true && (data.player == 1 || data.player == 2))
         pointScoredAudio.play();
