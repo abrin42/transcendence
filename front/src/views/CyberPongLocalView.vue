@@ -67,6 +67,59 @@ body {
   ////////////////////////////////////////////////
   ////////////////////////////////////////////////
   
+  /////////////MOUNTED/////////////
+  onMounted(async () => {
+    await getUser();
+    if (is_connected.value === false)
+    __goTo('/');
+    await getIsPlayer();
+    connectWebSocket();
+    board = document.getElementById("board");
+    board.height = boardHeight;
+    board.width = boardWidth;
+    context = board.getContext("2d"); //Drawing on board
+    context.fillStyle = "white";
+    context.fillRect(player1.x, player1.y, player1.width, player1.height);
+    animationFrameId = requestAnimationFrame(update); // Gameloop
+  });
+  //////////////////////////////////
+
+  /////////////UNMOUNTED/////////////
+  onUnmounted(() => {
+    if (canPlay.value == 1 || canPlay.value == 2)
+    {
+      clearInterval(moveInterval1up);
+      moveInterval1up = null;
+      document.removeEventListener("keydown", movePlayer1up);
+      clearInterval(moveInterval1down);
+      moveInterval1down = null;
+      document.removeEventListener("keydown", movePlayer1down);
+      clearInterval(moveInterval2up);
+      moveInterval2up = null;
+      document.removeEventListener("keydown", movePlayer2up);
+      clearInterval(moveInterval2down);
+      moveInterval2down = null;
+      document.removeEventListener("keydown", movePlayer2down);
+      document.removeEventListener('keyup', stopPlayer1);
+      document.removeEventListener('keyup', stopPlayer2);
+      document.removeEventListener("keydown", muteSound);
+    }
+    moveInterval1up = null;
+    moveInterval1down = null;
+    moveInterval2up = null;
+    moveInterval2down = null;
+    if (animationFrameId)
+    {
+      cancelAnimationFrame(animationFrameId);
+      animationFrameId = null;
+    }
+    if (socket.value) 
+    {
+      socket.value.close();
+    }
+  });
+  //////////////////////////////////
+
   const router = useRouter();
   const socket = ref(null);
   // const message = ref('');
@@ -147,19 +200,30 @@ body {
         if (response.ok) {
             const responseData = await response.json();
             console.log('Game updated successfully!', responseData);
-
-            if (responseData.message == 'isFirstPlayer' || responseData.message == 'isSecondePlayer')
+            if (responseData.message == 'isFirstPlayer')
             {
+              document.addEventListener("keydown", movePlayer1up);
+              document.addEventListener("keydown", movePlayer1down);
+              document.addEventListener("keydown", muteSound);
+              document.addEventListener('keyup', stopPlayer1);
               canPlay.value = 1;
-              console.log ("is player");
+              console.log ("is first player");
+            }
+            else if (responseData.message == 'isSecondePlayer')
+            {
+              document.addEventListener("keydown", movePlayer2up);
+              document.addEventListener("keydown", movePlayer2down);
+              document.addEventListener("keydown", muteSound);
+              document.addEventListener('keyup', stopPlayer2);
+
+              canPlay.value = 2;
+              console.log ("is seconde player");
             }
             else if (responseData.message == 'isSpec')
             {
               canPlay.value = 0;
               console.log ("is spec");
             }
-
-
         }
         else
         {
@@ -306,59 +370,6 @@ body {
   }
   //////////////////////////////////////////////////
 
-  /////////////MOUNTED/////////////
-  onMounted(async () => {
-    await getUser();
-    if (is_connected.value === false)
-    __goTo('/');
-    await getIsPlayer();
-    connectWebSocket();
-    board = document.getElementById("board");
-    board.height = boardHeight;
-    board.width = boardWidth;
-    context = board.getContext("2d"); //Drawing on board
-    context.fillStyle = "white";
-    context.fillRect(player1.x, player1.y, player1.width, player1.height);
-    animationFrameId = requestAnimationFrame(update); // Gameloop
-
-    if (canPlay.value == 1)
-    {
-      document.addEventListener("keydown", movePlayer1up);
-      document.addEventListener("keydown", movePlayer1down);
-      document.addEventListener("keydown", movePlayer2up);
-      document.addEventListener("keydown", movePlayer2down);
-      document.addEventListener("keydown", muteSound);
-      document.addEventListener('keyup', stopPlayer);
-    }
-  });
-  //////////////////////////////////
-
-  /////////////UNMOUNTED/////////////
-  onUnmounted(() => {
-    if (canPlay.value == 1)
-    {
-      document.removeEventListener("keydown", movePlayer1up);
-      document.removeEventListener("keydown", movePlayer1down);
-      document.removeEventListener("keydown", movePlayer2up);
-      document.removeEventListener("keydown", movePlayer2down);
-      document.removeEventListener("keydown", muteSound);
-      document.removeEventListener('keyup', stopPlayer);
-    }
-    moveInterval1up = null;
-    moveInterval1down = null;
-    moveInterval2up = null;
-    moveInterval2down = null;
-    if (animationFrameId)
-    {
-      cancelAnimationFrame(animationFrameId);
-      animationFrameId = null;
-    }
-    if (socket.value) 
-    {
-      socket.value.close();
-    }
-  });
-  //////////////////////////////////
 
   /////////////GAME AKA MY SHIT/////////////
   //board properties

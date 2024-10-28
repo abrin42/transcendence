@@ -227,7 +227,7 @@ body {
         // console.log(data.updatePts);
         // console.log(data.player);
         updatePoints(data.player, data.updatePts);
-        if (soundOnOff == true)
+        if (soundOnOff == true && (data.player == 1 || data.player == 2))
         pointScoredAudio.play();
         await updateGameInfo();
       } 
@@ -404,11 +404,11 @@ body {
     
   function  updatePoints(player, updatePts)
   {
-    if (player == 1)
+    if (player == 1 || player == -1)
     {
       player1Score = updatePts;
     }
-    else if (player == 2)
+    else if (player == 2 || player == -2)
     {
       player2Score = updatePts;
     }

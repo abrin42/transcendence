@@ -294,11 +294,11 @@ function  updatePoints(player, updatePts)
 {
   // console.log(player);
   // console.log(updatePts);
-  if (player == 1)
+  if (player == 1 || player == -1)
   {
     player1Score = updatePts;
   }
-  else if (player == 2)
+  else if (player == 2 || player == -2)
   {
     player2Score = updatePts;
   }
@@ -348,12 +348,12 @@ function connectWebSocket() {
     }
     else if (data.type == 'updatePts') //sound
     {
-      // console.log(data.type);
-      // console.log(data.updatePts);
-      // console.log(data.player);
+      console.log(data.type);
+      console.log(data.updatePts);
+      console.log(data.player);
       updatePoints(data.player, data.updatePts);
-      if (soundOnOff == true)
-      pointScoredAudio.play();
+      if (soundOnOff == true && (data.player == 1 || data.player == 2))
+        pointScoredAudio.play();
       await updateGameInfo();
     } 
     else if (data.type == 'updatePaddle') 

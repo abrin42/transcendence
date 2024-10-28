@@ -156,10 +156,10 @@ class PongConsumer(AsyncWebsocketConsumer):
                 {
                     'type': 'updatePts',
                     'updatePts': updatePts,
-                    'player': "1",
+                    'player': "-1",
                 }
             )
-            player = "2"
+            player = "-2"
             updatePts = lstgame[self.room_id]['PTSp2']
 
         await self.channel_layer.group_send(
@@ -231,26 +231,6 @@ class PongConsumer(AsyncWebsocketConsumer):
             lstgame[self.room_id]['ball_angle'] = 0
             await self.begin_point_remote()
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
     async def sendwallHitRemote(self):
         await self.channel_layer.group_send(
             self.room_id,
@@ -308,17 +288,6 @@ class PongConsumer(AsyncWebsocketConsumer):
                 }
             )
 
-
-
-
-    # async def loop_game(self):
-    #     while self.Game_on != -1:
-    #         while(self.Game_on == 1):
-    #             await self.move_ball()
-    #             await self.sendBall(self.ball_x, self.ball_y)
-    #             await asyncio.sleep(self.tick_back)
-    #         await asyncio.sleep(0.5)
-
     async def loop_game_remote(self):
         print("*-*-*-*-*-*-*thread remote ball*-*-*-*-*-**")
         while lstgame[self.room_id]['Game_on'] != -1:
@@ -327,9 +296,6 @@ class PongConsumer(AsyncWebsocketConsumer):
                 await self.sendBall_remote(lstgame[self.room_id]['ball_x'], lstgame[self.room_id]['ball_y'])
                 await asyncio.sleep(0.01)
             await asyncio.sleep(0.5)
-
-
-
 
 
     async def initRemote(self, id):
@@ -672,11 +638,6 @@ class PongConsumer(AsyncWebsocketConsumer):
                 if self.posPad1 < 0:
                     self.posPad1 = 0
                 newY = self.posPad1
-                # await self.send(text_data=json.dumps({
-                #     'type': 'updatePaddle',
-                #     'newY': newY, 
-                #     'player': player,
-                # }))
                 await self.send_mouv_to_group(newY, player)
             elif player == 2:
                 self.P2Ready = 1
@@ -684,11 +645,6 @@ class PongConsumer(AsyncWebsocketConsumer):
                 if self.posPad2 < 0:
                     self.posPad2 = 0
                 newY = self.posPad2
-                # await self.send(text_data=json.dumps({
-                #     'type': 'updatePaddle',
-                #     'newY': newY, 
-                #     'player': player,
-                # }))
                 await self.send_mouv_to_group(newY, player)
 
         else:
@@ -728,7 +684,6 @@ class PongConsumer(AsyncWebsocketConsumer):
             'player': player,
         }))   
 
-
     async def sendPadDown(self, player):
         if self.is_online == 0:
             if player == 1:
@@ -737,11 +692,6 @@ class PongConsumer(AsyncWebsocketConsumer):
                 if self.posPad1 > 560:
                     self.posPad1 = 560
                 newY = self.posPad1
-                # await self.send(text_data=json.dumps({
-                    # 'type': 'updatePaddle',
-                    # 'newY': newY,
-                    # 'player': player,
-                # }))
                 await self.send_mouv_to_group(newY, player)
             if player == 2:
                 self.P2Ready = 1
@@ -749,11 +699,6 @@ class PongConsumer(AsyncWebsocketConsumer):
                 if self.posPad2 > 560:
                     self.posPad2 = 560
                 newY = self.posPad2
-                # await self.send(text_data=json.dumps({
-                    # 'type': 'updatePaddle',
-                    # 'newY': newY,
-                    # 'player': player,
-                # }))
                 await self.send_mouv_to_group(newY, player)
         else:
             if player == 1:
@@ -788,14 +733,6 @@ class PongConsumer(AsyncWebsocketConsumer):
 
 
     async def connect(self):
-        # query_string = self.scope['query_string'].decode('utf-8')
-        # query_params = urllib.parse.parse_qs(query_string)        
-        # page_url = query_params.get('page', [''])[0]
-        # page_url = page_url.replace("game_", "")
-        # if (page_url == "legacy" or page_url == "ia"):
-        ###########################
-        # self.room_name = self.scope['url_route']['kwargs']['page']
-        # self.room_group_name = f"game_{self.room_name}"
         query_string = self.scope['query_string'].decode('utf-8')
         query_params = urllib.parse.parse_qs(query_string)
         self.room_name = query_params.get('page', [''])[0]
@@ -806,7 +743,6 @@ class PongConsumer(AsyncWebsocketConsumer):
             self.channel_name
         )
 
-        ###########################
         if self.room_name.startswith("game_") or self.room_name.startswith("ia"):
             print("is local")
             await self.initForLocal()
