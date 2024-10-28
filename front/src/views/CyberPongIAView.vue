@@ -56,7 +56,123 @@ function __goTo(page) {
   router.push(page);
 }
 
+<<<<<<< HEAD
 function updatePoints(player, updatePts) {
+=======
+
+    async function getIsPlayer() {
+    try {
+        const response = await fetch('/api/game/getIsPlayer/', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRFToken': getCsrfToken(),
+            },
+            body: JSON.stringify({
+                player: userAccount.username,
+                id: lastSegment,
+            }),
+        });
+        if (response.ok) {
+            const responseData = await response.json();
+            console.log('Game updated successfully!', responseData);
+
+            if (responseData.message == 'isFirstPlayer' || responseData.message == 'isSecondePlayer')
+            {
+              canPlay.value = 1;
+              console.log ("is player");
+            }
+            else if (responseData.message == 'isSpec')
+            {
+              canPlay.value = 0;
+              console.log ("is spec");
+            }
+
+
+        }
+        else
+        {
+            const errorData = await response.json();
+            console.error('Error:', errorData.error);
+        }
+    } catch (error) {
+        console.error('Error updating game:', error);
+    }
+  }
+  
+  async function updateGameInfo() {
+    try {
+        const response = await fetch('/api/game/update_game/', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRFToken': getCsrfToken(),
+            },
+            body: JSON.stringify({
+                mode: "legacy",
+                scorep1: player1Score,
+                scorep2: player2Score,
+                id: lastSegment,
+            }),
+        });
+        if (response.ok) {
+            const responseData = await response.json();
+            console.log('Game updated successfully!', responseData);
+        } else {
+            const errorData = await response.json();
+            console.error('Error:', errorData.error);
+        }
+    } catch (error) {
+        console.error('Error updating game:', error);
+    }
+  }
+
+    //board properties
+    let board;
+    let boardWidth = 700;
+    let boardHeight = 700;
+    let context;
+
+    //players propertiesupdate_game
+    let playerWidth = 20;
+    let playerHeight = boardHeight/5;
+    let playerSpeed = 0;
+
+    let player1 = {
+        x : 10,
+        y: boardHeight/5*2,
+        width : playerWidth,
+        height : playerHeight,
+        speed : playerSpeed
+    }
+
+    let player2 = {
+        x : boardWidth - playerWidth - 10,
+        y: boardHeight/5*2, 
+        width : playerWidth,
+        height : playerHeight,
+        speed: playerSpeed
+    }
+
+    //ball properties
+    let ballSize = 10;
+    let ball = {
+      x : boardWidth / 2,
+      y : boardHeight / 2,
+      width : ballSize,
+      height : ballSize,
+      speedX: 1, speedY: 2,
+      trail: []
+    }
+    
+    //score
+    let player1Score = 0;
+    let player2Score = 0;
+    
+
+function  updatePoints(player, updatePts)
+{
+>>>>>>> b9eae8a8cbe6a91c7ef07eaa3b497e85d67695ac
   // console.log(player);
   // console.log(updatePts);
   if (player == 1) {

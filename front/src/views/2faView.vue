@@ -124,21 +124,21 @@
                     'Content-Type': 'application/json',
                     'X-CSRFToken': getCsrfToken(),
                 },
-                body: JSON.stringify({ user_otp: code.value }) // Using method passed from the button click
+                body: JSON.stringify({ user_otp: code.value })
             });
-            console.log("POST OKOK")
+            if (response.status === 400) {
+                alert("There is a problem with the code. Please try again :)", error)
+                //throw new Error(`Code error! Status: ${response.status}`);
+            }
             if (response.status !== 302 && response.status !== 200)
                 __goTo('/2fa')
 
-            //if (!response.ok) {
-            //    throw new Error(`HTTP error! Status: ${response.status}`);
-            //}
             else
                 __goTo('/')
 
         } catch (error) {
-            console.error('Error during OTPPP setup:', error);
-            alert(i18n.global.t('error_OTPPP_setup'));
+            alert("There is a problem with the code. Please try again :)", error)
+            //alert(i18n.global.t('error_OTPPP_setup'));
         }
     }
 

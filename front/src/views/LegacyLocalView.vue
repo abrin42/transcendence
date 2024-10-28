@@ -65,17 +65,21 @@ import { useRouter } from 'vue-router';
   onUnmounted(() => {
   if (canPlay.value == 1)
   {
+    clearInterval(moveInterval1up);
+    moveInterval1up = null;
     document.removeEventListener("keydown", movePlayer1up);
+    clearInterval(moveInterval1down);
+    moveInterval1down = null;
     document.removeEventListener("keydown", movePlayer1down);
+    clearInterval(moveInterval2up);
+    moveInterval2up = null;
     document.removeEventListener("keydown", movePlayer2up);
+    clearInterval(moveInterval2down);
+    moveInterval2down = null;
     document.removeEventListener("keydown", movePlayer2down);
-    document.removeEventListener("keydown", muteSound);
     document.removeEventListener('keyup', stopPlayer);
+    document.removeEventListener("keydown", muteSound);
   }
-  moveInterval1up = null;
-  moveInterval1down = null;
-  moveInterval2up = null;
-  moveInterval2down = null;
   if (animationFrameId) {
     cancelAnimationFrame(animationFrameId);
     animationFrameId = null;
@@ -162,7 +166,7 @@ function __goTo(page) {
             const responseData = await response.json();
             console.log('Game updated successfully!', responseData);
 
-            if (responseData.message == 'isPlayer')
+            if (responseData.message == 'isFirstPlayer' || responseData.message == 'isSecondePlayer')
             {
               canPlay.value = 1;
               console.log ("is player");
@@ -287,6 +291,69 @@ function updateBaal(x, y)
 }
 
 
+<<<<<<< HEAD
+=======
+      // console.log(data.type);
+      // console.log(data.message);
+      // connectionStatus.value = data.message;
+      connection = 1;
+    }
+    else if (data.type == 'updatePts') //sound
+    {
+      // console.log(data.type);
+      // console.log(data.updatePts);
+      // console.log(data.player);
+      updatePoints(data.player, data.updatePts);
+      if (soundOnOff == true)
+      pointScoredAudio.play();
+      await updateGameInfo();
+    } 
+    else if (data.type == 'updatePaddle')
+    {
+      updatePadel(data.player, data.newY);
+      // messages.value.push(data.type);
+    }
+    else if (data.type == 'updateBaal')
+    {
+      // console.log(data.x);
+      // console.log(data.y);
+      updateBaal(data.x, data.y);
+    }
+    else if (data.type == 'endGame')
+    {
+      connection = 0;
+      // console.log(data.type);
+      // socket.value.close();
+      router.push(`/legacyrecap/${lastSegment}`);
+    }
+    else if (data.type == 'startGame')
+    {
+      await updateGameInfo();
+      // console.log(data.type);
+    }
+    else if (data.type == 'paddleHit')
+    {
+      // console.log(data.type);
+      if (soundOnOff == true)
+        paddleHitAudio.play();
+    }
+    else if (data.type == 'wallHit')
+    { 
+      // console.log(data.type);
+      if (soundOnOff == true)
+        wallHitAudio.play();
+    }
+    else if (data.type == 'info_back') //a enlever test
+    {
+      // console.log(data.type);
+      // console.log(data.value_back1);
+      // console.log(data.value_back2);
+      // console.log(data.value_back3);
+    }
+    // console.log("---END ON MESSAGE---");
+  };
+}
+>>>>>>> b9eae8a8cbe6a91c7ef07eaa3b497e85d67695ac
 
 
 function sendMessage(msg) {

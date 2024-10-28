@@ -10,6 +10,10 @@ from django.views.decorators.csrf import csrf_exempt
 from .otp import create_otp
 from .jwt import generate_jwt, token_user, set_jwt_token
 from .models import Player, BlacklistedToken
+<<<<<<< HEAD
+=======
+from .utils import set_picture_42, get_csrf_token
+>>>>>>> b9eae8a8cbe6a91c7ef07eaa3b497e85d67695ac
 from datetime import datetime
 import pyotp
 import requests
@@ -97,6 +101,14 @@ def login_view(request):
         
         print(f'username: {player.username}, email_2fa_active: {player.email_2fa_active}')
         login(request, player)
+<<<<<<< HEAD
+=======
+        get_csrf_token(request)
+        print("-----------------------------------------------------------------")
+        print(f"/login/request.session['csrf']: {request.session.get('csrf')}")     
+        print(f"/login/request.COOKIES.get('csrftoken'): {request.COOKIES.get('csrftoken')}")    
+        print("-----------------------------------------------------------------")
+>>>>>>> b9eae8a8cbe6a91c7ef07eaa3b497e85d67695ac
 
         if not player.email_2fa_active and not player.sms_2fa_active:
             token = generate_jwt(player)
@@ -132,6 +144,17 @@ def login42_view(request):
 @login_required
 def tfa_view(request):
     if request.method == "POST":
+<<<<<<< HEAD
+=======
+        get_csrf_token(request)
+        print("-----------------------------------------------------------------")
+        print(f"/tfa/request.session['csrf']: {request.session.get('csrf')}")     
+        print(f"/tfa/request.COOKIES.get('csrftoken'): {request.COOKIES.get('csrftoken')}")    
+        print("-----------------------------------------------------------------")
+        if request.session.get('csrf') != request.COOKIES.get('csrftoken'):
+            return JsonResponse({'error': 'Invalid CSRF token'}, status=400)
+        
+>>>>>>> b9eae8a8cbe6a91c7ef07eaa3b497e85d67695ac
         try:
             user = get_object_or_404(Player, username=request.user.username)
             print(f"2fa user: {user}")
@@ -150,6 +173,11 @@ def otp_view(request):
         return JsonResponse({'error': 'User not found'}, status=404)
     ###########################
     if request.method == "POST":
+<<<<<<< HEAD
+=======
+        if request.session.get('csrf') != request.COOKIES.get('csrftoken'):
+            return JsonResponse({'error': 'Invalid CSRF token'}, status=400)
+>>>>>>> b9eae8a8cbe6a91c7ef07eaa3b497e85d67695ac
         try:
             data = json.loads(request.body)
             user_otp = data.get('user_otp')
@@ -245,6 +273,12 @@ def auth_42_callback(request):
         #if profile_picture and user.profile_picture is None: 
         #    set_picture_42(request, user, profile_picture)
         user.save()
+<<<<<<< HEAD
+=======
+        login(request, user)
+        get_csrf_token(request)
+
+>>>>>>> b9eae8a8cbe6a91c7ef07eaa3b497e85d67695ac
         token = generate_jwt(user)
         response = redirect('/')
         set_jwt_token(response, token)
@@ -256,6 +290,11 @@ def auth_42_callback(request):
 @login_required
 def logout_view(request):
     if request.method == "POST":
+<<<<<<< HEAD
+=======
+        if request.session.get('csrf') != request.COOKIES.get('csrftoken'):
+            return JsonResponse({'error': 'Invalid CSRF token'}, status=400)
+>>>>>>> b9eae8a8cbe6a91c7ef07eaa3b497e85d67695ac
         token = request.COOKIES.get('jwt')
         print(token)
         response = redirect('/log')

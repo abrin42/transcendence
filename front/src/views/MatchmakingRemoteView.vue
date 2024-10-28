@@ -39,7 +39,6 @@
     import { ref, reactive, onMounted, onUnmounted, watch, defineEmits } from 'vue';
     import $ from 'jquery';
     import { useRouter } from 'vue-router';
-    import i18n from '../i18n.js'
     import profilePicture from '@/assets/img/default-profile.png';
 
     ////////////////////////////////////////////////
@@ -47,6 +46,7 @@
     ////////////////////////////////////////////////
 
     import { useUser } from '../useUser.js'; 
+import { compileScript } from 'vue/compiler-sfc';
     const { getUser, userAccount, is_connected } = useUser(); 
 
     onUnmounted(() => {
@@ -58,9 +58,9 @@
         await getUser();
         if (is_connected.value === false)
             __goTo('/')
-        // await insertPlayer();
-        await creatGameLocal();
-
+        await createPlyInput();
+        await insertPlayer();
+        // await creatGameLocal();
     });
 
 
@@ -91,6 +91,7 @@
     myVideo.playbackRate = 2;
     let player1;
     let player2;
+    let isPlayer2 = 1;
     let gamemode = "legacy"; //fetch game mode selected?
     let playerName1 = "Chachou";
     let playerName2 = "Chachou2";
@@ -103,7 +104,8 @@
     function goToLegacy(id) {
         console.log("id hereee");
         console.log(id);
-        router.push(`/legacy-local/${id}`);
+        router.push(`/legacy-remote/${id}`);
+        // router.push(`/legacy/${id}`);
         // router.push(`/matchmaking`);
     }
 
@@ -120,7 +122,7 @@ async function creatGameLocal()
             },
             body: JSON.stringify({
                 username1: userAccount.username,
-                username2: playerName2, //change to seconde player
+                username2: userAccount.username, //change to seconde player
             })
         });
         if (response.ok) {
@@ -132,28 +134,28 @@ async function creatGameLocal()
             console.log("p1 =",data.player1);
             console.log("p2 =",data.player2);
 
-            // const player1 = data.player1;
-            // const player1_pic = document.getElementById('player1-picture');
-            // const player1_name = document.getElementById('player1-name');
-            // const player1_rank = document.getElementById('player1-rank');
-            // const player2 = data.player2;
-            // const player2_pic = document.getElementById('player2-picture');
-            // const player2_name = document.getElementById('player2-name');
-            // const player2_rank = document.getElementById('player2-rank');
+            const player1 = data.player1;
+            const player1_pic = document.getElementById('player1-picture');
+            const player1_name = document.getElementById('player1-name');
+            const player1_rank = document.getElementById('player1-rank');
+            const player2 = data.player2;
+            const player2_pic = document.getElementById('player2-picture');
+            const player2_name = document.getElementById('player2-name');
+            const player2_rank = document.getElementById('player2-rank');
 
-            // player1_pic.src = player1.profile_picture;
-            // player1_name.textContent = player1.username;
-            // player1_rank.textContent = `Rank: ${player1.rank}`; 
-            // player2_pic.src = player2.profile_picture;
-            // player2_name.textContent = player2.username;
-            // player2_rank.textContent = `Rank: ${player2.rank}`; 
+            player1_pic.src = player1.profile_picture;
+            player1_name.textContent = player1.username;
+            player1_rank.textContent = `Rank: ${player1.rank}`; 
+            player2_pic.src = player2.profile_picture;
+            player2_name.textContent = player2.username;
+            player2_rank.textContent = `Rank: ${player2.rank}`; 
 
-            // player1_pic.classList.add(...['slide-left']);
-            // player1_name.classList.add(...['slide-left']);
-            // player1_rank.classList.add(...['slide-left']);
-            // player2_pic.classList.add(...['fade-in']);
-            // player2_name.classList.add(...['fade-in']);
-            // player2_rank.classList.add(...['fade-in']);
+            player1_pic.classList.add(...['slide-left']);
+            player1_name.classList.add(...['slide-left']);
+            player1_rank.classList.add(...['slide-left']);
+            player2_pic.classList.add(...['fade-in']);
+            player2_name.classList.add(...['fade-in']);
+            player2_rank.classList.add(...['fade-in']);
 
 
             console.log("lancement dans 3");
@@ -184,105 +186,82 @@ async function insertPlayer() {
             })
         });
         if (response.ok) {
-            const data = await response.json();
+            const game = await response.json();
+            console.log("hereeeeeeeeeeee");
+            console.log(game);
+            console.log(game.id);
+            console.log(game.player1);
+            console.log(game.player2);
 
-            if (data.serializer_data) {
-                const gameData = JSON.parse(data.serializer_data);  
-                console.log('Player Data:', gameData);
-          
-                if (gameData.length > 0) {
-                    const game = gameData[0].fields;  
-                    console.log('game:', game);
-                    if (game.player2 == null) {
-                        waitingPlayer = 1;
-                        await new Promise(resolve => setTimeout(resolve, 1000));
-                        insertPlayer();
-                    } 
-                    else 
-                    {
-                        waitingPlayer = 0;
-        
-                        //slide first player
-                        const player1_pic = document.getElementById('player1-picture');
-                        player1_pic.classList.add(...['slide-left']);
-                        const player1_name = document.getElementById('player1-name');
-                        player1_name.classList.add(...['slide-left']);
-                        const player1_rank = document.getElementById('player1-rank');
-                        player1_rank.classList.add(...['slide-left']);
-        
-                        //fadein second player
-                        const player2_pic = document.getElementById('player2-picture');
-                        player2_pic.classList.add(...['fade-in']);
-                        const player2_name = document.getElementById('player2-name');
-                        player2_name.classList.add(...['fade-in']);
-                        const player2_rank = document.getElementById('player2-rank');
-                        player2_rank.classList.add(...['fade-in']);
-                        const versus_text = document.getElementById('versus-text');
-                        versus_text.classList.add(...['fade-in']);
-                        
-                        //fadeout loading assets
-                        loadingmodule = false;
-                        const dotdotdot = document.getElementById('loading');
-                        dotdotdot.classList.add(...['fade-out']);
-                        const waiting_text = document.getElementById('opponent-text');
-                        waiting_text.classList.add(...['fade-out']);
-        
-                        console.log("lancement dans 3");
-                        await new Promise(resolve => setTimeout(resolve, 1000));
-                        console.log("lancement dans 2");
-                        await new Promise(resolve => setTimeout(resolve, 1000));
-                        console.log("lancement dans 1");
-                        await new Promise(resolve => setTimeout(resolve, 1000));
-                        //goToLegacy(data.id);
-                    }
-                }
-            }
-            else
+
+            if (game.player2 == null) {
+                waitingPlayer = 1;
+                isPlayer2 = 0;
+                await new Promise(resolve => setTimeout(resolve, 1000));
+                insertPlayer();
+            } 
+            else 
             {
+                //les deux joueurs son rediriger
                 waitingPlayer = 0;
-
-                //slide first player
-                const player1_pic = document.getElementById('player1-picture');
-                player1_pic.classList.add(...['slide-left']);
-                const player1_name = document.getElementById('player1-name');
-                player1_name.classList.add(...['slide-left']);
-                const player1_rank = document.getElementById('player1-rank');
-                player1_rank.classList.add(...['slide-left']);
 
                 //fadein second player
                 const player2_pic = document.getElementById('player2-picture');
-                player2_pic.classList.add(...['fade-in']);
                 const player2_name = document.getElementById('player2-name');
-                player2_name.classList.add(...['fade-in']);
                 const player2_rank = document.getElementById('player2-rank');
+
+                player2_pic.src = game.player2.profilePicture;
+                player2_name.textContent = game.player2.username;
+                player2_rank.textContent = `Rank: ${game.player2.rank}`;
+
+                //slide first player
+                player2_pic.classList.add(...['fade-in']);
+                player2_name.classList.add(...['fade-in']);
                 player2_rank.classList.add(...['fade-in']);
-                const versus_text = document.getElementById('versus-image');
-                versus_text.classList.add(...['fade-in']);
 
-                
-                //fadeout loading assets
-                loadingmodule = false;
-                const dotdotdot = document.getElementById('loading');
-                dotdotdot.classList.add(...['fade-out']);
-                const waiting_text = document.getElementById('opponent-text');
-                waiting_text.classList.add(...['fade-out']);
-
-                await setTimeout(4000);
-                // goToLegacy(data.id);
+                console.log("lancement dans 3");
+                await new Promise(resolve => setTimeout(resolve, 1000));
+                console.log("lancement dans 2");
+                await new Promise(resolve => setTimeout(resolve, 1000));
+                console.log("lancement dans 1");
+                await new Promise(resolve => setTimeout(resolve, 1000));
+                goToLegacy(game.id);
             }
-
         }
-    } catch (error) {
+    }
+            // else
+            // {
+            //     //gestion error ? 
+            // }
+    catch (error) {
         console.error('Erreur lors de la connexion:', error);
-        alert(i18n.global.t('error_login'));
+        alert('An error occurred while logging in');
     }
 }
 
 
+function createPlyInput() {
+        waitingPlayer = 0;
+
+        const player1_pic = document.getElementById('player1-picture');
+        const player1_name = document.getElementById('player1-name');
+        const player1_rank = document.getElementById('player1-rank');
+
+        player1_pic.src = userAccount.profilePicture;
+        player1_name.textContent = userAccount.username;
+        player1_rank.textContent = `Rank: ${userAccount.rank}`;
+
+        //slide first player
+        player1_pic.classList.add(...['slide-left']);
+        player1_name.classList.add(...['slide-left']);
+        player1_rank.classList.add(...['slide-left']);
+
+    }
+
     ///////////////////////////////////////////////
 
     //dynamic "loading" dots 
-    console.log(loadingmodule);
+    // console.log(loadingmodule);
     let dots;
     if (loadingmodule == true)
     {
@@ -377,6 +356,7 @@ async function insertPlayer() {
 
 #versus-image-new{
     position: fixed;
+
     left: 50%;
     opacity: 1;
 

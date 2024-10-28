@@ -129,7 +129,7 @@
     "error_login": "Une erreur s'est produite lors de la connexion.",
     "error_OTPPP_setup": "Une erreur s'est produite lors de la configuration du PTPO",
     "error_TFA_setup": "Une erreur s'est produite lors de l'installation de la TFA",
-    "resend_code": "Renvoyer le code !",
+    "resend_code": "Code renvoyé !",
     "account_updated_successfully": "Compte mis à jour avec succès !",
     "error_account_update": "Une erreur s'est produite lors de la mise à jour du compte.",
     "please_enter_email_password": "Veuillez saisir une adresse électronique et un mot de passe.",

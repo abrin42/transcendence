@@ -338,12 +338,53 @@ class PongConsumer(AsyncWebsocketConsumer):
         # page_url = query_params.get('page', [''])[0]
         # page_url = page_url.replace("game_", "")
         # if (page_url == "legacy" or page_url == "ia"):
+<<<<<<< HEAD
         await self.initForLocal()
         await self.accept()
         await self.send(text_data=json.dumps({
             'type': 'connection_success',
             'message': 'Connexion réussie!'
         }))
+=======
+        ###########################
+        # self.room_name = self.scope['url_route']['kwargs']['page']
+        # self.room_group_name = f"game_{self.room_name}"
+        query_string = self.scope['query_string'].decode('utf-8')
+        query_params = urllib.parse.parse_qs(query_string)
+        self.room_name = query_params.get('page', [''])[0]
+        self.room_group_name = f"game_{self.room_name}"
+        
+        await self.channel_layer.group_add(
+           self.room_group_name,
+           self.channel_name
+        )
+
+        ###########################
+        if self.room_name.startswith("game_") or self.room_name.startswith("ia"):
+            print("is local")
+            await self.initForLocal()
+            await self.accept()
+            await self.send(text_data=json.dumps({
+                'type': 'connection_success',
+                'message': 'Connexion réussie!'
+            })) 
+        elif self.room_name.startswith("remote_"):
+            print("is websocket")
+            self.is_online = 1
+            page_url = self.room_name.replace("remote_", "")
+            await self.initRemote(page_url)
+
+
+    async def receive_test_message(self, event):
+        message = event['message']
+        # Envoie le message reçu au client WebSocket
+        await self.send(text_data=json.dumps(message))
+
+        # await self.send(text_data=json.dumps({
+        #     'type': 'connection_success',
+        #     'message': 'Connexion réussie!'
+        # }))
+>>>>>>> b9eae8a8cbe6a91c7ef07eaa3b497e85d67695ac
     
 
     async def disconnect(self, close_code):

@@ -8,6 +8,25 @@ from .models import Player
 import os
 import requests
 
+<<<<<<< HEAD
+=======
+def get_csrf_token(request):
+    print(request)
+    print(f"/getcsrf/request.session['csrf']: {request.session.get('csrf')}")     
+    print(f"/getcsrf/request.COOKIES.get('csrftoken'): {request.COOKIES.get('csrftoken')}")     
+
+    if request.COOKIES.get('csrftoken') is None:
+        csrf_token = get_token(request)
+
+    csrf_token = request.COOKIES.get('csrftoken')
+    print(f"callback/ csrf_token: {csrf_token}")     
+    request.session['csrf'] = csrf_token
+    print(f"callback/ request.session.get['csrf']: {request.session.get('csrf')}")     
+    
+    response = JsonResponse({'message': 'CSRF token generated'}, status=200)
+    response.set_cookie('csrftoken', csrf_token)
+    return response
+>>>>>>> b9eae8a8cbe6a91c7ef07eaa3b497e85d67695ac
 
 def username_underscore(request):
     post_data = request.POST.copy()
