@@ -12,7 +12,7 @@
     "no_players_found": "No players found.",
     "friend_requests": "Friend requests",
     "no_friend_requests": "You haven't received any friend requests",
-    
+
     
     "modify_the_value": "Modify the value:",
     "save": "Save",
@@ -22,9 +22,10 @@
     
     "disabled_switch": "The switch is disabled. You cannot perform this action.",
     
-    "no_text_to_display": "No text to display",
+    "no_text_to_display": "",
     
-    
+    "should_not_contain_spaces": "the password should not contain spaces",
+    "if_not_please_change_your_username": "if not, please change your username",
     
     "send_code_question": "Send code by email or SMS?",
     "phone_authentication": "Phone authentication",

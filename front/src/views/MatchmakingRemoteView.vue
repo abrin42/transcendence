@@ -36,7 +36,7 @@
     import CreateBackButton from '../components/CreateBackButton.vue';
     import CreateSoundButton from '../components/CreateSoundButton.vue';
     import CreateHomeButton from '../components/CreateHomeButton.vue';
-    import { ref, reactive, onMounted, onUnmounted, watch, defineEmits } from 'vue';
+    import { onBeforeMount, onMounted, onUnmounted, watch, defineEmits } from 'vue';
     import $ from 'jquery';
     import { useRouter } from 'vue-router';
     import profilePicture from '@/assets/img/default-profile.png';
@@ -46,21 +46,23 @@
     ////////////////////////////////////////////////
 
     import { useUser } from '../useUser.js'; 
-import { compileScript } from 'vue/compiler-sfc';
+    import { compileScript } from 'vue/compiler-sfc';
     const { getUser, userAccount, is_connected } = useUser(); 
 
     onUnmounted(() => {
         stopLoading();
-
     });
 
-    onMounted(async () => {
+    onBeforeMount(async () => {
         await getUser();
         if (is_connected.value === false)
             __goTo('/')
-        await createPlyInput();
+    });
+
+    onMounted(async () => {
+        createPlyInput();
         await insertPlayer();
-        // await creatGameLocal();
+        // await createGameLocal();
     });
 
 
@@ -111,10 +113,10 @@ import { compileScript } from 'vue/compiler-sfc';
 
 let loadingmodule = true;
 
-async function creatGameLocal()
+async function createGameLocal()
 {
     try {
-        const response = await fetch('/api/game/creat_game_local/', {
+        const response = await fetch('/api/game/create_game_local/', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',

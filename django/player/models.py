@@ -1,5 +1,7 @@
 from django.contrib.auth.models import AbstractUser
 from django.db import models
+#from django.utils import timezone
+from datetime import date
 from phonenumber_field.modelfields import PhoneNumberField
 import os
 
@@ -11,6 +13,8 @@ def upload_to_profile_pictures(instance, filename):
 class Player(AbstractUser):
     student = models.BooleanField(default=False)
     nickname = models.CharField(blank=True, null=True, max_length=30)
+    date_joined = models.DateField(default=date.today)
+    newpassword = models.CharField(blank=True, null=True, max_length=40)
     
     original_email = models.EmailField(blank=True, null=True, max_length=40)
     original_phone_number = PhoneNumberField(blank=True, null=True)

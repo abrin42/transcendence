@@ -5,7 +5,7 @@
     import CreateSoundButton from '../components/CreateSoundButton.vue';
     import CreateHomeButton from '../components/CreateHomeButton.vue';
     import { useRouter } from 'vue-router';
-    import { onMounted } from 'vue';
+    import { onBeforeMount } from 'vue';
     import { inject } from 'vue';
 
 
@@ -22,7 +22,7 @@
     import { useUser } from '../useUser.js';
     const { getUser, is_connected } = useUser();
 
-    onMounted(async () => {
+    onBeforeMount(async () => {
         await getUser();
         if (is_connected.value === false)
             __goTo('/')
@@ -94,7 +94,8 @@
                 <button class="button button-cyber" @click="goToCyber">
                     <i class="fa-solid fa-hippo" style="margin-right: 1vw;"></i>
                     <span class="buttonText">CyberPong</span>
-                </button>
+                </button>        else if(game.value == 'multi' && mode.value == 'local')
+                router.push('/cyberpong-local/:id');
 
                 <button  v-if="game.value == 'solo'" class="button button-cyber" @click="goToThree">
                     <i class="fa-solid fa-hippo" style="margin-right: 1vw;"></i>

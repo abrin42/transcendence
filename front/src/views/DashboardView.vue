@@ -8,7 +8,7 @@
     import CreateHomeButton from '../components/CreateHomeButton.vue';
     import Input from '../components/Input.vue';
     import { useRouter } from 'vue-router';
-    import { ref, onMounted } from 'vue';
+    import { ref, onBeforeMount } from 'vue';
     import i18n from '../i18n.js'
     
     ////////////////////////////////////////////////
@@ -18,7 +18,7 @@
     import { useUser } from '../useUser.js'; 
     const { getUser, userAccount, is_connected } = useUser(); 
     
-    onMounted(async () => {
+    onBeforeMount(async () => {
         await getUser();
         if (is_connected.value === false)
             __goTo('/')
@@ -37,7 +37,83 @@
     const router = useRouter();
     const showAllInfo = ref(false);
 
+    ////////////////////////////////////////////////
+    ////////////////////////////////////////////////
+    ////////////////////////////////////////////////
+
+    const username = ref('');
+    const email = ref('');
+    const phone_number = ref('');
+
+    defineExpose({
+        username,
+        email,
+        phone_number,
+    });
+
+    function isValidUsername(username) {
+        const dangerousWords = ["admin", "root", "superuser", "user", "hitler"];
+        for (let word of dangerousWords) {
+            if (new RegExp(`\\b${word}\\b`, "i").test(username)) {
+                return false;
+            }
+        }
+        const usernameRegex = /^[a-zA-Z0-9_]+$/;
+        return usernameRegex.test(username);
+    }
+
+    function isValidPassword(password) {
+        const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[\W_]).{8,}$/;
+        return passwordRegex.test(password);
+    }
+
+    function isValidEmail(email) {
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        return emailRegex.test(email);
+    }
+
+    function isValidPhoneNumber(phone) {
+        const phoneRegex = /^(?:\+33\s?[1-9](?:\s?\d{2}){4}|0[1-9](?:\s?\d{2}){4})$/;
+        return phoneRegex.test(phone);
+    }
+
+    ////////////////////////////////////////////////
+    ////////////////////////////////////////////////
+    ////////////////////////////////////////////////
+    
     async function updateAccount() {
+        if (!isValidUsername(username.value)) {
+            alert(
+                "The password should not contain spaces. If not, please change your username.",
+
+                //i18n.global.t('should_not_contain_spaces') +
+                //i18n.global.t('if_not,_please_change_your_username')
+            );            
+            return;
+        }
+
+        if (!isValidEmail(userAccount.email)) {
+            alert(i18n.global.t('please_enter_valid_email'));
+            return;
+        }
+        
+        if (userAccount.phone_number) {
+            if (!isValidPhoneNumber(userAccount.phone_number)) {
+                alert(i18n.global.t('please_enter_valid_phone_number'));
+                return;
+            }
+        }
+
+        if (!isValidPassword(userAccount.newpassword)) {
+            alert(
+                i18n.global.t('should_contain_capital_letter') +
+                i18n.global.t('should_contain_lower_case_letter') +
+                i18n.global.t('should_contain_number') +
+                i18n.global.t('should_contain_special_character') +
+                i18n.global.t('should_be_8_characters_long')
+            );
+            return;
+        }
         try {
             const response = await fetch('/api/player/update_user/', {
                 method: 'POST',
@@ -49,7 +125,7 @@
                     nickname: userAccount.nickname,
                     email: userAccount.email,
                     phone_number: userAccount.phone_number,
-                    password: userAccount.password,
+                    password: userAccount.newpassword,
                     profile_picture: userAccount.profilePicture,
 
                     email_2fa_active: userAccount.email_2fa_active,
@@ -146,7 +222,6 @@
                     <TextDisplay v-if="showAllInfo || !showAllInfo" :textValue="userAccount.nickname" :nameContainer="$t('nickname')" />
                     <TextDisplay v-if="showAllInfo || !showAllInfo" :textValue="userAccount.phone_number" :nameContainer="$t('phone_number')" />
                     <TextDisplay v-if="showAllInfo" :textValue="userAccount.username" :nameContainer="$t('username')" />
-                    <TextDisplay v-if="showAllInfo" :textValue="userAccount.password" :nameContainer="$t('password')" :isPassword="true" />
                     <TextDisplay v-if="showAllInfo" :textValue="userAccount.date_joined" :nameContainer="$t('date_joined')" />
                     <TextDisplay v-if="showAllInfo" :textValue="userAccount.win" :nameContainer="$t('number_of_wins')" />
                     <TextDisplay v-if="showAllInfo" :textValue="userAccount.lose" :nameContainer="$t('number_of_defeats')" />
@@ -157,7 +232,7 @@
                     <InputEdit v-model="userAccount.nickname" :placeholderText="$t('change_nickname')" inputIconClass="fa-user" :inputPlaceholder="$t('enter_nickname')" :isPassword="false" />
                     <InputEdit v-model="userAccount.email" :placeholderText="$t('change_email')" inputIconClass="fa-user" :inputPlaceholder="$t('enter_email')" :isPassword="false" :isDisabled="userAccount.student === true" />
                     <InputEdit v-if="userAccount.student === false" v-model="userAccount.phone_number" :placeholderText="$t('change_phone_number')" inputIconClass="fa-user" :inputPlaceholder="$t('enter_phone_number')" :isPassword="false" />
-                    <InputEdit v-if="userAccount.student === false" v-model="userAccount.password" :placeholderText="$t('change_password')" inputIconClass="fa-lock" :inputPlaceholder="$t('enter_password')" :isPassword="true" />
+                    <InputEdit v-if="userAccount.student === false" v-model="userAccount.newpassword" :placeholderText="$t('change_password')" inputIconClass="fa-lock" :inputPlaceholder="$t('enter_password')" :isPassword="true" />
 
                     <div class="___btn-click">
                         <button class="button button-update" @click="updateAccount">

@@ -4,24 +4,26 @@
     import CreateBackButton from '../components/CreateBackButton.vue';
     import CreateSoundButton from '../components/CreateSoundButton.vue';
     import { useRouter } from 'vue-router';
-    import { onMounted, ref } from 'vue';
+    import { onBeforeMount, onMounted, ref } from 'vue';
 
     ////////////////////////////////////////////////
     /////// GET USER ///////////////////////////////
     ////////////////////////////////////////////////
 
     import { useUser } from '../useUser.js'; 
-    const { getUser, userAccount, is_connected } = useUser(); 
+    const { getUser } = useUser(); 
     const currentUrl = window.location.href; 
     const lastSegment = currentUrl.split('/').filter(Boolean).pop();
     
     let scoreplayer1 = ref(0);
     let scoreplayer2 = ref(0);
-    onMounted(async () => {
+    
+    onBeforeMount(async () => {
         await getUser();
+    });
+
+    onMounted(async () => {
         await getGameInfo();
-        // if (is_connected.value === false)
-        //     __goTo('/')
     });
 
     ////////////////////////////////////////////////

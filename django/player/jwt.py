@@ -67,5 +67,4 @@ def verify_jwt(request):
     user = decode_jwt(token)
     if isinstance(user, Player):
         return JsonResponse({'valid': True, 'message': 'Token is valid', 'user': user}, content_type='application/json')
-    else:
-        return JsonResponse({'valid': False, 'message': 'Invalid or expired token', 'user': None}, status=401)
+    return JsonResponse({'valid': False, 'message': 'Invalid or expired token', 'user': None}, status=401)

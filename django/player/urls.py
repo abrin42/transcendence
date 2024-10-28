@@ -19,8 +19,8 @@ urlpatterns = [
     #path('verify_csrf/', utils.verify_csrf, name='verify_csrf'),
     path('verify_user/', utils.verify_user, name='verify_user'),
     path('verify-jwt/', jwt.verify_jwt, name='verify_jwt'),
-    path('connected_user/', views.connected_user, name='connected_user'),
-    path('get_all_user/', views.get_all_user, name='get_all_user'),
+    path('connected_user/', utils.connected_user, name='connected_user'),
+    path('get_all_user/', utils.get_all_user, name='get_all_user'),
 
     path('update_language/', update.update_language, name='update_language'),
     path('update_user/', update.update_user, name='update_user'),

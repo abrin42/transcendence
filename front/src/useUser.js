@@ -1,11 +1,6 @@
-
-import { useRouter } from 'vue-router';
-import { onMounted } from 'vue';
 import { ref, reactive } from 'vue';
 
 export function useUser() {
-    const router = useRouter();
-    
     const is_connected = ref(false);
     const userAccount = reactive({
         username: "",
@@ -13,6 +8,7 @@ export function useUser() {
         phone_number: "",
         email: "",
         password: "",
+        newpassword: "",
         email_2fa_active: "",
         sms_2fa_active: "",
         profilePicture: "",
@@ -36,6 +32,7 @@ export function useUser() {
         userAccount.username = user.username;
         userAccount.email = user.email;
         userAccount.password = user.password;
+        userAccount.newpassword = user.newpassword;
         userAccount.phone_number = user.phone_number;
         userAccount.email_2fa_active = user.email_2fa_active;
         userAccount.sms_2fa_active = user.sms_2fa_active;
@@ -43,6 +40,7 @@ export function useUser() {
         userAccount.language = user.language;
         userAccount.profilePicture = user.profile_picture;
         userAccount.anonymized = user.anonymized;
+        userAccount.date_joined = user.date_joined;
         
         userAccount.win = user.win;
         userAccount.lose = user.lose;
