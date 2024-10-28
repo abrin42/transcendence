@@ -26,38 +26,50 @@
     ////////////////////////////////////////////////
     ////////////////////////////////////////////////
 
+    //////////ROUTER AND GAME SELECTION////////////
     const router = useRouter();
-
     const gameSelection = inject('gameSelection');
     const varySpeed = inject('varySpeed');
     const game = inject('game');
-    const mode = inject('mode');
-
-    varySpeed(1.6);
-    mode.value = ''; //resets mode in case user uses back"back"
+    const mode1 = inject('mode1');
+    const mode2 = inject('mode2');
+    mode2.value = ''; 
+    ////////////////////////////////////////////////
+    varySpeed(1.9);
 
     function __goTo(page) {
         if (page == null)
             return;
         router.push(page);
     }
+    console.log('mode1valewerewrwerwerwewerewuehere!!!!!!');
+    console.log(game.value);
+    console.log(mode1.value);
 
     function goToMatchMakingLocal() {
-        mode.value = 'local';
-        gameSelection(game.value, mode.value);
-        router.push('/gameselect');
+        mode2.value = 'local';
+        gameSelection(game.value, mode1.value, mode2.value);
+        console.log('mode1valewerewrwerwerwewerewuehere!!!!!!');
+        console.log(game.value);
+        console.log(mode1.value);
+        router.push('/matchmaking');
     }
 
     function goToTourney() {
-        mode.value = 'tourney';
-        gameSelection(game.value, mode.value);
-        router.push('/gameselect');
+        mode2.value = 'tourney';
+        gameSelection(game.value, mode1.value, mode2.value);
+        if(game.value == 'legacy')
+            router.push('/legacy-tourney');
+        else if(game.value == 'cyberpong')
+            router.push('/cyberpong-tourney');
+        else
+            router.push('/legacy-tourney');
     }
 
-    function goToRemote() {
-        mode.value = 'remote';
-        gameSelection(game.value, mode.value);
-        router.push('/gameselect');
+    function goToMatchmakingRemote() {
+        mode2.value = 'remote';
+        gameSelection(game.value, mode1.value, mode2.value);
+        router.push('/matchmakingremote');
     }
 </script>
 
@@ -67,6 +79,9 @@
             <div class="buttonContainer">
                 <button class="button button-credits" @click="goToMatchMakingLocal()">
                     <span class="buttonText">{{ $t('local') }}</span>
+                </button>
+                <button class="button button-credits" @click="goToMatchmakingRemote()">
+                    <span class="buttonText">{{ $t('remote') }}</span>
                 </button>
                 <button class="button button-credits" @click="goToTourney()">
                     <span class="buttonText">{{ $t('tourney') }}</span>

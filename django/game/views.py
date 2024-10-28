@@ -7,6 +7,9 @@ from player.models import Player
 from django.core import serializers
 import asyncio
 from .serializers import GameSerializer
+from .serializers import PlayerSerializer
+from django.core.serializers import serialize
+
 
 def game(request):
     return render(request, 'game/game.html')
@@ -27,6 +30,13 @@ def game(request):
 
 #     return (JsonResponse({'message': 'gameIDInfo', 'gameID': game.id}, status=200))
 
+def get_all_games(request):
+    if request.method == 'GET':
+        data = Game.objects.all().order_by("-created_at")
+        data = serializers.serialize('json', data, use_natural_foreign_keys=True, use_natural_primary_keys=True)
+        return JsonResponse(data, safe=False)
+    return JsonResponse({'error': 'Invalid request method'}, status=405)
+
 
 def getGameInfo(request):
     if request.method == 'POST':
@@ -43,8 +53,6 @@ def getGameInfo(request):
     return JsonResponse({'error': 'Invalid request method'}, status=405)
 
 
-<<<<<<< HEAD
-=======
 def creatOneFalsePlayer(request):
     if request.method == 'POST':
         try:
@@ -98,15 +106,19 @@ def creatFalsePlayer(request):
             return JsonResponse({'error': 'Invalid request body'}, status=400)
     return JsonResponse({'error': 'Invalid request method'}, status=405)
 
->>>>>>> b9eae8a8cbe6a91c7ef07eaa3b497e85d67695ac
 def creat_game_local(request):
     if request.method == 'POST':
         try:
+            print("fake 404 ?")
             data = json.loads(request.body)
             username1 = data.get('username1')
             username2 = data.get('username2')
             player1 = get_object_or_404(Player, username=username1)
+            print("le 1 ne fait pas de 404")
+            print(player1)
             player2 = get_object_or_404(Player, username=username2)
+            print("le 2 ne fait pas de 404")
+            print(player2)
             latest_game = Game.objects.create(state='waiting', player1=player1, scorep1=0, player2=player2, scorep2=0)
 
             serializer = GameSerializer(latest_game)
@@ -117,6 +129,37 @@ def creat_game_local(request):
     return JsonResponse({'error': 'Invalid request method'}, status=405)
 
         
+# def insertPlayer(request):
+#     if request.method == 'POST':
+#         try:
+#             data = json.loads(request.body)
+#             username = data.get('username')
+
+#             player = get_object_or_404(Player, username=username)
+#             latest_game = Game.objects.order_by('-id').first()
+#             # if game state est != wating cree une nouvelle game 
+#             if latest_game.mode == 'waiting':
+#                 # if latest_game is None or latest_game.player2 is not None and latest_game.player1 != player:
+#                     # latest_game = Game.objects.create(state='waiting', player1=player, scorep1=0)
+#                 if latest_game.player1 != player:
+#                     latest_game.player2 = player
+#                     latest_game.state = 'active'
+#                     latest_game.scorep2 = 0
+#                     latest_game.save()
+#                 serializer = GameSerializer(latest_game)
+#                 data = serializer.data
+#                 return JsonResponse(data, safe=False, content_type='application/json')
+                
+#             elif latest_game.player1 != player:
+#                 latest_game = Game.objects.create(state='waiting', player1=player, scorep1=0)
+
+#             serializer = GameSerializer(latest_game)
+#             data = serializer.data
+#             return JsonResponse(data, safe=False, content_type='application/json')
+#         except json.JSONDecodeError:
+#             return JsonResponse({'error': 'Invalid request body'}, status=400)
+#     return JsonResponse({'error': 'Invalid request method'}, status=405)
+
 def insertPlayer(request):
     if request.method == 'POST':
         try:
@@ -182,6 +225,8 @@ def insertPlayer(request):
 #@login_required
 def update_game(request):
     if request.method == "POST":
+        if request.session.get('csrf') != request.COOKIES.get('csrftoken'):
+            return JsonResponse({'error': 'Invalid CSRF token'}, status=400)
         try:
             # game = Game.objects.order_by('-id').first()
             data = json.loads(request.body)
@@ -209,6 +254,8 @@ def update_game(request):
 
 def getIsPlayer(request):
     if request.method == "POST":
+        if request.session.get('csrf') != request.COOKIES.get('csrftoken'):
+            return JsonResponse({'error': 'Invalid CSRF token'}, status=400)
         try:
             # game = Game.objects.order_by('-id').first()
             data = json.loads(request.body)

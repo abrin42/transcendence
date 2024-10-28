@@ -13,22 +13,26 @@
     const gameSelection = inject('gameSelection');
     const varySpeed = inject('varySpeed');
     const game = inject('game');
-    const mode = inject('mode');
+    const mode1 = inject('mode1');
+    const mode2 = inject('mode2');
+
 
     game.value = '';
-    mode.value = '';
+    mode1.value = '';
+    mode2.value = '';
+
     
     varySpeed(1); //sets speed to average in App.vue
-    gameSelection(game.value, mode.value); //sets game selected back to empty if user uses back button
+    gameSelection(game.value, mode1.value, mode2.value); //sets game selected back to empty if user uses back button
 
     onMounted(async () => {
-        await submitForm();
+        await getCSRF();
     });
 
-    async function submitForm() {
+    async function getCSRF() {
         try {
-            const response = await fetch('/api/get_csrf_token/', {
-                method: 'POST',
+            const response = await fetch('/api/player/get_csrf_token/', {
+                method: 'GET',
                 headers: {
                     'Content-Type': 'application/json',
                 },
@@ -46,9 +50,10 @@
             console.error('Error during fetch operation:', error);
         }
     }
+    
 
-    function goToModeSelect() {
-        router.push('/modeselect');
+    function goToGameSelect() {
+        router.push('/gameselect');
     }
 
     function goToCredits() {
@@ -67,7 +72,7 @@
     <main>
         <div id="wrapper">
             <div class="buttonContainer">
-                <button class="button" @click="goToModeSelect()">
+                <button class="button" @click="goToGameSelect()">
                     <i class="fas fa-play" style="margin-right: 1vw;"></i>
                     <span class="buttonText buttonTextSize">{{ $t('play') }}</span>
                 </button>

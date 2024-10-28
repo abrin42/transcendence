@@ -25,17 +25,22 @@
     ////////////////////////////////////////////////
     ////////////////////////////////////////////////
     
+    //////////ROUTER AND GAME SELECTION////////////
     const router = useRouter();
-
     const gameSelection = inject('gameSelection');
     const varySpeed = inject('varySpeed');
     const game = inject('game');
-    const mode = inject('mode');
+    const mode1 = inject('mode1');
+    const mode2 = inject('mode2');
+    mode1.value = ''; 
+    mode2.value = ''; 
+    ////////////////////////////////////////////////
+    varySpeed(1.6);
+    console.log(game.value);
 
-    varySpeed(1.3);
-    game.value = ''; //resets game in case user uses "back"
-    mode.value = ''; //resets mode in case user uses back"back"
-
+    let isMultiButtonVisible = false;
+    if (game.value == 'legacy' || game.value == 'cyberpong')
+        isMultiButtonVisible = true;
     
     function __goTo(page) {
         if (page == null)
@@ -43,16 +48,19 @@
         router.push(page);
     }
 
-    function goToIA() {
-        router.push('/IA');
-        game.value = 'solo';
-        gameSelection(game.value, mode.value);
+    function goToSolo() {
+        mode1.value = 'solo';
+        if(game.value == 'legacy')
+            router.push('/legacy-ia');
+        else if(game.value == 'cyberpong')
+            router.push('/cyberpong-ia');
+        else if(game.value == 'threepong')
+            router.push('/threepong-ia');
     }
 
     function goToMulti() {
+        mode1.value = 'multi';
         router.push('/multimode');
-        game.value = 'multi';
-        gameSelection(game.value, mode.value);
     }
 </script>
 
@@ -60,11 +68,11 @@
     <main>
         <div id="wrapper">
             <div class="buttonContainer">
-                <button class="button button-solo" @click="goToIA()">
+                <button class="button button-solo" @click="goToSolo()">
                     <i class="fa-solid fa-user"></i>
                     <span class="buttonText" style="margin-left: 0.5vw;">{{ $t('solo') }}</span>
                 </button>
-                <button class="button button-credits" @click="goToMulti()">
+                <button v-if="isMultiButtonVisible" class="button button-credits" @click="goToMulti()">
                     <i class="fa-solid fa-users"></i>
                     <span class="buttonText" style="margin-left: 0.5vw;">{{ $t('multiplayer') }}</span>
                 </button>

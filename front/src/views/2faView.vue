@@ -74,7 +74,7 @@
 
     async function get2FAUser() {
     try {
-        const response = await fetch(`/api/player/verify_user/`, {
+        const response = await fetch('/api/player/verify_user/', {
             method: 'GET',
             credentials: 'include',  
         });

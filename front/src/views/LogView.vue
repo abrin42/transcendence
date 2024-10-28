@@ -76,13 +76,13 @@ async function login() {
         const data = await response.json();
 
         if (data.redirect_url) {
-            alert(i18n.global.t('login_successful'));
+            //alert(i18n.global.t('login_successful'));
             __goTo(data.redirect_url);
             return;
         }
 
         else {
-    //          alert('User data not found!');
+            // alert('User data not found!');
             alert(i18n.global.t('error_user_data_not_found'));
         }
     } catch (error) {

@@ -3,6 +3,7 @@ from django.http import JsonResponse
 from django.conf import settings
 from django.views.decorators.csrf import csrf_exempt
 from .jwt import token_user
+#from .utils import verify_csrf
 import json
 import hashlib
 
@@ -11,6 +12,8 @@ def update_language(request):
     user = token_user(request)
     if user:
         if request.method == "POST":
+            if request.session.get('csrf') != request.COOKIES.get('csrftoken'):
+                return JsonResponse({'error': 'Invalid CSRF token'}, status=400)
             try:
                 data = json.loads(request.body)
                 language = data.get('language')
@@ -29,6 +32,8 @@ def update_keys(request):
     user = token_user(request)
     if user:
         if request.method == "POST":
+            if request.session.get('csrf') != request.COOKIES.get('csrftoken'):
+                return JsonResponse({'error': 'Invalid CSRF token'}, status=400)
             try:
                 data = json.loads(request.body)
                 print(data)
@@ -120,5 +125,8 @@ def hash_value(value):
     return hashlib.sha256(value.encode()).hexdigest()
 
 def anonymize_data(user):
+    user.original_email = user.email
+    user.original_phone_number = user.phone_number
+
     user.email = mask_email(user.email)
     user.phone_number = mask_phone_number(user.phone_number)

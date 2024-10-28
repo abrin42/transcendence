@@ -3,7 +3,7 @@
     <div id="wrapper">
       <div id="black-background">
         <div>
-          <canvas id ="board" data-glow></canvas>
+          <canvas id ="board" ></canvas>
         </div>
         <div>
           <h2 id="mute">[{{ userAccount.mute }}] {{ $t('to_mute_unmute') }}</h2>
@@ -17,7 +17,6 @@
 body {
   text-align: center;
 }
-
 
 #mute {
   color: rgb(114, 114, 114);
@@ -89,6 +88,12 @@ import { useRouter } from 'vue-router';
   }
 });
 
+  let moveUpP1;
+  let moveDownP1;
+  let moveUpP2;
+  let moveDownP2;
+  let mute;
+
 onMounted(async () => {
   await getUser();
   if (is_connected.value === false)
@@ -102,7 +107,16 @@ onMounted(async () => {
 
   context.fillStyle = "white";
   context.fillRect(player1.x, player1.y, player1.width, player1.height);
+
+    /////Game controls//////
+    moveUpP1 = userAccount.player1Up;
+    moveDownP1 = userAccount.player1Down;
+    moveUpP2 = userAccount.player2Up;
+    moveDownP2 = userAccount.player2Down;
+    mute = userAccount.mute;
+
   animationFrameId = requestAnimationFrame(update); // Gameloop
+  
   if (canPlay.value == 1)
   {
     document.addEventListener("keydown", movePlayer1up);
@@ -290,9 +304,25 @@ function updateBaal(x, y)
   ball.y = y;
 }
 
+function connectWebSocket() {
+  console.log(lastSegment);
+  let hostName =  window.location.hostname;
+  let port = window.location.port || '8443';
+  socket.value = new WebSocket(`wss://${hostName}:${port}/ws/websockets/?page=${encodeURIComponent(gamePage)}`);
+  socket.value.onopen = () => {
+    console.log('WebSocket connecté');
+    console.log(socket.value);
+  };
+  
+  
+  socket.value.onmessage = async (event) => {
+    // console.log("---ON MESSAGE---");
+    
+    const data = JSON.parse(event.data);
+    
+    if (data.type == 'connection_success') 
+    {
 
-<<<<<<< HEAD
-=======
       // console.log(data.type);
       // console.log(data.message);
       // connectionStatus.value = data.message;
@@ -353,7 +383,6 @@ function updateBaal(x, y)
     // console.log("---END ON MESSAGE---");
   };
 }
->>>>>>> b9eae8a8cbe6a91c7ef07eaa3b497e85d67695ac
 
 
 function sendMessage(msg) {
@@ -400,13 +429,6 @@ let animationFrameId = null;
     let moveInterval2up = null;
     let moveInterval2down = null;
     let tickPadel = 10;
-
-    /////Game controls//////
-    let moveUpP1 = "KeyW";
-    let moveDownP1 = "KeyS";
-    let moveUpP2 = "KeyE";
-    let moveDownP2 = "KeyD";
-    let mute = userAccount.mute;
 
     function movePlayer1up(e)
     {

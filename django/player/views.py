@@ -10,16 +10,14 @@ from django.views.decorators.csrf import csrf_exempt
 from .otp import create_otp
 from .jwt import generate_jwt, token_user, set_jwt_token
 from .models import Player, BlacklistedToken
-<<<<<<< HEAD
-=======
 from .utils import set_picture_42, get_csrf_token
->>>>>>> b9eae8a8cbe6a91c7ef07eaa3b497e85d67695ac
 from datetime import datetime
 import pyotp
 import requests
 import json
 from collections import deque
 import asyncio
+from django.middleware.csrf import get_token
 
 matchmaking = deque()
 
@@ -46,7 +44,7 @@ def register_view(request):
             )
 
             user.email = email
-            user.phone_number = phone_number  # Ensure this field exists in your model
+            user.phone_number = phone_number
             user.set_password(password)
             user.save()
             print(user.username)
@@ -56,8 +54,9 @@ def register_view(request):
                 set_user_keys(user)
             
                 login(request, authenticated_user)
-                authenticated_user.nickname = user.username[1:]  # Remove leading underscore
+                authenticated_user.nickname = user.username[1:] 
                 authenticated_user.save()
+                get_csrf_token(request)
 
                 token = generate_jwt(authenticated_user)
                 response = JsonResponse({
@@ -101,14 +100,11 @@ def login_view(request):
         
         print(f'username: {player.username}, email_2fa_active: {player.email_2fa_active}')
         login(request, player)
-<<<<<<< HEAD
-=======
         get_csrf_token(request)
         print("-----------------------------------------------------------------")
         print(f"/login/request.session['csrf']: {request.session.get('csrf')}")     
         print(f"/login/request.COOKIES.get('csrftoken'): {request.COOKIES.get('csrftoken')}")    
         print("-----------------------------------------------------------------")
->>>>>>> b9eae8a8cbe6a91c7ef07eaa3b497e85d67695ac
 
         if not player.email_2fa_active and not player.sms_2fa_active:
             token = generate_jwt(player)
@@ -121,31 +117,23 @@ def login_view(request):
                 'message': 'Login successful',
                 'redirect_url': '/'
             }, status=200)
+
             set_jwt_token(response, token)
             return response
 
         player_data = serializers.serialize('json', [player])
         return JsonResponse({
             'player_data': player_data,
-            'redirect_url': '/2fa'
+            'redirect_url': '/2fa/'
         }, content_type='application/json')
 
     except json.JSONDecodeError:
         return JsonResponse({'error': 'Invalid request body'}, status=400)
 
 
-def login42_view(request):
-    if request.method == "POST":
-        oauth_url = f"{settings.FT42_OAUTH_URL}?client_id={settings.FT42_CLIENT_ID}&redirect_uri={settings.FT42_REDIRECT_URI}&response_type=code"
-        return JsonResponse({'url': oauth_url}, status=200)
-    return JsonResponse({'error': 'Invalid request method'}, status=405)
-
-
 @login_required
 def tfa_view(request):
     if request.method == "POST":
-<<<<<<< HEAD
-=======
         get_csrf_token(request)
         print("-----------------------------------------------------------------")
         print(f"/tfa/request.session['csrf']: {request.session.get('csrf')}")     
@@ -154,12 +142,11 @@ def tfa_view(request):
         if request.session.get('csrf') != request.COOKIES.get('csrftoken'):
             return JsonResponse({'error': 'Invalid CSRF token'}, status=400)
         
->>>>>>> b9eae8a8cbe6a91c7ef07eaa3b497e85d67695ac
         try:
             user = get_object_or_404(Player, username=request.user.username)
             print(f"2fa user: {user}")
             create_otp(request, user)
-            return JsonResponse({'message': 'Code sent successfully', 'redirect_url': '/2fa'}, status=200)
+            return JsonResponse({'message': 'Code sent successfully', 'redirect_url': '/2fa/'}, status=200)
         except Player.DoesNotExist:
             return JsonResponse({'error': 'User not found'}, status=404)
     return JsonResponse({'error': 'Invalid request method'}, status=405)
@@ -173,11 +160,8 @@ def otp_view(request):
         return JsonResponse({'error': 'User not found'}, status=404)
     ###########################
     if request.method == "POST":
-<<<<<<< HEAD
-=======
         if request.session.get('csrf') != request.COOKIES.get('csrftoken'):
             return JsonResponse({'error': 'Invalid CSRF token'}, status=400)
->>>>>>> b9eae8a8cbe6a91c7ef07eaa3b497e85d67695ac
         try:
             data = json.loads(request.body)
             user_otp = data.get('user_otp')
@@ -201,6 +185,10 @@ def otp_view(request):
                         print(f'token: {token}')
 
                         response = JsonResponse({'redirect_url': '/2fa'}, status=302)
+
+                        csrf_token = get_token(request)
+                        user.csrf = csrf_token
+
                         set_jwt_token(response, token)                        
                         print("JWT OK")
                         
@@ -219,6 +207,13 @@ def otp_view(request):
         except json.JSONDecodeError:
             return JsonResponse({'error': 'Invalid request body'}, status=400)
 
+    return JsonResponse({'error': 'Invalid request method'}, status=405)
+
+
+def login42_view(request):
+    if request.method == "POST":
+        oauth_url = f"{settings.FT42_OAUTH_URL}?client_id={settings.FT42_CLIENT_ID}&redirect_uri={settings.FT42_REDIRECT_URI}&response_type=code"
+        return JsonResponse({'url': oauth_url}, status=200)
     return JsonResponse({'error': 'Invalid request method'}, status=405)
 
 
@@ -256,7 +251,7 @@ def auth_42_callback(request):
     login_name = user_info.get('login')
     username = f'{login_name}'
     email = user_info.get('email')
-    #profile_picture = user_info["image"]["versions"]["small"]
+    profile_picture = user_info["image"]["versions"]["small"]
 
     if not username:
         return redirect('/log/')
@@ -270,31 +265,23 @@ def auth_42_callback(request):
         user.student = True
         if user.nickname is None:
             user.nickname = user.username
-        #if profile_picture and user.profile_picture is None: 
-        #    set_picture_42(request, user, profile_picture)
+        if profile_picture and user.profile_picture is None: 
+            user.profile_picture = profile_picture
         user.save()
-<<<<<<< HEAD
-=======
         login(request, user)
         get_csrf_token(request)
 
->>>>>>> b9eae8a8cbe6a91c7ef07eaa3b497e85d67695ac
         token = generate_jwt(user)
         response = redirect('/')
         set_jwt_token(response, token)
-        login(request, user)
-        user = token_user(request)
         return response
     return redirect('/log/')
 
 @login_required
 def logout_view(request):
     if request.method == "POST":
-<<<<<<< HEAD
-=======
         if request.session.get('csrf') != request.COOKIES.get('csrftoken'):
             return JsonResponse({'error': 'Invalid CSRF token'}, status=400)
->>>>>>> b9eae8a8cbe6a91c7ef07eaa3b497e85d67695ac
         token = request.COOKIES.get('jwt')
         print(token)
         response = redirect('/log')
@@ -304,10 +291,6 @@ def logout_view(request):
         logout(request)
         return response
     return JsonResponse({'error': 'Invalid request method'}, status=405)
-
-
-
-
 
 @login_required
 def delete_p(request):
@@ -321,11 +304,16 @@ def delete_account(request):
     return JsonResponse({'redirect_url': '/log'}, status=200)
 
 def connected_user(request):
-    user = token_user(request)
-    if user is not None:
-        user_data = json.loads(serialize('json', [user]))[0]['fields']
-        return JsonResponse(user_data, safe=True, content_type='application/json') 
-    return JsonResponse({'msg': 'User not found'}, status=204)
+    if request.method == 'GET':
+        try:
+            user = token_user(request)
+            if user is not None:
+                user_data = json.loads(serialize('json', [user]))[0]['fields']
+                return JsonResponse(user_data, safe=True, content_type='application/json') 
+            return JsonResponse({'msg': 'User not found'}, status=204)
+        except json.JSONDecodeError:
+            return JsonResponse({'error': 'Invalid request body'}, status=400)
+    return JsonResponse({'error': 'Invalid request method'}, status=405)
 
 def get_all_user(request):
     data = Player.objects.all().order_by("-rank")
