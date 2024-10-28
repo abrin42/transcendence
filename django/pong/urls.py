@@ -21,10 +21,12 @@ from django.conf import settings
 from . import views
 
 urlpatterns = [
+    #path('api/', include('api.urls')),
     path('api/admin/', admin.site.urls),
     path('api/friend/', include('friend.urls')),
     path('api/player/', include('player.urls')),
     path('api/game/', include('game.urls')),
+    path('api/get_csrf_token/', views.get_csrf_token),
 ]
 
 urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

@@ -19,16 +19,10 @@ def create_otp(request, user):
         request.session['otp_method'] = otp_method  
     
     if  otp_method == 'sms':
-        if user.anonymized:
-            contact = str(user.original_phone_number)
-        else:
-            contact = str(user.phone_number)
+        contact = str(user.phone_number)
         send_otp(request, totp, contact, method='sms')
     elif otp_method == 'email':
-        if user.anonymized:
-            contact = str(user.original_email)
-        else:
-            contact = str(user.email)
+        contact = user.email
         send_otp(request, totp, contact, method='email')
 
 

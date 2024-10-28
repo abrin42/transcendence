@@ -3,43 +3,11 @@ from django.shortcuts import get_object_or_404
 from django.conf import settings
 from django.core import serializers
 from django.core.files.base import ContentFile
-from django.views.decorators.csrf import csrf_exempt
-from django.middleware.csrf import get_token
 from django.http import JsonResponse
 from .models import Player
-from .jwt import token_user
 import os
 import requests
 
-def verify_csrf(request):
-    print(f"/logout/csrf_token: {csrf_token}")
-    print(f"/logout/user.username: {user.username}")
-    print(f"/logout/request.session['csrf']: {request.session.get('csrf')}")     
-
-    if request.session.get('csrf') != request.COOKIES.get('csrftoken'):
-        return False
-    return True
-
-def get_csrf_token(request):
-    print(request)
-    if request.method == 'GET':
-        print(f"/getcsrf/request.session['username']: {request.session.get('username')}")
-        print(f"/getcsrf/request.session['csrf']: {request.session.get('csrf')}")     
-        print(f"/getcsrf/request.COOKIES.get('csrftoken'): {request.COOKIES.get('csrftoken')}")     
-
-        if request.COOKIES.get('csrftoken') is None:
-            csrf_token = get_token(request)
-
-        if request.session.get('username') is None:
-            csrf_token = request.COOKIES.get('csrftoken')
-            print(f"callback/ csrf_token: {csrf_token}")     
-            request.session['csrf'] = csrf_token
-            print(f"callback/ request.session['csrf']: {request.session['csrf']}")     
-        
-        response = JsonResponse({'message': 'CSRF token generated'}, status=200)
-        response.set_cookie('csrftoken', csrf_token)
-        return response
-    return JsonResponse({'error': 'Invalid request method'}, status=400)
 
 def username_underscore(request):
     post_data = request.POST.copy()
@@ -48,6 +16,8 @@ def username_underscore(request):
         post_data['username'] = f"_{raw_username}"
     return post_data
     
+    return user
+
 def set_picture_42(request, user, profile_picture):
     response = requests.get(profile_picture)
     if response.status_code == 200: #if the HTTP request (get) is successful 
@@ -60,18 +30,16 @@ def set_picture_42(request, user, profile_picture):
     else:
         print(f"Failed to fetch profile picture, status code: {response.status_code}")
 
+@login_required
 def verify_user(request):
-    if request.method == 'GET':
-        try:
-            user = get_object_or_404(Player, username=request.user.username)
-            player_data = serializers.serialize('json', [user])
+    try:
+        user = get_object_or_404(Player, username=request.user.username)
+        player_data = serializers.serialize('json', [user])
 
-            print(f"verify_user/username: {user.username}")
-            print(f"verify_user/phone_number: {user.phone_number}")
-            print(f"verify_user/email: {user.email}")
+        print(f"verify_user/username: {user.username}")
+        print(f"verify_user/phone_number: {user.phone_number}")
+        print(f"verify_user/email: {user.email}")
 
-            return JsonResponse({'player_data': player_data}, content_type='application/json', status=200)
-        except Player.DoesNotExist:
-            return JsonResponse({'error': 'User not found'}, status=404)
-    return JsonResponse({'error': 'Invalid request method'}, status=400)
-
+        return JsonResponse({'player_data': player_data}, content_type='application/json', status=200)
+    except Player.DoesNotExist:
+        return JsonResponse({'error': 'User not found'}, status=404)

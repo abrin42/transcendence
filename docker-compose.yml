@@ -1,12 +1,4 @@
 services:
-    redis:
-      container_name: redis
-      image: "redis:7"
-      restart: always
-      ports:
-        - "8379:6379"
-      networks:
-        - ft_transcendence
     postgresql:
       container_name: postgresql
       image: postgres:16.1

@@ -71,9 +71,6 @@
                 <button class="button button-credits" @click="goToTourney()">
                     <span class="buttonText">{{ $t('tourney') }}</span>
                 </button>
-                <button class="button button-credits" @click="goToRemote()">
-                    <span class="buttonText">{{ $t('remote') }}</span>
-                </button>
                 <CreateHomeButton />
                 <CreateSoundButton />
                 <CreateDropupButton />

@@ -22,13 +22,13 @@
     gameSelection(game.value, mode.value); //sets game selected back to empty if user uses back button
 
     onMounted(async () => {
-        await getCSRF();
+        await submitForm();
     });
 
-    async function getCSRF() {
+    async function submitForm() {
         try {
-            const response = await fetch('/api/player/get_csrf_token/', {
-                method: 'GET',
+            const response = await fetch('/api/get_csrf_token/', {
+                method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
                 },
@@ -46,7 +46,6 @@
             console.error('Error during fetch operation:', error);
         }
     }
-    
 
     function goToModeSelect() {
         router.push('/modeselect');
