@@ -75,7 +75,8 @@ const router = useRouter();
         return cookieValue || '';
     }
 
-    onMounted(() => {
+    onMounted(async() => {
+        await getUser();
         adjustButtonPosition();
     });
 

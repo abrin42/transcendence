@@ -49,7 +49,7 @@
     }
 
     function isValidUsername(username) {
-        const dangerousWords = ["admin", "root", "superuser", "user", "hitler"];
+        const dangerousWords = ["admin", "root", "superuser", "user", "hitler", "@AI.Bot"];
         for (let word of dangerousWords) {
             if (new RegExp(`\\b${word}\\b`, "i").test(username)) {
                 return false;

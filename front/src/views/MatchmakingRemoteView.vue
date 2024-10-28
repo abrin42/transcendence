@@ -58,9 +58,10 @@
         if (is_connected.value === false)
             __goTo('/')
     });
-
+    
     onMounted(async () => {
-        createPlyInput();
+        await getUser();
+        await createPlyInput();
         await insertPlayer();
         // await createGameLocal();
     });
@@ -177,6 +178,8 @@ async function createGameLocal()
 
 async function insertPlayer() {
     try {
+        console.log("------hereeee-------")
+        console.log(userAccount.username);
         const response = await fetch('/api/game/insertplayer/', {
             method: 'POST',
             headers: {
@@ -187,6 +190,10 @@ async function insertPlayer() {
                 username: userAccount.username,
             })
         });
+        if (response.status == 404)
+        {
+            console.log("404 de la fonction");
+        }
         if (response.ok) {
             const game = await response.json();
             console.log("hereeeeeeeeeeee");
@@ -242,7 +249,7 @@ async function insertPlayer() {
 }
 
 
-function createPlyInput() {
+async function createPlyInput() {
         waitingPlayer = 0;
 
         const player1_pic = document.getElementById('player1-picture');

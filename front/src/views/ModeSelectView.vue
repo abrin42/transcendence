@@ -5,7 +5,7 @@
     import CreateSoundButton from '../components/CreateSoundButton.vue';
     import CreateHomeButton from '../components/CreateHomeButton.vue';
     import { useRouter } from 'vue-router';
-    import { onBeforeMount } from 'vue';
+    import { onBeforeMount, onMounted } from 'vue';
     import { inject } from 'vue';
 
     ////////////////////////////////////////////////
@@ -19,6 +19,10 @@
         await getUser();
         //if (is_connected.value === false)
           //  __goTo('/')
+    });
+
+    onMounted(async () => {
+        await getUser();
     });
 
     ////////////////////////////////////////////////
@@ -75,7 +79,7 @@
                     'X-CSRFToken': getCsrfToken()
                 },
                 body: JSON.stringify({
-                    username1: playerName2
+                    username1: "@AI.Bot"
                 })
             });
             if (response.ok) {
@@ -104,7 +108,7 @@
                 },
                 body: JSON.stringify({
                     username1: userAccount.username,
-                    username2: playerName2, //change to seconde player
+                    username2: "#@AI.Bot", //change to seconde player
                 })
             });
             if (response.ok) {

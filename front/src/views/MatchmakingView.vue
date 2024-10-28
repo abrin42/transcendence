@@ -71,10 +71,11 @@
     });
 
     onMounted(async () => {
+        await getUser();
         createPlyInput();
         // await createGameLocal();
         // await insertPlayer();
-        await createGameLocal();
+        // await createGameLocal();
 
     });
 
@@ -108,7 +109,7 @@
     let player2;
     let gamemode = "legacy"; //fetch game mode selected?
     let playerName1 = "Chachou";
-    let playerName2 = "Chachou2";
+    let playerName2 = "";
     let playerRank1 = "Noob";
     let playerRank2 = "Beginner";
     const router = useRouter();
@@ -127,6 +128,10 @@
 
     async function createGameLocal()
     {
+        console.log("--------------------la---------------------------")
+        console.log(userAccount.username)
+        console.log(player2.username)
+        console.log("--------------------la 222---------------------------")
         try {
             const response = await fetch('/api/game/create_game_local/', {
                 method: 'POST',
@@ -136,7 +141,7 @@
                 },
                 body: JSON.stringify({
                     username1: userAccount.username,
-                    username2: playerName2, //change to seconde player
+                    username2: player2.username, //change to seconde player
                 })
             });
             if (response.ok) {

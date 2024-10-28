@@ -130,6 +130,7 @@ let moveDownP1;
 let mute;
 
 onMounted(async () => {
+  await getUser();
   // await getIsPlayer();
   canPlay.value = 1;
   connectWebSocket();

@@ -23,6 +23,7 @@
     });
 
     onMounted(async () => {
+        await getUser();
         await getGameInfo();
     });
 

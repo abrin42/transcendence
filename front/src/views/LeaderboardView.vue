@@ -5,6 +5,9 @@ import CreateBackButton from '../components/CreateBackButton.vue';
 import profilePicture from '@/assets/img/default-profile.png';
 import { inject } from 'vue';
 
+import { useUser } from '../useUser.js';
+const { getUser } = useUser();
+
 const varySpeed = inject('varySpeed');
 //varySpeed(0); 
 
@@ -16,6 +19,7 @@ const user = ref([]);
 const games = ref([])
 
 onMounted(async () => {
+    await getUser();
     await getAllUsers();
     await getAllGames();
 });
@@ -74,7 +78,7 @@ async function getAllUsers() {
                     obj['rank'] = element.fields.rank;
                     obj['win'] = element.fields.win;
                     obj['lose'] = element.fields.lose;
-                    obj['profilePicture'] = element.fields.profilePicture;
+                    obj['profilePicture'] = element.fields.profile_picture;
     
                     obj['winRate'] = 0;
                     obj['loseRate'] = 0;

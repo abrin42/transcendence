@@ -90,6 +90,7 @@ import { useRouter } from 'vue-router';
 });
 
 onMounted(async () => {
+  await getUser();
   await getIsPlayer();
   connectWebSocket();
   board = document.getElementById("board");

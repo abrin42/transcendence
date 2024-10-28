@@ -197,8 +197,9 @@ def insertPlayer(request):
         try:
             data = json.loads(request.body)
             username = data.get('username')
-
+            print("---- before player ----")
             player = get_object_or_404(Player, username=username)
+            print("---- after player ----")
             latest_game = Game.objects.order_by('-id').first()
             if latest_game is None:
                 latest_game = Game.objects.create(state='waiting', player1=player, scorep1=0)

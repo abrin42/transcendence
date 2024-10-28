@@ -314,6 +314,7 @@ body {
 
   /////////////MOUNTED/////////////
   onMounted(async () => {
+    await getUser();
     await getIsPlayer();
     connectWebSocket();
     board = document.getElementById("board");
