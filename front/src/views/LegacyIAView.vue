@@ -3,7 +3,7 @@
     <div id="wrapper">
       <div id="black-background">
         <div>
-          <canvas id ="board" data-glow></canvas>
+          <canvas id ="board"></canvas>
         </div>
         <div>
           <h2 id="mute">[{{ userAccount.mute }}] {{ $t('to_mute_unmute') }}</h2>
@@ -13,17 +13,16 @@
   </main>
 </template>
 
-<style lang="scss">
+<style scoped>
 body {
   text-align: center;
 }
-
 
 #mute {
   color: rgb(114, 114, 114);
   font-size: 25px;
   left: 20%;
-  top: 67%;
+  top: 69%;
 }
 
 #black-background{
@@ -34,9 +33,9 @@ body {
 
 #board {
   background-color: black;
-  border: 5px solid white;
-  width: 700px;
-  height: 700px;
+  border: 15px solid white;
+  width: 800px;
+  height: 800px;
 }
 </style>
 

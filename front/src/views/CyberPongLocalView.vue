@@ -1,44 +1,79 @@
 <template>
   <main>
     <div id="wrapper">
+      <CreateSoundButton id="sound-button-cyber" />
+      <video id="video-cyber" loop autoplay muted preload="true" class="flex">
+                <source src="./../assets/GameScene.mp4" type="video/mp4">
+                    Your browser does not support the video element.
+            </video>
       <div id="black-background">
         <div>
-          <canvas id="board" ref="neonLayer"></canvas>
+          <canvas id="board-cyber"></canvas>
         </div>
         <div>
-          <h2 id="mute">[{{ userAccount.mute }}] {{ $t('to_mute_unmute') }}</h2>
+          <h2 id="mute-cyber">{{ userAccount.mute }} {{ $t('to_mute_unmute') }}</h2>
         </div>
       </div>
     </div>
   </main>
 </template>
 
-<style lang="scss">
+<style scoped>
+#app {
+    position: relative; 
+    height: 100vh; 
+    overflow: hidden; 
+}
+
 body {
   padding: 0;
   margin: 0;
   text-align: center;
 }
 
-#mute {
-  color: rgb(114, 114, 114);
+#sound-button-cyber{
+  z-index: 4;
+}
+
+#video-cyber {
+    z-index: 0;
+    position: absolute;
+    min-width: 100%;
+    max-height: 100%;
+    top: 50%;
+    left: 50%;
+    width: auto;
+    height: auto;
+    transform: translate(-50%, -50%);
+    overflow: hidden;
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+}
+
+#mute-cyber {
+  position: absolute;
+  font-family: 'CyberFont';
   font-size: 25px;
-  left: 20%;
-  top: 67%;
+  z-index: 3;
+  color: rgba(0, 255, 255, 0.8);
+  left: 3%;
+  top: 3%;
 }
 
 #black-background{
   height: 100vh;
   width: 100vw;
-  background-color: black;
 }
 
-#board {
-  padding: 0;
-  margin: 0;
-  border: 0;
-  width: 700px;
-  height: 700px;
+#board-cyber {
+  position: absolute;
+  z-index: 2;
+  width: 70%;
+  height: 100%;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
 }
 
 @font-face {
@@ -50,10 +85,11 @@ body {
 </style>
 
 <script setup>
-  import { ref, onMounted, onUnmounted, onBeforeMount } from 'vue';
-  import paddleHitSound from '../assets/paddle_hit.mp3'
-  import pointScoredSound from '../assets/point_scored.mp3'
-  import wallHitSound from '../assets/wall_hit.mp3'
+  import { ref, inject, onMounted, onUnmounted } from 'vue';
+  import paddleHitSound from '../assets/cyber_paddle_hit.mp3'
+  import pointScoredSound from '../assets/cyber_point_scored.mp3'
+  import wallHitSound from '../assets/cyber_wall_hit.mp3'
+  import CreateSoundButton from '../components/CreateSoundButton.vue';
   import { useRouter } from 'vue-router';
 
   ////////////////////////////////////////////////
@@ -136,9 +172,17 @@ body {
   
   ////////////Audio Variables///////////////
   const wallHitAudio = new Audio(wallHitSound);
+  wallHitAudio.volume = 0.6;
   const paddleHitAudio = new Audio(paddleHitSound);
+  paddleHitAudio.volume = 0.6;
   const pointScoredAudio = new Audio(pointScoredSound);
-  let soundOnOff = true;
+  pointScoredAudio.volume = 0.6;
+  const isPlaying = inject('isPlaying');
+  let soundOnOff;
+  if (isPlaying == true)
+    soundOnOff = true;
+  else
+    soundOnOff = false;
   /////////////////////////////////////////
 
   ///////////??????????////////////////////
@@ -241,8 +285,6 @@ body {
     }
   }
 
-
-
   async function updateGameInfo() {
     try {
       const response = await fetch('/api/game/update_game/', {
@@ -252,7 +294,7 @@ body {
           'X-CSRFToken': getCsrfToken(),
         },
         body: JSON.stringify({
-          mode: "legacy",
+          mode: "legacy",//CHANGER CA ICI???
           scorep1: player1Score,
           scorep2: player2Score,
           id: lastSegment,
@@ -270,21 +312,24 @@ body {
     }
   }
     
-  function connectWebSocket()
-  {
-    console.log(lastSegment);
-    socket.value = new WebSocket(`wss://localhost:8443/ws/websockets/?page=${encodeURIComponent(gamePage)}`);
-    socket.value.onopen = () => {
-      console.log('WebSocket connecté');
-      console.log(socket.value);
-    };
-    socket.value.onmessage = async (event) => {
-      // console.log("---ON MESSAGE---");
-      
-      const data = JSON.parse(event.data);
-      
-      if (data.type == 'connection_success') 
-      {
+  function connectWebSocket() {
+  console.log(lastSegment);
+  let hostName =  window.location.hostname;
+  let port = window.location.port || '8443';
+  socket.value = new WebSocket(`wss://${hostName}:${port}/ws/websockets/?page=${encodeURIComponent(gamePage)}`);
+  socket.value.onopen = () => {
+    console.log('WebSocket connecté');
+    console.log(socket.value);
+  };
+  
+  
+  socket.value.onmessage = async (event) => {
+    // console.log("---ON MESSAGE---");
+    
+    const data = JSON.parse(event.data);
+    
+    if (data.type == 'connection_success') 
+    {
 
         // console.log(data.type);
         // console.log(data.message);
@@ -375,35 +420,39 @@ body {
     }
   }
   //////////////////////////////////////////////////
-
+  let moveUpP1;
+  let moveDownP1;
+  let moveUpP2;
+  let moveDownP2;
+  let mute;
 
   /////////////GAME AKA MY SHIT/////////////
-  //board properties
-  let board;
-  let boardWidth = 700;
-  let boardHeight = 700;
-  let context;
+   //board properties
+    let board;
+    let boardWidth = 700;
+    let boardHeight = 700;
+    let context;
 
-  //players properties
-  let playerWidth = 20;
-  let playerHeight = boardHeight/5;
-  let playerSpeed = 0;
+    //players propertiesupdate_game
+    let playerWidth = 20;
+    let playerHeight = boardHeight/5;
+    let playerSpeed = 0;
 
-  let player1 = {
-      x : 10,
-      y: boardHeight/5*2,
-      width : playerWidth,
-      height : playerHeight,
-      speed : playerSpeed
-  }
+    let player1 = {
+        x : 10,
+        y: boardHeight/5*2,
+        width : playerWidth,
+        height : playerHeight,
+        speed : playerSpeed
+    }
 
-  let player2 = {
-      x : boardWidth - playerWidth - 10,
-      y: boardHeight/5*2, 
-      width : playerWidth,
-      height : playerHeight,
-      speed: playerSpeed
-  }
+    let player2 = {
+        x : boardWidth - playerWidth - 10,
+        y: boardHeight/5*2, 
+        width : playerWidth,
+        height : playerHeight,
+        speed: playerSpeed
+    }
 
   //ball properties
   let ballSize = 10;
@@ -412,41 +461,100 @@ body {
     y : boardHeight / 2,
     width : ballSize,
     height : ballSize,
-    speedX: 1, speedY: 2
+    speedX: 1, speedY: 2,
+    trail: []
   }
     
   //score
   let player1Score = 0;
   let player2Score = 0;
     
-  function  updatePoints(player, updatePts)
+function  updatePoints(player, updatePts)
+{
+  if (player == 1)
   {
-    if (player == 1)
-    {
-      player1Score = updatePts;
-    }
-    else if (player == 2)
-    {
-      player2Score = updatePts;
-    }
+    player1Score = updatePts;
   }
+  else if (player == 2)
+  {
+    player2Score = updatePts;
+  }
+}
 
-  function  updatePadel(player, newY)
+function  updatePadel(player, newY)
+{
+  if (player == 1)
   {
-    if (player == 1)
-    {
-      player1.y = newY;
-    }
-    else if (player == 2)
-    {
-      player2.y = newY;
-    }
+    player1.y = newY;
   }
+  else if (player == 2)
+  {
+    player2.y = newY;
+  }
+}
 
   function updateBaal(x, y)
   {
     ball.x = x;
     ball.y = y;
+  }
+
+  let animationFrameId = null;
+
+  function update() 
+    {
+      //LES POSITIONS DES PLAYERS NE CHANGENT PAS
+      // console.log(player1.x);
+      // console.log(player1.y);
+        animationFrameId = requestAnimationFrame(update);
+        context.clearRect(0, 0, board.width, board.height); // clear rectangle after movement (remove previous paddle position)
+        //PLAYER SETTINGS
+        context.shadowBlur = 15;
+        context.shadowOffsetX = 0;
+        context.shadowOffsetY = 0;
+        context.font = "125px CyberFont";
+        //PLAYER 1
+        context.fillStyle = 'rgba(0, 255, 255, 0.9)';
+        context.shadowColor = 'rgba(0, 255, 255, 0.8)'; // cyan
+        context.fillRect(player1.x, player1.y, player1.width, player1.height); 
+        //P1 SCORE
+        context.fillStyle = 'rgba(0, 255, 255)';
+        context.fillText(player1Score, boardWidth/5, 125);
+        //PLAYER 2
+        context.fillStyle = 'rgba(255, 0, 255, 0.9)';
+        context.shadowColor = 'rgba(255, 0, 255, 0.8)'; // Neon pink
+        context.fillRect(player2.x, player2.y, player2.width, player2.height);
+        //P2 SCORE
+        context.fillStyle = 'rgba(255, 0, 255)';
+        context.fillText(player2Score, boardWidth*4/5 -50 , 125);
+        //BALL
+        //DRAW LIGHT TRAIL EFFECT TEST ON PRIE LA TEAM
+        let effectOpacity = 0.1;
+        let fadeDistance = 10;
+        // Store the current position before updating
+        ball.trail.push({ x: ball.x, y: ball.y });
+        // Limit the trail length
+        if (ball.trail.length > fadeDistance) {
+          ball.trail.shift();
+        }
+        ball.trail.forEach((pos, index) => {
+          context.fillStyle = `rgba(255, 255, 51, ${effectOpacity - index * (effectOpacity / fadeDistance)})`;
+          context.shadowBlur = 25;
+          context.shadowColor = 'rgba(255, 255, 51)';
+          //CHATGPT DID THIS
+          let maxOpacity = 0.7;
+          const distance = Math.sqrt(
+            Math.pow(pos.x - ball.x, 2) + Math.pow(pos.y - ball.y, 2)
+          );
+          const opacity = Math.max(0, maxOpacity - (distance / 70));
+          //////////////////
+          context.fillStyle = `rgba(255, 255, 51, ${opacity})`;
+          context.fillRect(pos.x -5, pos.y, ball.width, ball.height);
+          context.fillStyle = 'rgba(255, 255, 51)'; //yellow
+          context.shadowColor = 'rgba(255, 255, 51, 0.5)'; //yellow shadow
+          //DRAW BALL ON TOP OF TRAIL
+          context.fillRect(ball.x- (ball.width/2), ball.y, ball.width, ball.height);
+        });
   }
     
   let moveInterval1up = null;
@@ -455,17 +563,9 @@ body {
   let moveInterval2down = null;
   let tickPadel = 10;
 
-  /////Game controls//////
-  let moveUpP1 = "KeyW";
-  let moveDownP1 = "KeyS";
-  let moveUpP2 = "ArrowUp";
-  let moveDownP2 = "ArrowDown";
-  let mute = userAccount.mute;
-
   //////Movement functions//////
   function movePlayer1up(e)
   {
-    console.log("key pressed up");
     if (!moveInterval1up)
     {
       if (e.code == moveUpP1)

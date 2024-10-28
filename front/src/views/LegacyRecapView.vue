@@ -1,7 +1,6 @@
 <script setup>
 //imports
     import CreateDropupButton from '../components/CreateDropupButton.vue';
-    import CreateBackButton from '../components/CreateBackButton.vue';
     import CreateSoundButton from '../components/CreateSoundButton.vue';
     import { useRouter } from 'vue-router';
     import { onBeforeMount, onMounted, ref } from 'vue';
@@ -17,6 +16,7 @@
     
     let scoreplayer1 = ref(0);
     let scoreplayer2 = ref(0);
+    let gamestatus;
     
     onBeforeMount(async () => {
         await getUser();
@@ -26,12 +26,13 @@
         await getUser();
         await getGameInfo();
     });
-
+    
     ////////////////////////////////////////////////
     ////////////////////////////////////////////////
     ////////////////////////////////////////////////
-
+    
     const router = useRouter();
+    const result = ref("GAME IN PROGRESS");
 
     function goToHome() {
         router.push('/');
@@ -61,11 +62,13 @@
                 id: lastSegment,
             }),
         });
+
         if (response.ok) {
             const responseData = await response.json();
             scoreplayer1.value = responseData.scorep1;
             scoreplayer2.value = responseData.scorep2;
-            console.log('Game updated successfully!', responseData);
+            gamestatus = responseData.state;
+            
         }
         else if (response.status === 404) {
             goToHome();
@@ -75,17 +78,17 @@
             const errorData = await response.json();
             console.error('Error:', errorData.error);
         }
+        console.log('HEEEEEEEERE');
+        console.log(result.value);
+        if (gamestatus == 'end' && scoreplayer1.value >= 5)
+            result.value = "PLAYER 1 WINS!";
+        else if (gamestatus == 'end' && scoreplayer2.value >= 5)
+            result.value = "PLAYER 2 WINS!";
+        console.log(result.value);
     } catch (error) {
         console.error('Error updating game:', error);
     }
   }
-
-    let result = "GAME IN PROGRESS";
-    if (scoreplayer1.value == 5)
-        result = "PLAYER 1 WINS!";
-    if (scoreplayer2.value == 5)
-        result = "PLAYER 2 WINS!";
-
 </script>
 
 <template>
@@ -93,10 +96,10 @@
         <div id="wrapper">
             <div id="dark-background">
             <div class="buttonContainer">
-                <button v-if="currentValue >= 10" class="button button-cyber" @click="goToHome">
+                <button id="home-button-recap" v-if="gamestatus = 'end'" class="button button-cyber" @click="goToHome">
                     <span class="buttonText">{{ $t('home') }}</span>
                 </button>
-                <button v-if="currentValue >= 10" class="button button-cyber" @click="goToGameSelect">
+                <button id="play-button-recap" v-if="gamestatus = 'end'" class="button button-cyber" @click="goToGameSelect">
                     <span class="buttonText">{{ $t('play_again') }}</span>
                 </button>
                 <div class="player-one">
@@ -110,22 +113,16 @@
                     <p id="player2-rank" class="rank-text-right">{{playerRank2}}</p>
                 </div>
                 <p id="endgame-message">{{ result }}</p>
-                <p id="score">{{ scoreplayer1 }} - {{ scoreplayer2 }}</p>
+                <p id="score">{{ scoreplayer1.value }} - {{ scoreplayer2.value }}</p>
                 <div>
                     <CreateSoundButton />
                 </div>
-
                 <div>
                     <CreateDropupButton />
                 </div>
-
-                <div>
-                    <CreateBackButton />
-                </div>
             </div>
             </div>
-        </div>
-        
+        </div>    
     </main>
 </template>
 
@@ -158,6 +155,18 @@
     font-weight: bold;
     color: rgb(255, 91, 192);
     filter: drop-shadow(5px 5px 4px #ff42e068);
+}
+
+#home-button-recap
+{
+    position: fixed;
+    top: 70%;
+}
+
+#play-button-recap
+{
+    position: fixed;
+    top: 80%;
 }
 
 @font-face {

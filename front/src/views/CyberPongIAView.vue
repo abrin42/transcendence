@@ -8,7 +8,7 @@
             </video>
       <div id="black-background">
         <div>
-          <canvas id ="board-cyber" data-glow></canvas>
+          <canvas id="board-cyber"></canvas>
         </div>
         <div>
           <h2 id="mute-cyber">{{ userAccount.mute }} {{ $t('to_mute_unmute') }}</h2>
@@ -138,16 +138,12 @@ onMounted(async () => {
   board.height = boardHeight;
   board.width = boardWidth;
   context = board.getContext("2d"); //Drawing on board
-  // context.fillStyle = "white";
-  // context.fillRect(player1.x, player1.y, player1.width, player1.height);
-  animationFrameId = requestAnimationFrame(update); // Gameloop
+  /////Game controls//////
+  moveUpP1 = userAccount.player1Up;
+  moveDownP1 = userAccount.player1Down;
+  mute = userAccount.mute;
 
-    /////Game controls//////
-    console.log("HERE UP" + userAccount.player1Up);
-    console.log("HERE DOWN" + userAccount.player1Down);
-    moveUpP1 = userAccount.player1Up;
-    moveDownP1 = userAccount.player1Down;
-    mute = userAccount.mute;
+  animationFrameId = requestAnimationFrame(update); // Gameloop
 
   if (canPlay.value == 1)
   {
@@ -485,7 +481,6 @@ function sendMessage(msg) {
 }
 
 let animationFrameId = null;
-
 
     function update() 
     {

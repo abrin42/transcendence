@@ -8,12 +8,17 @@
     import { onBeforeMount } from 'vue';
     import { inject } from 'vue';
 
-
+    //////////ROUTER AND GAME SELECTION////////////
     const router = useRouter();
     const gameSelection = inject('gameSelection');
     const varySpeed = inject('varySpeed');
     const game = inject('game');
-    const mode = inject('mode');
+    const mode1 = inject('mode1');
+    const mode2 = inject('mode2');
+    mode1.value = '';
+    mode2.value = '';
+    ////////////////////////////////////////////////
+    varySpeed(1.3);
 
     ////////////////////////////////////////////////
     /////// GET USER ///////////////////////////////
@@ -39,45 +44,18 @@
     }
 
     function goToLegacy() {
-        // go to Legacy IA
-        if(game.value == 'solo')
-            router.push('/legacy-ia');
-        // go to Legacy multi local
-        else if(game.value == 'multi' && mode.value == 'local')
-            router.push('/legacy-local/:id');
-        // go to legacy multi remote
-        else if(game.value == 'multi' && mode.value == 'tourney')
-            router.push('/legacy-tourney');
-        // go to legacy tourney 
-        else if(game.value == 'multi' && mode.value == 'remote')
-            router.push('/legacy-remote/:id');
-        else
-            console.error("Error with game selection");
+        game.value = 'legacy';
+            router.push('/modeselect');
     }
 
     function goToCyber() {
-        // go to Cyber IA
-        if(game.value == 'solo')
-            router.push('/cyberpong-ia');
-        // go to Cyber multi local
-        else if(game.value == 'multi' && mode.value == 'local')
-            router.push('/cyberpong-local/:id');
-        // go to Cyber multi remote
-        else if(game.value == 'multi' && mode.value == 'tourney')
-            router.push('/cyber-tourney');
-        // go to legacy tourney 
-        else if(game.value == 'multi' && mode.value == 'remote')
-            router.push('/cyber-remote/:id');
-        else
-            console.error("Error with game selection");
+        game.value = 'cyberpong';
+            router.push('/modeselect');
     }
 
     function goToThree() {
-        // go to Three IA
-        if(game.value == 'solo')
-            router.push('/threepong-ia');
-        else
-            console.error("Error with game selection");
+        game.value = 'threepong';
+            router.push('/modeselect');
     }
 </script>
 
@@ -87,19 +65,16 @@
             <div class="buttonContainer">
 
                 <button class="button" @click="goToLegacy">
-                    <i class="fa-solid fa-poo" style="margin-right: 1vw;"></i>
                     <span class="buttonText buttonTextSize">Legacy</span>
                 </button>
 
                 <button class="button button-cyber" @click="goToCyber">
-                    <i class="fa-solid fa-hippo" style="margin-right: 1vw;"></i>
                     <span class="buttonText">CyberPong</span>
                 </button>        else if(game.value == 'multi' && mode.value == 'local')
                 router.push('/cyberpong-local/:id');
 
-                <button  v-if="game.value == 'solo'" class="button button-cyber" @click="goToThree">
-                    <i class="fa-solid fa-hippo" style="margin-right: 1vw;"></i>
-                    <span class="buttonText">CyberPong</span>
+                <button class="button button-cyber" @click="goToThree">
+                    <span class="buttonText">3Pong</span>
                 </button>
 
                 <CreateHomeButton />

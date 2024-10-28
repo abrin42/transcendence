@@ -3,7 +3,7 @@
     <div id="wrapper">
       <div id="black-background">
         <div>
-          <canvas id ="board" data-glow></canvas>
+          <canvas id ="board"></canvas>
         </div>
         <div>
           <h2 id="mute">[{{ userAccount.mute }}] {{ $t('to_mute_unmute') }}</h2>
@@ -17,7 +17,6 @@
 body {
   text-align: center;
 }
-
 
 #mute {
   color: rgb(114, 114, 114);

@@ -100,8 +100,8 @@
       component: MatchmakingView
     },
     {
-      path: '/matchmakingRemote',
-      name: 'matchmakingRemote',
+      path: '/matchmakingremote',
+      name: 'matchmakingremote',
       component: MatchmakingRemoteView
     },
     {
