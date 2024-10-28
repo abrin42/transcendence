@@ -73,6 +73,37 @@ class PongConsumer(AsyncWebsocketConsumer):
 # ==========================================================================================================================
 # ==========================================================================================================================
 
+
+
+    # async def sendpaddleHit(self):
+    #     await self.channel_layer.group_send(
+    #         self.room_group_name,
+    #         {
+    #             'type': 'paddle_Hit',
+    #         }
+    #     )
+    
+    # async def paddle_Hit(self, event):
+    #     await self.send(text_data=json.dumps({
+    #         'type': 'paddleHit',
+    #     }))
+
+
+    async def paddleHitRemote(self):
+        await self.channel_layer.group_send(
+            self.room_id,
+            {
+                'type': 'paddle_HitRemote',
+            }
+        )
+    
+    async def paddle_HitRemote(self, event):
+        await self.send(text_data=json.dumps({
+            'type': 'paddleHit',
+        }))
+
+
+
     async def speed_up_ball_remote(self):
         if (lstgame[self.room_id]['ball_speed'] < 10):
             return (0.2)
@@ -84,12 +115,16 @@ class PongConsumer(AsyncWebsocketConsumer):
             lstgame[self.room_id]['ball_angle'] = 80 * lstgame[self.room_id]['position_in_paddle']
             lstgame[self.room_id]['ball_x'] += lstgame[self.room_id]['ball_radius'] / 10
             lstgame[self.room_id]['ball_speed'] += await self.speed_up_ball_remote()
+            await self.paddleHitRemote()
+
 
         if (lstgame[self.room_id]['future_x'] >= lstgame[self.room_id]['xPad2'] - lstgame[self.room_id]['ball_radius'] and lstgame[self.room_id]['future_x'] <= lstgame[self.room_id]['xPad2'] + lstgame[self.room_id]['ball_radius'] / 2 and lstgame[self.room_id]['future_y'] >= lstgame[self.room_id]['posPad2'] - lstgame[self.room_id]['ball_radius'] and lstgame[self.room_id]['future_y'] <= lstgame[self.room_id]['posPad2'] + lstgame[self.room_id]['paddle_height'] + lstgame[self.room_id]['ball_radius']):
             lstgame[self.room_id]['position_in_paddle'] = (2 * (lstgame[self.room_id]['ball_y'] + lstgame[self.room_id]['ball_radius'] - lstgame[self.room_id]['posPad2']) / (lstgame[self.room_id]['paddle_height'] + lstgame[self.room_id]['ball_radius'] * 2)) - 1
             lstgame[self.room_id]['ball_angle'] = 180 - 80 * lstgame[self.room_id]['position_in_paddle']
             lstgame[self.room_id]['ball_x'] -= lstgame[self.room_id]['ball_radius'] / 10
             lstgame[self.room_id]['ball_speed'] += await self.speed_up_ball_remote()
+            await self.paddleHitRemote()
+
 
     async def endGame_remote(self):
         lstgame[self.room_id]['Game_on']= -1
@@ -196,6 +231,40 @@ class PongConsumer(AsyncWebsocketConsumer):
             lstgame[self.room_id]['ball_angle'] = 0
             await self.begin_point_remote()
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    async def sendwallHitRemote(self):
+        await self.channel_layer.group_send(
+            self.room_id,
+            {
+                'type': 'wall_HitRemote',
+            }
+        )
+    
+    async def wall_HitRemote(self, event):
+        await self.send(text_data=json.dumps({
+            'type': 'wallHit',
+        }))
+
+
     async def wall_collisions_remote(self):
         if (lstgame[self.room_id]['future_x'] < lstgame[self.room_id]['board_min'] + lstgame[self.room_id]['ball_radius'] or lstgame[self.room_id]['future_x'] + lstgame[self.room_id]['ball_radius'] > lstgame[self.room_id]['board_x_max']):
             await self.victory_remote()
@@ -203,9 +272,12 @@ class PongConsumer(AsyncWebsocketConsumer):
         if (lstgame[self.room_id]['future_y'] < lstgame[self.room_id]['board_min'] + lstgame[self.room_id]['ball_radius']):
             lstgame[self.room_id]['future_y'] = lstgame[self.room_id]['board_min'] + lstgame[self.room_id]['ball_radius']
             lstgame[self.room_id]['ball_angle'] *= -1
+            await self.sendwallHitRemote()
+
         if (lstgame[self.room_id]['future_y'] > lstgame[self.room_id]['board_y_max'] - lstgame[self.room_id]['ball_radius']):
             lstgame[self.room_id]['future_y'] = lstgame[self.room_id]['board_y_max'] - lstgame[self.room_id]['ball_radius']
             lstgame[self.room_id]['ball_angle'] *= -1
+            await self.sendwallHitRemote()
         lstgame[self.room_id]['ball_x'] = lstgame[self.room_id]['future_x']
         lstgame[self.room_id]['ball_y'] = lstgame[self.room_id]['future_y']
         return (0)
@@ -350,10 +422,26 @@ class PongConsumer(AsyncWebsocketConsumer):
             return (0.2)
         return (0)
 
+
     async def sendpaddleHit(self):
+        await self.channel_layer.group_send(
+            self.room_group_name,
+            {
+                'type': 'paddle_Hit',
+            }
+        )
+    
+    async def paddle_Hit(self, event):
         await self.send(text_data=json.dumps({
-            'type': "paddleHit",
+            'type': 'paddleHit',
         }))
+
+
+
+    # async def sendpaddleHit(self):
+    #     await self.send(text_data=json.dumps({
+    #         'type': "paddleHit",
+    #     }))
 
     async def paddle_collisions(self):
         if (self.future_x <= self.xPad1  + self.paddle_width + self.ball_radius and self.future_x >= self.xPad1  and self.future_y >= self.posPad1 - self.ball_radius and self.future_y <= self.posPad1 + self.paddle_height + self.ball_radius):
@@ -370,35 +458,6 @@ class PongConsumer(AsyncWebsocketConsumer):
             self.ball_speed += await self.speed_up_ball()
             await self.sendpaddleHit()
 
-
-    # async def sendPts_remote(self, type, player):
-    #     if player == "1":
-    #         lstgame[self.room_id]['PTSp1'] += 1
-    #         updatePts = lstgame[self.room_id]['PTSp1']
-    #     elif player == "2":
-    #         lstgame[self.room_id]['PTSp2'] += 1
-    #         updatePts = lstgame[self.room_id]['PTSp2']
-
-    #     await self.channel_layer.group_send(
-    #         self.room_id,
-    #         {
-    #             'type': 'updatePts',
-    #             'updatePts': updatePts,
-    #             'player': player,
-    #         }
-    #     )
-
-    #     if (lstgame[self.room_id]['PTSp1'] == lstgame[self.room_id]['nb_pts_for_win']) or \
-    #         lstgame[self.room_id]['PTSp2'] == lstgame[self.room_id]['nb_pts_for_win']:
-    #         await self.endGame_remote()
-
-    # async def updatePts(self, event):
-    #     await self.send(text_data=json.dumps({
-    #         'type': event['type'],
-    #         'updatePts': event['updatePts'],
-    #         'player': event['player'],
-    #     }))
-
     async def update_Pts(self, event):
         updatePts = event['updatePts']
         player = event['player']
@@ -413,58 +472,31 @@ class PongConsumer(AsyncWebsocketConsumer):
 
         if player == "1":
             self.PTSp1 = self.PTSp1 + 1
-            await self.send(text_data=json.dumps({
-                'type': type,
-                'updatePts': self.PTSp1,
-                'player': player,
-            }))
-            # await self.channel_layer.group_send(
-            #     self.room_id,
-            #     {
-            #         'type': 'update_Pts',
-            #         'updatePts':  self.PTSp1,
-            #         'player': "1",
-            #     }
-            # )
-        #     await self.channel_layer.group_send(
-        #     self.room_group_name,
-        #     {
-        #         'type': "update_Pts",
-        #         'x': x,
-        #         'y': y,
-        #     }
-        # )
+            await self.channel_layer.group_send(
+                self.room_group_name,
+                {
+                    'type': 'update_Pts',
+                    'updatePts':  self.PTSp1,
+                    'player': "1",
+                }
+            )
             if (self.PTSp1 == self.nb_pts_for_win):
                 await self.endGame()
         elif player == "2":
             self.PTSp2 = self.PTSp2 + 1
-            await self.send(text_data=json.dumps({
-                'type': type,
-                'updatePts': self.PTSp2,
-                'player': player,
-            }))
-            # await self.channel_layer.group_send(
-            #     self.room_id,
-            #     {
-            #         'type': 'update_Pts',
-            #         'updatePts':  self.PTSp2,
-            #         'player': "2",
-            #     }
-            # )
-            # await self.channel_layer.group_send(
-            #     self.room_id,
-            #     {
-            #         'type': 'updatePts',
-            #         'updatePts':  self.PTSp2,
-            #         'player': "2",
-            #     }
-            # )
+            await self.channel_layer.group_send(
+                self.room_group_name,
+                {
+                    'type': 'update_Pts',
+                    'updatePts':  self.PTSp2,
+                    'player': "2",
+                }
+            )
             if (self.PTSp2 == self.nb_pts_for_win):
                 await self.endGame()
     
 
     async def sendBall(self, x, y):
-        # print(f"sendBall called with x: {x}, y: {y}")
         await self.channel_layer.group_send(
             self.room_group_name,
             {
@@ -494,27 +526,26 @@ class PongConsumer(AsyncWebsocketConsumer):
             'value_back3': value_back3,
         }))
 
+        
+
+    async def end_Game(self, event):
+        await self.send(text_data=json.dumps({
+            'type': 'endGame',
+        }))
+
     async def endGame(self):
         self.Game_on = -1
-        await self.send(text_data=json.dumps({
-            'type': "endGame",
-        }))
+        await self.channel_layer.group_send(
+            self.room_group_name,
+            {
+                'type': 'end_Game',
+            }
+        )
         await self.disconnect(1000)
 
     async def sendPadInit(self):
-        # await self.send(text_data=json.dumps({
-        #     'type': "updatePaddle",
-        #     'newY': self.init_pad,
-        #     'player': "1",
-        # }))
         await self.send_mouv_to_group(self.init_pad, "1")
         await self.send_mouv_to_group(self.init_pad, "2")
-
-        # await self.send(text_data=json.dumps({
-        #     'type': "updatePaddle",
-        #     'newY': self.init_pad,
-        #     'player': "2",
-        # }))
 
     async def begin_point(self):
         self.posPad1 = self.init_pad
@@ -540,9 +571,18 @@ class PongConsumer(AsyncWebsocketConsumer):
             await self.begin_point()
 
     async def sendwallHit(self):
+        await self.channel_layer.group_send(
+            self.room_group_name,
+            {
+                'type': 'wall_Hit',
+            }
+        )
+    
+    async def wall_Hit(self, event):
         await self.send(text_data=json.dumps({
-            'type': "wallHit",
+            'type': 'wallHit',
         }))
+
 
     async def wall_collisions(self):
         if (self.future_x < self.board_min + self.ball_radius or self.future_x + self.ball_radius > self.board_x_max):
@@ -762,8 +802,8 @@ class PongConsumer(AsyncWebsocketConsumer):
         self.room_group_name = f"game_{self.room_name}"
         
         await self.channel_layer.group_add(
-           self.room_group_name,
-           self.channel_name
+            self.room_group_name,
+            self.channel_name
         )
 
         ###########################

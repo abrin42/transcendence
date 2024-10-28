@@ -105,7 +105,11 @@ import { useRouter } from 'vue-router';
   onUnmounted(() => {
   if (canPlay.value == 1)
   {
+    clearInterval(moveInterval1up);
+    moveInterval1up = null;
     document.removeEventListener("keydown", movePlayer1up);
+    clearInterval(moveInterval1down);
+    moveInterval1down = null;
     document.removeEventListener("keydown", movePlayer1down);
     document.removeEventListener("keydown", muteSound);
     document.removeEventListener('keyup', stopPlayer);
