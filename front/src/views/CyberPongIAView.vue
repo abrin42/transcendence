@@ -8,7 +8,7 @@
             </video>
       <div id="black-background">
         <div>
-          <canvas id ="board-cyber" data-glow></canvas>
+          <canvas id="board-cyber"></canvas>
         </div>
         <div>
           <h2 id="mute-cyber">{{ userAccount.mute }} {{ $t('to_mute_unmute') }}</h2>
@@ -82,7 +82,7 @@ body {
 </style>
 
 <script setup>
-import { ref, inject, onMounted, onUnmounted } from 'vue';
+import { ref, inject, onMounted, onUnmounted, onBeforeMount } from 'vue';
 import paddleHitSound from '../assets/cyber_paddle_hit.mp3'
 import pointScoredSound from '../assets/cyber_point_scored.mp3'
 import wallHitSound from '../assets/cyber_wall_hit.mp3'
@@ -96,11 +96,11 @@ import { useRouter } from 'vue-router';
   import { useUser } from '../useUser.js'; 
   const { getUser, userAccount, is_connected } = useUser(); 
 
-  // onMounted(async () => {
-  //     await getUser();
-  //     if (is_connected.value === false)
-  //       __goTo('/')
-  // });
+  onBeforeMount(async () => {
+      await getUser();
+      if (is_connected.value === false)
+        __goTo('/')
+  });
 
   onUnmounted(() => {
   if (canPlay.value == 1)
@@ -131,8 +131,6 @@ let mute;
 
 onMounted(async () => {
   await getUser();
-  if (is_connected.value === false)
-    __goTo('/');
   // await getIsPlayer();
   canPlay.value = 1;
   connectWebSocket();
@@ -140,16 +138,12 @@ onMounted(async () => {
   board.height = boardHeight;
   board.width = boardWidth;
   context = board.getContext("2d"); //Drawing on board
-  // context.fillStyle = "white";
-  // context.fillRect(player1.x, player1.y, player1.width, player1.height);
-  animationFrameId = requestAnimationFrame(update); // Gameloop
+  /////Game controls//////
+  moveUpP1 = userAccount.player1Up;
+  moveDownP1 = userAccount.player1Down;
+  mute = userAccount.mute;
 
-    /////Game controls//////
-    console.log("HERE UP" + userAccount.player1Up);
-    console.log("HERE DOWN" + userAccount.player1Down);
-    moveUpP1 = userAccount.player1Up;
-    moveDownP1 = userAccount.player1Down;
-    mute = userAccount.mute;
+  animationFrameId = requestAnimationFrame(update); // Gameloop
 
   if (canPlay.value == 1)
   {
@@ -273,7 +267,7 @@ function __goTo(page) {
   async function updateGameInfo() {
     try {
         const response = await fetch('/api/game/update_game/', {
-            method: 'POST',
+            method: "POST",
             headers: {
                 'Content-Type': 'application/json',
                 'X-CSRFToken': getCsrfToken(),
@@ -487,7 +481,6 @@ function sendMessage(msg) {
 }
 
 let animationFrameId = null;
-
 
     function update() 
     {

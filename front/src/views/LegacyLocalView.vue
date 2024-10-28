@@ -3,7 +3,7 @@
     <div id="wrapper">
       <div id="black-background">
         <div>
-          <canvas id ="board" data-glow></canvas>
+          <canvas id ="board" ></canvas>
         </div>
         <div>
           <h2 id="mute">[{{ userAccount.mute }}] {{ $t('to_mute_unmute') }}</h2>
@@ -17,7 +17,6 @@
 body {
   text-align: center;
 }
-
 
 #mute {
   color: rgb(114, 114, 114);
@@ -41,7 +40,7 @@ body {
 </style>
 
 <script setup>
-import { ref, onMounted, onUnmounted } from 'vue';
+import { ref, onMounted, onUnmounted, onBeforeMount } from 'vue';
 import paddleHitSound from '../assets/paddle_hit.mp3'
 import pointScoredSound from '../assets/point_scored.mp3'
 import wallHitSound from '../assets/wall_hit.mp3'
@@ -54,11 +53,11 @@ import { useRouter } from 'vue-router';
   import { useUser } from '../useUser.js'; 
   const { getUser, userAccount, is_connected } = useUser(); 
 
-  // onMounted(async () => {
-  //     await getUser();
-  //     if (is_connected.value === false)
-  //       __goTo('/')
-  // });
+  onBeforeMount(async () => {
+      await getUser();
+      if (is_connected.value === false)
+          __goTo('/')
+  });
 
 
 
@@ -89,10 +88,14 @@ import { useRouter } from 'vue-router';
   }
 });
 
+  let moveUpP1;
+  let moveDownP1;
+  let moveUpP2;
+  let moveDownP2;
+  let mute;
+
 onMounted(async () => {
   await getUser();
-  if (is_connected.value === false)
-    __goTo('/');
   await getIsPlayer();
   connectWebSocket();
   board = document.getElementById("board");
@@ -102,7 +105,16 @@ onMounted(async () => {
 
   context.fillStyle = "white";
   context.fillRect(player1.x, player1.y, player1.width, player1.height);
+
+    /////Game controls//////
+    moveUpP1 = userAccount.player1Up;
+    moveDownP1 = userAccount.player1Down;
+    moveUpP2 = userAccount.player2Up;
+    moveDownP2 = userAccount.player2Down;
+    mute = userAccount.mute;
+
   animationFrameId = requestAnimationFrame(update); // Gameloop
+  
   if (canPlay.value == 1)
   {
     document.addEventListener("keydown", movePlayer1up);
@@ -444,13 +456,6 @@ let animationFrameId = null;
     let moveInterval2up = null;
     let moveInterval2down = null;
     let tickPadel = 10;
-
-    /////Game controls//////
-    let moveUpP1 = "KeyW";
-    let moveDownP1 = "KeyS";
-    let moveUpP2 = "KeyE";
-    let moveDownP2 = "KeyD";
-    let mute = userAccount.mute;
 
     function movePlayer1up(e)
     {

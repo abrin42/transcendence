@@ -7,17 +7,19 @@ from django.core.serializers import serialize
 from django.http import JsonResponse
 from django.conf import settings
 from django.views.decorators.csrf import csrf_exempt
+from django.middleware.csrf import get_token
+from datetime import datetime, date
+from collections import deque
+
 from .otp import create_otp
 from .jwt import generate_jwt, token_user, set_jwt_token
 from .models import Player, BlacklistedToken
 from .utils import set_picture_42, get_csrf_token
-from datetime import datetime
+
 import pyotp
 import requests
 import json
-from collections import deque
 import asyncio
-from django.middleware.csrf import get_token
 
 matchmaking = deque()
 
@@ -29,9 +31,6 @@ def register_view(request):
             email = data.get('email')
             phone_number = data.get('phone_number')
             password = data.get('password1')
-            
-            print(username)
-            print(password)
             
             if Player.objects.filter(username=username).exists():
                 return JsonResponse(
@@ -46,14 +45,15 @@ def register_view(request):
             user.email = email
             user.phone_number = phone_number
             user.set_password(password)
+            user.date_joined = date.today()
+            print(user.date_joined)
             user.save()
             print(user.username)
             print(user.password)
             authenticated_user = authenticate(username=user.username, password=password)
             if authenticated_user:
-                set_user_keys(user)
-            
                 login(request, authenticated_user)
+                set_user_keys(user)
                 authenticated_user.nickname = user.username[1:] 
                 authenticated_user.save()
                 get_csrf_token(request)
@@ -210,6 +210,24 @@ def otp_view(request):
     return JsonResponse({'error': 'Invalid request method'}, status=405)
 
 
+def logout_view(request):
+    if request.method == "POST":
+        if request.session.get('csrf') != request.COOKIES.get('csrftoken'):
+            return JsonResponse({'error': 'Invalid CSRF token'}, status=400)
+        token = request.COOKIES.get('jwt')
+        print(token)
+        response = redirect('/log')
+        if token:
+            BlacklistedToken.objects.create(token=token)
+            response.delete_cookie('jwt')
+        logout(request)
+        return response
+    return JsonResponse({'error': 'Invalid request method'}, status=405)
+
+################
+### LOGIN 42 ###
+################
+
 def login42_view(request):
     if request.method == "POST":
         oauth_url = f"{settings.FT42_OAUTH_URL}?client_id={settings.FT42_CLIENT_ID}&redirect_uri={settings.FT42_REDIRECT_URI}&response_type=code"
@@ -277,20 +295,10 @@ def auth_42_callback(request):
         return response
     return redirect('/log/')
 
-@login_required
-def logout_view(request):
-    if request.method == "POST":
-        if request.session.get('csrf') != request.COOKIES.get('csrftoken'):
-            return JsonResponse({'error': 'Invalid CSRF token'}, status=400)
-        token = request.COOKIES.get('jwt')
-        print(token)
-        response = redirect('/log')
-        if token:
-            BlacklistedToken.objects.create(token=token)
-            response.delete_cookie('jwt')
-        logout(request)
-        return response
-    return JsonResponse({'error': 'Invalid request method'}, status=405)
+
+###################
+###  DELETION  ####
+###################
 
 @login_required
 def delete_p(request):
@@ -303,26 +311,10 @@ def delete_account(request):
     user.delete()
     return JsonResponse({'redirect_url': '/log'}, status=200)
 
-def connected_user(request):
-    if request.method == 'GET':
-        try:
-            user = token_user(request)
-            if user is not None:
-                user_data = json.loads(serialize('json', [user]))[0]['fields']
-                return JsonResponse(user_data, safe=True, content_type='application/json') 
-            return JsonResponse({'msg': 'User not found'}, status=204)
-        except json.JSONDecodeError:
-            return JsonResponse({'error': 'Invalid request body'}, status=400)
-    return JsonResponse({'error': 'Invalid request method'}, status=405)
 
-def get_all_user(request):
-    data = Player.objects.all().order_by("-rank")
-    data = serializers.serialize('json', data)
-    return JsonResponse(data, safe=False) 
-
-
-
-
+#################
+###   MATCH  ####
+#################
 
 def enter_matchmaking(request):
     user = token_user(request)

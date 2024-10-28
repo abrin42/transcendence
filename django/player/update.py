@@ -1,9 +1,11 @@
 from django.contrib.auth.decorators import login_required
+from django.contrib.auth import login, authenticate, logout
 from django.http import JsonResponse
 from django.conf import settings
 from django.views.decorators.csrf import csrf_exempt
-from .jwt import token_user
-#from .utils import verify_csrf
+from .utils import get_csrf_token
+from .jwt import generate_jwt, token_user, set_jwt_token
+
 import json
 import hashlib
 
@@ -73,33 +75,39 @@ def update_keys(request):
 @login_required
 def update_user(request):
     user = token_user(request)
-    
     if request.method != "POST":
         return JsonResponse({'error': 'Invalid request method'}, status=405)
-
     try:
         data = json.loads(request.body)
-
-        print(user.username) 
         user.nickname = data.get('nickname', user.nickname)
         user.email = data.get('email', user.email)
-        
-        password = data.get('password')
-        if password:
-            user.password = password
-
         user.phone_number = data.get('phone_number', user.phone_number)
         user.profile_picture = data.get('profile_picture', user.profile_picture)
         user.email_2fa_active = data.get('email_2fa_active', user.email_2fa_active)
         user.sms_2fa_active = data.get('sms_2fa_active', user.sms_2fa_active)
         user.anonymized = data.get('anonymized', user.anonymized)
-        print(user.anonymized)
         if user.anonymized:
             anonymize_data(user)
-
+        password = data.get('password')
+        if password:
+            user.set_password(password)
+            user.newpassword = None
+            user.save()
+            authenticated_user = authenticate(username=user.username, password=password)
+            if authenticated_user:
+                login(request, authenticated_user)
+                authenticated_user.save()
+                get_csrf_token(request)
+                token = generate_jwt(authenticated_user)
+                response = JsonResponse({
+                    'redirect_url': '/dashboard/',
+                    'message': 'Update successful!',
+                }, status=200)
+                set_jwt_token(response, token)
+                return response
+            return JsonResponse({'error': 'Échec de l\'authentification.'}, status=400)
         user.save()
         return JsonResponse({'redirect_url': '/dashboard/'}, status=200)
-
     except json.JSONDecodeError:
         return JsonResponse({'error': 'Invalid request body'}, status=400)
 

@@ -198,7 +198,7 @@ async function invitePlayer(playerUsername) {
     try {
         console.log('Inviting player with ID:', playerUsername);
         const response = await fetch('/api/friend/add/', {
-            method: 'POST', // Change to POST to match the Django view
+            method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
                 'X-CSRFToken': getCsrfToken(),

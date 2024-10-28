@@ -100,8 +100,8 @@
       component: MatchmakingView
     },
     {
-      path: '/matchmakingRemote',
-      name: 'matchmakingRemote',
+      path: '/matchmakingremote',
+      name: 'matchmakingremote',
       component: MatchmakingRemoteView
     },
     {
@@ -132,7 +132,7 @@
     /*************GAMES*************/
     /************LEGACY*************/
     {
-      path: '/legacy-ia',
+      path: '/legacy-ia/:id',
       name: 'legacy-ia',
       component: LegacyIAView
     },

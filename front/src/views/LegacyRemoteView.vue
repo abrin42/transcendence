@@ -3,7 +3,7 @@
     <div id="wrapper">
       <div id="black-background">
         <div>
-          <canvas id ="board" data-glow></canvas>
+          <canvas id ="board"></canvas>
         </div>
         <div>
           <h2 id="mute">[{{ userAccount.mute }}] {{ $t('to_mute_unmute') }}</h2>
@@ -17,7 +17,6 @@
 body {
   text-align: center;
 }
-
 
 #mute {
   color: rgb(114, 114, 114);
@@ -41,7 +40,7 @@ body {
 </style>
 
 <script setup>
-import { ref, onMounted, onUnmounted } from 'vue';
+import { ref, onMounted, onUnmounted, onBeforeMount } from 'vue';
 import paddleHitSound from '../assets/paddle_hit.mp3'
 import pointScoredSound from '../assets/point_scored.mp3'
 import wallHitSound from '../assets/wall_hit.mp3'
@@ -54,13 +53,11 @@ import { useRouter } from 'vue-router';
   import { useUser } from '../useUser.js'; 
   const { getUser, userAccount, is_connected } = useUser(); 
 
-  // onMounted(async () => {
-  //     await getUser();
-  //     if (is_connected.value === false)
-  //       __goTo('/')
-  // });
-
-
+  onBeforeMount(async () => {
+      await getUser();
+      if (is_connected.value === false)
+        __goTo('/')
+  });
 
   onUnmounted(() => {
   if (canPlay.value == 1 || canPlay.value == 2)
@@ -96,8 +93,6 @@ import { useRouter } from 'vue-router';
 
 onMounted(async () => {
   await getUser();
-  if (is_connected.value === false)
-    __goTo('/');
   await getIsPlayer();
   connectWebSocket();
   board = document.getElementById("board");
@@ -348,9 +343,9 @@ function connectWebSocket() {
     }
     else if (data.type == 'updatePts') //sound
     {
-      console.log(data.type);
-      console.log(data.updatePts);
-      console.log(data.player);
+      // console.log(data.type);
+      // console.log(data.updatePts);
+      // console.log(data.player);
       updatePoints(data.player, data.updatePts);
       if (soundOnOff == true && (data.player == 1 || data.player == 2))
         pointScoredAudio.play();

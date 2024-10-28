@@ -3,7 +3,7 @@
   import { RouterLink, RouterView } from 'vue-router';
   import AudioBackground from './components/AudioBackground.vue';
   import VideoBackground from './components/VideoBackground.vue';
-  import { ref, provide, onMounted } from 'vue';
+  import { ref, provide } from 'vue';
   
   // provide to inject 'isPlaying' in CreateSoundButton component
   let isPlaying = ref(false);
@@ -29,12 +29,14 @@
   //provide that injects selected game mode
   let gameModeSelected = ref('');
   const game = ref('');
-  const mode = ref('');
+  const mode1 = ref('');
+  const mode2 = ref('');
   provide('game', game);
-  provide('mode', mode);
+  provide('mode1', mode1);
+  provide('mode2', mode2);
   provide('gameModeSelected', gameModeSelected);
-  provide('gameSelection', (mode, game) => {
-    gameModeSelected = mode + game;
+  provide('gameSelection', (game, mode1, mode2) => {
+    gameModeSelected = game + mode1 + mode2;
   });
 
   // provide that injects visual assets matching selected language

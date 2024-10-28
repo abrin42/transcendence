@@ -7,23 +7,18 @@
             <CreateHomeButton />
             <CreateBackButton />
             <h2 id="matchmaking-title">Matchmaking</h2>
-            <p id="game-type">game-mode: {{gamemode}}</p>
+            <p id="game-type">game-mode: {{gametype}}</p>
             <p id="game-advice">{{tipdisplayed}}</p>
             <div class="button-container-mm">
                 <img id="versus-image" src="../assets/vs_text.png"/>
-                <div class="stuff-to-move">
                     <img id="player1-picture" class="profile-picture-matchmaking-left" :src="profilePicture"/>
                     <p id="player1-name" class="profile-text-left">{{playerName1}}</p>
                     <p id="player1-rank" class="rank-text-left">{{playerRank1}}</p>
-                </div>
-                <div id="stuff-to-hide">
-                    <p id="opponent-text" class="opponent-text">Looking for an opponent...</p>
-                </div>
-                <div id="stuff-to-show">
+
+                    <p id="opponent-text" class="opponent-text">{{opponentText}}</p>
                     <img id="player2-picture" class="profile-picture-matchmaking-right" :src="profilePicture"/>
                     <p id="player2-name" class="profile-text-right">{{playerName2}}</p>
                     <p id="player2-rank" class="rank-text-right">{{playerRank2}}</p>
-                </div>
             </div>
         </div>
     </main>
@@ -36,31 +31,46 @@
     import CreateBackButton from '../components/CreateBackButton.vue';
     import CreateSoundButton from '../components/CreateSoundButton.vue';
     import CreateHomeButton from '../components/CreateHomeButton.vue';
-    import { ref, reactive, onMounted, onUnmounted, watch, defineEmits } from 'vue';
+    import { onBeforeMount, ref, reactive, onMounted, onUnmounted, watch, defineEmits, inject } from 'vue';
     import $ from 'jquery';
     import { useRouter } from 'vue-router';
     import profilePicture from '@/assets/img/default-profile.png';
+
+
+    //////////ROUTER AND GAME SELECTION////////////
+    const router = useRouter();
+    const gameSelection = inject('gameSelection');
+    const varySpeed = inject('varySpeed');
+    const gametype = inject('game');
+    const mode1 = inject('mode1');
+    const mode2 = inject('mode2');
+    ////////////////////////////////////////////////
+    varySpeed(2);
+
 
     ////////////////////////////////////////////////
     /////// GET USER ///////////////////////////////
     ////////////////////////////////////////////////
 
     import { useUser } from '../useUser.js'; 
-import { compileScript } from 'vue/compiler-sfc';
+    import { compileScript } from 'vue/compiler-sfc';
     const { getUser, userAccount, is_connected } = useUser(); 
 
     onUnmounted(() => {
         stopLoading();
-
     });
 
-    onMounted(async () => {
+    onBeforeMount(async () => {
         await getUser();
         if (is_connected.value === false)
             __goTo('/')
+    });
+    
+    onMounted(async () => {
+        await getUser();
         await createPlyInput();
         await insertPlayer();
-        // await creatGameLocal();
+        // await createGameLocal();
     });
 
 
@@ -86,18 +96,14 @@ import { compileScript } from 'vue/compiler-sfc';
         return cookieValue || '';
     }
 
-    var myVideo = document.getElementById('videoBG');
-    
-    myVideo.playbackRate = 2;
     let player1;
     let player2;
     let isPlayer2 = 1;
-    let gamemode = "legacy"; //fetch game mode selected?
-    let playerName1 = "Chachou";
-    let playerName2 = "Chachou2";
+    let playerName1 = "";
+    let playerName2 = "";
     let playerRank1 = "Noob";
     let playerRank2 = "Beginner";
-    const router = useRouter();
+    const opponentText = ref('Looking for an opponent...');
 
     let waitingPlayer = 1;
 
@@ -105,16 +111,18 @@ import { compileScript } from 'vue/compiler-sfc';
         console.log("id hereee");
         console.log(id);
         router.push(`/legacy-remote/${id}`);
-        // router.push(`/legacy/${id}`);
-        // router.push(`/matchmaking`);
+        if(gametype.value == 'legacy')
+            router.push(`/legacy-remote/${id}`);
+        else if(gametype.value == 'cyberpong')
+            router.push(`/cyberpong-remote/${id}`);
     }
 
 let loadingmodule = true;
 
-async function creatGameLocal()
+async function createGameLocal()
 {
     try {
-        const response = await fetch('/api/game/creat_game_local/', {
+        const response = await fetch('/api/game/create_game_local/', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -142,22 +150,28 @@ async function creatGameLocal()
             const player2_pic = document.getElementById('player2-picture');
             const player2_name = document.getElementById('player2-name');
             const player2_rank = document.getElementById('player2-rank');
+            const vs_text = document.getElementById('versus-image');
 
-            player1_pic.src = player1.profile_picture;
-            player1_name.textContent = player1.username;
-            player1_rank.textContent = `Rank: ${player1.rank}`; 
-            player2_pic.src = player2.profile_picture;
-            player2_name.textContent = player2.username;
-            player2_rank.textContent = `Rank: ${player2.rank}`; 
+            if(player1.profile_picture)
+                player1_pic.src = player1.profile_picture;
+            player1_name.textContent = player1.nickname;
+            player1_rank.textContent = `${player1.rank} pts`; 
+            if(player2.profile_picture)
+                player2_pic.src = player2.profile_picture;
+            player2_name.textContent = player2.nickname;
+            player2_rank.textContent = `${player2.rank} pts`; 
+            opponentText.value = 'Player found!';
 
-            player1_pic.classList.add(...['slide-left']);
-            player1_name.classList.add(...['slide-left']);
-            player1_rank.classList.add(...['slide-left']);
             player2_pic.classList.add(...['fade-in']);
             player2_name.classList.add(...['fade-in']);
             player2_rank.classList.add(...['fade-in']);
+            vs_text.classList.add(...['fade-in']);
 
 
+            console.log("lancement dans 5");
+            await new Promise(resolve => setTimeout(resolve, 1000));
+            console.log("lancement dans 4");
+            await new Promise(resolve => setTimeout(resolve, 1000));
             console.log("lancement dans 3");
             await new Promise(resolve => setTimeout(resolve, 1000));
             console.log("lancement dans 2");
@@ -175,6 +189,8 @@ async function creatGameLocal()
 
 async function insertPlayer() {
     try {
+        console.log("------hereeee-------")
+        console.log(userAccount.username);
         const response = await fetch('/api/game/insertplayer/', {
             method: 'POST',
             headers: {
@@ -185,15 +201,13 @@ async function insertPlayer() {
                 username: userAccount.username,
             })
         });
+        if (response.status == 404)
+        {
+            console.log("404 de la fonction");
+        }
         if (response.ok) {
             const game = await response.json();
             console.log("hereeeeeeeeeeee");
-            console.log(game);
-            console.log(game.id);
-            console.log(game.player1);
-            console.log(game.player2);
-
-
             if (game.player2 == null) {
                 waitingPlayer = 1;
                 isPlayer2 = 0;
@@ -209,12 +223,17 @@ async function insertPlayer() {
                 const player2_pic = document.getElementById('player2-picture');
                 const player2_name = document.getElementById('player2-name');
                 const player2_rank = document.getElementById('player2-rank');
+                const vs_text = document.getElementById('versus-image');
 
-                player2_pic.src = game.player2.profilePicture;
-                player2_name.textContent = game.player2.username;
-                player2_rank.textContent = `Rank: ${game.player2.rank}`;
-
-                //slide first player
+                if(game.player2.profilePicture)
+                    player2_pic.src = game.player2.profilePicture;
+                player2_name.textContent = game.player2.nickname;
+                player2_rank.textContent = `${game.player2.rank}` + 'test';
+                console.log('heeeeeeeeeeeeere rn');
+                console.log(player2_rank.textContent);
+                opponentText.value = 'Player found!';                
+                
+                vs_text.classList.add(...['fade-in']);
                 player2_pic.classList.add(...['fade-in']);
                 player2_name.classList.add(...['fade-in']);
                 player2_rank.classList.add(...['fade-in']);
@@ -247,14 +266,21 @@ async function createPlyInput() {
         const player1_name = document.getElementById('player1-name');
         const player1_rank = document.getElementById('player1-rank');
 
-        player1_pic.src = userAccount.profilePicture;
-        player1_name.textContent = userAccount.username;
+        if(userAccount.profilePicture)
+            player1_pic.src = userAccount.profilePicture;
+        player1_name.textContent = userAccount.nickname;
         player1_rank.textContent = `Rank: ${userAccount.rank}`;
 
         //slide first player
         player1_pic.classList.add(...['slide-left']);
         player1_name.classList.add(...['slide-left']);
         player1_rank.classList.add(...['slide-left']);
+        // player1_pic.classList.add(...['slide-left']);
+
+        // player1_name.classList.add(...['slide-left']);
+
+        // player1_rank.classList.add(...['slide-left']);
+
 
     }
 
@@ -346,18 +372,16 @@ async function createPlyInput() {
 
 #versus-image{
     position: fixed;
-    opacity: 0;
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
-    size: 30%;
+    height: 350px;
+    width: 350px;
     filter: drop-shadow(5px 5px 4px #0000003b);
 }
 
 #versus-image-new{
     position: fixed;
-
-    left: 50%;
     opacity: 1;
 
 }
@@ -367,8 +391,9 @@ async function createPlyInput() {
     width: 250px;
     height: 250px;
     border-radius: 50%;
+    /* transform: translate(-50%, -50%); */
     top: 35%;
-    left: 42vw;
+    left: 40%;
     border: 5px solid white;
     filter: drop-shadow(5px 5px 4px #0000003b);
 }
@@ -406,16 +431,15 @@ async function createPlyInput() {
 }
 
 .slide-left {
-    position: fixed;
-	animation: slide-left 0.5s cubic-bezier(0.250, 0.460, 0.450, 0.940) both;
-}
+    /* position: fixed; */
+	animation: slide-left 0.5s cubic-bezier(0.250, 0.460, 0.450, 0.940) both;}
 
 @keyframes slide-left {
     0% {
         transform: translateX(0);
     }
     100% {
-        transform: translateX(-450px);
+        transform: translateX(-420px);
     }
 }
 
@@ -423,38 +447,42 @@ async function createPlyInput() {
     position: fixed;
     top: 62%;
     text-align: center;
+    left: 45%;
+    transform: translate(-50%, -50%);
     font-size: 30px;
     font-weight: bold;
-    left: 45%;
     color: white;
 }
 .profile-text-right {
-    position: fixed;
     opacity: 0;
+    position: fixed;
     top: 62%;
     text-align: center;
+    right: 45%;
+    transform: translate(-50%, -50%);
     font-size: 30px;
     font-weight: bold;
-    left: 75%;
     color: white;
 }
 
 .rank-text-left {
     position: fixed;
+    top: 65%;
     font-size: 25px;
     font-weight: bold;
-    top: 65%;
-    left: 47%;
+    left: 44%;
+    transform: translateY(-50%);
     color: white;
 }
 
 .rank-text-right {
-    position: fixed;
     opacity: 0;
+    position: fixed;
     font-size: 25px;
     font-weight: bold;
     top: 65%;
-    left: 77%;
+    transform: translateY(-50%);
+    right: 44%;
     color: white;
 }
 
@@ -486,12 +514,20 @@ async function createPlyInput() {
 .opponent-text {
     position: fixed;
     z-index: 5;
-    font-size: 30px;
+    font-size: 60px;
+    font-family: 'CyberFont';
     font-weight: bold;
-    top: 24%;
+    top: 27%;
     left: 50.3%;
     transform: translate(-50%, -50%);
     color: white;
     filter: drop-shadow(5px 5px 4px #0000003b);
+}
+
+@font-face {
+  font-family: 'CyberFont';
+  src: url('../assets/Cyberway-Riders.otf') format('opentype');
+  font-weight: normal;
+  font-style: normal;
 }
 </style>
