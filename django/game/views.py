@@ -243,8 +243,23 @@ def update_game(request):
             game.scorep1 = data.get('scorep1')
             game.scorep2 = data.get('scorep2')
             game.state = 'active'
-            if (game.scorep1 == 10 or game.scorep2 == 10):
+            if (game.scorep1 == 10):
                 game.state = 'end'
+                game.player1.win += 1
+                game.player1.rank += 50 + (game.scorep1 - game.scorep2) * 20
+                game.player1.save()
+                game.player2.lose += 1
+                game.player2.rank += -50 - (game.scorep1 - game.scorep2) * 10
+                game.player2.save()
+            if (game.scorep2 == 10):
+                game.state = 'end'
+                game.player2.win += 1
+                game.player2.rank += 50 + (game.scorep2 - game.scorep1) * 20
+                game.player2.save()
+                game.player1.lose += 1
+                game.player1.rank += -50 - (game.scorep2 - game.scorep1) * 10
+                game.player1.save()
+
             game.save()
             return JsonResponse({'message': 'Registration successful'}, status=200)
         except json.JSONDecodeError:

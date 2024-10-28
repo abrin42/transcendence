@@ -74,7 +74,7 @@ async function getAllUsers() {
                     obj['rank'] = element.fields.rank;
                     obj['win'] = element.fields.win;
                     obj['lose'] = element.fields.lose;
-                    obj['profilePicture'] = element.fields.profilePicture;
+                    obj['profilePicture'] = element.fields.profile_picture;
     
                     obj['winRate'] = 0;
                     obj['loseRate'] = 0;
@@ -212,10 +212,10 @@ const playerWinLoss = ref(playerStats.value.getStats());
                 <!-- Dernières parties -->
                 <div class="latestGame">
                     <span class="category-title latestGameTitle">{{ $t('last_games') }}</span>
-                    <div v-if="latestGames.length > 0">
+                    <div v-if=" user[0].win + user[0].lose > 0">
                         <div v-for="game in games" :key="game.id">
                             <button class="game-button">
-                                <span class="game-match">{{ game.host }} VS {{ game.rival }}</span>
+                                <span class="game-match">{{ game.host[0] }} VS {{ game.rival[0] }}</span>
                                 <div class="game-score">
                                     <span class="host-pos">{{ game.score_host }}</span>
                                     <div class="divider-score">&nbsp;</div>
