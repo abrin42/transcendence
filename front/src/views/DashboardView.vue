@@ -51,6 +51,17 @@
         phone_number,
     });
 
+    function isValidUsername(username) {
+        const dangerousWords = ["admin", "root", "superuser", "user", "hitler"];
+        for (let word of dangerousWords) {
+            if (new RegExp(`\\b${word}\\b`, "i").test(username)) {
+                return false;
+            }
+        }
+        const usernameRegex = /^[a-zA-Z0-9_]+$/;
+        return usernameRegex.test(username);
+    }
+
     function isValidPassword(password) {
         const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[\W_]).{8,}$/;
         return passwordRegex.test(password);
@@ -71,6 +82,16 @@
     ////////////////////////////////////////////////
     
     async function updateAccount() {
+        if (!isValidUsername(username.value)) {
+            alert(
+                "The password should not contain spaces. If not, please change your username.",
+
+                //i18n.global.t('should_not_contain_spaces') +
+                //i18n.global.t('if_not,_please_change_your_username')
+            );            
+            return;
+        }
+
         if (!isValidEmail(userAccount.email)) {
             alert(i18n.global.t('please_enter_valid_email'));
             return;

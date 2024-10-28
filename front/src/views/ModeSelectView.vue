@@ -31,7 +31,7 @@
     const varySpeed = inject('varySpeed');
     const game = inject('game');
     const mode = inject('mode');
-    let playerName2 = "AI.Bot";
+    let playerName2 = "@AI.Bot";
 
     varySpeed(1.3);
     game.value = ''; //resets game in case user uses "back"
