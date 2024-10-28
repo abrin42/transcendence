@@ -83,7 +83,7 @@ body {
 </style>
 
 <script setup>
-  import { ref, inject, onMounted, onUnmounted } from 'vue';
+  import { ref, inject, onMounted,onBeforeMount, onUnmounted } from 'vue';
   import paddleHitSound from '../assets/cyber_paddle_hit.mp3'
   import pointScoredSound from '../assets/cyber_point_scored.mp3'
   import wallHitSound from '../assets/cyber_wall_hit.mp3'

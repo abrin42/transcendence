@@ -58,7 +58,6 @@
             router.push('/modeselect');
     }
 </script>
-
 <template>
     <main>
         <div id="wrapper">
@@ -70,8 +69,7 @@
 
                 <button class="button button-cyber" @click="goToCyber">
                     <span class="buttonText">CyberPong</span>
-                </button>        else if(game.value == 'multi' && mode.value == 'local')
-                router.push('/cyberpong-local/:id');
+                </button>
 
                 <button class="button button-cyber" @click="goToThree">
                     <span class="buttonText">3Pong</span>

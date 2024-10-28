@@ -99,69 +99,10 @@ body {
   import { useUser } from '../useUser.js'; 
   const { getUser, userAccount, is_connected } = useUser(); 
 
-  onBeforeMount(async () => {
-      await getUser();
-      if (is_connected.value === false)
-        __goTo('/')
-  });
-  
   ////////////////////////////////////////////////
   ////////////////////////////////////////////////
   ////////////////////////////////////////////////
   
-  /////////////MOUNTED/////////////
-  onMounted(async () => {
-    await getUser();
-    if (is_connected.value === false)
-    __goTo('/');
-    await getIsPlayer();
-    connectWebSocket();
-    board = document.getElementById("board");
-    board.height = boardHeight;
-    board.width = boardWidth;
-    context = board.getContext("2d"); //Drawing on board
-    context.fillStyle = "white";
-    context.fillRect(player1.x, player1.y, player1.width, player1.height);
-    animationFrameId = requestAnimationFrame(update); // Gameloop
-  });
-  //////////////////////////////////
-
-  /////////////UNMOUNTED/////////////
-  onUnmounted(() => {
-    if (canPlay.value == 1 || canPlay.value == 2)
-    {
-      clearInterval(moveInterval1up);
-      moveInterval1up = null;
-      document.removeEventListener("keydown", movePlayer1up);
-      clearInterval(moveInterval1down);
-      moveInterval1down = null;
-      document.removeEventListener("keydown", movePlayer1down);
-      clearInterval(moveInterval2up);
-      moveInterval2up = null;
-      document.removeEventListener("keydown", movePlayer2up);
-      clearInterval(moveInterval2down);
-      moveInterval2down = null;
-      document.removeEventListener("keydown", movePlayer2down);
-      document.removeEventListener('keyup', stopPlayer1);
-      document.removeEventListener('keyup', stopPlayer2);
-      document.removeEventListener("keydown", muteSound);
-    }
-    moveInterval1up = null;
-    moveInterval1down = null;
-    moveInterval2up = null;
-    moveInterval2down = null;
-    if (animationFrameId)
-    {
-      cancelAnimationFrame(animationFrameId);
-      animationFrameId = null;
-    }
-    if (socket.value) 
-    {
-      socket.value.close();
-    }
-  });
-  //////////////////////////////////
-
   const router = useRouter();
   const socket = ref(null);
   // const message = ref('');
@@ -206,34 +147,6 @@ body {
     return cookieValue || '';
   }
 
-
-
-  async function setGameRank() {
-    try {
-        const response = await fetch('/api/game/setGameRank/', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                'X-CSRFToken': getCsrfToken(),
-            },
-            body: JSON.stringify({
-                id: lastSegment,
-            }),
-        });
-        if (response.ok) {
-            const responseData = await response.json();
-            console.log('rank updated successfully!', responseData);
-        }
-        else
-        {
-            const errorData = await response.json();
-            console.error('Error:', errorData.error);
-        }
-    } catch (error) {
-        console.error('Error updating game:', error);
-    }
-  }
-
   async function getIsPlayer() {
     try {
         const response = await fetch('/api/game/getIsPlayer/', {
@@ -250,30 +163,19 @@ body {
         if (response.ok) {
             const responseData = await response.json();
             console.log('Game updated successfully!', responseData);
-            if (responseData.message == 'isFirstPlayer')
-            {
-              document.addEventListener("keydown", movePlayer1up);
-              document.addEventListener("keydown", movePlayer1down);
-              document.addEventListener("keydown", muteSound);
-              document.addEventListener('keyup', stopPlayer1);
-              canPlay.value = 1;
-              console.log ("is first player");
-            }
-            else if (responseData.message == 'isSecondePlayer')
-            {
-              document.addEventListener("keydown", movePlayer2up);
-              document.addEventListener("keydown", movePlayer2down);
-              document.addEventListener("keydown", muteSound);
-              document.addEventListener('keyup', stopPlayer2);
 
-              canPlay.value = 2;
-              console.log ("is seconde player");
+            if (responseData.message == 'isFirstPlayer' || responseData.message == 'isSecondePlayer')
+            {
+              canPlay.value = 1;
+              console.log ("is player");
             }
             else if (responseData.message == 'isSpec')
             {
               canPlay.value = 0;
               console.log ("is spec");
             }
+
+
         }
         else
         {
@@ -288,7 +190,7 @@ body {
   async function updateGameInfo() {
     try {
       const response = await fetch('/api/game/update_game/', {
-        method: "POST",
+        method: 'POST',
         headers: {
           'Content-Type': 'application/json',
           'X-CSRFToken': getCsrfToken(),
@@ -331,80 +233,66 @@ body {
     if (data.type == 'connection_success') 
     {
 
-        // console.log(data.type);
-        // console.log(data.message);
-        // connectionStatus.value = data.message;
-        connection = 1;
-      }
-      else if (data.type == 'updatePts') //sound
-      {
-        // console.log(data.type);
-        // console.log(data.updatePts);
-        // console.log(data.player);
-        updatePoints(data.player, data.updatePts);
-        if (soundOnOff == true)
-        pointScoredAudio.play();
-        await updateGameInfo();
-      } 
-      else if (data.type == 'mouvUp' || data.type == 'mouvDown')
-      {
-        updatePadel(data.player, data.newY);
-        // messages.value.push(data.type);
-      }
-      else if (data.type == 'updateBaal')
-      {
-        // console.log(data.x);
-        // console.log(data.y);
-        updateBaal(data.x, data.y);
-      }
-      else if (data.type == 'endGame')
-      {
-        connection = 0;
-        await updateGameInfo();
-        await setGameRank();
-        // console.log(data.type);
-        router.push(`/legacyrecap/${lastSegment}`);
-      }
-      else if (data.type == 'startGame')
-      {
-        await updateGameInfo();
-        // console.log(data.type);
-      }
-      else if (data.type == 'paddleHit')
-      {
-        // console.log(data.type);
-        if (soundOnOff == true)
-          paddleHitAudio.play();
-      }
-      else if (data.type == 'wallHit')
-      { 
-        // console.log(data.type);
-        if (soundOnOff == true)
-          wallHitAudio.play();
-      }
-      else if (data.type == 'info_back') //a enlever test
-      {
-        // console.log(data.type);
-        // console.log(data.value_back1);
-        // console.log(data.value_back2);
-        // console.log(data.value_back3);
-      }
-      // console.log("---END ON MESSAGE---");
-    };
-
-    socket.value.onerror = (error) => {
-      console.error('Erreur WebSocket:', error);
-    };
-
-    socket.value.onclose = () => {
-      console.log('WebSocket déconnecté, tentative de reconnexion...');
-      setTimeout(() => 
-      {
-        if (connection != 0)
-          connectWebSocket();
-      }, 3000);
-    };
-  }
+      // console.log(data.type);
+      // console.log(data.message);
+      // connectionStatus.value = data.message;
+      connection = 1;
+    }
+    else if (data.type == 'updatePts') //sound
+    {
+      // console.log(data.type);
+      // console.log(data.updatePts);
+      // console.log(data.player);
+      updatePoints(data.player, data.updatePts);
+      if (soundOnOff == true)
+      pointScoredAudio.play();
+      await updateGameInfo();
+    } 
+    else if (data.type == 'updatePaddle')
+    {
+      updatePadel(data.player, data.newY);
+      // messages.value.push(data.type);
+    }
+    else if (data.type == 'updateBaal')
+    {
+      // console.log(data.x);
+      // console.log(data.y);
+      updateBaal(data.x, data.y);
+    }
+    else if (data.type == 'endGame')
+    {
+      connection = 0;
+      // console.log(data.type);
+      // socket.value.close();
+      router.push(`/legacyrecap/${lastSegment}`);
+    }
+    else if (data.type == 'startGame')
+    {
+      await updateGameInfo();
+      // console.log(data.type);
+    }
+    else if (data.type == 'paddleHit')
+    {
+      // console.log(data.type);
+      if (soundOnOff == true)
+        paddleHitAudio.play();
+    }
+    else if (data.type == 'wallHit')
+    { 
+      // console.log(data.type);
+      if (soundOnOff == true)
+        wallHitAudio.play();
+    }
+    else if (data.type == 'info_back') //a enlever test
+    {
+      // console.log(data.type);
+      // console.log(data.value_back1);
+      // console.log(data.value_back2);
+      // console.log(data.value_back3);
+    }
+    // console.log("---END ON MESSAGE---");
+  };
+}
   
   function sendMessage(msg) {
     if (socket.value && socket.value.readyState === WebSocket.OPEN) 
@@ -420,11 +308,74 @@ body {
     }
   }
   //////////////////////////////////////////////////
+
   let moveUpP1;
   let moveDownP1;
   let moveUpP2;
   let moveDownP2;
   let mute;
+
+  /////////////MOUNTED/////////////
+  onMounted(async () => {
+    await getUser();
+    if (is_connected.value === false)
+    __goTo('/');
+    await getIsPlayer();
+    connectWebSocket();
+    board = document.getElementById("board-cyber");
+    board.height = boardHeight;
+    board.width = boardWidth;
+    context = board.getContext("2d");
+
+    /////Game controls//////
+    moveUpP1 = userAccount.player1Up;
+    moveDownP1 = userAccount.player1Down;
+    moveUpP2 = userAccount.player2Up;
+    moveDownP2 = userAccount.player2Down;
+    mute = userAccount.mute;
+
+    animationFrameId = requestAnimationFrame(update); // Gameloop
+
+    if (canPlay.value == 1)
+    {
+      document.addEventListener("keydown", movePlayer1up);
+      document.addEventListener("keydown", movePlayer1down);
+      document.addEventListener("keydown", movePlayer2up);
+      document.addEventListener("keydown", movePlayer2down);
+      document.addEventListener("keydown", muteSound);
+      document.addEventListener('keyup', stopPlayer);
+    }
+  });
+  //////////////////////////////////
+
+  /////////////UNMOUNTED/////////////
+  onUnmounted(() => {
+  if (canPlay.value == 1)
+  {
+    clearInterval(moveInterval1up);
+    moveInterval1up = null;
+    document.removeEventListener("keydown", movePlayer1up);
+    clearInterval(moveInterval1down);
+    moveInterval1down = null;
+    document.removeEventListener("keydown", movePlayer1down);
+    clearInterval(moveInterval2up);
+    moveInterval2up = null;
+    document.removeEventListener("keydown", movePlayer2up);
+    clearInterval(moveInterval2down);
+    moveInterval2down = null;
+    document.removeEventListener("keydown", movePlayer2down);
+    document.removeEventListener('keyup', stopPlayer);
+    document.removeEventListener("keydown", muteSound);
+  }
+  if (animationFrameId) {
+    cancelAnimationFrame(animationFrameId);
+    animationFrameId = null;
+  }
+  if (socket.value) {
+    socket.value.close();
+  }
+});
+  //////////////////////////////////
 
   /////////////GAME AKA MY SHIT/////////////
    //board properties

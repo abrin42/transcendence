@@ -244,7 +244,7 @@ async function insertPlayer() {
                 await new Promise(resolve => setTimeout(resolve, 1000));
                 console.log("lancement dans 1");
                 await new Promise(resolve => setTimeout(resolve, 1000));
-                // goToLegacy(game.id);
+                goToLegacy(game.id);
             }
         }
     }
