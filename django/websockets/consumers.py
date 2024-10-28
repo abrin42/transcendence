@@ -267,7 +267,7 @@ class PongConsumer(AsyncWebsocketConsumer):
                 'init_ball_speed': 4,
                 'tick_back': 0.01,
                 'Game_on': 0,
-                'nb_pts_for_win': 10,
+                'nb_pts_for_win': 2,
                 'P1Ready': 0,
                 'P2Ready': 0,
                 'PTSp1': 0,
@@ -494,7 +494,7 @@ class PongConsumer(AsyncWebsocketConsumer):
         self.tick_back = 0.01
 
         self.Game_on = 0
-        self.nb_pts_for_win = 10
+        self.nb_pts_for_win = 2
 
         self.P1Ready = 0
         self.P2Ready = 0
