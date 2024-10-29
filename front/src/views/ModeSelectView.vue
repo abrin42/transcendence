@@ -7,6 +7,7 @@
     import { useRouter } from 'vue-router';
     import { onBeforeMount, onMounted } from 'vue';
     import { inject } from 'vue';
+    import i18n from '../i18n.js';
 
     ////////////////////////////////////////////////
     /////// GET USER ///////////////////////////////
@@ -107,7 +108,7 @@
             }  
         } catch (error) {
             console.error('Erreur lors de la creation du bot AI:', error);
-            alert('An error occurred while creation du bot AI');
+            alert(i18n.global.t('error_creating_AI_bot'));
         }
     }
 
@@ -139,7 +140,7 @@
         }
         catch (error) {
             console.error('Erreur lors de la creation du jeu local:', error);
-            alert('An error occurred while creating local game');
+            alert(i18n.global.t('error_creating_local_game'));
         }
     }
 </script>

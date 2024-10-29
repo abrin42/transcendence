@@ -151,6 +151,15 @@
     "error_cannot_use_same_key": "Un même joueur ne peut pas utiliser la même touche pour la gauche et la droite.",
     "error_cannot_use_same_nickname": "Vous ne pouvez pas utiliser le même surnom pour plus d'un joueur.",
     "please_enter_4_valid_names": "Veuillez saisir quatre noms de participants valides.",
-    "GAME_STARTS_SOON": "LE MATCH COMMENCE BIENTÔT !"
-    
+    "GAME_STARTS_SOON": "LE MATCH COMMENCE BIENTÔT !",
+
+
+
+    "problem_with_code": "Il y a un problème avec le code. Veuillez réessayer :)",
+    "should_not_contain_spaces": "Le nom d'utilisateur ne doit pas contenir d'espaces. Si ce n'est pas le cas, veuillez le modifier.",
+    "invalid_username_or_password": "Nom d'utilisateur ou mot de passe incorrect.",
+    "error_creating_AI_bot": "Une erreur s'est produite lors de la création de l'IA.",
+    "error_creating_local_game": "Une erreur s'est produite lors de la création d'un jeu local.",
+    "error_updating_keys": "Une erreur s'est produite lors de la mise à jour des touches.",
+    "game-mode": "mode-de-jeu"
 }

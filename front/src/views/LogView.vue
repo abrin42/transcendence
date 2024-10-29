@@ -79,7 +79,7 @@ async function login() {
     } catch (error) {
         console.error('Erreur lors de la connexion /login:', error);
         //alert(i18n.global.t('error_login'));
-        alert('Invalid username or password');
+        alert(i18n.global.t('invalid_username_or_password'));
     }
 }
 

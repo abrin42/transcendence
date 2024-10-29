@@ -151,5 +151,15 @@
     "error_cannot_use_same_key": "El mismo jugador no puede utilizar la misma tecla para la izquierda y la derecha.",
     "error_cannot_use_same_nickname": "No puedes utilizar el mismo apodo para más de un jugador.",
     "please_enter_4_valid_names": "Introduzca cuatro nombres de participantes válidos.",
-    "GAME_STARTS_SOON": "¡EL PARTIDO EMPIEZA PRONTO!"
+    "GAME_STARTS_SOON": "¡EL PARTIDO EMPIEZA PRONTO!",
+
+
+
+    "problem_with_code": "Hay un problema con el código. Por favor, inténtelo de nuevo :)",
+    "should_not_contain_spaces": "El nombre de usuario no debe contener espacios. Si no es así, cámbielo.",
+    "invalid_username_or_password": "Nombre de usuario o contraseña no válidos.",
+    "error_creating_AI_bot": "Se ha producido un error al crear el bot de IA.",
+    "error_creating_local_game": "Se ha producido un error al crear un juego local.",
+    "error_updating_keys": "Se ha producido un error al actualizar las claves.",
+    "game-mode": "modo-de-juego"
 }

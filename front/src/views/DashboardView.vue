@@ -83,12 +83,7 @@
     
     async function updateAccount() {
         if (!isValidUsername(username.value)) {
-            alert(
-                "The password should not contain spaces. If not, please change your username.",
-
-                //i18n.global.t('should_not_contain_spaces') +
-                //i18n.global.t('if_not,_please_change_your_username')
-            );            
+            alert(i18n.global.t('should_not_contain_spaces'));
             return;
         }
 

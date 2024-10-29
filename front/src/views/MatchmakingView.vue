@@ -195,7 +195,7 @@
     }
     catch (error) {
         console.error('Erreur lors de la connexion:', error);
-        alert('An error occurred while logging in');
+        alert(i18n.global.t('error_login'));
     }
 }
 
@@ -349,7 +349,7 @@
     }
     catch (error) {
         console.error('Erreur lors de la connexion:', error);
-        alert('An error occurred while logging in');
+        alert(i18n.global.t('error_login'));
     }
 
     }

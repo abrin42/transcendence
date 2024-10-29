@@ -151,5 +151,15 @@
     "error_cannot_use_same_key": "Nu arasuum'yc verd liser pirimmur arasuum'yc dadita par payt bal staabi.",
     "error_cannot_use_same_nickname": "Nu gar liser pirimmur arasuum'yc ika par ori'shya solus verd.",
     "please_enter_4_valid_names": "Gedet'ye miit'gaanar cuir vorer'yc verd ikase.",
-    "GAME_STARTS_SOON": "GEROYA NE'KYRIR!"
+    "GAME_STARTS_SOON": "GEROYA NE'KYRIR!",
+
+
+
+    "problem_with_code": "Nu'kih'parjai ti dadita. Gedet'ye kebbur tug'yc :)",
+    "should_not_contain_spaces": "Gai n'enteyor ganar trase. Meh nayc, gedet'ye naritir bic.",
+    "invalid_username_or_password": "Nu'serim gai ra miit'ranov'la.",
+    "error_creating_AI_bot": "Trattok'or'yc ru banar vaal gotal'ur'yc be beskar'ad.",
+    "error_creating_local_game": "Trattok'or'yc ru banar vaal gotal'ur'yc yaim'la geroya.",
+    "error_updating_keys": "Trattok'or'yc ru banar vaal gotal'ur'yc tug'yc nynir'yce.",
+    "game-mode": "geroya-dajun"
 }

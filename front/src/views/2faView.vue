@@ -125,7 +125,7 @@
                 body: JSON.stringify({ user_otp: code.value })
             });
             if (response.status === 400) {
-                alert("There is a problem with the code. Please try again :)", error)
+                alert(i18n.global.t('problem_with_code'), error);
                 //throw new Error(`Code error! Status: ${response.status}`);
             }
             if (response.status !== 302 && response.status !== 200)
@@ -135,7 +135,7 @@
                 __goTo('/')
 
         } catch (error) {
-            alert("There is a problem with the code. Please try again :)", error)
+            alert(i18n.global.t('problem_with_code'), error);
             //alert(i18n.global.t('error_OTPPP_setup'));
         }
     }

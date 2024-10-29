@@ -23,9 +23,8 @@
     "disabled_switch": "The switch is disabled. You cannot perform this action.",
     
     "no_text_to_display": "",
-    
-    "should_not_contain_spaces": "the password should not contain spaces",
-    "if_not_please_change_your_username": "if not, please change your username",
+
+
     
     "send_code_question": "Send code by email or SMS?",
     "phone_authentication": "Phone authentication",
@@ -153,5 +152,15 @@
     "error_cannot_use_same_key": "The same player cannot use the same key for left and right.",
     "error_cannot_use_same_nickname": "You can't use the same nickname for more than one player.",
     "please_enter_4_valid_names": "Please enter four valid participant names.",
-    "GAME_STARTS_SOON": "GAME STARTS SOON!"
+    "GAME_STARTS_SOON": "GAME STARTS SOON!",
+
+
+
+    "problem_with_code": "There is a problem with the code. Please try again :)",
+    "should_not_contain_spaces": "The username must not contain spaces. If not, please change it.",
+    "invalid_username_or_password": "Invalid username or password.",
+    "error_creating_AI_bot": "An error occurred while creating the AI bot.",
+    "error_creating_local_game": "An error occurred while creating a local game.",
+    "error_updating_keys": "An error occurred while updating keys.",
+    "game-mode": "game-mode"
 }

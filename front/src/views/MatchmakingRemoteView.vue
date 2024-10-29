@@ -7,7 +7,7 @@
             <CreateHomeButton />
             <CreateBackButton />
             <h2 id="matchmaking-title">Matchmaking</h2>
-            <p id="game-type">game-mode: {{gametype}}</p>
+            <p id="game-type">{{ $t('game-mode') }}: {{gametype}}</p>
             <p id="game-advice">{{tipdisplayed}}</p>
             <div class="button-container-mm">
                 <img id="versus-image" src="../assets/vs_text.png"/>
@@ -35,6 +35,7 @@
     import $ from 'jquery';
     import { useRouter } from 'vue-router';
     import profilePicture from '@/assets/img/default-profile.png';
+    import i18n from '../i18n.js';
 
 
     //////////ROUTER AND GAME SELECTION////////////
@@ -183,7 +184,7 @@ async function createGameLocal()
     }
     catch (error) {
         console.error('Erreur lors de la connexion:', error);
-        alert('An error occurred while logging in');
+        alert(i18n.global.t('error_login'));
     }
 }
 
@@ -254,7 +255,7 @@ async function insertPlayer() {
             // }
     catch (error) {
         console.error('Erreur lors de la connexion:', error);
-        alert('An error occurred while logging in');
+        alert(i18n.global.t('error_login'));
     }
 }
 

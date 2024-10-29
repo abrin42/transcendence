@@ -105,7 +105,7 @@ async function createFalsePlayer(user1, user2, user3 ,user4)
     }
     catch (error) {
         console.error('Erreur lors de la connexion:', error);
-        alert('An error occurred while logging in');
+        alert(i18n.global.t('error_login'));
     }
 }
 

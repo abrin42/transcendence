@@ -113,7 +113,7 @@
                     <p id="player2-rank" class="rank-text-right">{{playerRank2}}</p>
                 </div>
                 <p id="endgame-message">{{ result }}</p>
-                <p id="score">{{ scoreplayer1.value }} - {{ scoreplayer2.value }}</p>
+                <p id="score">{{ scoreplayer1 }} - {{ scoreplayer2 }}</p>
                 <div>
                     <CreateSoundButton />
                 </div>
