@@ -46,20 +46,20 @@
     const phone_number = ref('');
 
     defineExpose({
-        username,
+        nickname,
         email,
         phone_number,
     });
 
-    function isValidUsername(username) {
+    function isValidNickname(nickname) {
         const dangerousWords = ["admin", "root", "superuser", "user", "hitler", "@AI.Bot"];
         for (let word of dangerousWords) {
-            if (new RegExp(`\\b${word}\\b`, "i").test(username)) {
+            if (new RegExp(`\\b${word}\\b`, "i").test(nickname)) {
                 return false;
             }
         }
-        const usernameRegex = /^[a-zA-Z0-9_]+$/;
-        return usernameRegex.test(username);
+        const nicknameRegex = /^[a-zA-Z0-9_]+$/;
+        return nicknameRegex.test(nickname);
     }
 
     function isValidPassword(password) {
@@ -82,7 +82,7 @@
     ////////////////////////////////////////////////
     
     async function updateAccount() {
-        if (!isValidUsername(username.value)) {
+        if (!isValidNickname(userAccount.nickname)) {
             alert(
                 "The password should not contain spaces. If not, please change your username.",
 
@@ -104,16 +104,19 @@
             }
         }
 
-        if (!isValidPassword(userAccount.newpassword)) {
-            alert(
-                i18n.global.t('should_contain_capital_letter') +
-                i18n.global.t('should_contain_lower_case_letter') +
-                i18n.global.t('should_contain_number') +
-                i18n.global.t('should_contain_special_character') +
-                i18n.global.t('should_be_8_characters_long')
-            );
-            return;
+        if (userAccount.newpassword) {
+            if (!isValidPassword(userAccount.newpassword)) {
+                alert(
+                    i18n.global.t('should_contain_capital_letter') +
+                    i18n.global.t('should_contain_lower_case_letter') +
+                    i18n.global.t('should_contain_number') +
+                    i18n.global.t('should_contain_special_character') +
+                    i18n.global.t('should_be_8_characters_long')
+                );
+                return;
+            }
         }
+
         try {
             const response = await fetch('/api/player/update_user/', {
                 method: 'POST',
@@ -131,6 +134,7 @@
                     email_2fa_active: userAccount.email_2fa_active,
                     sms_2fa_active: userAccount.sms_2fa_active,
                     anonymized: userAccount.anonymized,
+                    username
                 })
             });
             if (response.ok) {

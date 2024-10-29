@@ -130,7 +130,6 @@ def login_view(request):
     except json.JSONDecodeError:
         return JsonResponse({'error': 'Invalid request body'}, status=400)
 
-
 @login_required
 def tfa_view(request):
     if request.method == "POST":
@@ -209,7 +208,6 @@ def otp_view(request):
 
     return JsonResponse({'error': 'Invalid request method'}, status=405)
 
-
 def logout_view(request):
     if request.method == "POST":
         if request.session.get('csrf') != request.COOKIES.get('csrftoken'):
@@ -230,8 +228,27 @@ def logout_view(request):
 
 def login42_view(request):
     if request.method == "POST":
-        oauth_url = f"{settings.FT42_OAUTH_URL}?client_id={settings.FT42_CLIENT_ID}&redirect_uri={settings.FT42_REDIRECT_URI}&response_type=code"
+        data = json.loads(request.body)
+        hostname = data.get('hostname')
+        print(f"Received hostname: {hostname}")
+        print(f"Expected OTHER_IP: {settings.OTHER_IP}")
+
+        if hostname == settings.OTHER_IP:
+            print("Using OTHER_IP for OAuth redirect.")
+            oauth_url = f"{settings.FT42_OAUTH_URL}?client_id={settings.FT42_CLIENT_ID}&redirect_uri={settings.FT42_REDIRECT_URI}&response_type=code"
+        else:
+            print("Using localhost for OAuth redirect.")
+            oauth_url = f"{settings.FT42_OAUTH_URL}?client_id={settings.FT42_CLIENT_ID}&redirect_uri={settings.FT42_REDIRECT_LOCAL_URI}&response_type=code"
+
+        request.session['uri'] = oauth_url
+        
+        print("////////////////////////////////////////////////////")
+        print(f"request.session['uri']: {request.session['uri']}")
+        print(f"oauth_url: {oauth_url}")
+        print("////////////////////////////////////////////////////")
+
         return JsonResponse({'url': oauth_url}, status=200)
+     
     return JsonResponse({'error': 'Invalid request method'}, status=405)
 
 
@@ -239,16 +256,33 @@ def auth_42_callback(request):
     code = request.GET.get('code')
     if not code:
         return redirect('/log/')
+    
+    uri = request.session.get('uri')
+    print("---------------------------------------------------------------")
+    print(f"['uri']: {uri}")
+    print("---------------------------------------------------------------")
 
     token_url = 'https://api.intra.42.fr/oauth/token'
-    data = {
-        'grant_type': 'authorization_code',
-        'client_id': settings.FT42_CLIENT_ID,
-        'client_secret': settings.FT42_CLIENT_SECRET,
-        'code': code,
-        'redirect_uri': settings.FT42_REDIRECT_URI,
-    }
 
+    if (uri == settings.FT42_REDIRECT_URI):
+        print("HEEEEREEEE")
+        data = {        
+            'grant_type': 'authorization_code',
+            'client_id': settings.FT42_CLIENT_ID,
+            'client_secret': settings.FT42_CLIENT_SECRET,
+            'code': code,
+            'redirect_uri': settings.FT42_REDIRECT_URI
+        }
+    else:
+        print("ICIIIIIIIIIIIIIIIIIIIIIII")
+        data = {        
+            'grant_type': 'authorization_code',
+            'client_id': settings.FT42_CLIENT_ID,
+            'client_secret': settings.FT42_CLIENT_SECRET,
+            'code': code,
+            'redirect_uri': settings.FT42_REDIRECT_LOCAL_URI,
+        }
+    print(f"data: {data}")
     response = requests.post(token_url, data=data)
     if response.status_code != 200: #if the HTTP request (get) is not successful 
         return redirect('/log/')

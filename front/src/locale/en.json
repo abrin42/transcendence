@@ -89,6 +89,7 @@
     "local": "Local",
     "online": "Online",
     "tourney": "Tourney",
+    "remote": "Remote",
     
     "ERROR_404": "ERROR 404 - PAGE NOT FOUND",
     "contact_devs": "Please contact the developers if you think this is a mistake.",

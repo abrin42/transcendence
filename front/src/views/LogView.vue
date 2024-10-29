@@ -91,12 +91,19 @@ async function login42() {
                 'Content-Type': 'application/json',
                 'X-CSRFToken': getCsrfToken()
             },
+            body: JSON.stringify({
+                hostname: window.location.hostname,
+            }),
         });
         if (!response.ok) {
             throw new Error(`HTTP error! Status: ${response.status}`);
         }
         const data = await response.json();
         if (data.url) {
+            //////////////////
+            /// local or ip ??
+            //////////////////
+
             window.location.href = data.url;
         } else {
             alert(i18n.global.t('error_invalid_URL_login'));

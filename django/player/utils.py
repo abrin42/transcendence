@@ -49,6 +49,7 @@ def verify_user(request):
 def connected_user(request):
     if request.method == 'GET':
         try:
+            #print(f"DEFAULT_IP: {settings.DEFAULT_IP}")
             user = token_user(request)
             if user is not None:
                 user_data = json.loads(serialize('json', [user]))[0]['fields']

@@ -1,9 +1,16 @@
 NAME = ft_transcendence
+OTHER_IP = $(shell hostname -I | awk '{print $$1}')
+CERT_DIR = ./certificates
 
 all : ${NAME}
 
 ${NAME} :
 	docker compose up --build
+
+create-certificates:
+	mkdir -p $(CERT_DIR)
+	@echo "Generating certificates using IP address: $(OTHER_IP)"
+	@bash generate_certificates.sh $(OTHER_IP) $(CERT_DIR)
 
 clean :
 	docker compose down

@@ -10,12 +10,12 @@ RUN pip install --upgrade pip
 RUN pip install -r requirements.txt
 ENV DJANGO_SETTINGS_MODULE=pong.settings
 
+#RUN pip install python-dotenv
 RUN pip install pyotp
-#RUN pip install django-otp
-#RUN pip install django-two-factor-auth
 RUN pip install django-phonenumber-field[phonenumberslite]
 RUN pip install phonenumbers
 RUN pip install vonage
+
 
 #a enlever pour rendu (enleve la mise en cache)
 ENV PYTHONUNBUFFERED=1
