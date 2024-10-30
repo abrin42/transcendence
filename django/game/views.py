@@ -224,6 +224,17 @@ def insertPlayer(request):
             return JsonResponse({'error': 'Invalid request body'}, status=400)
     return JsonResponse({'error': 'Invalid request method'}, status=405)
 
+def deleteGame(request):
+    if request.method == 'POST':
+        try:
+            data = json.loads(request.body)
+            print(Game)
+            game = get_object_or_404(Game, id=data.get('id'))
+            game.delete()
+            return JsonResponse({'good': 'function finished'}, status=200)
+        except json.JSONDecodeError:
+            return JsonResponse({'error': 'Invalid request body'}, status=400)
+
 # def insertPlayer(request):
 #     if request.method == 'POST':
 #         try:
