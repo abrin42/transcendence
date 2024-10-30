@@ -7,39 +7,77 @@
     import CreateHomeButton from '../components/CreateHomeButton.vue';
     import { useRouter } from 'vue-router';
     import { onMounted } from 'vue';
+    import { inject } from 'vue';
 
     const router = useRouter();
+    const gameSelection = inject('gameSelection');
+    const varySpeed = inject('varySpeed');
+    const game = inject('game');
+    const mode1 = inject('mode1');
+    const mode2 = inject('mode2');
 
-  
 
-  var myVideo = document.getElementById('videoBG');
-  myVideo.playbackRate = 1;
+    game.value = '';
+    mode1.value = '';
+    mode2.value = '';
 
-  function goToModeSelect() {
-    router.push('/modeselect');
-  }
+    
+    varySpeed(1); //sets speed to average in App.vue
+    gameSelection(game.value, mode1.value, mode2.value); //sets game selected back to empty if user uses back button
 
-  function goToCredits() {
-    router.push('/credits');
-  }
+    onMounted(async () => {
+        await getCSRF();
+    });
 
-  function __goTo(page) {
-    if (page == null) {
-      return;
+    async function getCSRF() {
+        try {
+            const response = await fetch('/api/player/get_csrf_token/', {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                credentials: 'include',
+            });
+            
+            if (!response.ok) {
+                throw new Error('Network response was not ok');
+            }
+            
+            const data = await response.json();
+            console.log('Response data:', data);
+            
+        } catch (error) {
+            console.error('Error during fetch operation:', error);
+        }
     }
-    router.push(page);
-  }
+    
+
+    function goToGameSelect() {
+        router.push('/gameselect');
+    }
+
+    function goToCredits() {
+        router.push('/credits');
+    }
+
+    function __goTo(page) {
+        if (page == null) {
+            return;
+        }
+        router.push(page);
+    }
 </script>
 
 <template>
     <main>
         <div id="wrapper">
             <div class="buttonContainer">
-                <button class="button" @click="goToModeSelect()">
+                <button class="button" @click="goToGameSelect()">
                     <i class="fas fa-play" style="margin-right: 1vw;"></i>
                     <span class="buttonText buttonTextSize">{{ $t('play') }}</span>
                 </button>
                 <button class="button button-credits" @click="goToCredits()">
+                    <i class="fa-solid fa-copyright" style="margin-right: 1vw;"></i>
                     <span class="buttonText">{{ $t('credits') }}</span>
                 </button>
                 <div>

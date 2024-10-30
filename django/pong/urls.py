@@ -22,15 +22,9 @@ from . import views
 
 urlpatterns = [
     path('api/admin/', admin.site.urls),
-    path('api/', views.homepage),
-    path('api/about/', views.about),
-    path('api/privacy-policy/', views.privacy_policy),
     path('api/friend/', include('friend.urls')),
     path('api/player/', include('player.urls')),
     path('api/game/', include('game.urls')),
-    path('api/layout/', views.layout),
-    path('api/test-api/', include('api.urls')),
-    path('api/test-csrf/', views.csrf_test_view),
 ]
 
 urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

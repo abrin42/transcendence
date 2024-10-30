@@ -1,5 +1,3 @@
-# version: '3.8'
-
 services:
     redis:
       container_name: redis
@@ -23,21 +21,15 @@ services:
         build:
             context: django
         container_name: django_app
-        # volumes:
-        #     - static_volume:/app/static
         expose:
             - "8000:8000"
         restart: on-failure
         networks: 
           - ft_transcendence
         depends_on:
-          - redis
-          # - postgresql
-        environment:
-          - REDIS_HOST=redis
+          - postgresql
         env_file:
           .env
-
     nginx:
         image: nginx
         container_name: nginx_server
@@ -64,4 +56,3 @@ volumes:
 networks:
     ft_transcendence:
       driver: bridge
-    #   name: ft_transcendence

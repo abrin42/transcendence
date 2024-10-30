@@ -1,8 +1,104 @@
 <script setup>
-import { ref } from 'vue';
+import { ref, onMounted } from 'vue';
 import CreateDropupButton from '../components/CreateDropupButton.vue';
 import CreateBackButton from '../components/CreateBackButton.vue';
 import profilePicture from '@/assets/img/default-profile.png';
+import { inject } from 'vue';
+
+import { useUser } from '../useUser.js';
+const { getUser } = useUser();
+
+const varySpeed = inject('varySpeed');
+//varySpeed(0); 
+
+const currentUrl = window.location.href; 
+const lastSegment = currentUrl.split('/').filter(Boolean).pop();
+console.log("user ", lastSegment);
+
+const user = ref([]);
+const games = ref([])
+
+onMounted(async () => {
+    await getUser();
+    await getAllUsers();
+    await getAllGames();
+});
+
+async function getAllGames() {
+    try {
+        const response = await fetch(`/api/game/get_all_games/`, {
+            method: 'GET',
+        });
+        if (!response.ok) {
+            return;
+        }
+        const users = await response.json();
+            const userData = JSON.parse(users);
+            console.log("games =", userData);
+            userData.forEach((element) => {
+                if (element.fields.state == "end"){
+                    var obj = {}
+                    obj['host'] = element.fields.player1;
+                    obj['rival'] = element.fields.player2;
+                    if (obj.rival == lastSegment || obj.host == lastSegment ){
+                        obj['score_host'] = element.fields.scorep1;
+                        obj['score_rival'] = element.fields.scorep2;
+                        obj['date'] = element.fields.created_at;
+                        console.log(obj);
+                        games.value.push(obj);
+                    }
+                }
+            });
+            //console.log("user", user._rawValue[0])
+            //console.log("all user", allPlayers._rawValue)
+    } catch (error) {
+        console.error('Error retrieving user data /getAllUsers:', error);
+    }
+}
+
+
+
+async function getAllUsers() {
+    try {
+        const response = await fetch(`/api/player/get_all_user/`, {
+            method: 'GET',
+        });
+        if (!response.ok) {
+            return;
+        }
+        const users = await response.json();
+            const userData = JSON.parse(users);
+            userData.forEach((element) => {
+                var obj = {}
+                obj['username'] = element.fields.username;
+                if (obj.username == lastSegment){
+                    obj['nickname'] = element.fields.nickname;
+                    obj['last_login'] =  element.fields.last_login;
+    
+                    obj['rank'] = element.fields.rank;
+                    obj['win'] = element.fields.win;
+                    obj['lose'] = element.fields.lose;
+                    obj['profilePicture'] = element.fields.profile_picture;
+    
+                    obj['winRate'] = 0;
+                    obj['loseRate'] = 0;
+    
+                    if ((element.fields.win+element.fields.lose) != 0){
+                        obj['winRate'] = (element.fields.win / (element.fields.win+element.fields.lose) * 100).toFixed(2);
+                    }
+                    if (obj['winRate'] != 0){
+                        obj['loseRate'] = 100 - obj['winRate'];
+                    }
+                    user.value.push(obj);
+                }
+            });
+            console.log("user", user._rawValue[0])
+    } catch (error) {
+        console.error('Error retrieving user data /getAllUsers:', error);
+    }
+}
+
+
 
 // Importation de la classe PlayerStats
 class PlayerStats {
@@ -47,15 +143,6 @@ const latestGames = ref([
     { id: 2, host: "_johndoe", rival: "abrin", score: { host: 2, rival: 5 }, date: "13/12/1200" },
     { id: 2, host: "_johndoe", rival: "abrin", score: { host: 2, rival: 5 }, date: "13/12/1200" },
     { id: 2, host: "_johndoe", rival: "abrin", score: { host: 2, rival: 5 }, date: "13/12/1200" },
-    { id: 2, host: "_johndoe", rival: "abrin", score: { host: 2, rival: 5 }, date: "13/12/1200" },
-    { id: 2, host: "_johndoe", rival: "abrin", score: { host: 2, rival: 5 }, date: "13/12/1200" },
-    { id: 2, host: "_johndoe", rival: "abrin", score: { host: 2, rival: 5 }, date: "13/12/1200" },
-    { id: 2, host: "_johndoe", rival: "abrin", score: { host: 2, rival: 5 }, date: "13/12/1200" },
-    { id: 2, host: "_johndoe", rival: "abrin", score: { host: 2, rival: 5 }, date: "13/12/1200" },
-    { id: 2, host: "_johndoe", rival: "abrin", score: { host: 2, rival: 5 }, date: "13/12/1200" },
-    { id: 2, host: "_johndoe", rival: "abrin", score: { host: 2, rival: 5 }, date: "13/12/1200" },
-    { id: 2, host: "_johndoe", rival: "abrin", score: { host: 2, rival: 5 }, date: "13/12/1200" },
-    { id: 2, host: "_johndoe", rival: "abrin", score: { host: 2, rival: 5 }, date: "13/12/1200" },
     { id: 1, host: "_johndoe", rival: "abrin", score: { host: 5, rival: 1 }, date: "12/12/1200" },
     { id: 1, host: "_johndoe", rival: "abrin", score: { host: 5, rival: 1 }, date: "12/12/1200" },
     { id: 1, host: "_johndoe", rival: "abrin", score: { host: 5, rival: 1 }, date: "12/12/1200" },
@@ -63,14 +150,6 @@ const latestGames = ref([
     { id: 1, host: "_johndoe", rival: "abrin", score: { host: 5, rival: 1 }, date: "12/12/1200" },
     { id: 1, host: "_johndoe", rival: "abrin", score: { host: 5, rival: 1 }, date: "12/12/1200" },
     { id: 1, host: "_johndoe", rival: "abrin", score: { host: 5, rival: 1 }, date: "12/12/1200" },
-    { id: 2, host: "_johndoe", rival: "abrin", score: { host: 2, rival: 5 }, date: "13/12/1200" },
-    { id: 2, host: "_johndoe", rival: "abrin", score: { host: 2, rival: 5 }, date: "13/12/1200" },
-    { id: 2, host: "_johndoe", rival: "abrin", score: { host: 2, rival: 5 }, date: "13/12/1200" },
-    { id: 2, host: "_johndoe", rival: "abrin", score: { host: 2, rival: 5 }, date: "13/12/1200" },
-    { id: 2, host: "_johndoe", rival: "abrin", score: { host: 2, rival: 5 }, date: "13/12/1200" },
-    { id: 2, host: "_johndoe", rival: "abrin", score: { host: 2, rival: 5 }, date: "13/12/1200" },
-    { id: 2, host: "_johndoe", rival: "abrin", score: { host: 2, rival: 5 }, date: "13/12/1200" },
-    { id: 2, host: "_johndoe", rival: "abrin", score: { host: 2, rival: 5 }, date: "13/12/1200" },
     { id: 2, host: "_johndoe", rival: "abrin", score: { host: 2, rival: 5 }, date: "13/12/1200" },
     { id: 2, host: "_johndoe", rival: "abrin", score: { host: 2, rival: 5 }, date: "13/12/1200" },
     { id: 2, host: "_johndoe", rival: "abrin", score: { host: 2, rival: 5 }, date: "13/12/1200" },
@@ -95,18 +174,17 @@ const playerWinLoss = ref(playerStats.value.getStats());
 <template>
     <main>
         <div id="wrapper">
-            <CreateBackButton />
             <CreateDropupButton />
-
-            <h2 class="category-title">LEADERBOARD</h2>
-            <div class="leaderbaordContainer">
+            <CreateBackButton />
+            <h2 class="category-title">{{ $t('LEADERBOARD') }}</h2>
+            <div class="leaderboardContainer">
                 <div>
                     <button class="button">
-                        <img :src="userAccount.profilePicture || profilePicture" class="profile-picture" />
+                        <img :src="user[0].profilePicture || profilePicture" class="profile-picture" />
                         <div class="divider">&nbsp;</div>
                         <div class="user-info">
-                            <span class="username">{{ userAccount.username || "John Doe" }}</span>
-                            <span class="nickname">{{ userAccount.nickname || "_johndoe" }}</span>
+                            <span class="username">{{ user[0].username || "John Doe" }}</span>
+                            <span class="nickname">{{ user[0].nickname || "_johndoe" }}</span>
                         </div>
                     </button>
                 </div>
@@ -114,45 +192,45 @@ const playerWinLoss = ref(playerStats.value.getStats());
                 <!-- Section des statistiques stylisée -->
                 <div class="stats-grid">
                     <div class="stat-row">
-                        <div class="category-title stat-col">Win rate</div>
-                        <div class="category-title stat-col">Rank</div>
-                        <div class="category-title stat-col">Loose rate</div>
+                        <div class="category-title stat-col">{{ $t('win_rate') }}</div>
+                        <div class="category-title stat-col">{{ $t('rank') }}</div>
+                        <div class="category-title stat-col">{{ $t('loose_rate') }}</div>
                     </div>
                     <div class="stat-row">
-                        <div class="stat-col">{{ playerWinLoss.winRate }}%</div>
-                        <div class="stat-col">{{ playerWinLoss.rank }} lvl</div>
-                        <div class="stat-col">{{ playerWinLoss.looseRate }}%</div>
+                        <div class="stat-col">{{ user[0].winRate }}%</div>
+                        <div class="stat-col">{{ user[0].rank }}</div>
+                        <div class="stat-col">{{ user[0].loseRate }}%</div>
                     </div>
                     <div class="stat-row">
-                        <div class="category-title stat-col">Victory</div>
-                        <div class="category-title stat-col">Defeats</div>
-                        <div class="category-title stat-col">Game</div>
+                        <div class="category-title stat-col">{{ $t('victories') }}</div>
+                        <div class="category-title stat-col">{{ $t('defeats') }}</div>
+                        <div class="category-title stat-col">{{ $t('games') }}</div>
                     </div>
                     <div class="stat-row">
-                        <div class="stat-col">{{ playerWinLoss.wins }}</div>
-                        <div class="stat-col">{{ playerWinLoss.looses }}</div>
-                        <div class="stat-col">{{ latestGames.length }}</div>
+                        <div class="stat-col">{{ user[0].win }}</div>
+                        <div class="stat-col">{{ user[0].lose }}</div>
+                        <div class="stat-col">{{ user[0].win + user[0].lose }}</div>
                     </div>
                 </div>
 
                 <!-- Dernières parties -->
                 <div class="latestGame">
-                    <span class="category-title latestGameTitle">Dernières parties</span>
-                    <div v-if="latestGames.length > 0">
-                        <div v-for="game in latestGames" :key="game.id">
+                    <span class="category-title latestGameTitle">{{ $t('last_games') }}</span>
+                    <div v-if=" user[0].win + user[0].lose > 0">
+                        <div v-for="game in games" :key="game.id">
                             <button class="game-button">
-                                <span class="game-match">{{ game.host }} VS {{ game.rival }}</span>
+                                <span class="game-match">{{ game.host[0] }} VS {{ game.rival[0] }}</span>
                                 <div class="game-score">
-                                    <span class="host-pos">{{ game.score.host }}</span>
+                                    <span class="host-pos">{{ game.score_host }}</span>
                                     <div class="divider-score">&nbsp;</div>
-                                    <span class="rival-pos">{{ game.score.rival }}</span>
+                                    <span class="rival-pos">{{ game.score_rival }}</span>
                                 </div>
                                 <span class="game-date">{{ game.date }}</span>
                             </button>
                         </div>
                     </div>
                     <div class="game-button game-info" v-else>
-                        <p>Aucun partie récente à afficher.</p>
+                        <p>{{ $t('no_games_to_display') }}</p>
                     </div>
                 </div>
             </div>
@@ -173,36 +251,13 @@ h1,
         0 0 30px rgba(255, 20, 147, 0.6),
         0 0 40px rgba(255, 20, 147, 0.6),
         0 0 50px rgba(255, 20, 147, 0.6),
-        0 0 60px rgba(255, 20, 147, 0.6);
-    animation: neon-glow 1.5s ease-in-out infinite alternate;
+        0 0 60px rgba(255, 20, 147, 0.6); 
 }
 
-@keyframes neon-glow {
-    from {
-        text-shadow: 0 0 5px rgba(255, 255, 255, 0.8),
-            0 0 10px rgba(255, 255, 255, 0.6),
-            0 0 20px rgba(255, 20, 147, 0.6),
-            0 0 30px rgba(255, 20, 147, 0.6),
-            0 0 40px rgba(255, 20, 147, 0.6),
-            0 0 50px rgba(255, 20, 147, 0.6),
-            0 0 60px rgba(255, 20, 147, 0.6);
-    }
-
-    to {
-        text-shadow: 0 0 10px rgba(255, 255, 255, 1),
-            0 0 20px rgba(255, 255, 255, 0.8),
-            0 0 30px rgba(255, 20, 147, 0.8),
-            0 0 40px rgba(255, 20, 147, 0.8),
-            0 0 50px rgba(255, 20, 147, 0.8),
-            0 0 60px rgba(255, 20, 147, 0.8),
-            0 0 70px rgba(255, 20, 147, 0.8);
-    }
-}
-
-.leaderbaordContainer {
+.leaderboardContainer {
     position: fixed;
     height: 40vw;
-    width: 120vh;
+    width: 88%;
     top: 15%;
     border-radius: 0.5vw;
     padding: 1.5vw;
@@ -210,6 +265,14 @@ h1,
     border: 0.15vw solid rgba(0, 0, 0, 0.25);
     overflow-y: auto;
     overflow-x: hidden;
+}
+
+.overloadBtn {
+    position: fixed;
+    width: 3vw;
+    height: 6vh;
+    bottom: 93vh;
+    right: 95vw;
 }
 
 .profile-picture {
@@ -365,7 +428,6 @@ h1,
     text-align: center;
     position: absolute;
     width: 65%;
-
 }
 
 .stat-row {

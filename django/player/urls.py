@@ -15,14 +15,14 @@ urlpatterns = [
     path('auth/42/callback/', views.auth_42_callback, name='auth_42_callback'),
     path('logout/', views.logout_view, name='logout'),
     
-    path('verify-jwt/', jwt.verify_jwt, name='verify_jwt'),
+    path('get_csrf_token/', utils.get_csrf_token, name='get_csrf_token'),
     path('verify_user/', utils.verify_user, name='verify_user'),
-    path('connected_user/', views.connected_user, name='connected_user'),
-    path('get_all_user/', views.get_all_user, name='get_all_user'),
+    path('verify-jwt/', jwt.verify_jwt, name='verify_jwt'),
+    path('connected_user/', utils.connected_user, name='connected_user'),
+    path('get_all_user/', utils.get_all_user, name='get_all_user'),
 
     path('update_language/', update.update_language, name='update_language'),
     path('update_user/', update.update_user, name='update_user'),
-    #path('update_profile_picture/', update.update_profile_picture, name='update_profile_picture'),
     path('update_keys/', update.update_keys, name='update_keys'),
     path('delete_account/', views.delete_account, name='delete_account'),    
     

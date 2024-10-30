@@ -4,11 +4,15 @@
     "login": "Login",
     "my_account": "My Account",
     "friends": "Friends",
+    "leaderboard": "Leaderboard",
     "logout": "Logout",
     
     "my_friends": "My Friends",
     "search_for_a_player": "Search for a player ...",
     "no_players_found": "No players found.",
+    "friend_requests": "Friend requests",
+    "no_friend_requests": "You haven't received any friend requests",
+
     
     "modify_the_value": "Modify the value:",
     "save": "Save",
@@ -18,9 +22,10 @@
     
     "disabled_switch": "The switch is disabled. You cannot perform this action.",
     
-    "no_text_to_display": "No text to display",
+    "no_text_to_display": "",
     
-    
+    "should_not_contain_spaces": "the password should not contain spaces",
+    "if_not_please_change_your_username": "if not, please change your username",
     
     "send_code_question": "Send code by email or SMS?",
     "phone_authentication": "Phone authentication",
@@ -57,6 +62,17 @@
     
     "play": "Play",
     "credits": "Credits",
+
+    "LEADERBOARD": "LEADERBOARD",
+    "win_rate": "Win rate",
+    "loose_rate": "Loose rate",
+    "victories": "Victories",
+    "defeats": "Defeats",
+    "games": "Games",
+    "last_games": "Last games",
+    "no_games_to_display": "No recent games to display.",
+
+    "RANK": "RANK",
     
     "home": "Home",
     "play_again": "Play again",
@@ -73,11 +89,14 @@
     "local": "Local",
     "online": "Online",
     "tourney": "Tourney",
+    "remote": "Remote",
     
-    "password_do_not_match": "The passwords do not match.",
-    "error_account_creation": "An error occurred during account creation.",
-    "account_created_successfully": "Account created successfully!",
+    "ERROR_404": "ERROR 404 - PAGE NOT FOUND",
+    "contact_devs": "Please contact the developers if you think this is a mistake.",
+
     "SIGN_UP": "SIGN UP",
+    "i_accept_the": "I accept the ",
+    "terms_of_use": "terms of use.",
     "create_account": "Create your account",
     "confirm_password": "Confirm password",
 
@@ -86,5 +105,54 @@
     "RIGHT": "RIGHT",
     "LEFT": "LEFT",
     "PAUSE_GAME": "PAUSE GAME",
-    "MUTE_SOUND": "MUTE SOUND"
+    "MUTE_SOUND": "MUTE SOUND",
+
+    "please_wait": "Please wait",
+    "number_of_participants": "The number of participants must be exactly 4 to start the tournament.",
+    "semi_finals": "Semi-finals",
+    "final": "Final",
+    "matches_not_yet_decided": "The matches for the finals have not yet been decided.",
+    "small_final": "Small final",
+    
+    "to_pause_unpause": "to Pause/Unpause",
+    "to_mute_unmute": "to Mute/Unmute",
+
+    "add_participants": "Add participants",
+    "name_of_participant": "Name of participant",
+    "validate_participants": "Validate participants",
+
+
+
+    "error_adding_a_friend": "An error occurred while adding a friend.",
+    "error_already_sent_invitation": "You have already sent an invitation to this user.",
+    "invitation_sent_to": "Invitation sent to",
+    "to_play": "to play.",
+    "error_user_data_not_found": "User data not found!",
+    "invalid_data_received": "Invalid data received!",
+    "error_login": "An error occurred while logging in.",
+    "error_OTPPP_setup": "An error occurred during OTPPP setup",
+    "error_TFA_setup": "An error occurred during TFA setup",
+    "resend_code": "Code sent again!",
+    "account_updated_successfully": "Account updated successfully!",
+    "error_account_update": "An error occurred during account update.",
+    "please_enter_email_password": "Please enter an email address and a password.",
+    "login_successful": "Login successful!",
+    "error_invalid_URL_login": "Could not get the login URL.",
+    "please_complete_required_fields": "Please complete all required fields.",
+    "please_enter_valid_email": "Please enter a valid email address.",
+    "please_enter_valid_phone_number": "Please enter a valid telephone number (add '+33' at the beginning).",
+    "please_accept_terms_of_use": "Please accept the terms of use.",
+    "error_passwords_do_not_match": "The passwords do not match.",
+    "should_contain_capital_letter": "Should contain at least one capital letter\n",
+    "should_contain_lower_case_letter": "Should contain at least one lower case letter\n",
+    "should_contain_number": "Should contain at least one number\n",
+    "should_contain_special_character": "Should contain at least one special character\n",
+    "should_be_8_characters_long": "Should be at least eight characters long",
+    "successful_registration": "Successful registration!",
+    "network_error_occurred": "A network error has occurred. Please try again.",
+    "error_key_already_in_use": "This key is already in use.",
+    "error_cannot_use_same_key": "The same player cannot use the same key for left and right.",
+    "error_cannot_use_same_nickname": "You can't use the same nickname for more than one player.",
+    "please_enter_4_valid_names": "Please enter four valid participant names.",
+    "GAME_STARTS_SOON": "GAME STARTS SOON!"
 }

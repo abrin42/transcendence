@@ -1,4 +1,3 @@
-<!-- @lribette todo translate -->
 <template>
     <div>
         <!-- Popup des amis -->
@@ -26,6 +25,7 @@
                     </div>
                 </div>
             </div>
+
             <!-- Liste des amis actuels -->
             <div v-if="searchQuery.length === 0" class="friends-list">
                 <div v-for="friend in friends" :key="friend.id" class="friend-item">
@@ -93,6 +93,7 @@
 import { ref, computed, defineEmits, onMounted } from 'vue';
 import { useRouter } from 'vue-router';
 import Input from './Input.vue';
+import i18n from '../i18n.js';
 
 ////////////////////////////////////////////////
 /////// GET USER ///////////////////////////////
@@ -100,6 +101,14 @@ import Input from './Input.vue';
 
 import { useUser } from '../useUser.js';
 const { getUser, userAccount } = useUser();
+
+function getCsrfToken() {
+    const cookieValue = document.cookie
+        .split('; ')
+        .find(row => row.startsWith('csrftoken='))
+        ?.split('=')[1];
+    return cookieValue || '';
+}
 
 ////////////////////////////////////////////////
 ////////////////////////////////////////////////
@@ -134,7 +143,7 @@ const router = useRouter();
 
 async function getFriendsRequest() {
     try {
-        const response = await fetch(`api/friend/pending/`, {
+        const response = await fetch(`/api/friend/pending/`, {
             method: 'GET',
         });
 
@@ -155,7 +164,7 @@ async function getFriendsRequest() {
              friendRequests.value.push(obj);
          }
     } catch (error) {
-        console.error('Error retrieving user data:', error);
+        console.error('Error retrieving user data /getFriendsRequest:', error);
     }
 }
 
@@ -164,10 +173,11 @@ async function getFriendsRequest() {
 async function acceptRequest(playerUsername) {
     try {
         console.log('Inviting player with ID:', playerUsername);
-        const response = await fetch('api/friend/help/', {
+        const response = await fetch('/api/friend/help/', {
             method: 'POST', // Change to POST to match the Django view
             headers: {
                 'Content-Type': 'application/json',
+                'X-CSRFToken': getCsrfToken(),
             },
             body: JSON.stringify({
                 username: playerUsername,
@@ -180,17 +190,18 @@ async function acceptRequest(playerUsername) {
         getFriends();
     } catch (error) {
         console.error('Error while adding friends:', error);
-        alert('An error occurred when adding a friend');
+        alert(i18n.global.t('error_adding_a_friend'));
     }
 }
 
 async function invitePlayer(playerUsername) {
     try {
         console.log('Inviting player with ID:', playerUsername);
-        const response = await fetch('api/friend/add/', {
-            method: 'POST', // Change to POST to match the Django view
+        const response = await fetch('/api/friend/add/', {
+            method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
+                'X-CSRFToken': getCsrfToken(),
             },
             body: JSON.stringify({
                 username: playerUsername,
@@ -201,9 +212,9 @@ async function invitePlayer(playerUsername) {
         }
     } catch (error) {
         if (error == "Error: HTTP error! Status: 400") {
-            alert('you have already send an invite to this user' );
+            alert(i18n.global.t('error_already_sent_invitation'));
         } else {
-            alert('An error occurred when adding a friend');
+            alert(i18n.global.t('error_adding_a_friend'));
         }
     }
     allPlayers.value = allPlayers.value.filter(request => request.username !== playerUsername);
@@ -215,47 +226,43 @@ function declineRequest(id) {
     console.log('Demande d\'ami refusée pour ID:', id);
 }
 
-// const allPlayers = ref([]);
+//const allPlayers = ref([]);
 
 async function getAllUsers() {
-        try {
-            const response = await fetch(`api/player/get_all_user/`, {
-                method: 'GET',
-            });
-            if (!response.ok) {
-                throw new Error(`HTTP error! Status: ${response.status}`);
-            }
-            const users = await response.json();
-            
-            
-                const userData = JSON.parse(users);
-                console.log("all user before", userData);
-                userData.forEach((element) => {
-                    var obj = {}
-                    obj['username'] = element.fields.username;
-                    obj['last_login'] =  element.fields.last_login;
-                    obj['nickname'] = element.fields.nickname;
-
-                    obj['rank'] = element.fields.rank;
-                    obj['win'] = element.fields.win;
-                    obj['lose'] = element.fields.lose;
-                    allPlayers.value.push(obj);
-                });
-                console.log("all user", allPlayers._rawValue);
-            
-        } catch (error) {
-            console.error('Error retrieving user data:', error);
+    try {
+        const response = await fetch(`/api/player/get_all_user/`, {
+            method: 'GET',
+        });
+        if (!response.ok) {
+            return;
         }
+        const users = await response.json();
+            const userData = JSON.parse(users);
+            userData.forEach((element) => {
+                var obj = {}
+                obj['username'] = element.fields.username;
+                obj['nickname'] = element.fields.nickname;
+                obj['last_login'] =  element.fields.last_login;
+
+                obj['rank'] = element.fields.rank;
+                obj['win'] = element.fields.win;
+                obj['lose'] = element.fields.lose;
+                allPlayers.value.push(obj);
+            });
+            console.log("all user", allPlayers._rawValue)
+    } catch (error) {
+        console.error('Error retrieving user data /getAllUsers:', error);
     }
+}
 
 async function getFriends() {
     try {
-        const response = await fetch(`api/friend/list/`, {
+        const response = await fetch(`/api/friend/list/`, {
             method: 'GET',
         });
 
         if (!response.ok) {
-            throw new Error(`HTTP error! Status: ${response.status}`);
+            return;
         }
         const users = await response.json();
         let users_data = JSON.parse(users)
@@ -279,7 +286,7 @@ async function getFriends() {
             friends.value.push(obj);
         }
     } catch (error) {
-        console.error('Error retrieving user data:', error);
+        console.error('Error retrieving user data /getFriends:', error);
     }
 }
 
@@ -295,28 +302,29 @@ function closePopup() {
 async function deleteFriend(playerUsername) {
     try {
         console.log('delete player with :', playerUsername);
-        const response = await fetch('api/friend/delete/', {
+        const response = await fetch('/api/friend/delete/', {
             method: 'POST', // Change to POST to match the Django view
             headers: {
                 'Content-Type': 'application/json',
+                'X-CSRFToken': getCsrfToken(),
             },
             body: JSON.stringify({
                 username: playerUsername,
             })
         });
         if (!response.ok) {
-            throw new Error(`HTTP error! Status: ${response.status}`);
+            return;
         }
         friends.value = friends.value.filter(request => request.username !== playerUsername);
     } catch (error) {
         console.error('Error while adding friends:', error);
-        alert('An error occurred when adding a friend');
+        alert(i18n.global.t('error_adding_a_friend'));
     }
 }
 
 function inviteFriendToPlay(friendId) {
     console.log('Inviting friend with ID:', friendId, 'to play');
-    alert(`Invitation envoyée à ${friends.value.find(friend => friend.id === friendId).name} pour jouer.`);
+    alert(`${i18n.global.t('invitation_sent_to')} ${friends.value.find(friend => friend.id === friendId).name} ${i18n.global.t('to_play')}`);
 }
 
 const filteredPlayers = computed(() => {

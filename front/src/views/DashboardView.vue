@@ -8,7 +8,8 @@
     import CreateHomeButton from '../components/CreateHomeButton.vue';
     import Input from '../components/Input.vue';
     import { useRouter } from 'vue-router';
-    import { ref, onMounted } from 'vue';
+    import { ref, onBeforeMount } from 'vue';
+    import i18n from '../i18n.js'
     
     ////////////////////////////////////////////////
     /////// GET USER ///////////////////////////////
@@ -17,7 +18,7 @@
     import { useUser } from '../useUser.js'; 
     const { getUser, userAccount, is_connected } = useUser(); 
     
-    onMounted(async () => {
+    onBeforeMount(async () => {
         await getUser();
         if (is_connected.value === false)
             __goTo('/')
@@ -36,9 +37,86 @@
     const router = useRouter();
     const showAllInfo = ref(false);
 
+    ////////////////////////////////////////////////
+    ////////////////////////////////////////////////
+    ////////////////////////////////////////////////
+
+    const username = ref('');
+    const email = ref('');
+    const phone_number = ref('');
+
+    defineExpose({
+        email,
+        phone_number,
+    });
+
+    function isValidNickname(nickname) {
+        const dangerousWords = ["admin", "root", "superuser", "user", "hitler", "@AI.Bot"];
+        for (let word of dangerousWords) {
+            if (new RegExp(`\\b${word}\\b`, "i").test(nickname)) {
+                return false;
+            }
+        }
+        const nicknameRegex = /^[a-zA-Z0-9_]+$/;
+        return nicknameRegex.test(nickname);
+    }
+
+    function isValidPassword(password) {
+        const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[\W_]).{8,}$/;
+        return passwordRegex.test(password);
+    }
+
+    function isValidEmail(email) {
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        return emailRegex.test(email);
+    }
+
+    function isValidPhoneNumber(phone) {
+        const phoneRegex = /^(?:\+33\s?[1-9](?:\s?\d{2}){4}|0[1-9](?:\s?\d{2}){4})$/;
+        return phoneRegex.test(phone);
+    }
+
+    ////////////////////////////////////////////////
+    ////////////////////////////////////////////////
+    ////////////////////////////////////////////////
+    
     async function updateAccount() {
+        if (!isValidNickname(userAccount.nickname)) {
+            alert(
+                "The nickname should not contain spaces. If not, please change your nickname.",
+                //i18n.global.t('should_not_contain_spaces') +
+                //i18n.global.t('if_not,_please_change_your_username')
+            );            
+            return;
+        }
+
+        if (!isValidEmail(userAccount.email)) {
+            alert(i18n.global.t('please_enter_valid_email'));
+            return;
+        }
+        
+        if (userAccount.phone_number) {
+            if (!isValidPhoneNumber(userAccount.phone_number)) {
+                alert(i18n.global.t('please_enter_valid_phone_number'));
+                return;
+            }
+        }
+
+        if (userAccount.newpassword) {
+            if (!isValidPassword(userAccount.newpassword)) {
+                alert(
+                    i18n.global.t('should_contain_capital_letter') +
+                    i18n.global.t('should_contain_lower_case_letter') +
+                    i18n.global.t('should_contain_number') +
+                    i18n.global.t('should_contain_special_character') +
+                    i18n.global.t('should_be_8_characters_long')
+                );
+                return;
+            }
+        }
+
         try {
-            const response = await fetch('api/player/update_user/', {
+            const response = await fetch('/api/player/update_user/', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -48,25 +126,26 @@
                     nickname: userAccount.nickname,
                     email: userAccount.email,
                     phone_number: userAccount.phone_number,
-                    password: userAccount.password,
+                    password: userAccount.newpassword,
                     profile_picture: userAccount.profilePicture,
 
                     email_2fa_active: userAccount.email_2fa_active,
                     sms_2fa_active: userAccount.sms_2fa_active,
                     anonymized: userAccount.anonymized,
+                    username
                 })
             });
             if (response.ok) {
-                const errorData = await response.json();
-                console.log(errorData);
-            } else {
                 console.log(userAccount.nickname);
                 const responseData = await response.json();
-                alert('Account updated successfully!');
+                alert(i18n.global.t('account_updated_successfully'));
+            } else {
+                const errorData = await response.json();
+                console.log(errorData);
             }
         } catch (error) {
             console.error('Error updating account:', error);
-            alert('An error occurred during account update.');
+            alert(i18n.global.t('error_account_update'));
         }
     }
 
@@ -145,7 +224,6 @@
                     <TextDisplay v-if="showAllInfo || !showAllInfo" :textValue="userAccount.nickname" :nameContainer="$t('nickname')" />
                     <TextDisplay v-if="showAllInfo || !showAllInfo" :textValue="userAccount.phone_number" :nameContainer="$t('phone_number')" />
                     <TextDisplay v-if="showAllInfo" :textValue="userAccount.username" :nameContainer="$t('username')" />
-                    <TextDisplay v-if="showAllInfo" :textValue="userAccount.password" :nameContainer="$t('password')" :isPassword="true" />
                     <TextDisplay v-if="showAllInfo" :textValue="userAccount.date_joined" :nameContainer="$t('date_joined')" />
                     <TextDisplay v-if="showAllInfo" :textValue="userAccount.win" :nameContainer="$t('number_of_wins')" />
                     <TextDisplay v-if="showAllInfo" :textValue="userAccount.lose" :nameContainer="$t('number_of_defeats')" />
@@ -156,14 +234,14 @@
                     <InputEdit v-model="userAccount.nickname" :placeholderText="$t('change_nickname')" inputIconClass="fa-user" :inputPlaceholder="$t('enter_nickname')" :isPassword="false" />
                     <InputEdit v-model="userAccount.email" :placeholderText="$t('change_email')" inputIconClass="fa-user" :inputPlaceholder="$t('enter_email')" :isPassword="false" :isDisabled="userAccount.student === true" />
                     <InputEdit v-if="userAccount.student === false" v-model="userAccount.phone_number" :placeholderText="$t('change_phone_number')" inputIconClass="fa-user" :inputPlaceholder="$t('enter_phone_number')" :isPassword="false" />
-                    <InputEdit v-if="userAccount.student === false" v-model="userAccount.password" :placeholderText="$t('change_password')" inputIconClass="fa-lock" :inputPlaceholder="$t('enter_password')" :isPassword="true" />
+                    <InputEdit v-if="userAccount.student === false" v-model="userAccount.newpassword" :placeholderText="$t('change_password')" inputIconClass="fa-lock" :inputPlaceholder="$t('enter_password')" :isPassword="true" />
 
                     <div class="___btn-click">
                         <button class="button button-update" @click="updateAccount">
-                            <span class="buttonText buttonTextSize" style="font-size: medium;">{{ $t('Update your account') }}</span>
+                            <span class="buttonText buttonTextSize" style="font-size: medium;">{{ $t('update_account') }}</span>
                         </button>
                         <button class="button button-logout" @click="handleLogout">
-                            <span class="buttonText buttonTextSize" style="font-size: medium;">Logout</span>
+                            <span class="buttonText buttonTextSize" style="font-size: medium;">{{ $t('logout') }}</span>
                         </button>
                         <button class="button button-logout" @click="handleDelete">
                             <span class="buttonText buttonTextSize" style="font-size: medium;">{{ $t('delete_account') }}</span>
@@ -220,6 +298,17 @@ h1,
             0 0 60px rgba(255, 20, 147, 0.8),
             0 0 70px rgba(255, 20, 147, 0.8);
     }
+}
+
+#wrapper {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    height: 100vh;
+    background-color: rgba(0, 0, 0, 0.8);
+    padding: 20px;
 }
 
 .containerDashboard {
@@ -300,6 +389,12 @@ h1,
 
 .custom-file-upload i {
     margin-right: 0.5vw;
+}
+
+.custom-file-upload:hover {
+    border-color: rgba(255, 255, 255, 1);
+    background-color: rgba(255, 255, 255, 0.4);
+    transition: border-color, background-color 0.5s;
 }
 
 .editable-input-container {

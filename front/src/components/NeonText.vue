@@ -80,6 +80,7 @@ export default defineComponent({
     }
 }
 
+/* Styles pour le gras et l'italique */
 .font-bold {
     font-weight: bold;
 }

@@ -1,10 +1,7 @@
 import pyotp
 import vonage
-import smtplib
 import json
 from datetime import datetime, timedelta
-from email.mime.multipart import MIMEMultipart
-from email.mime.text import MIMEText
 from django.conf import settings
 from django.core.mail import send_mail
 
@@ -18,23 +15,24 @@ def create_otp(request, user):
     data = json.loads(request.body)
     otp_method = data.get('otp_method')
     if otp_method:
-        print("POST otp_method")
         request.session['otp_method'] = otp_method  
     
     if  otp_method == 'sms':
-        contact = str(user.phone_number)
+        if user.anonymized:
+            contact = str(user.original_phone_number)
+        else:
+            contact = str(user.phone_number)
         send_otp(request, totp, contact, method='sms')
     elif otp_method == 'email':
-        contact = user.email
+        if user.anonymized:
+            contact = str(user.original_email)
+        else:
+            contact = str(user.email)
         send_otp(request, totp, contact, method='email')
 
 
 def send_otp(request, totp, contact, method):
     otp = totp.now()
-    print("----------------------------------")
-    print(f"Your one time password is {otp}")
-    print("----------------------------------")
-    print(f"contact: {contact}")
     if method == 'sms':
         client = vonage.Client(key=settings.VONAGE_API_KEY, secret=settings.VONAGE_SECRET_KEY)
         sms = vonage.Sms(client)

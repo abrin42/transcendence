@@ -4,11 +4,14 @@
     "login": "Conexión",
     "my_account": "Mi Cuenta",
     "friends": "Amigos",
+    "leaderboard": "Clasificación",
     "logout": "Cerrar Sesión",
 
     "my_friends": "Mis Amigos",
     "search_for_a_player": "Buscar un jugador ...",
     "no_players_found": "No se han encontrado jugadores.",
+    "friend_requests": "Solicitudes de amistad",
+    "no_friend_requests": "No has recibido ninguna solicitud de amistad",
 
     "modify_the_value": "Modificar el valor:",
     "save": "Guardar",
@@ -58,6 +61,17 @@
     "play": "Jugar",
     "credits": "Créditos",
 
+    "LEADERBOARD": "CLASIFICACIÓN",
+    "win_rate": "Porcentaje de victorias",
+    "loose_rate": "Porcentaje de derrotas",
+    "victories": "Victorias",
+    "defeats": "Derrotas",
+    "games": "Partidos",
+    "last_games": "Últimos partidos",
+    "no_games_to_display": "No hay juegos recientes que mostrar.",
+
+    "RANK": "RANK",
+    
     "home": "Inicio",
     "play_again": "Jugar de nuevo",
     "congratulations": "¡Felicidades!",
@@ -74,10 +88,12 @@
     "online": "En línea",
     "tourney": "Torneo",
 
-    "password_do_not_match": "The passwords do not match.",
-    "error_account_creation": "An error occurred during account creation.",
-    "account_created_successfully": "Account created successfully!",
+    "ERROR_404": "ERROR 404 - PÁGINA NO ENCONTRADA",
+    "contact_devs": "Póngase en contacto con los desarrolladores si cree que se trata de un error.",
+
     "SIGN_UP": "INSCRÍBETE",
+    "i_accept_the": "Acepto las ",
+    "terms_of_use": "condiciones de uso.",
     "create_account": "Crea tu cuenta",
     "confirm_password": "Confirmar contraseña",
 
@@ -86,5 +102,54 @@
     "RIGHT": "DERECHA",
     "LEFT": "IZQUIERDA",
     "PAUSE_GAME": "PAUSA JUEGO",
-    "MUTE_SOUND": "SILENCIAR SONIDO"
+    "MUTE_SOUND": "SILENCIAR SONIDO",
+
+    "please_wait": "Espere, por favor",
+    "number_of_participants": "El número de participantes debe ser exactamente 4 para comenzar el torneo.",
+    "semi_finals": "Semifinales",
+    "final": "Final",
+    "matches_not_yet_decided": "Aún no se han decidido los partidos de la fase final.",
+    "small_final": "Pequeño final",
+
+    "to_pause_unpause": "para pausar/despausar",
+    "to_mute_unmute": "para silenciar/activar el sonido",
+
+    "add_participants": "Añadir participantes",
+    "name_of_participant": "Nombre del participante",
+    "validate_participants": "Validar a los participantes",
+
+
+
+    "error_adding_a_friend": "Se ha producido un error al añadir un amigo.",
+    "error_already_sent_invitation": "Ya has enviado una invitación a este usuario.",
+    "invitation_sent_to": "Invitación enviada a",
+    "to_play": "para jugar.",
+    "error_user_data_not_found": "No se han encontrado los datos del usuario.",
+    "invalid_data_received": "Datos no válidos recibidos.",
+    "error_login": "Se ha producido un error al iniciar sesión.",
+    "error_OTPPP_setup": "Se ha producido un error durante la configuración de OTPPP",
+    "error_TFA_setup": "Se ha producido un error durante la configuración del TFA",
+    "resend_code": "¡Vuelva a enviar el código!",
+    "account_updated_successfully": "¡Cuenta actualizada correctamente!",
+    "error_account_update": "Se ha producido un error durante la actualización de la cuenta.",
+    "please_enter_email_password": "Introduzca una dirección de correo electrónico y una contraseña.",
+    "login_successful": "Inicio de sesión correcto.",
+    "error_invalid_URL_login": "No se ha podido obtener la URL de acceso.",
+    "please_complete_required_fields": "Rellene todos los campos obligatorios.",
+    "please_enter_valid_email": "Introduzca una dirección de correo electrónico válida.",
+    "please_enter_valid_phone_number": "Introduzca un número de teléfono válido (añada «+33» al principio).",
+    "please_accept_terms_of_use": "Por favor, acepte las condiciones de uso.",
+    "error_passwords_do_not_match": "Las contraseñas no coinciden.",
+    "should_contain_capital_letter": "Debe contener al menos una letra mayúscula\n",
+    "should_contain_lower_case_letter": "Debe contener al menos una letra minúscula\n",
+    "should_contain_number": "Debe contener al menos un número\n",
+    "should_contain_special_character": "Debe contener al menos un carácter especial\n",
+    "should_be_8_characters_long": "Debe tener al menos ocho caracteres",
+    "successful_registration": "¡Registro con éxito!",
+    "network_error_occurred": "Se ha producido un error de red. Por favor, inténtelo de nuevo.",
+    "error_key_already_in_use": "Esta llave ya está en uso.",
+    "error_cannot_use_same_key": "El mismo jugador no puede utilizar la misma tecla para la izquierda y la derecha.",
+    "error_cannot_use_same_nickname": "No puedes utilizar el mismo apodo para más de un jugador.",
+    "please_enter_4_valid_names": "Introduzca cuatro nombres de participantes válidos.",
+    "GAME_STARTS_SOON": "¡EL PARTIDO EMPIEZA PRONTO!"
 }

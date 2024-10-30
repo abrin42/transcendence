@@ -1,8 +1,9 @@
 <script setup>
-    import { reactive, ref, onBeforeUnmount, onMounted } from 'vue';
+    import { ref, onBeforeUnmount, onBeforeMount } from 'vue';
     import CreateBackButton from '../components/CreateBackButton.vue';
     import CreateDropupButton from '@/components/CreateDropupButton.vue';
     import CreateHomeButton from '@/components/CreateHomeButton.vue';
+    import i18n from '../i18n.js'
 
     ////////////////////////////////////////////////
     /////// GET USER ///////////////////////////////
@@ -11,7 +12,7 @@
     import { useUser } from '../useUser.js'; 
     const { getUser, userAccount, is_connected } = useUser(); 
 
-    onMounted(async () => {
+    onBeforeMount(async () => {
         await getUser();
     });
 
@@ -25,18 +26,18 @@
     router.push(page);
     }
 
-    const keys = reactive({
-        player1Up: 'W',
-        player1Down: 'S',
-        player2Up: 'ArrowUp',
-        player2Down: 'ArrowDown',
-        pause: 'P',
-        mute: 'M',
-    });
+    const keys = {
+        player1Up: userAccount.player1Up,
+        player1Down: userAccount.player1Down,
+        player2Up: userAccount.player2Up,
+        player2Down: userAccount.player2Down,
+        pause: userAccount.pause,
+        mute: userAccount.mute,
+    };
 
     async function update_keys() {
     try {
-        const response = await fetch('api/player/update_keys/', {
+        const response = await fetch('/api/player/update_keys/', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -61,7 +62,7 @@
         
     } catch (error) {
         console.error('Could not change', error);
-        alert('An error occurred during login.');
+        alert('An error occurred during updating keys.');
     }
 }
 
@@ -84,18 +85,18 @@
     const setKey = (event) => {
         const newKey = event.key.toUpperCase();
         if (isKeyAlreadyUsed(newKey)) {
-            alert('Cette touche est déjà utilisée.');
+            alert(i18n.global.t('error_key_already_in_use'));
             return;
         }
         if (
-            (selectedKey.value === 'player1Down' && newKey === keys.player1Up) ||
-            (selectedKey.value === 'player1Up' && newKey === keys.player1Down) ||
-            (selectedKey.value === 'player2Down' && newKey === keys.player2Up) ||
-            (selectedKey.value === 'player2Up' && newKey === keys.player2Down) ||
-            (selectedKey.value === 'pause' && newKey === keys.pause) ||
-            (selectedKey.value === 'mute' && newKey === keys.mute)
+            (selectedKey.value === 'player1Down' && newKey === userAccount.player1Up) ||
+            (selectedKey.value === 'player1Up' && newKey === userAccount.player1Down) ||
+            (selectedKey.value === 'player2Down' && newKey === userAccount.player2Up) ||
+            (selectedKey.value === 'player2Up' && newKey === userAccount.player2Down) ||
+            (selectedKey.value === 'pause' && newKey === userAccount.pause) ||
+            (selectedKey.value === 'mute' && newKey === userAccount.mute)
         ) {
-            alert('Le meme joueur ne peut pas utiliser la meme touche pour haut et bas.');
+            alert(i18n.global.t('error_cannot_use_same_key'));
             return;
         }
 
@@ -142,27 +143,23 @@
                     <span>{{ $t('player') }} 1 - {{ $t('DOWN') }}</span>
                     <span>{{ $t('player') }} 2 - {{ $t('UP') }}</span>
                     <span>{{ $t('player') }} 2 - {{ $t('DOWN') }}</span>
-                    <span>{{ $t('PAUSE_GAME') }}</span>
                     <span>{{ $t('MUTE_SOUND') }}</span>
                 </div>
                 <div class="buttonContainer">
                     <button id="bouton-touche" class="button" @click="changeKey('player1Up')">
-                        <span class="buttonText">{{ keys.player1Up }}</span>
+                        <span class="buttonText">{{ userAccount.player1Up }}</span>
                     </button>
                     <button id="bouton-touche" class="button" @click="changeKey('player1Down')">
-                        <span class="buttonText">{{ keys.player1Down }}</span>
+                        <span class="buttonText">{{ userAccount.player1Down }}</span>
                     </button>
                     <button id="bouton-touche" class="button" @click="changeKey('player2Up')">
-                        <span class="buttonText">{{ keys.player2Up }}</span>
+                        <span class="buttonText">{{ userAccount.player2Up }}</span>
                     </button>
                     <button id="bouton-touche" class="button" @click="changeKey('player2Down')">
-                        <span class="buttonText">{{ keys.player2Down }}</span>
-                    </button>
-                    <button id="bouton-touche" class="button" @click="changeKey('pause')">
-                        <span class="buttonText">{{ keys.pause }}</span>
+                        <span class="buttonText">{{ userAccount.player2Down }}</span>
                     </button>
                     <button id="bouton-touche" class="button" @click="changeKey('mute')">
-                        <span class="buttonText">{{ keys.mute }}</span>
+                        <span class="buttonText">{{ userAccount.mute }}</span>
                     </button>
                     
                 </div>

@@ -1,22 +1,33 @@
 <script setup>
-//imports
+    //imports
     import CreateDropupButton from '../components/CreateDropupButton.vue';
     import CreateBackButton from '../components/CreateBackButton.vue';
     import CreateSoundButton from '../components/CreateSoundButton.vue';
     import CreateHomeButton from '../components/CreateHomeButton.vue';
     import { useRouter } from 'vue-router';
-    import { onMounted } from 'vue';
+    import { onBeforeMount } from 'vue';
+    import { inject } from 'vue';
 
+    //////////ROUTER AND GAME SELECTION////////////
     const router = useRouter();
+    const gameSelection = inject('gameSelection');
+    const varySpeed = inject('varySpeed');
+    const game = inject('game');
+    const mode1 = inject('mode1');
+    const mode2 = inject('mode2');
+    mode1.value = '';
+    mode2.value = '';
+    ////////////////////////////////////////////////
+    varySpeed(1.3);
 
     ////////////////////////////////////////////////
     /////// GET USER ///////////////////////////////
     ////////////////////////////////////////////////
-    
-    import { useUser } from '../useUser.js'; 
-    const { getUser, is_connected } = useUser(); 
-    
-    onMounted(async () => {
+
+    import { useUser } from '../useUser.js';
+    const { getUser, is_connected } = useUser();
+
+    onBeforeMount(async () => {
         await getUser();
         if (is_connected.value === false)
             __goTo('/')
@@ -31,57 +42,46 @@
             return;
         router.push(page);
     }
-    
-    var myVideo = document.getElementById('videoBG');
-    myVideo.playbackRate = 1.3;
-
-    function goToMatchmaking() {
-        router.push('/matchmaking');
-    }
 
     function goToLegacy() {
-        router.push('/legacy');
+        game.value = 'legacy';
+            router.push('/modeselect');
     }
 
     function goToCyber() {
-        router.push('/cyberpong');
+        game.value = 'cyberpong';
+            router.push('/modeselect');
     }
 
-
+    function goToThree() {
+        game.value = 'threepong';
+            router.push('/modeselect');
+    }
 </script>
-
 <template>
     <main>
         <div id="wrapper">
             <div class="buttonContainer">
+
                 <button class="button" @click="goToLegacy">
-                    <i class="fas fa-play" style="margin-right: 8px;"></i>
                     <span class="buttonText buttonTextSize">Legacy</span>
                 </button>
 
                 <button class="button button-cyber" @click="goToCyber">
                     <span class="buttonText">CyberPong</span>
                 </button>
-                <div>
-                    <CreateHomeButton />
-                </div>
 
-                <div>
-                    <CreateSoundButton />
-                </div>
+                <button class="button button-cyber" @click="goToThree">
+                    <span class="buttonText">3Pong</span>
+                </button>
 
-                <div>
-                    <CreateDropupButton />
-                </div>
-
-                <div>
-                    <CreateBackButton />
-                </div>
+                <CreateHomeButton />
+                <CreateSoundButton />
+                <CreateDropupButton />
+                <CreateBackButton />
             </div>
         </div>
     </main>
 </template>
 
-<style>
-
-</style>
+<style></style>

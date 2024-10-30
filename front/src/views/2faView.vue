@@ -4,7 +4,8 @@
     import CreateDropupButton from '../components/CreateDropupButton.vue';
     import CreateBackButton from '../components/CreateBackButton.vue';
     import { useRouter } from 'vue-router';
-    import { reactive, onMounted, ref } from 'vue';
+    import { onBeforeMount, ref } from 'vue';
+    import i18n from '../i18n.js';
 
     ////////////////////////////////////////////////
     /////// GET USER ///////////////////////////////
@@ -12,15 +13,13 @@
 
     import { useUser } from '../useUser.js'; 
     
-    const { getUser, userAccount, is_connected } = useUser(); 
+    const { getUser, is_connected } = useUser(); 
 
-    onMounted(async () => {
+    onBeforeMount(async () => {
         await get2FAUser();
         await getUser();
         if (is_connected.value === true)
             __goTo('/')
-        console.log("onMounted/is_connected: " + is_connected.value);  
-        console.log("onMounted/username: " + userAccount.username);
     });
 
     ////////////////////////////////////////////////
@@ -73,7 +72,7 @@
 
     async function get2FAUser() {
     try {
-        const response = await fetch(`api/player/verify_user/`, {
+        const response = await fetch('/api/player/verify_user/', {
             method: 'GET',
             credentials: 'include',  
         });
@@ -104,46 +103,46 @@
                 console.log('email 2FA Active:', email2FA);
 
             } else {
-                alert('User data not found!');
+                alert(i18n.global.t('error_user_data_not_found'));
             }
         } else {
-            alert('Invalid data received!');
+            alert(i18n.global.t('invalid_data_received'));
         }
     } catch (error) {
         console.error('Error during 2FA user fetch:', error);
-        alert('An error occurred during login.');
+        alert(i18n.global.t('error_login'));
     }
 }
 
     async function handleNext() {
         try {
-            const response = await fetch('api/player/otp/', {
+            const response = await fetch('/api/player/otp/', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
                     'X-CSRFToken': getCsrfToken(),
                 },
-                body: JSON.stringify({ user_otp: code.value }) // Using method passed from the button click
+                body: JSON.stringify({ user_otp: code.value })
             });
-            console.log("POST OKOK")
+            if (response.status === 400) {
+                alert("There is a problem with the code. Please try again :)", error)
+                //throw new Error(`Code error! Status: ${response.status}`);
+            }
             if (response.status !== 302 && response.status !== 200)
                 __goTo('/2fa')
 
-            //if (!response.ok) {
-            //    throw new Error(`HTTP error! Status: ${response.status}`);
-            //}
             else
                 __goTo('/')
 
         } catch (error) {
-            console.error('Error during OTPPP setup:', error);
-            alert('An error occurred during OTPPP setup');
+            alert("There is a problem with the code. Please try again :)", error)
+            //alert(i18n.global.t('error_OTPPP_setup'));
         }
     }
 
     async function choose_tfa(method) {
         try {
-            const response = await fetch('api/player/tfa/', {
+            const response = await fetch('/api/player/tfa/', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -161,12 +160,12 @@
             }
         } catch (error) {
             console.error('Error during TFA setup:', error);
-            alert('An error occurred during TFA setup');
+            alert(i18n.global.t('error_TFA_setup'));
         }
     }
-    function resendCode() {
+    function resendCode(method) {
         choose_tfa(method);
-        alert('Resend code!');
+        alert(i18n.global.t('resend_code'));
     }
 </script>
 
@@ -194,7 +193,7 @@
             <h2 class="__title-popup">{{  $t('phone_authentication') }}</h2>
             <p>{{ $t('enter_sms') }}</p>
             <Input iconClass="fa-shield" :placeholderText="$t('enter_your_code')" v-model="code" />
-            <button class="button __button-send-code" @click="resendCode">
+            <button class="button __button-send-code" @click="resendCode('sms')">
                 <span>{{ $t('resend_the_code') }}</span>
             </button>
             <button class="button __button-next" @click="handleNext">
@@ -206,7 +205,7 @@
             <h2 class="__title-popup">{{ $t('email_authentication') }}</h2>
             <p>{{ $t('enter_mail') }}</p>
             <Input iconClass="fa-shield" :placeholderText="$t('enter_your_code')" v-model="code" />
-            <button class="button __button-send-code" @click="resendCode">
+            <button class="button __button-send-code" @click="resendCode('email')">
                 <span>{{ $t('resend_the_code') }}</span>
             </button>
             <button class="button __button-next" @click="handleNext">

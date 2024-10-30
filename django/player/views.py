@@ -1,29 +1,26 @@
-from django.shortcuts import render, redirect, get_object_or_404
-from django.contrib import messages
+from django.shortcuts import redirect, get_object_or_404
 from django.contrib.auth import login, authenticate, logout
-from django.contrib.auth.forms import AuthenticationForm
 from django.contrib.auth.decorators import login_required
-from django.core.exceptions import ImproperlyConfigured
-from django.core.files.base import ContentFile
+from django.contrib.auth.hashers import check_password
 from django.core import serializers
 from django.core.serializers import serialize
-from django.http import JsonResponse, HttpResponse, HttpResponseForbidden
-from django.middleware.csrf import get_token
+from django.http import JsonResponse
 from django.conf import settings
-from django.urls import reverse
 from django.views.decorators.csrf import csrf_exempt
-from .otp import send_otp, create_otp
-from .jwt import generate_jwt, decode_jwt, token_user, set_jwt_token
+from django.middleware.csrf import get_token
+from datetime import datetime, date
+from collections import deque
+from urllib.parse import urlparse
+from urllib.parse import parse_qs
+
+from .otp import create_otp
+from .jwt import generate_jwt, token_user, set_jwt_token
 from .models import Player, BlacklistedToken
-from .utils import set_picture_42, username_underscore, verify_user
-from datetime import datetime, timedelta
-import os
+from .utils import set_picture_42, get_csrf_token
+
 import pyotp
 import requests
-import jwt
 import json
-import logging
-from collections import deque
 import asyncio
 
 matchmaking = deque()
@@ -37,9 +34,6 @@ def register_view(request):
             phone_number = data.get('phone_number')
             password = data.get('password1')
             
-            print(username)
-            print(password)
-            
             if Player.objects.filter(username=username).exists():
                 return JsonResponse(
                     {'error': 'Le nom d\'utilisateur existe déjà.'}, status=400
@@ -51,16 +45,17 @@ def register_view(request):
             )
 
             user.email = email
-            user.phone_number = phone_number  # Ensure this field exists in your model
+            user.phone_number = phone_number
             user.set_password(password)
+            user.date_joined = date.today()
             user.save()
-            print(user.username)
-            print(user.password)
             authenticated_user = authenticate(username=user.username, password=password)
             if authenticated_user:
                 login(request, authenticated_user)
-                authenticated_user.nickname = user.username[1:]  # Remove leading underscore
+                set_user_keys(user)
+                authenticated_user.nickname = user.username[1:] 
                 authenticated_user.save()
+                get_csrf_token(request)
 
                 token = generate_jwt(authenticated_user)
                 response = JsonResponse({
@@ -77,6 +72,15 @@ def register_view(request):
 
     return JsonResponse({'error': 'Méthode non autorisée.'}, status=405)
 
+def set_user_keys(user):
+    user.player1Up = 'KeyW'
+    user.player1Down = 'KeyS'
+    user.player2Up = 'ArrowUp'
+    user.player2Down = 'ArrowDown'
+    user.pause = 'KeyP'
+    user.mute = 'KeyM'
+    user.save()
+
 def login_view(request):
     if request.method != "POST":
         return JsonResponse({'error': 'Invalid request method'}, status=405)
@@ -89,12 +93,12 @@ def login_view(request):
         if not username or not password:
             return JsonResponse({'error': 'Username and password required'}, status=400)
 
-        player = authenticate(request, username=username, password=password)
-        if not player:
+        player = get_object_or_404(Player, username=username)
+        if not check_password(password, player.password):
             return JsonResponse({'error': 'Invalid username or password'}, status=401)
+        
         login(request, player)
-
-        print(f'username: {player.username}, email_2fa_active: {player.email_2fa_active}')
+        get_csrf_token(request)
 
         if not player.email_2fa_active and not player.sms_2fa_active:
             token = generate_jwt(player)
@@ -107,6 +111,7 @@ def login_view(request):
                 'message': 'Login successful',
                 'redirect_url': '/'
             }, status=200)
+
             set_jwt_token(response, token)
             return response
 
@@ -119,19 +124,16 @@ def login_view(request):
     except json.JSONDecodeError:
         return JsonResponse({'error': 'Invalid request body'}, status=400)
 
-def login42_view(request):
-    if request.method == "POST":
-        oauth_url = f"{settings.FT42_OAUTH_URL}?client_id={settings.FT42_CLIENT_ID}&redirect_uri={settings.FT42_REDIRECT_URI}&response_type=code"
-        return JsonResponse({'url': oauth_url}, status=200)
-    return JsonResponse({'error': 'Invalid request method'}, status=405)
-
 @login_required
 def tfa_view(request):
     if request.method == "POST":
+        get_csrf_token(request)
+        if request.session.get('csrf') != request.COOKIES.get('csrftoken'):
+            return JsonResponse({'error': 'Invalid CSRF token'}, status=400)
         try:
             user = get_object_or_404(Player, username=request.user.username)
             create_otp(request, user)
-            return JsonResponse({'message': 'Code sent successfully', 'redirect_url': '/2fa'}, status=200)
+            return JsonResponse({'message': 'Code sent successfully', 'redirect_url': '/2fa/'}, status=200)
         except Player.DoesNotExist:
             return JsonResponse({'error': 'User not found'}, status=404)
     return JsonResponse({'error': 'Invalid request method'}, status=405)
@@ -145,47 +147,71 @@ def otp_view(request):
         return JsonResponse({'error': 'User not found'}, status=404)
     ###########################
     if request.method == "POST":
+        if request.session.get('csrf') != request.COOKIES.get('csrftoken'):
+            return JsonResponse({'error': 'Invalid CSRF token'}, status=400)
         try:
             data = json.loads(request.body)
             user_otp = data.get('user_otp')
             otp_secret_key = request.session.get('otp_secret_key')
             otp_valid_date = request.session.get('otp_valid_date')
-         
-            print(f'user_otp: {user_otp}')
-            print(f'otp_secret_key: {otp_secret_key}')
-            print(f'otp_valid_date: {otp_valid_date}')
 
             if otp_secret_key and otp_valid_date:
                 valid_until = datetime.fromisoformat(otp_valid_date)
-                print(f'valid_until: {valid_until}')
 
                 if valid_until > datetime.now():
                     totp = pyotp.TOTP(otp_secret_key, interval=60)
-                    print(f'totp: {totp}')
 
                     if totp.verify(user_otp):
                         token = generate_jwt(user)
-                        print(f'token: {token}')
-
                         response = JsonResponse({'redirect_url': '/2fa'}, status=302)
+                        csrf_token = get_token(request)
+                        user.csrf = csrf_token
                         set_jwt_token(response, token)                        
-                        print("JWT OK")
                         
                         del request.session['otp_secret_key']
                         del request.session['otp_valid_date']
                         del request.session['username']
                         del request.session['otp_method']
-
                         return response
                     
                     return JsonResponse({'error': 'Invalid OTP'}, status=400)
                 return JsonResponse({'error': 'Your OTP code has expired'}, status=400)
-            
             return JsonResponse({'error': 'No OTP session found. Please request a new code.'}, status=400)
-        
         except json.JSONDecodeError:
             return JsonResponse({'error': 'Invalid request body'}, status=400)
+    return JsonResponse({'error': 'Invalid request method'}, status=405)
 
+def logout_view(request):
+    if request.method == "POST":
+        if request.session.get('csrf') != request.COOKIES.get('csrftoken'):
+            return JsonResponse({'error': 'Invalid CSRF token'}, status=400)
+        token = request.COOKIES.get('jwt')
+        print(token)
+        response = redirect('/log')
+        if token:
+            BlacklistedToken.objects.create(token=token)
+            response.delete_cookie('jwt')
+        logout(request)
+        return response
+    return JsonResponse({'error': 'Invalid request method'}, status=405)
+
+################
+### LOGIN 42 ###
+################
+
+def login42_view(request):
+    if request.method == "POST":
+        data = json.loads(request.body)
+        hostname = data.get('hostname')
+
+        if hostname == settings.OTHER_IP:
+            oauth_url = f"{settings.FT42_OAUTH_URL}?client_id={settings.FT42_CLIENT_ID}&redirect_uri={settings.FT42_REDIRECT_URI}&response_type=code"
+        else:
+            oauth_url = f"{settings.FT42_OAUTH_URL}?client_id={settings.FT42_CLIENT_ID}&redirect_uri={settings.FT42_REDIRECT_LOCAL_URI}&response_type=code"
+
+        request.session['uri'] = oauth_url
+        return JsonResponse({'url': oauth_url}, status=200)
+     
     return JsonResponse({'error': 'Invalid request method'}, status=405)
 
 
@@ -195,14 +221,26 @@ def auth_42_callback(request):
         return redirect('/log/')
 
     token_url = 'https://api.intra.42.fr/oauth/token'
-    data = {
-        'grant_type': 'authorization_code',
-        'client_id': settings.FT42_CLIENT_ID,
-        'client_secret': settings.FT42_CLIENT_SECRET,
-        'code': code,
-        'redirect_uri': settings.FT42_REDIRECT_URI,
-    }
+    uri = request.session.get('uri')
+    parsed_uri = urlparse(uri)
+    redirect_url = parse_qs(parsed_uri.query)['redirect_uri'][0]
 
+    if (redirect_url == settings.FT42_REDIRECT_URI):
+        data = {        
+            'grant_type': 'authorization_code',
+            'client_id': settings.FT42_CLIENT_ID,
+            'client_secret': settings.FT42_CLIENT_SECRET,
+            'code': code,
+            'redirect_uri': settings.FT42_REDIRECT_URI
+        }
+    else:
+        data = {        
+            'grant_type': 'authorization_code',
+            'client_id': settings.FT42_CLIENT_ID,
+            'client_secret': settings.FT42_CLIENT_SECRET,
+            'code': code,
+            'redirect_uri': settings.FT42_REDIRECT_LOCAL_URI,
+        }
     response = requests.post(token_url, data=data)
     if response.status_code != 200: #if the HTTP request (get) is not successful 
         return redirect('/log/')
@@ -223,7 +261,7 @@ def auth_42_callback(request):
     login_name = user_info.get('login')
     username = f'{login_name}'
     email = user_info.get('email')
-    #profile_picture = user_info["image"]["versions"]["small"]
+    profile_picture = user_info["image"]["versions"]["small"]
 
     if not username:
         return redirect('/log/')
@@ -235,17 +273,24 @@ def auth_42_callback(request):
     
     if user is not None:
         user.student = True
-        user.nickname = user.username
+        if user.nickname is None:
+            user.nickname = user.username
+        if profile_picture and user.profile_picture is None: 
+            user.profile_picture = profile_picture
         user.save()
-        #if profile_picture: 
-        #    set_picture_42(request, user, profile_picture)
+        login(request, user)
+        get_csrf_token(request)
+
         token = generate_jwt(user)
         response = redirect('/')
         set_jwt_token(response, token)
-        login(request, user)
-        user = token_user(request)
         return response
     return redirect('/log/')
+
+
+###################
+###  DELETION  ####
+###################
 
 @login_required
 def delete_p(request):
@@ -253,37 +298,15 @@ def delete_p(request):
     user.delete()
 
 @login_required
-def logout_view(request):
-    if request.method == "POST":
-        token = request.COOKIES.get('jwt')
-        print(token)
-        response = redirect('/log')
-        if token:
-            BlacklistedToken.objects.create(token=token)
-            response.delete_cookie('jwt')
-        logout(request)
-        return response
-    return JsonResponse({'error': 'Invalid request method'}, status=405)
-
-@login_required
 def delete_account(request):
     user = token_user(request)
     user.delete()
     return JsonResponse({'redirect_url': '/log'}, status=200)
 
-@login_required
-def connected_user(request):
-    user = token_user(request)
-    if user:
-        user_data = json.loads(serialize('json', [user]))[0]['fields']
-        return JsonResponse(user_data, safe=True) 
-    else:
-        return JsonResponse({'error': 'User not found'}, status=404)
 
-def get_all_user(request):
-    data = Player.objects.all()
-    data = serializers.serialize('json', data)
-    return JsonResponse(data, safe=False) 
+#################
+###   MATCH  ####
+#################
 
 def enter_matchmaking(request):
     user = token_user(request)

@@ -12,7 +12,9 @@ https://docs.djangoproject.com/en/5.0/ref/settings/
 import os
 from django.http import HttpResponseBadRequest
 from pathlib import Path
+#from dotenv import load_dotenv
 
+#load_dotenv()
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -26,32 +28,41 @@ SECRET_KEY = os.environ.get('secret_key')
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-# ALLOWED_HOSTS = ['api']
-ALLOWED_HOSTS = ["localhost", 'api',
-                "10.11.1.11" ]
+# settings.py test
+APPEND_SLASH = True
+
+
+# IP ADDRESS
+OTHER_IP = os.environ.get("OTHER_IP")
+FT42_REDIRECT_URI = f"https://{OTHER_IP}:8443/api/player/auth/42/callback/"
+FT42_REDIRECT_LOCAL_URI = "https://localhost:8443/api/player/auth/42/callback/"
+#FT42_REDIRECT_URI = FT42_URI.replace("OTHER_IP", OTHER_IP)
+print(f"FT42_REDIRECT_URI: {FT42_REDIRECT_URI}")
+
+ALLOWED_HOSTS = [
+    "localhost", 
+    "api",
+    OTHER_IP,
+]
 
 DATA_UPLOAD_MAX_MEMORY_SIZE = None
 
-CORS_ALLOW_ALL_ORIGINS = True
+CSRF_COOKIE_HTTPONLY = False
 CSRF_COOKIE_SAMESITE = 'Lax'
-CSRF_COOKIE_SECURE = 'False'
+CSRF_COOKIE_SECURE = True
 
-# CSRF settings
-CSRF_TRUSTED_ORIGINS = ['https://localhost:8443',
-                        'https://10.11.1.11:8443',
-                        'https://10.11.1.10:8443',]
+CSRF_TRUSTED_ORIGINS = [
+    'https://localhost:8443',
+    f"https://{OTHER_IP}:8443",
+]
 
-
-
-
+CORS_ALLOW_ALL_ORIGINS = True
 #maybe enlever 8080
 CORS_ALLOWED_ORIGINS = [
     "http://localhost:8080", #a tej ?
     "https://localhost:8443",
-    "https://10.11.1.11:8443",
-    'https://10.11.1.10:8443', 
+    f"https://{OTHER_IP}:8443",
 ]
-
 
 # Application definition
 INSTALLED_APPS = [
@@ -67,7 +78,7 @@ INSTALLED_APPS = [
     'game',
     'channels',
     'corsheaders',
-    'api',
+    #'api',
     'rest_framework',
 ]
 
@@ -81,6 +92,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'pong.csp_middleware.ContentSecurityPolicyMiddleware',
 ]
 
 ROOT_URLCONF = 'pong.urls'
@@ -167,7 +179,7 @@ MEDIA_URL = '/media/'
 # FT42
 FT42_CLIENT_ID = os.environ.get('FT42_client_id')
 FT42_CLIENT_SECRET = os.environ.get('FT42_client_secret')
-FT42_REDIRECT_URI = os.environ.get('FT42_redirect_uri')
+#FT42_REDIRECT_URI = os.environ.get('FT42_redirect_uri')
 FT42_OAUTH_URL = os.environ.get('FT42_0auth_url')
 
 # Vonage API
@@ -194,11 +206,6 @@ JWT_ALGORITHM = os.environ.get('jwt_algo')
 JWT_EXP_DELTA_SECONDS = os.environ.get('jwt_exp')
 
 ASGI_APPLICATION = 'pong.asgi.application'
-
-
-# settings.py test
-APPEND_SLASH = False
-
 
 # WEBSOCKET_URL = '/ws/'
 # WEBSOCKET_REDIS_BROKER_URL = 'redis://localhost:6379/0'
