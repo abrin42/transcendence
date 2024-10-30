@@ -184,6 +184,11 @@ async function end_game()
 {
     // if (canPlay.value == 1)
     // {
+
+        //////FADE IN//////////
+        background.classList.remove(...['fade-in']);
+        //////FADE OUT///////
+        tournoi.classList.remove(...['fade-out']);
         clearInterval(moveInterval1up);
         moveInterval1up = null;
         document.removeEventListener("keydown", movePlayer1up);
@@ -224,12 +229,21 @@ async function start_game(i) {
     await getUser();
     await createGameLocal(i);
     connectWebSocket();
+    background = document.getElementById("black-background");
+    tournoi = document.getElementById("tournoi");
     board = document.getElementById("board");
     board.height = boardHeight;
     board.width = boardWidth;
     context = board.getContext("2d"); //Drawing on board
 
     context.fillStyle = "white";
+
+    //////FADE IN//////////
+    background.classList.add(...['fade-in']);
+    //////FADE OUT///////
+    tournoi.classList.add(...['fade-out']);
+
+
     context.fillRect(player1.x, player1.y, player1.width, player1.height);
 
     /////Game controls//////
@@ -405,6 +419,8 @@ async function updateGameInfo() {
 
     //board properties
     let board;
+    let background;
+    let tournoi;
     let boardWidth = 700;
     let boardHeight = 700;
     let context;
@@ -734,7 +750,7 @@ let animationFrameId = null;
                     <h2 id="mute">[{{ userAccount.mute }}] {{ $t('to_mute_unmute') }}</h2>
                 </div>
             </div>
-            <div class="theme">
+            <div id="tournoi" class="theme">
                 <!-- Si le nombre de participants est différent de 4, affiche la configuration -->
                 <div v-if="participants.length !== 4" class="custom-content">
                     <h2>{{ $t('add_participants') }}</h2>
@@ -814,6 +830,39 @@ let animationFrameId = null;
 
 
 <style scoped lang="scss">
+
+.fade-in {
+    opacity: 1;
+    animation: fadeIn 0.7s;
+    animation-fill-mode: forwards;
+}
+
+@keyframes fadeIn {
+    0% { 
+        opacity: 0;
+    }
+    100%
+    { 
+        opacity: 1;
+    }
+}
+
+.fade-out {
+    opacity: 0;
+    animation: fadeOut 0.7s;
+    animation-fill-mode: forwards;
+}
+
+@keyframes fadeOut {
+    0% { 
+        opacity: 1;
+    }
+    100%
+    { 
+        opacity: 0;
+    }
+}
+
 .wrapper {
     display: flex;
     justify-content: center;
@@ -936,9 +985,11 @@ let animationFrameId = null;
   }
   
   #black-background{
+    position: fixed;
     height: 100vh;
     width: 100vw;
     background-color: black;
+    opacity: 0;
   }
   
   #board {
