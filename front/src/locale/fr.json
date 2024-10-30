@@ -87,6 +87,7 @@
     "local": "Local",
     "online": "En ligne",
     "tourney": "Tournoi",
+    "remote": "À distance",
 
     "ERROR_404": "ERREUR 404 - PAGE NON TROUVÉE",
     "contact_devs": "Veuillez contacter les développeurs si vous pensez qu'il s'agit d'une erreur.",
@@ -161,5 +162,9 @@
     "error_creating_AI_bot": "Une erreur s'est produite lors de la création de l'IA.",
     "error_creating_local_game": "Une erreur s'est produite lors de la création d'un jeu local.",
     "error_updating_keys": "Une erreur s'est produite lors de la mise à jour des touches.",
-    "game-mode": "mode-de-jeu"
+    "game-mode": "mode-de-jeu",
+
+
+
+    "privacy_policy": "Politique de confidentialité"
 }

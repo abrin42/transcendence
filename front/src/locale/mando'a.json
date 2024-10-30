@@ -87,6 +87,7 @@
     "local": "Yaim'la",
     "online": "O'r briik",
     "tourney": "Kyrbej",
+    "remote": "Sha chaaj",
 
     "ERROR_404": "TRATTOK'OR'YC 404 - NU MAR'EYI'LA",
     "contact_devs": "Gedet'ye lenedatir alore meh gar mirdi ibic trattok'or'yc.",
@@ -161,5 +162,9 @@
     "error_creating_AI_bot": "Trattok'or'yc ru banar vaal gotal'ur'yc be beskar'ad.",
     "error_creating_local_game": "Trattok'or'yc ru banar vaal gotal'ur'yc yaim'la geroya.",
     "error_updating_keys": "Trattok'or'yc ru banar vaal gotal'ur'yc tug'yc nynir'yce.",
-    "game-mode": "geroya-dajun"
+    "game-mode": "geroya-dajun",
+
+
+
+    "privacy_policy": "Privacy Policy"
 }

@@ -87,6 +87,7 @@
     "local": "Locale",
     "online": "In linea",
     "tourney": "Torneo",
+    "remote": "Remoto",
 
     "ERROR_404": "ERRORE 404 - PAGINA NON TROVATA",
     "contact_devs": "Contattare gli sviluppatori se si ritiene che si tratti di un errore.",
@@ -161,5 +162,9 @@
     "error_creating_AI_bot": "Si è verificato un errore durante la creazione del bot AI.",
     "error_creating_local_game": "Si è verificato un errore durante la creazione di una partita locale.",
     "error_updating_keys": "Si è verificato un errore durante l'aggiornamento delle chiavi.",
-    "game-mode": "modalità-di-gioco"
+    "game-mode": "modalità-di-gioco",
+
+
+
+    "privacy_policy": "Informativa sulla privacy"
 }

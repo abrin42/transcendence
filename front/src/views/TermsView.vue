@@ -17,7 +17,7 @@ import CreateHomeButton from '../components/CreateHomeButton.vue';
 
                 <!-- Privacy Policy Text -->
                 <div class="terms-text-container">
-                    <h1>Privacy Policy</h1>
+                    <h1>{{ $t('privacy_policy') }}</h1>
                     <p><strong>Effective Date:</strong> 20/07/2024</p>
 
                     <h2>1. Introduction</h2>

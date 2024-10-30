@@ -87,6 +87,7 @@
     "local": "Lokal",
     "online": "Online",
     "tourney": "Turnier",
+    "remote": "Fernbedienung",
 
     "ERROR_404": "FEHLER 404 - SEITE NICHT GEFUNDEN",
     "contact_devs": "Bitte kontaktieren Sie die Entwickler, wenn Sie glauben, dass dies ein Fehler ist.",
@@ -161,5 +162,9 @@
     "error_creating_AI_bot": "Bei der Erstellung des KI-Bots ist ein Fehler aufgetreten.",
     "error_creating_local_game": "Beim Erstellen eines lokalen Spiels ist ein Fehler aufgetreten.",
     "error_updating_keys": "Beim Aktualisieren der Schlüssel ist ein Fehler aufgetreten.",
-    "game-mode": "spiel-modus"
+    "game-mode": "spiel-modus",
+
+
+
+    "privacy_policy": "Datenschutzbestimmungen"
 }
