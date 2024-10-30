@@ -46,7 +46,6 @@
     const phone_number = ref('');
 
     defineExpose({
-        nickname,
         email,
         phone_number,
     });
@@ -84,8 +83,7 @@
     async function updateAccount() {
         if (!isValidNickname(userAccount.nickname)) {
             alert(
-                "The password should not contain spaces. If not, please change your username.",
-
+                "The nickname should not contain spaces. If not, please change your nickname.",
                 //i18n.global.t('should_not_contain_spaces') +
                 //i18n.global.t('if_not,_please_change_your_username')
             );            
