@@ -10,6 +10,8 @@ from django.views.decorators.csrf import csrf_exempt
 from django.middleware.csrf import get_token
 from datetime import datetime, date
 from collections import deque
+from urllib.parse import urlparse
+from urllib.parse import parse_qs
 
 from .otp import create_otp
 from .jwt import generate_jwt, token_user, set_jwt_token
@@ -241,12 +243,6 @@ def login42_view(request):
             oauth_url = f"{settings.FT42_OAUTH_URL}?client_id={settings.FT42_CLIENT_ID}&redirect_uri={settings.FT42_REDIRECT_LOCAL_URI}&response_type=code"
 
         request.session['uri'] = oauth_url
-        
-        print("////////////////////////////////////////////////////")
-        print(f"request.session['uri']: {request.session['uri']}")
-        print(f"oauth_url: {oauth_url}")
-        print("////////////////////////////////////////////////////")
-
         return JsonResponse({'url': oauth_url}, status=200)
      
     return JsonResponse({'error': 'Invalid request method'}, status=405)
@@ -256,16 +252,13 @@ def auth_42_callback(request):
     code = request.GET.get('code')
     if not code:
         return redirect('/log/')
-    
-    uri = request.session.get('uri')
-    print("---------------------------------------------------------------")
-    print(f"['uri']: {uri}")
-    print("---------------------------------------------------------------")
 
     token_url = 'https://api.intra.42.fr/oauth/token'
+    uri = request.session.get('uri')
+    parsed_uri = urlparse(uri)
+    redirect_url = parse_qs(parsed_uri.query)['redirect_uri'][0]
 
-    if (uri == settings.FT42_REDIRECT_URI):
-        print("HEEEEREEEE")
+    if (redirect_url == settings.FT42_REDIRECT_URI):
         data = {        
             'grant_type': 'authorization_code',
             'client_id': settings.FT42_CLIENT_ID,
@@ -274,7 +267,6 @@ def auth_42_callback(request):
             'redirect_uri': settings.FT42_REDIRECT_URI
         }
     else:
-        print("ICIIIIIIIIIIIIIIIIIIIIIII")
         data = {        
             'grant_type': 'authorization_code',
             'client_id': settings.FT42_CLIENT_ID,
@@ -282,7 +274,6 @@ def auth_42_callback(request):
             'code': code,
             'redirect_uri': settings.FT42_REDIRECT_LOCAL_URI,
         }
-    print(f"data: {data}")
     response = requests.post(token_url, data=data)
     if response.status_code != 200: #if the HTTP request (get) is not successful 
         return redirect('/log/')
