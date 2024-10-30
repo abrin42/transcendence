@@ -33,6 +33,8 @@ ALLOWED_HOSTS = [
                  "10.11.7.13",
                  "10.11.7.12",
                  "10.11.4.5",
+                 "10.12.8.3",
+                 "10.11.3.12",
                 ]
 
 DATA_UPLOAD_MAX_MEMORY_SIZE = None
@@ -43,6 +45,8 @@ CSRF_TRUSTED_ORIGINS = ['https://localhost:8443',
                         'https://10.11.7.13:8443',
                         'https://10.11.7.12:8443',
                         'https://10.11.4.5:8443',
+                        'https://10.12.8.3:8443',
+                        'https://10.11.3.12:8443',
                         ]
 
 CSRF_COOKIE_HTTPONLY = False
@@ -59,6 +63,8 @@ CORS_ALLOWED_ORIGINS = [
     'https://10.11.7.13:8443',
     'https://10.11.7.12:8443',
     'https://10.11.4.5:8443',
+    'https://10.12.8.3:8443',
+    'https://10.11.3.12:8443',
 ]
 
 

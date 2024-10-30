@@ -294,7 +294,7 @@ class PongConsumer(AsyncWebsocketConsumer):
             while lstgame[self.room_id]['Game_on'] == 1:
                 await self.move_ball_remote()
                 await self.sendBall_remote(lstgame[self.room_id]['ball_x'], lstgame[self.room_id]['ball_y'])
-                await asyncio.sleep(0.01)
+                await asyncio.sleep(0.005)
             await asyncio.sleep(0.5)
 
 
@@ -782,6 +782,7 @@ class PongConsumer(AsyncWebsocketConsumer):
             type = data.get('type')
             player = int(data.get('player', 0))
             if type and player:
+                print("je rentre pas la ? ")
                 if type == "mouvUp":
                     await self.sendPadUp(player)
                 elif type == "mouvDown":
@@ -791,6 +792,11 @@ class PongConsumer(AsyncWebsocketConsumer):
                     self.P2Ready = 1
                     self.nb_pts_for_win = 5
                     asyncio.ensure_future(self.ai_loop_game())
+                elif type == "pointInit":
+                    p1PTS = int(data.get('p1PTS', 0))
+                    p2PTS = int(data.get('p2PTS', 0))
+                    self.PTSp1 = p1PTS
+                    self.PTSp2 = p2PTS
                 
             if self.P1Ready == 1 and self.P2Ready == 1 and self.Game_on == 0:
                 await self.sendStart()

@@ -51,6 +51,7 @@ import { useRouter } from 'vue-router';
   ////////////////////////////////////////////////
 
   import { useUser } from '../useUser.js'; 
+import { get } from 'jquery';
   const { getUser, userAccount, is_connected } = useUser(); 
 
   onBeforeMount(async () => {
@@ -97,6 +98,7 @@ import { useRouter } from 'vue-router';
 onMounted(async () => {
   await getUser();
   await getIsPlayer();
+  await getGameInfo();
   connectWebSocket();
   board = document.getElementById("board");
   board.height = boardHeight;
@@ -147,7 +149,9 @@ const currentUrl = window.location.href;
 const lastSegment = currentUrl.split('/').filter(Boolean).pop();
 const gamePage = `game_${lastSegment}`;
 
-
+function goToHome() {
+        router.push('/');
+    }
 
 function __goTo(page) {
   if (page == null)
@@ -161,6 +165,42 @@ function __goTo(page) {
             ?.split('=')[1];
         return cookieValue || '';
     }
+
+
+    async function getGameInfo() {
+    try {
+        const response = await fetch('/api/game/getGameInfo/', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRFToken': getCsrfToken(),
+            },
+            body: JSON.stringify({
+                id: lastSegment,
+            }),
+        });
+
+        if (response.ok) {
+            const responseData = await response.json();
+            player1Score = responseData.scorep1;
+            player2Score = responseData.scorep2;
+            
+            console.log("la game---");
+            console.log(responseData);
+
+        }
+        else if (response.status === 404) {
+            goToHome();
+        }
+        else
+        {
+            const errorData = await response.json();
+            console.error('Error:', errorData.error);
+        }
+    } catch (error) {
+        console.error('Error updating game:', error);
+    }
+  }
 
     async function setGameRank() {
     try {
@@ -337,6 +377,12 @@ function connectWebSocket() {
   socket.value.onopen = () => {
     console.log('WebSocket connecté');
     console.log(socket.value);
+    socket.value.send(JSON.stringify({
+      'type': "pointInit",
+      'player': "1",
+      'p1PTS': player1Score,
+      'p2PTS': player2Score,
+    }));
   };
   
   

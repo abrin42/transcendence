@@ -5,7 +5,7 @@
     import CreateSoundButton from '../components/CreateSoundButton.vue';
     import CreateHomeButton from '../components/CreateHomeButton.vue';
     import { useRouter } from 'vue-router';
-    import { onBeforeMount, onMounted } from 'vue';
+    import { onBeforeMount, onMounted, ref } from 'vue';
     import { inject } from 'vue';
     import i18n from '../i18n.js';
 
@@ -70,12 +70,26 @@
     //     game.value = 'solo';
     //     gameSelection(game.value, mode.value);
     //     createGameLocal();
-    function goToSolo() {
+    
+    let game_id = ref(0);
+
+    async function goToSolo() {
         mode1.value = 'solo';
         if(game.value == 'legacy')
-            router.push('/legacy-ia');
+        {
+   
+            await createAIPlayer();
+            await createGameLocal();
+            console.log(game_id.value);
+            router.push(`/legacy-ia/${game_id.value}/`);
+        }
         else if(game.value == 'cyberpong')
-            router.push('/cyberpong-ia');
+        {
+            await createAIPlayer();
+            await createGameLocal();
+            console.log(game_id.value);
+            router.push(`/cyberpong-ia/${game_id.value}/`);
+        }
         else if(game.value == 'threepong')
             router.push('/threepong-ia');
     }
@@ -129,13 +143,12 @@
             if (response.ok) {
                 const data = await response.json();
                 console.log('Game Data:', data);
-
+                game_id.value =  data.id;
                 console.log('data:', data);
                 console.log("game id", data.id);
                 console.log("p1 =",data.player1);
                 console.log("p2 =",data.player2);
                 
-                router.push(`/legacy-ia/${data.id}/`);
             }
         }
         catch (error) {

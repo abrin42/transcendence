@@ -158,7 +158,7 @@
     },
     /***********CYBERPONG**********/
     {
-      path: '/cyberpong-ia',
+      path: '/cyberpong-ia/:id',
       name: 'cyberpong-ia',
       component: CyberPongIAView
     },

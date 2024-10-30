@@ -82,7 +82,7 @@
     ////////////////////////////////////////////////
     
     async function updateAccount() {
-        if (!isValidUsername(username.value)) {
+        if (!isValidUsername(userAccount.nickname)) {
             alert(i18n.global.t('should_not_contain_spaces'));
             return;
         }
@@ -98,16 +98,18 @@
                 return;
             }
         }
-
-        if (!isValidPassword(userAccount.newpassword)) {
-            alert(
-                i18n.global.t('should_contain_capital_letter') +
-                i18n.global.t('should_contain_lower_case_letter') +
-                i18n.global.t('should_contain_number') +
-                i18n.global.t('should_contain_special_character') +
-                i18n.global.t('should_be_8_characters_long')
-            );
-            return;
+        if (userAccount.newpassword)
+        {
+            if (!isValidPassword(userAccount.newpassword)) {
+                alert(
+                    i18n.global.t('should_contain_capital_letter') +
+                    i18n.global.t('should_contain_lower_case_letter') +
+                    i18n.global.t('should_contain_number') +
+                    i18n.global.t('should_contain_special_character') +
+                    i18n.global.t('should_be_8_characters_long')
+                );
+                return;
+            }
         }
         try {
             const response = await fetch('/api/player/update_user/', {

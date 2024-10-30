@@ -74,6 +74,9 @@
             profilePicture2 = responseData.player2.profile_picture;
             gamestatus = responseData.state;
             
+            console.log("la game---");
+            console.log(responseData);
+
         }
         else if (response.status === 404) {
             goToHome();
