@@ -12,8 +12,8 @@ RUN mkdir -p /etc/nginx/ssl
 COPY --from=build /app/front/dist /var/www/html
 COPY ./nginx/nginx.conf /etc/nginx/nginx.conf
 RUN mkdir -p /etc/nginx/ssl
-COPY certificates/server.crt /etc/nginx/ssl/server.crt
-COPY certificates/server.key /etc/nginx/ssl/server.key
+COPY certificates/server_ip.crt /etc/nginx/ssl/server_ip.crt
+COPY certificates/server_ip.key /etc/nginx/ssl/server_ip.key
 COPY certificat/server.crt /etc/nginx/ssl/server.crt
 COPY certificat/server.key /etc/nginx/ssl/server.key
 WORKDIR /etc/nginx/ssl
