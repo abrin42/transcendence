@@ -4,6 +4,7 @@
     import CreateSoundButton from '../components/CreateSoundButton.vue';
     import { useRouter } from 'vue-router';
     import { onBeforeMount, onMounted, ref } from 'vue';
+    import profilePicture from '@/assets/img/default-profile.png';
 
     ////////////////////////////////////////////////
     /////// GET USER ///////////////////////////////
@@ -16,6 +17,8 @@
     
     let scoreplayer1 = ref(0);
     let scoreplayer2 = ref(0);
+    let profilePicture1 = ref("");
+    let profilePicture2 = ref("");
     let gamestatus;
     
     onBeforeMount(async () => {
@@ -67,6 +70,8 @@
             const responseData = await response.json();
             scoreplayer1.value = responseData.scorep1;
             scoreplayer2.value = responseData.scorep2;
+            profilePicture1 = responseData.player1.profile_picture;
+            profilePicture2 = responseData.player2.profile_picture;
             gamestatus = responseData.state;
             
         }
@@ -103,12 +108,12 @@
                     <span class="buttonText">{{ $t('play_again') }}</span>
                 </button>
                 <div class="player-one">
-                    <img id="player1-picture" class="profile-picture-matchmaking-left" :src="profilePicture"/>
+                    <img id="player1-picture" class="profile-picture-matchmaking-left" :src="profilePicture1 || profilePicture"/>
                     <p id="player1-name" class="profile-text-left">{{playerName1}}</p>
                     <p id="player1-rank" class="rank-text-left">{{playerRank1}}</p>
                 </div>
                 <div id="player-two">
-                    <img id="player2-picture" class="profile-picture-matchmaking-right" :src="profilePicture"/>
+                    <img id="player2-picture" class="profile-picture-matchmaking-right" :src="profilePicture2 || profilePicture"/>
                     <p id="player2-name" class="profile-text-right">{{playerName2}}</p>
                     <p id="player2-rank" class="rank-text-right">{{playerRank2}}</p>
                 </div>

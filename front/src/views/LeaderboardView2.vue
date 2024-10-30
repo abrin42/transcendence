@@ -30,7 +30,7 @@ async function getAllUsers() {
                 obj['rank'] = element.fields.rank;
                 obj['win'] = element.fields.win;
                 obj['lose'] = element.fields.lose;
-                allPlayers.value.push(obj);
+                if (obj['username'][0] != '#'){allPlayers.value.push(obj);}
             });
         }
     } catch (error) {

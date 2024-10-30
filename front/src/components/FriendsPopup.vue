@@ -110,10 +110,6 @@ function getCsrfToken() {
     return cookieValue || '';
 }
 
-////////////////////////////////////////////////
-////////////////////////////////////////////////
-////////////////////////////////////////////////
-
 function __goTo(page) {
     if (page == null)
         return;
@@ -125,20 +121,6 @@ const allPlayers = ref([]);
 const friendRequests = ref([]);
 
 const router = useRouter();
-// const friends = ref([
-//     { id: 1, username: 'test 1' },
-//     { id: 2, username: 'test 2' },
-//     { id: 3, username: 'test 3' },
-//     { id: 4, username: 'test 4' },
-//     { id: 5, username: 'test 5' },
-// ]);
-
-// Gestion des demandes d'amis (simulation)
-// const friendRequests = ref([
-//     { id: 6, username: 'Lucie' },
-//     { id: 7, username: 'Caroline' },
-//     { id: 8, username: 'Lucas' }
-// ]);
 
 
 async function getFriendsRequest() {
@@ -247,7 +229,7 @@ async function getAllUsers() {
                 obj['rank'] = element.fields.rank;
                 obj['win'] = element.fields.win;
                 obj['lose'] = element.fields.lose;
-                allPlayers.value.push(obj);
+                if (obj['username'][0] != '#'){allPlayers.value.push(obj);}
             });
             console.log("all user", allPlayers._rawValue)
     } catch (error) {
