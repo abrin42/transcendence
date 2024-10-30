@@ -52,11 +52,6 @@
         game.value = 'cyberpong';
             router.push('/modeselect');
     }
-
-    function goToThree() {
-        game.value = 'threepong';
-            router.push('/modeselect');
-    }
 </script>
 <template>
     <main>
@@ -69,10 +64,6 @@
 
                 <button class="button button-cyber" @click="goToCyber">
                     <span class="buttonText">CyberPong</span>
-                </button>
-
-                <button class="button button-cyber" @click="goToThree">
-                    <span class="buttonText">3Pong</span>
                 </button>
 
                 <CreateHomeButton />

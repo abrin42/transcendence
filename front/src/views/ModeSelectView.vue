@@ -43,11 +43,6 @@
     mode2.value = ''; 
     ////////////////////////////////////////////////
     varySpeed(1.6);
-    console.log(game.value);
-
-    let isMultiButtonVisible = false;
-    if (game.value == 'legacy' || game.value == 'cyberpong')
-        isMultiButtonVisible = true;
     
     function __goTo(page) {
         if (page == null)
@@ -166,7 +161,7 @@
                     <i class="fa-solid fa-user"></i>
                     <span class="buttonText" style="margin-left: 0.5vw;">{{ $t('solo') }}</span>
                 </button>
-                <button v-if="isMultiButtonVisible" class="button button-credits" @click="goToMulti()">
+                <button class="button button-credits" @click="goToMulti()">
                     <i class="fa-solid fa-users"></i>
                     <span class="buttonText" style="margin-left: 0.5vw;">{{ $t('multiplayer') }}</span>
                 </button>

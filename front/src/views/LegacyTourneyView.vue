@@ -182,7 +182,6 @@ onBeforeMount(async () => {
 
 async function end_game()
 {
-    console.log("============ON PASSE DEDANS");
     // if (canPlay.value == 1)
     // {
         clearInterval(moveInterval1up);
