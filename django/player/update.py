@@ -38,10 +38,6 @@ def update_keys(request):
                 return JsonResponse({'error': 'Invalid CSRF token'}, status=400)
             try:
                 data = json.loads(request.body)
-                print(data)
-                
-                print(f'Avant: {user.player1Up}')
-                print(f'Avant: {user.player2Up}')
 
                 moveUpP1 = data.get('moveUpP1')
                 if moveUpP1:
@@ -62,9 +58,6 @@ def update_keys(request):
                 if mute:
                     user.mute = mute
                 user.save()
-
-                print(f'Apres: {user.player1Up}')
-                print(f'Apres: {user.player2Up}')
 
                 return JsonResponse({'Message' : 'Key changed successfully'}, status=200)
             except json.JSONDecodeError:

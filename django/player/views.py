@@ -48,10 +48,7 @@ def register_view(request):
             user.phone_number = phone_number
             user.set_password(password)
             user.date_joined = date.today()
-            print(user.date_joined)
             user.save()
-            print(user.username)
-            print(user.password)
             authenticated_user = authenticate(username=user.username, password=password)
             if authenticated_user:
                 login(request, authenticated_user)
@@ -100,13 +97,8 @@ def login_view(request):
         if not check_password(password, player.password):
             return JsonResponse({'error': 'Invalid username or password'}, status=401)
         
-        print(f'username: {player.username}, email_2fa_active: {player.email_2fa_active}')
         login(request, player)
         get_csrf_token(request)
-        print("-----------------------------------------------------------------")
-        print(f"/login/request.session['csrf']: {request.session.get('csrf')}")     
-        print(f"/login/request.COOKIES.get('csrftoken'): {request.COOKIES.get('csrftoken')}")    
-        print("-----------------------------------------------------------------")
 
         if not player.email_2fa_active and not player.sms_2fa_active:
             token = generate_jwt(player)
@@ -136,16 +128,10 @@ def login_view(request):
 def tfa_view(request):
     if request.method == "POST":
         get_csrf_token(request)
-        print("-----------------------------------------------------------------")
-        print(f"/tfa/request.session['csrf']: {request.session.get('csrf')}")     
-        print(f"/tfa/request.COOKIES.get('csrftoken'): {request.COOKIES.get('csrftoken')}")    
-        print("-----------------------------------------------------------------")
         if request.session.get('csrf') != request.COOKIES.get('csrftoken'):
             return JsonResponse({'error': 'Invalid CSRF token'}, status=400)
-        
         try:
             user = get_object_or_404(Player, username=request.user.username)
-            print(f"2fa user: {user}")
             create_otp(request, user)
             return JsonResponse({'message': 'Code sent successfully', 'redirect_url': '/2fa/'}, status=200)
         except Player.DoesNotExist:
@@ -168,46 +154,31 @@ def otp_view(request):
             user_otp = data.get('user_otp')
             otp_secret_key = request.session.get('otp_secret_key')
             otp_valid_date = request.session.get('otp_valid_date')
-         
-            print(f'user_otp: {user_otp}')
-            print(f'otp_secret_key: {otp_secret_key}')
-            print(f'otp_valid_date: {otp_valid_date}')
 
             if otp_secret_key and otp_valid_date:
                 valid_until = datetime.fromisoformat(otp_valid_date)
-                print(f'valid_until: {valid_until}')
 
                 if valid_until > datetime.now():
                     totp = pyotp.TOTP(otp_secret_key, interval=60)
-                    print(f'totp: {totp}')
 
                     if totp.verify(user_otp):
                         token = generate_jwt(user)
-                        print(f'token: {token}')
-
                         response = JsonResponse({'redirect_url': '/2fa'}, status=302)
-
                         csrf_token = get_token(request)
                         user.csrf = csrf_token
-
                         set_jwt_token(response, token)                        
-                        print("JWT OK")
                         
                         del request.session['otp_secret_key']
                         del request.session['otp_valid_date']
                         del request.session['username']
                         del request.session['otp_method']
-
                         return response
                     
                     return JsonResponse({'error': 'Invalid OTP'}, status=400)
                 return JsonResponse({'error': 'Your OTP code has expired'}, status=400)
-            
             return JsonResponse({'error': 'No OTP session found. Please request a new code.'}, status=400)
-        
         except json.JSONDecodeError:
             return JsonResponse({'error': 'Invalid request body'}, status=400)
-
     return JsonResponse({'error': 'Invalid request method'}, status=405)
 
 def logout_view(request):
@@ -232,14 +203,10 @@ def login42_view(request):
     if request.method == "POST":
         data = json.loads(request.body)
         hostname = data.get('hostname')
-        print(f"Received hostname: {hostname}")
-        print(f"Expected OTHER_IP: {settings.OTHER_IP}")
 
         if hostname == settings.OTHER_IP:
-            print("Using OTHER_IP for OAuth redirect.")
             oauth_url = f"{settings.FT42_OAUTH_URL}?client_id={settings.FT42_CLIENT_ID}&redirect_uri={settings.FT42_REDIRECT_URI}&response_type=code"
         else:
-            print("Using localhost for OAuth redirect.")
             oauth_url = f"{settings.FT42_OAUTH_URL}?client_id={settings.FT42_CLIENT_ID}&redirect_uri={settings.FT42_REDIRECT_LOCAL_URI}&response_type=code"
 
         request.session['uri'] = oauth_url

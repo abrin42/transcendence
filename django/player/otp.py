@@ -15,7 +15,6 @@ def create_otp(request, user):
     data = json.loads(request.body)
     otp_method = data.get('otp_method')
     if otp_method:
-        print("POST otp_method")
         request.session['otp_method'] = otp_method  
     
     if  otp_method == 'sms':
@@ -34,10 +33,6 @@ def create_otp(request, user):
 
 def send_otp(request, totp, contact, method):
     otp = totp.now()
-    print("----------------------------------")
-    print(f"Your one time password is {otp}")
-    print("----------------------------------")
-    print(f"contact: {contact}")
     if method == 'sms':
         client = vonage.Client(key=settings.VONAGE_API_KEY, secret=settings.VONAGE_SECRET_KEY)
         sms = vonage.Sms(client)
