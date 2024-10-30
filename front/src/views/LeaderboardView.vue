@@ -44,24 +44,21 @@ async function getAllGames() {
             return;
         }
         const users = await response.json();
-        const userData = JSON.parse(users);
-        console.log("games =", userData);
-        userData.forEach((element) => {
-            if (element.fields.state == "end") {
-                var obj = {}
-                obj['host'] = element.fields.player1;
-                obj['rival'] = element.fields.player2;
-                if (obj.rival == lastSegment || obj.host == lastSegment) {
-                    obj['score_host'] = element.fields.scorep1;
-                    obj['score_rival'] = element.fields.scorep2;
-                    obj['date'] = element.fields.created_at;
-                    console.log(obj);
-                    games.value.push(obj);
+            const userData = JSON.parse(users);
+            console.log("games =", userData);
+            userData.forEach((element) => {
+                if (element.fields.state == "end"){
+                    var obj = {}
+                    obj['host'] = element.fields.player1;
+                    obj['rival'] = element.fields.player2;
+                    if (obj.rival == lastSegment || obj.host == lastSegment ){
+                        obj['score_host'] = element.fields.scorep1;
+                        obj['score_rival'] = element.fields.scorep2;
+                        obj['date'] = element.fields.created_at;
+                        games.value.push(obj);
+                    }
                 }
-            }
-        });
-        //console.log("user", user._rawValue[0])
-        //console.log("all user", allPlayers._rawValue)
+            });
     } catch (error) {
         console.error('Error retrieving user data /getAllUsers:', error);
     }
@@ -80,30 +77,28 @@ async function getAllUsers() {
         const users = await response.json();
         const userData = JSON.parse(users);
         userData.forEach((element) => {
-            var obj = {}
-            obj['username'] = element.fields.username;
-            if (obj.username == lastSegment) {
-                obj['nickname'] = element.fields.nickname;
-                obj['last_login'] = element.fields.last_login;
-
-                obj['rank'] = element.fields.rank;
-                obj['win'] = element.fields.win;
-                obj['lose'] = element.fields.lose;
-                obj['profilePicture'] = element.fields.profile_picture;
-
-                obj['winRate'] = 0;
-                obj['loseRate'] = 0;
-
-                if ((element.fields.win + element.fields.lose) != 0) {
-                    obj['winRate'] = (element.fields.win / (element.fields.win + element.fields.lose) * 100).toFixed(2);
+            if (element.fields.username == lastSegment){
+                user._rawValue[0].username = element.fields.username;
+                user._rawValue[0].nickname = element.fields.nickname;
+                user._rawValue[0].last_login =  element.fields.last_login;
+                            
+                user._rawValue[0].rank = element.fields.rank;
+                user._rawValue[0].win = element.fields.win;
+                user._rawValue[0].lose = element.fields.lose;
+                user._rawValue[0].profilePicture = element.fields.profile_picture;
+                            
+                user._rawValue[0].winRate = 0;
+                user._rawValue[0].loseRate = 0;
+                            
+                if ((element.fields.win+element.fields.lose) != 0){
+                    user._rawValue[0].winRate = (element.fields.win / (element.fields.win+element.fields.lose) * 100).toFixed(2);
                 }
-                if (obj['winRate'] != 0) {
-                    obj['loseRate'] = 100 - obj['winRate'];
+                if (user._rawValue[0].winRate != 0){
+                    user._rawValue[0].loseRate = 100 - user._rawValue[0].winRate
                 }
-                user.value.push(obj);
             }
         });
-        console.log("user", user._rawValue[0])
+        console.log("user is god", user._rawValue[0]);
     } catch (error) {
         console.error('Error retrieving user data /getAllUsers:', error);
     }
@@ -167,13 +162,12 @@ async function getAllUsers() {
                     <h2 class="stat-rate">
                         Statistics
                     </h2>
-                    <!-- TODO MEHDI -->
+                    <!-- TO DO MEHDI -->
                 </div>
             </div>
         </div>
     </main>
 </template>
-
 <style scoped>
 h1,
 .category-title {
@@ -209,6 +203,12 @@ h2 {
     border: 0.15vw solid rgba(0, 0, 0, 0.25);
     overflow-y: auto;
     overflow-x: hidden;
+}
+
+.pie-chart-pos {
+    position: fixed;
+    bottom: 23%;
+    left: 42%;
 }
 
 .overloadBtn {
