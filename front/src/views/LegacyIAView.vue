@@ -88,9 +88,9 @@ let mute;
 
 onMounted(async () => {
   await getUser();
-
-  // await getIsPlayer();
-  canPlay.value = 1;
+  await getGameInfo();
+  await getIsPlayer();
+  // canPlay.value = 1;
   connectWebSocket();
   board = document.getElementById("board");
   board.height = boardHeight;
@@ -147,6 +147,41 @@ function __goTo(page) {
             ?.split('=')[1];
         return cookieValue || '';
     }
+
+  async function getGameInfo() {
+    try {
+        const response = await fetch('/api/game/getGameInfo/', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRFToken': getCsrfToken(),
+            },
+            body: JSON.stringify({
+                id: lastSegment,
+            }),
+        });
+
+        if (response.ok) {
+            const responseData = await response.json();
+            player1Score = responseData.scorep1;
+            player2Score = responseData.scorep2;
+            
+            console.log("la game---");
+            console.log(responseData);
+
+        }
+        else if (response.status === 404) {
+            goToHome();
+        }
+        else
+        {
+            const errorData = await response.json();
+            console.error('Error:', errorData.error);
+        }
+    } catch (error) {
+        console.error('Error updating game:', error);
+    }
+  }
 
     async function setGameRank() {
     try {
@@ -324,6 +359,12 @@ function connectWebSocket() {
   socket.value.onopen = () => {
     console.log('WebSocket connecté');
     console.log(socket.value);
+    socket.value.send(JSON.stringify({
+      'type': "pointInit",
+      'player': "1",
+      'p1PTS': player1Score,
+      'p2PTS': player2Score,
+    }));
   };
   
   

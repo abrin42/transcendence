@@ -226,7 +226,7 @@ async function insertPlayer() {
                 const vs_text = document.getElementById('versus-image');
 
                 if(game.player2.profilePicture)
-                    player2_pic.src = game.player2.profilePicture;
+                    player2_pic.src = game.player2.profile_picture;
                 player2_name.textContent = game.player2.nickname;
                 player2_rank.textContent = `${game.player2.rank}` + 'test';
                 console.log('heeeeeeeeeeeeere rn');
