@@ -11,7 +11,7 @@ const { getUser } = useUser();
 const varySpeed = inject('varySpeed');
 //varySpeed(0); 
 
-const currentUrl = window.location.href; 
+const currentUrl = window.location.href;
 const lastSegment = currentUrl.split('/').filter(Boolean).pop();
 console.log("user ", lastSegment);
 
@@ -44,21 +44,24 @@ async function getAllGames() {
             return;
         }
         const users = await response.json();
-            const userData = JSON.parse(users);
-            console.log("games =", userData);
-            userData.forEach((element) => {
-                if (element.fields.state == "end"){
-                    var obj = {}
-                    obj['host'] = element.fields.player1;
-                    obj['rival'] = element.fields.player2;
-                    if (obj.rival == lastSegment || obj.host == lastSegment ){
-                        obj['score_host'] = element.fields.scorep1;
-                        obj['score_rival'] = element.fields.scorep2;
-                        obj['date'] = element.fields.created_at;
-                        games.value.push(obj);
-                    }
+        const userData = JSON.parse(users);
+        console.log("games =", userData);
+        userData.forEach((element) => {
+            if (element.fields.state == "end") {
+                var obj = {}
+                obj['host'] = element.fields.player1;
+                obj['rival'] = element.fields.player2;
+                if (obj.rival == lastSegment || obj.host == lastSegment) {
+                    obj['score_host'] = element.fields.scorep1;
+                    obj['score_rival'] = element.fields.scorep2;
+                    obj['date'] = element.fields.created_at;
+                    console.log(obj);
+                    games.value.push(obj);
                 }
-            });
+            }
+        });
+        //console.log("user", user._rawValue[0])
+        //console.log("all user", allPlayers._rawValue)
     } catch (error) {
         console.error('Error retrieving user data /getAllUsers:', error);
     }
@@ -77,28 +80,30 @@ async function getAllUsers() {
         const users = await response.json();
         const userData = JSON.parse(users);
         userData.forEach((element) => {
-            if (element.fields.username == lastSegment){
-                user._rawValue[0].username = element.fields.username;
-                user._rawValue[0].nickname = element.fields.nickname;
-                user._rawValue[0].last_login =  element.fields.last_login;
-                            
-                user._rawValue[0].rank = element.fields.rank;
-                user._rawValue[0].win = element.fields.win;
-                user._rawValue[0].lose = element.fields.lose;
-                user._rawValue[0].profilePicture = element.fields.profile_picture;
-                            
-                user._rawValue[0].winRate = 0;
-                user._rawValue[0].loseRate = 0;
-                            
-                if ((element.fields.win+element.fields.lose) != 0){
-                    user._rawValue[0].winRate = (element.fields.win / (element.fields.win+element.fields.lose) * 100).toFixed(2);
+            var obj = {}
+            obj['username'] = element.fields.username;
+            if (obj.username == lastSegment) {
+                obj['nickname'] = element.fields.nickname;
+                obj['last_login'] = element.fields.last_login;
+
+                obj['rank'] = element.fields.rank;
+                obj['win'] = element.fields.win;
+                obj['lose'] = element.fields.lose;
+                obj['profilePicture'] = element.fields.profile_picture;
+
+                obj['winRate'] = 0;
+                obj['loseRate'] = 0;
+
+                if ((element.fields.win + element.fields.lose) != 0) {
+                    obj['winRate'] = (element.fields.win / (element.fields.win + element.fields.lose) * 100).toFixed(2);
                 }
-                if (user._rawValue[0].winRate != 0){
-                    user._rawValue[0].loseRate = 100 - user._rawValue[0].winRate
+                if (obj['winRate'] != 0) {
+                    obj['loseRate'] = 100 - obj['winRate'];
                 }
+                user.value.push(obj);
             }
         });
-        console.log("user is god", user._rawValue[0]);
+        console.log("user", user._rawValue[0])
     } catch (error) {
         console.error('Error retrieving user data /getAllUsers:', error);
     }
@@ -124,24 +129,15 @@ async function getAllUsers() {
                     </button>
                 </div>
 
-                <!-- Section des statistiques stylisée -->
                 <div class="stats-grid">
                     <div class="stat-row">
-                        <div class="category-title stat-col">{{ $t('win_rate') }}</div>
                         <div class="category-title stat-col">{{ $t('rank') }}</div>
-                        <div class="category-title stat-col">{{ $t('loose_rate') }}</div>
-                    </div>
-                    <div class="stat-row">
-                        <div class="stat-col">{{ user[0].winRate }}%</div>
-                        <div class="stat-col">{{ user[0].rank }}</div>
-                        <div class="stat-col">{{ user[0].loseRate }}%</div>
-                    </div>
-                    <div class="stat-row">
                         <div class="category-title stat-col">{{ $t('victories') }}</div>
                         <div class="category-title stat-col">{{ $t('defeats') }}</div>
                         <div class="category-title stat-col">{{ $t('games') }}</div>
                     </div>
                     <div class="stat-row">
+                        <div class="stat-col">{{ user[0].rank }}</div>
                         <div class="stat-col">{{ user[0].win }}</div>
                         <div class="stat-col">{{ user[0].lose }}</div>
                         <div class="stat-col">{{ user[0].win + user[0].lose }}</div>
@@ -151,7 +147,7 @@ async function getAllUsers() {
                 <!-- Dernières parties -->
                 <div class="latestGame">
                     <span class="category-title latestGameTitle">{{ $t('last_games') }}</span>
-                    <div v-if=" user[0].win + user[0].lose > 0">
+                    <div v-if="user[0].win + user[0].lose > 0">
                         <div v-for="game in games" :key="game.id">
                             <button class="game-button">
                                 <span class="game-match">{{ game.host[0] }} VS {{ game.rival[0] }}</span>
@@ -167,11 +163,17 @@ async function getAllUsers() {
                     <div class="game-button game-info" v-else>
                         <p>{{ $t('no_games_to_display') }}</p>
                     </div>
+
+                    <h2 class="stat-rate">
+                        Statistics
+                    </h2>
+                    <!-- TODO MEHDI -->
                 </div>
             </div>
         </div>
     </main>
 </template>
+
 <style scoped>
 h1,
 .category-title {
@@ -186,7 +188,14 @@ h1,
         0 0 30px rgba(255, 20, 147, 0.6),
         0 0 40px rgba(255, 20, 147, 0.6),
         0 0 50px rgba(255, 20, 147, 0.6),
-        0 0 60px rgba(255, 20, 147, 0.6); 
+        0 0 60px rgba(255, 20, 147, 0.6);
+}
+
+h2 {
+    font-size: 3.5rem;
+    color: #fff;
+    z-index: 1;
+    text-shadow: 0 0 5px rgba(255, 255, 255, .8), 0 0 10px rgba(255, 255, 255, .6), 0 0 20px rgba(255, 20, 147, .6), 0 0 30px rgba(255, 20, 147, .6), 0 0 40px rgba(255, 20, 147, .6), 0 0 50px rgba(255, 20, 147, .6), 0 0 60px rgba(255, 20, 147, .6);
 }
 
 .leaderboardContainer {
@@ -224,6 +233,12 @@ h1,
     height: 3vw;
     background-color: #fff;
     margin-right: 1vw;
+}
+
+.stat-rate {
+    position: fixed;
+    bottom: 27%;
+    left: 20%;
 }
 
 .user-info {
@@ -369,7 +384,7 @@ h1,
     display: flex;
     justify-content: space-around;
     margin-bottom: 10px;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.3); /* Ajoute une bordure en bas des lignes */
+    border-bottom: 1px solid rgba(255, 255, 255, 0.3);
 }
 
 .stat-col {
@@ -382,11 +397,10 @@ h1,
 
 .stat-row:first-child .stat-col {
     font-weight: bold;
-    border-top: 1px solid rgba(255, 255, 255, 0.3); /* Ajoute une bordure en bas des lignes */
-
+    border-top: 1px solid rgba(255, 255, 255, 0.3);
 }
 
 .stat-col:not(:first-child) {
-    border-left: 1px solid rgba(255, 255, 255, 0.3); /* Ajoute une bordure à gauche sauf pour la première colonne */
+    border-left: 1px solid rgba(255, 255, 255, 0.3);
 }
 </style>
