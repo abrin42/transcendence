@@ -147,6 +147,33 @@ body {
     return cookieValue || '';
   }
 
+
+  async function setGameRank() {
+    try {
+        const response = await fetch('/api/game/setGameRank/', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRFToken': getCsrfToken(),
+            },
+            body: JSON.stringify({
+                id: lastSegment,
+            }),
+        });
+        if (response.ok) {
+            const responseData = await response.json();
+            console.log('rank updated successfully!', responseData);
+        }
+        else
+        {
+            const errorData = await response.json();
+            console.error('Error:', errorData.error);
+        }
+    } catch (error) {
+        console.error('Error updating game:', error);
+    }
+  }
+
   async function getIsPlayer() {
     try {
         const response = await fetch('/api/game/getIsPlayer/', {
@@ -264,6 +291,8 @@ body {
       connection = 0;
       // console.log(data.type);
       // socket.value.close();
+      await updateGameInfo();
+      await setGameRank();
       router.push(`/legacyrecap/${lastSegment}`);
     }
     else if (data.type == 'startGame')

@@ -69,6 +69,9 @@
             scoreplayer2.value = responseData.scorep2;
             gamestatus = responseData.state;
             
+            console.log("la game---");
+            console.log(responseData);
+
         }
         else if (response.status === 404) {
             goToHome();

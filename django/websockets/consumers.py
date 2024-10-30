@@ -294,7 +294,7 @@ class PongConsumer(AsyncWebsocketConsumer):
             while lstgame[self.room_id]['Game_on'] == 1:
                 await self.move_ball_remote()
                 await self.sendBall_remote(lstgame[self.room_id]['ball_x'], lstgame[self.room_id]['ball_y'])
-                await asyncio.sleep(0.01)
+                await asyncio.sleep(0.005)
             await asyncio.sleep(0.5)
 
 
