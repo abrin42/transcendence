@@ -9,7 +9,7 @@ import { onBeforeMount, ref, watch, onUnmounted } from 'vue';
 import { useUser } from '../useUser.js';
 import i18n from '../i18n.js';
 
-const { getUser } = useUser();
+const { getUser, userAccount, is_connected } = useUser();
 const router = useRouter();
 const timer = ref(10);
 let interval = null;
@@ -50,17 +50,26 @@ function shuffleParticipants() {
 
 // Démarrer le tournoi si le nombre de participants est de 4
 async function startTournament() {
+
     if (participants.value.length === 4) {
+        createFalsePlayer(participants.value[0].name, participants.value[1].name, participants.value[2].name, participants.value[3].name);
+
         shuffleParticipants(); // Mélange les participants
         setupSemiFinals(); // Configure les demi-finales
-        await new Promise(resolve => setTimeout(resolve, 1000));
-        updateScore(0);
-        await new Promise(resolve => setTimeout(resolve, 1000));
-        updateScore(1);
-        await new Promise(resolve => setTimeout(resolve, 1000));
-        updateScore(2);
-        await new Promise(resolve => setTimeout(resolve, 1000));
-        updateScore(3);
+        for (let i = 0; i < 4; ++i) {
+            await new Promise(resolve => setTimeout(resolve, 1000));
+            await start_game(i);
+            updateScore(i);
+            // await new Promise(resolve => setTimeout(resolve, 1000));
+            // await start_game();
+            // updateScore(1);
+            // await new Promise(resolve => setTimeout(resolve, 1000));
+            // await start_game();
+            // updateScore(2);
+            // await new Promise(resolve => setTimeout(resolve, 1000));
+            // await start_game();
+            // updateScore(3);
+        }
         // updateFinals();
         // startTimer();
     }
@@ -68,10 +77,10 @@ async function startTournament() {
 
 // Configuration des demi-finales avec les participants mélangés
 function setupSemiFinals() {
-    matches.value[0].team1 = participants.value[0].name;
-    matches.value[0].team2 = participants.value[1].name;
-    matches.value[1].team1 = participants.value[2].name;
-    matches.value[1].team2 = participants.value[3].name;
+    matches.value[0].team1 = '#' + participants.value[0].name;
+    matches.value[0].team2 = '#' + participants.value[1].name;
+    matches.value[1].team1 = '#' + participants.value[2].name;
+    matches.value[1].team2 = '#' + participants.value[3].name;
 }
 
 // Fonction pour ajouter les participants
@@ -93,8 +102,10 @@ function addParticipants() {
 
 // Mettre à jour les finales
 function updateScore(match_index) {
-    matches.value[match_index].score1 = 8;
-    matches.value[match_index].score2 = 10;
+    matches.value[match_index].score1 = player1Score;
+    matches.value[match_index].score2 = player2Score;
+    player1Score = 0;
+    player2Score = 0;
     if (matches.value[match_index].score1 > matches.value[match_index].score2) {
         matches.value[match_index].winner = matches.value[match_index].team1;
         matches.value[match_index].loser = matches.value[match_index].team2;
@@ -151,11 +162,579 @@ function stopTimer() {
 onUnmounted(() => {
     stopTimer();
 });
+
+
+
+
+import paddleHitSound from '../assets/paddle_hit.mp3'
+import pointScoredSound from '../assets/point_scored.mp3'
+import wallHitSound from '../assets/wall_hit.mp3'
+
+////////////////////////////////////////////////
+/////// GET USER ///////////////////////////////
+////////////////////////////////////////////////
+
+onBeforeMount(async () => {
+      await getUser();
+      if (is_connected.value === false)
+          __goTo('/')
+  });
+
+async function end_game()
+{
+    console.log("============ON PASSE DEDANS");
+    // if (canPlay.value == 1)
+    // {
+        clearInterval(moveInterval1up);
+        moveInterval1up = null;
+        document.removeEventListener("keydown", movePlayer1up);
+        clearInterval(moveInterval1down);
+        moveInterval1down = null;
+        document.removeEventListener("keydown", movePlayer1down);
+        clearInterval(moveInterval2up);
+        moveInterval2up = null;
+        document.removeEventListener("keydown", movePlayer2up);
+        clearInterval(moveInterval2down);
+        moveInterval2down = null;
+        document.removeEventListener("keydown", movePlayer2down);
+        document.removeEventListener('keyup', stopPlayer);
+        document.removeEventListener("keydown", muteSound);
+    // }
+    if (animationFrameId) {
+        cancelAnimationFrame(animationFrameId);
+        animationFrameId = null;
+    }
+    if (socket.value) {
+        socket.value.close();
+    }
+    canPlay.value = 0;
+    ball.x  =  boardWidth / 2;
+    ball.y = boardHeight / 2;
+    player1.y =  boardHeight/5*2;
+    player2.y =  boardHeight/5*2;
+}
+
+let moveUpP1;
+let moveDownP1;
+let moveUpP2;
+let moveDownP2;
+let mute;
+
+async function start_game(i) {
+
+    await getUser();
+    await createGameLocal(i);
+    connectWebSocket();
+    board = document.getElementById("board");
+    board.height = boardHeight;
+    board.width = boardWidth;
+    context = board.getContext("2d"); //Drawing on board
+
+    context.fillStyle = "white";
+    context.fillRect(player1.x, player1.y, player1.width, player1.height);
+
+    /////Game controls//////
+    moveUpP1 = userAccount.player1Up;
+    moveDownP1 = userAccount.player1Down;
+    moveUpP2 = userAccount.player2Up;
+    moveDownP2 = userAccount.player2Down;
+    mute = userAccount.mute;
+
+    animationFrameId = requestAnimationFrame(update); // Gameloop
+
+    // if (canPlay.value == 1)
+    // {
+        document.addEventListener("keydown", movePlayer1up);
+        document.addEventListener("keydown", movePlayer1down);
+        document.addEventListener("keydown", movePlayer2up);
+        document.addEventListener("keydown", movePlayer2down);
+        document.addEventListener("keydown", muteSound);
+        document.addEventListener('keyup', stopPlayer);
+    // }
+    canPlay.value = 1;
+    while (canPlay.value == 1)
+    {
+        await new Promise(resolve => setTimeout(resolve, 1000));
+    }
+}
+
+////////////////////////////////////////////////
+////////////////////////////////////////////////
+////////////////////////////////////////////////
+
+const socket = ref(null);
+// const message = ref('');
+const messages = ref([]);
+const connectionStatus = ref('');
+let connection = 0;
+let canPlay = ref(0);
+
+////////////Audio Variables///////////////
+const wallHitAudio = new Audio(wallHitSound);
+const paddleHitAudio = new Audio(paddleHitSound);
+const pointScoredAudio = new Audio(pointScoredSound);
+let soundOnOff = true;
+const currentUrl = window.location.href; 
+const lastSegment = currentUrl.split('/').filter(Boolean).pop();
+const gamePage = `game_${lastSegment}`;
+
+let current_game_id = ref(0);
+
+
+function getCsrfToken() {
+        const cookieValue = document.cookie
+            .split('; ')
+            .find(row => row.startsWith('csrftoken='))
+            ?.split('=')[1];
+        return cookieValue || '';
+    }
+
+
+    async function createGameLocal(i)
+{
+    try {
+        const response = await fetch('/api/game/create_game_local/', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRFToken': getCsrfToken() // Assuming you have CSRF protection enabled
+            },
+            body: JSON.stringify({
+                username1: matches.value[i].team1,
+                username2: matches.value[i].team2, //change to seconde player
+            })
+        });
+        if (response.ok) {
+            const data = await response.json();
+            console.log('---Game Data:', data);
+
+            current_game_id.value = data.id;
+
+        }
+    }
+    catch (error) {
+        console.error('Erreur lors de la connexion:', error);
+        alert(i18n.global.t('error_login'));
+    }
+}
+
+
+
+
+async function createFalsePlayer(user1, user2, user3 ,user4)
+{
+    try {
+        const response = await fetch('/api/game/createFalsePlayer/', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRFToken': getCsrfToken(),
+            },
+            body: JSON.stringify({
+                username1: user1,
+                username2: user2,
+                username3: user3,
+                username4: user4,
+            })
+        });
+        if (response.ok) {
+            const data = await response.json();
+            console.log('Game Data:', data);
+        }
+    }
+    catch (error) {
+        console.error('Erreur lors de la connexion:', error);
+        alert(i18n.global.t('error_login'));
+    }
+}
+
+
+
+//     async function setGameRank() {
+//     try {
+//         const response = await fetch('/api/game/setGameRank/', {
+//             method: 'POST',
+//             headers: {
+//                 'Content-Type': 'application/json',
+//                 'X-CSRFToken': getCsrfToken(),
+//             },
+//             body: JSON.stringify({
+//                 id: lastSegment,
+//             }),
+//         });
+//         if (response.ok) {
+//             const responseData = await response.json();
+//             console.log('rank updated successfully!', responseData);
+//         }
+//         else
+//         {
+//             const errorData = await response.json();
+//             console.error('Error:', errorData.error);
+//         }
+//     } catch (error) {
+//         console.error('Error updating game:', error);
+//     }
+// }
+
+
+async function updateGameInfo() {
+    try {
+        const response = await fetch('/api/game/update_game/', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRFToken': getCsrfToken(),
+            },
+            body: JSON.stringify({
+                mode: "legacy",
+                scorep1: player1Score,
+                scorep2: player2Score,
+                id: current_game_id.value,
+            }),
+        });
+        if (response.ok) {
+            const responseData = await response.json();
+            console.log('Game updated successfully!', responseData);
+        } else {
+            const errorData = await response.json();
+            console.error('Error:', errorData.error);
+        }
+    } catch (error) {
+        console.error('Error updating game:', error);
+    }
+}
+
+    //board properties
+    let board;
+    let boardWidth = 700;
+    let boardHeight = 700;
+    let context;
+
+    //players propertiesupdate_game
+    let playerWidth = 20;
+    let playerHeight = boardHeight/5;
+    let playerSpeed = 0;
+
+    let player1 = {
+        x : 10,
+        y: boardHeight/5*2,
+        width : playerWidth,
+        height : playerHeight,
+        speed : playerSpeed
+    }
+
+    let player2 = {
+        x : boardWidth - playerWidth - 10,
+        y: boardHeight/5*2, 
+        width : playerWidth,
+        height : playerHeight,
+        speed: playerSpeed
+    }
+
+    //ball properties
+    let ballSize = 10;
+    let ball = {
+    x : boardWidth / 2,
+    y : boardHeight / 2,
+    width : ballSize,
+    height : ballSize,
+    }
+    
+    //score
+    let player1Score = 0;
+    let player2Score = 0;
+    
+
+function  updatePoints(player, updatePts)
+{
+// console.log(player);
+// console.log(updatePts);
+if (player == 1)
+{
+    player1Score = updatePts;
+}
+else if (player == 2)
+{
+    player2Score = updatePts;
+}
+}
+
+function  updatePadel(player, newY)
+{
+if (player == 1)
+{
+    player1.y = newY;
+}
+else if (player == 2)
+{
+    player2.y = newY;
+}
+}
+
+function updateBaal(x, y)
+{
+ball.x = x;
+ball.y = y;
+}
+
+function connectWebSocket() {
+console.log(lastSegment);
+let hostName =  window.location.hostname;
+let port = window.location.port || '8443';
+socket.value = new WebSocket(`wss://${hostName}:${port}/ws/websockets/?page=${encodeURIComponent(gamePage)}`);
+
+socket.value.onopen = () => {
+    console.log('WebSocket connecté');
+    console.log(socket.value);
+};
+
+
+socket.value.onmessage = async (event) => {
+    // console.log("---ON MESSAGE---");
+    
+    const data = JSON.parse(event.data);
+    
+    if (data.type == 'connection_success') 
+    {
+
+    // console.log(data.type);
+    // console.log(data.message);
+    // connectionStatus.value = data.message;
+    connection = 1;
+    }
+    else if (data.type == 'updatePts') //sound
+    {
+    // console.log(data.type);
+    // console.log(data.updatePts);
+    // console.log(data.player);
+    updatePoints(data.player, data.updatePts);
+    if (soundOnOff == true)
+    pointScoredAudio.play();
+    await updateGameInfo();
+    } 
+    else if (data.type == 'updatePaddle')
+    {
+    updatePadel(data.player, data.newY);
+    // messages.value.push(data.type);
+    }
+    else if (data.type == 'updateBaal')
+    {
+    // console.log(data.x);
+    // console.log(data.y);
+    updateBaal(data.x, data.y);
+    }
+    else if (data.type == 'endGame')
+    {
+    connection = 0;
+    // console.log(data.type);
+    await updateGameInfo();
+    // await setGameRank();
+    await end_game();
+    // socket.value.close();
+    // router.push(`/legacyrecap/${lastSegment}`);
+    }
+    else if (data.type == 'startGame')
+    {
+    await updateGameInfo();
+    // console.log(data.type);
+    }
+    else if (data.type == 'paddleHit')
+    {
+    // console.log(data.type);
+    if (soundOnOff == true)
+        paddleHitAudio.play();
+    }
+    else if (data.type == 'wallHit')
+    { 
+    // console.log(data.type);
+    if (soundOnOff == true)
+        wallHitAudio.play();
+    }
+    else if (data.type == 'info_back') //a enlever test
+    {
+    // console.log(data.type);
+    // console.log(data.value_back1);
+    // console.log(data.value_back2);
+    // console.log(data.value_back3);
+    }
+    // console.log("---END ON MESSAGE---");
+};
+}
+
+
+function sendMessage(msg) {
+if (socket.value && socket.value.readyState === WebSocket.OPEN) 
+{
+    socket.value.send(JSON.stringify({
+    'type': msg.type,
+    'player': msg.player,
+    }));
+}
+else 
+{
+    console.error('WebSocket non connecté');
+}
+}
+
+let animationFrameId = null;
+
+
+    function update() 
+    {
+        // console.log("boucle game update");
+        animationFrameId = requestAnimationFrame(update);
+        console.log();
+        context.clearRect(0, 0, board.width, board.height); // clear rectangle after movement (remove previous paddle position)
+        context.fillRect(player1.x, player1.y, player1.width, player1.height); 
+        context.fillRect(player2.x, player2.y, player2.width, player2.height);
+        context.fillStyle = "white";
+        context.fillRect(ball.x- (ball.width/2), ball.y, ball.width, ball.height);
+        //draw score
+        context.font = "100px Arial";
+        context.fillText(player1Score, boardWidth/5, 100);
+        context.fillText(player2Score, boardWidth*4/5 -50 , 100); //subtract -45 for width of tex
+        
+        //draw middle line
+        for (let i = 10; i < board.height; i += 25)
+        {
+            context.fillRect(board.width / 2 - 1, i, 2, 15);
+        }
+    }
+    
+    let moveInterval1up = null;
+    let moveInterval1down = null;
+    let moveInterval2up = null;
+    let moveInterval2down = null;
+    let tickPadel = 10;
+
+    function movePlayer1up(e)
+    {
+    if (!moveInterval1up)
+    {
+        if (e.code == moveUpP1)
+        {
+        moveInterval1up = setInterval(() => 
+        {
+            const message = 
+            {
+            type: "mouvUp",
+            player: "1",
+            };
+            sendMessage(message);                    
+            
+        },
+        tickPadel);
+        }
+    }
+    }
+
+    function movePlayer1down(e)
+    {
+    if (!moveInterval1down)
+    {
+        if (e.code == moveDownP1)
+        {
+        moveInterval1down = setInterval(() => 
+        {
+            const message = 
+            {
+            type: "mouvDown",
+            player: "1",
+            };
+            sendMessage(message);                    
+        },
+        tickPadel);
+        }
+    }
+    }
+    
+    function movePlayer2up(e)
+    {
+    if (!moveInterval2up)
+    {
+        if (e.code == moveUpP2)
+        {
+        moveInterval2up = setInterval(() => 
+        {
+            const message = 
+            {
+            type: "mouvUp",
+            player: "2",
+            };
+            sendMessage(message);                    
+            
+        },
+        tickPadel);
+        }
+    }
+    }
+
+    function movePlayer2down(e)
+    {
+    if (!moveInterval2down)
+    {
+        if (e.code == moveDownP2)
+        {
+        moveInterval2down = setInterval(() => 
+        {
+            const message = 
+            {
+            type: "mouvDown",
+            player: "2",
+            };
+            sendMessage(message);                    
+        },
+        tickPadel);
+        }
+    }
+    }
+
+    function muteSound(e)
+    {
+    if (e.code == mute)
+    {
+        console.log(soundOnOff);
+        soundOnOff = !soundOnOff;
+        console.log(soundOnOff);
+    }
+    }
+
+
+    function stopPlayer(e) {
+    if (e.code == moveUpP1)
+    {  
+        clearInterval(moveInterval1up);
+        moveInterval1up = null;
+    }
+    else if(e.code == moveDownP1)
+    {
+        clearInterval(moveInterval1down);
+        moveInterval1down = null;
+    }
+    else if (e.code == moveUpP2)
+    {  
+        clearInterval(moveInterval2up);
+        moveInterval2up = null;
+    }
+    else if (e.code == moveDownP2)
+    {
+        clearInterval(moveInterval2down);
+        moveInterval2down = null;
+    }
+    }
 </script>
 
 <template>
     <main>
         <div id="wrapper">
+            <div id="black-background">
+                <div>
+                    <canvas id ="board" ></canvas>
+                </div>
+                <div>
+                    <h2 id="mute">[{{ userAccount.mute }}] {{ $t('to_mute_unmute') }}</h2>
+                </div>
+            </div>
             <div class="theme">
                 <!-- Si le nombre de participants est différent de 4, affiche la configuration -->
                 <div v-if="participants.length !== 4" class="custom-content">
@@ -235,7 +814,14 @@ onUnmounted(() => {
 </template>
 
 
-<style scoped>
+<style scoped lang="scss">
+.wrapper {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+}
+
 .theme {
     height: 100%;
     width: 100%;
@@ -338,4 +924,30 @@ onUnmounted(() => {
     padding: 10px;
     border-radius: 5px;
 }
-</style>
+
+  body {
+    text-align: center;
+  }
+  
+  #mute {
+    color: rgb(114, 114, 114);
+    font-size: 25px;
+    left: 20%;
+    top: 67%;
+  }
+  
+  #black-background{
+    height: 100vh;
+    width: 100vw;
+    background-color: black;
+  }
+  
+  #board {
+    background-color: black;
+    border: 5px solid white;
+    width: 700px;
+    height: 700px;
+  }
+  </style>
+  
+  

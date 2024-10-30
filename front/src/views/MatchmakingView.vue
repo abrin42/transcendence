@@ -7,7 +7,7 @@
             <CreateHomeButton />
             <CreateBackButton />
             <h2 id="matchmaking-title">Matchmaking</h2>
-            <p id="game-type">game-mode: {{gametype}}</p>
+            <p id="game-type">{{ $t('game-mode') }}: {{gametype}}</p>
             <p id="game-advice">{{tipdisplayed}}</p>
             <div class="button-container-mm">
                 <img id="versus-image" src="../assets/vs_text.png"/>
