@@ -22,7 +22,6 @@ class Player(AbstractUser):
     phone_number = PhoneNumberField(blank=True, null=True)
 
     profile_picture = models.TextField(null=True)
-    #image_data_url = models.CharField(null=True)
     language = models.CharField(max_length=2, default="EN")
     socket = models.CharField(max_length=255, null=True, blank=True)
 

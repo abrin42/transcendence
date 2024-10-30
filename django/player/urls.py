@@ -16,7 +16,6 @@ urlpatterns = [
     path('logout/', views.logout_view, name='logout'),
     
     path('get_csrf_token/', utils.get_csrf_token, name='get_csrf_token'),
-    #path('verify_csrf/', utils.verify_csrf, name='verify_csrf'),
     path('verify_user/', utils.verify_user, name='verify_user'),
     path('verify-jwt/', jwt.verify_jwt, name='verify_jwt'),
     path('connected_user/', utils.connected_user, name='connected_user'),
@@ -24,7 +23,6 @@ urlpatterns = [
 
     path('update_language/', update.update_language, name='update_language'),
     path('update_user/', update.update_user, name='update_user'),
-    #path('update_profile_picture/', update.update_profile_picture, name='update_profile_picture'),
     path('update_keys/', update.update_keys, name='update_keys'),
     path('delete_account/', views.delete_account, name='delete_account'),    
     

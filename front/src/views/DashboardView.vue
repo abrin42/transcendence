@@ -46,20 +46,19 @@
     const phone_number = ref('');
 
     defineExpose({
-        username,
         email,
         phone_number,
     });
 
-    function isValidUsername(username) {
+    function isValidNickname(nickname) {
         const dangerousWords = ["admin", "root", "superuser", "user", "hitler", "@AI.Bot"];
         for (let word of dangerousWords) {
-            if (new RegExp(`\\b${word}\\b`, "i").test(username)) {
+            if (new RegExp(`\\b${word}\\b`, "i").test(nickname)) {
                 return false;
             }
         }
-        const usernameRegex = /^[a-zA-Z0-9_]+$/;
-        return usernameRegex.test(username);
+        const nicknameRegex = /^[a-zA-Z0-9_]+$/;
+        return nicknameRegex.test(nickname);
     }
 
     function isValidPassword(password) {
@@ -82,7 +81,7 @@
     ////////////////////////////////////////////////
     
     async function updateAccount() {
-        if (!isValidUsername(userAccount.nickname)) {
+        if (!isValidNickname(userAccount.nickname)) {
             alert(i18n.global.t('should_not_contain_spaces'));
             return;
         }
@@ -98,8 +97,8 @@
                 return;
             }
         }
-        if (userAccount.newpassword)
-        {
+
+        if (userAccount.newpassword) {
             if (!isValidPassword(userAccount.newpassword)) {
                 alert(
                     i18n.global.t('should_contain_capital_letter') +
@@ -111,6 +110,7 @@
                 return;
             }
         }
+
         try {
             const response = await fetch('/api/player/update_user/', {
                 method: 'POST',
@@ -128,6 +128,7 @@
                     email_2fa_active: userAccount.email_2fa_active,
                     sms_2fa_active: userAccount.sms_2fa_active,
                     anonymized: userAccount.anonymized,
+                    username
                 })
             });
             if (response.ok) {

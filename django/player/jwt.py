@@ -5,9 +5,6 @@ from .models import BlacklistedToken, Player
 import jwt
 import datetime
 
-
-#User = get_user_model()
-
 def update_user_zero():
     ano = Player.objects.filter(username='anonymous', email='cyberpong16@gmail.com')
     if len(ano) != 1:
@@ -27,7 +24,6 @@ def generate_jwt(user):
 def decode_jwt(token):
     if BlacklistedToken.objects.filter(token=token).exists():
         return None
-    
     try:
         payload = jwt.decode(token, settings.JWT_SECRET_KEY, algorithms=['HS256'])
         user = Player.objects.get(id=payload['user_id'])
@@ -41,11 +37,9 @@ def decode_jwt(token):
 
 def token_user(request):
     token = request.COOKIES.get('jwt')
-    print(token)
     if not token:
         return None
     user = decode_jwt(token)
-    print(user)
     if not user or user is None:
         return None
     return user
@@ -63,7 +57,6 @@ def verify_jwt(request):
     token = request.COOKIES.get('jwt')
     if not token:
         return JsonResponse({'valid': False, 'message': 'No token found', 'user': None}, status=401)
-    
     user = decode_jwt(token)
     if isinstance(user, Player):
         return JsonResponse({'valid': True, 'message': 'Token is valid', 'user': user}, content_type='application/json')

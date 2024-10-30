@@ -15,18 +15,11 @@ import requests
 import json
 
 def get_csrf_token(request):
-    print(request)
-    print(f"/getcsrf/request.session['csrf']: {request.session.get('csrf')}")     
-    print(f"/getcsrf/request.COOKIES.get('csrftoken'): {request.COOKIES.get('csrftoken')}")     
-
     if request.COOKIES.get('csrftoken') is None:
         csrf_token = get_token(request)
-
     csrf_token = request.COOKIES.get('csrftoken')
-    print(f"callback/ csrf_token: {csrf_token}")     
     request.session['csrf'] = csrf_token
-    print(f"callback/ request.session.get['csrf']: {request.session.get('csrf')}")     
-    
+
     response = JsonResponse({'message': 'CSRF token generated'}, status=200)
     response.set_cookie('csrftoken', csrf_token)
     return response
@@ -36,10 +29,6 @@ def verify_user(request):
         try:
             user = get_object_or_404(Player, username=request.user.username)
             player_data = serializers.serialize('json', [user])
-
-            print(f"verify_user/username: {user.username}")
-            print(f"verify_user/phone_number: {user.phone_number}")
-            print(f"verify_user/email: {user.email}")
 
             return JsonResponse({'player_data': player_data}, content_type='application/json', status=200)
         except Player.DoesNotExist:
