@@ -113,6 +113,10 @@ async function startTimer() {
     }
 }
 
+onUnmounted(() => {
+    end_game();
+});
+
 
 
 import paddleHitSound from '../assets/paddle_hit.mp3'

@@ -166,5 +166,30 @@
 
 
 
-    "privacy_policy": "Datenschutzbestimmungen"
+    "privacy_policy": "Datenschutzbestimmungen",
+    "effective_date": "Datum des Inkrafttretens:",
+    "date": "20/07/2024",
+    "introduction": "1. Einleitung",
+    "welcome_to_pong_wars": "Willkommen bei Pong Wars („wir“, „unser“ oder „uns“). In dieser Datenschutzerklärung wird dargelegt, wie wir die persönlichen Daten, die Sie uns bei der Nutzung unserer Website und unserer Dienstleistungen zur Verfügung stellen, sammeln, verwenden und schützen. Wir nehmen Ihre Privatsphäre ernst und verpflichten uns, dafür zu sorgen, dass Ihre persönlichen Daten sicher sind.",
+    "information_we_collect": "2. Informationen, die wir sammeln",
+    "personal_information": "2.1. Persönliche Informationen",
+    "we_collect_following_informations": "Wir erheben die folgenden personenbezogenen Daten, um unsere Dienste bereitzustellen und zu verbessern:",
+    "we_collect_email_address": "E-Mail Adresse: Wird für die Kontoverwaltung und Kommunikation verwendet.",
+    "we_collect_phone_number": "Rufnummer: Wird für die Zwei-Faktor-Authentifizierung (2FA) verwendet, um Ihr Konto zu sichern.",
+    "we_collect_username": "Benutzername: Wird für Spiel- und Kontozwecke erfasst und verwendet.",
+    "game_information": "2.2. Spiel-Informationen",
+    "gameplay_data": "Gameplay-Daten: Enthält Spielstände, Erfolge und Einstellungen, um Ihr Spielerlebnis zu verbessern.",
+    "how_we_use_your_information": "3. Wie wir Ihre Informationen verwenden",
+    "we_use_your_information_for": "Wir verwenden Ihre personenbezogenen Daten für die folgenden Zwecke:",
+    "for_account_security": "Kontosicherheit: Um 2FA zu aktivieren und Ihr Konto zu schützen.",
+    "for_communication": "Kommunikation: Um kontobezogene Benachrichtigungen zu versenden und Anfragen zu beantworten.",
+    "for_gameplay_data": "Gameplay-Daten: Zur Bereitstellung relevanter spielbezogener Informationen.",
+    "for_service_improvement": "Verbesserung der Dienstleistungen: Analyse und Verbesserung der Nutzererfahrung.",
+    "legal_basis_for_processing": "4. Rechtsgrundlage für die Verarbeitung",
+    "we_process_your_data_based_on": "Wir verarbeiten Ihre personenbezogenen Daten auf der Grundlage von:",
+    "consent": "Einverständnis: Wir bitten Sie um Ihre ausdrückliche Zustimmung für die 2FA und die Kontoverwaltung.",
+    "contractual_necessity": "Vertragliche Notwendigkeit: Die Verarbeitung ist erforderlich, um unsere Dienste und den Zugang zu Spielinformationen bereitzustellen.",
+    "legitimate_interests": "Berechtigte Interessen: Für die Sicherheit und Verbesserung unserer Plattform und Dienste.",
+    "contact_us": "10. Kontakt",
+    "any_questions_contact_us": "Wenn Sie Fragen oder Bedenken zu dieser Datenschutzrichtlinie oder unseren Datenpraktiken haben, wenden Sie sich bitte an uns:"
 }
