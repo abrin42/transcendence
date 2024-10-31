@@ -163,7 +163,7 @@ async function getAllUsers() {
                     <h2 class="stat-rate">
                         Statistics
                     </h2>
-                    <PieChart class="pie-chart-pos" :winRate="user[0].winRate" :loseRate="user[0].loseRate" />
+                    <!-- TO DO MEHDI -->
                 </div>
             </div>
         </div>
