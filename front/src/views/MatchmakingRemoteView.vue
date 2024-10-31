@@ -74,6 +74,38 @@
         // await createGameLocal();
     });
 
+    onUnmounted(async () => {
+        if (game.player2 == null){
+            deleteGame();
+        }
+    });
+
+    async function deleteGame() {
+    try {
+        const response = await fetch('/api/game/deleteGame/', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRFToken': getCsrfToken() // Assuming you have CSRF protection enabled
+            },
+            body: JSON.stringify({
+                id: game.id,
+            })
+        });
+        if (response.status == 404)
+        {
+            console.log("404 de la fonction");
+        }
+    }
+            // else
+            // {
+            //     //gestion error ? 
+            // }
+    catch (error) {
+        console.error('Erreur lors de la connexion:', error);
+        alert('An error occurred while logging in');
+    }
+}
 
     function stopLoading() {
         clearInterval(dots);  // Stop the interval
@@ -97,6 +129,8 @@
         return cookieValue || '';
     }
 
+    let game = ref([]);
+    let gameid = -1;
     let player1 = "";
     let player2 = "";
     let isPlayer2 = 1;
@@ -139,7 +173,12 @@ async function insertPlayer() {
             console.log("404 de la fonction");
         }
         if (response.ok) {
-            const game = await response.json();
+            game = await response.json();
+            console.log("___b_ids____", game.id, gameid);
+            if (gameid == -1) {gameid = game.id}
+            console.log("___a_ids____", game.id, gameid);
+            if (game.id != gameid)
+                return;
             console.log("hereeeeeeeeeeee");
             if (game.player2 == null) {
                 waitingPlayer = 1;

@@ -15,7 +15,7 @@ urlpatterns = [
     path('createFalsePlayer/', views.createFalsePlayer, name='createFalsePlayer'),
     path('createOneFalsePlayer/', views.createOneFalsePlayer, name='createOneFalsePlayer'),
     path('setGameRank/', views.setGameRank, name='setGameRank'),
-
+    path('deleteGame/', views.deleteGame, name='deleteGame'),
 
     # path('getgameid/', views.getgameid, name="getgameid"),
 ]
