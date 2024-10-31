@@ -159,17 +159,24 @@ async function getAllUsers() {
                     <div class="game-button game-info" v-else>
                         <p>{{ $t('no_games_to_display') }}</p>
                     </div>
-
-                    <h2 class="stat-rate">
-                        Statistics
-                    </h2>
-                    <!-- TO DO MEHDI -->
                 </div>
+                <h2 class="stat-rate">
+                    Statistics
+                </h2>
+                <!-- <PieChart class="pie-chart-pos" :winRate="user[0].winRate" :loseRate="user[0].loseRate" /> -->
+        
+                <PieChart v-if="user[0].username!=''" class="pie-chart-pos" :winRate="user[0].winRate" :loseRate="user[0].loseRate" />
+                <!-- <PieChart :winRate="user[0].winRate" :loseRate="user[0].loseRate" /> -->
             </div>
         </div>
     </main>
 </template>
 <style scoped>
+#wrapper {
+    width: 100%;
+    height: 100%;
+}
+
 h1,
 .category-title {
     font-size: 3.5rem;
@@ -208,16 +215,8 @@ h2 {
 
 .pie-chart-pos {
     position: fixed;
-    bottom: 23%;
-    left: 42%;
-}
-
-.overloadBtn {
-    position: fixed;
-    width: 3vw;
-    height: 6vh;
-    bottom: 93vh;
-    right: 95vw;
+    bottom: 27%;
+    left: 48%;
 }
 
 .profile-picture {
@@ -238,7 +237,7 @@ h2 {
 
 .stat-rate {
     position: fixed;
-    bottom: 27%;
+    bottom: 32%;
     left: 20%;
 }
 
@@ -299,8 +298,9 @@ h2 {
 .latestGameTitle {
     font-size: 2vw;
     color: #fff;
+    text-align: center;
     margin-bottom: 1vh;
-    left: 64%;
+    left: 69%;
     top: 25%;
 }
 
