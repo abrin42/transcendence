@@ -1,5 +1,5 @@
 <script setup>
-    import { ref, onBeforeUnmount, onBeforeMount } from 'vue';
+    import { ref, onBeforeUnmount, onMounted } from 'vue';
     import CreateBackButton from '../components/CreateBackButton.vue';
     import CreateDropupButton from '@/components/CreateDropupButton.vue';
     import CreateHomeButton from '@/components/CreateHomeButton.vue';
@@ -12,7 +12,7 @@
     import { useUser } from '../useUser.js'; 
     const { getUser, userAccount, is_connected } = useUser(); 
 
-    onBeforeMount(async () => {
+    onMounted(async () => {
         await getUser();
     });
 
@@ -58,10 +58,10 @@
         }
 
         const data = await response.json();
+        console.log(data);
         
     } catch (error) {
         console.error('Could not change', error);
-        alert('An error occurred during updating keys.');
     }
 }
 
@@ -95,7 +95,7 @@
             (selectedKey.value === 'pause' && newKey === userAccount.pause) ||
             (selectedKey.value === 'mute' && newKey === userAccount.mute)
         ) {
-            alert(i18n.global.t('error_cannot_use_same_key'));
+            //alert(i18n.global.t('error_cannot_use_same_key'));
             return;
         }
 
@@ -113,10 +113,9 @@
                 userAccount.pause = event.code;
             else if(selectedKey.value === 'mute')
                 userAccount.mute = event.code;
-            if (is_connected === true)
-                update_keys();
-                selectedKey.value = null;
-                window.removeEventListener('keydown', setKey);
+            update_keys();
+            selectedKey.value = null;
+            window.removeEventListener('keydown', setKey);
         }
     };
 
