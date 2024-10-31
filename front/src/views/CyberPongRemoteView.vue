@@ -139,8 +139,6 @@ body {
 
   let moveUpP1;
   let moveDownP1;
-  let moveUpP2;
-  let moveDownP2;
   let mute;
 
 onMounted(async () => {
@@ -157,8 +155,6 @@ onMounted(async () => {
   /////Game controls//////
   moveUpP1 = userAccount.player1Up;
   moveDownP1 = userAccount.player1Down;
-  moveUpP2 = userAccount.player2Up;
-  moveDownP2 = userAccount.player2Down;
   mute = userAccount.mute;
 
   animationFrameId = requestAnimationFrame(update); // Gameloop

@@ -59,9 +59,10 @@ import { useRouter } from 'vue-router';
           __goTo('/')
   });
 
-  onUnmounted(() => {
-  if (canPlay.value == 1)
-  {
+  
+  onUnmounted(async() => {
+    if (canPlay.value == 1)
+    {
     clearInterval(moveInterval1up);
     moveInterval1up = null;
     document.removeEventListener("keydown", movePlayer1up);
@@ -434,14 +435,6 @@ function connectWebSocket() {
       if (soundOnOff == true)
         wallHitAudio.play();
     }
-    else if (data.type == 'info_back') //a enlever test
-    {
-      // console.log(data.type);
-      // console.log(data.value_back1);
-      // console.log(data.value_back2);
-      // console.log(data.value_back3);
-    }
-    // console.log("---END ON MESSAGE---");
   };
 
   socket.value.onerror = (error) => {
@@ -450,6 +443,12 @@ function connectWebSocket() {
 
   socket.value.onclose = () => {
     console.log('WebSocket déconnecté, tentative de reconnexion...');
+    const message = 
+    {
+      type: "unMountedIA",
+      player: "1",
+    };
+    sendMessage(message);      
     setTimeout(() => 
     {
       if (connection != 0)

@@ -57,14 +57,17 @@ class PongConsumer(AsyncWebsocketConsumer):
                 await self.sendPadDown(2)
 
     async def ai_loop_game(self):
+        print("debut de la boucle ia")
         while self.P1Ready != -1:
             await asyncio.sleep(0.5)
             self.begin_time = datetime.now().timestamp()
             while self.P1Ready == 1:
+                print(self.P1Ready)
                 await self.ai_get_infos_every_second()
                 await self.ai_back_to_center()
                 await self.ai_catch_ball()
                 await asyncio.sleep(self.tick_back)
+        print("fin de la boucle ia")
 
 
 # ==========================================================================================================================
@@ -372,8 +375,6 @@ class PongConsumer(AsyncWebsocketConsumer):
             'type': 'paddleHit',
         }))
 
-
-
     async def paddle_collisions(self):
         if (self.future_x <= self.xPad1  + self.paddle_width + self.ball_radius and self.future_x >= self.xPad1  and self.future_y >= self.posPad1 - self.ball_radius and self.future_y <= self.posPad1 + self.paddle_height + self.ball_radius):
             self.position_in_paddle = (2 * (self.ball_y + self.ball_radius - self.posPad1) / (self.paddle_height + self.ball_radius * 2)) - 1
@@ -445,19 +446,7 @@ class PongConsumer(AsyncWebsocketConsumer):
             'type': 'updateBaal',
             'x': x,
             'y': y,
-        }))
-        
-    
-
-    async def sendinfo_back(self, value_back1, value_back2 ,value_back3):
-        await self.send(text_data=json.dumps({
-            'type': "info_back",
-            'value_back1': value_back1,
-            'value_back2': value_back2,
-            'value_back3': value_back3,
-        }))
-
-        
+        }))  
 
     async def end_Game(self, event):
         await self.send(text_data=json.dumps({
@@ -703,6 +692,12 @@ class PongConsumer(AsyncWebsocketConsumer):
         self.room_name = query_params.get('page', [''])[0]
         self.room_group_name = f"game_{self.room_name}"
         
+
+        print("-------------------------------------------------------------")
+        page_url = self.room_name.replace("game_ia_", "")
+        print(page_url)
+        print(self.room_group_name)
+        print(self.channel_name)
         await self.channel_layer.group_add(
             self.room_group_name,
             self.channel_name
@@ -729,10 +724,13 @@ class PongConsumer(AsyncWebsocketConsumer):
 
     async def disconnect(self, close_code):
         self.Game_on = 0
+        self.P1Ready = -1
         await self.send(text_data=json.dumps({
             'type': 'disconnect',
             'close_code': close_code
         }))
+
+
 
     async def receive(self, text_data):
         try:
@@ -754,7 +752,6 @@ class PongConsumer(AsyncWebsocketConsumer):
                     p2PTS = int(data.get('p2PTS', 0))
                     self.PTSp1 = p1PTS
                     self.PTSp2 = p2PTS
-                
             if self.P1Ready == 1 and self.P2Ready == 1 and self.Game_on == 0:
                 await self.sendStart()
             if self.is_online == 1:

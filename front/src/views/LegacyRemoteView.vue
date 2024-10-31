@@ -59,6 +59,10 @@ import { useRouter } from 'vue-router';
         __goTo('/')
   });
 
+  let moveUpP1;
+  let moveDownP1;
+  let mute = userAccount.mute;
+
   onUnmounted(() => {
   if (canPlay.value == 1 || canPlay.value == 2)
   {
@@ -99,6 +103,11 @@ onMounted(async () => {
   board.height = boardHeight;
   board.width = boardWidth;
   context = board.getContext("2d");
+
+  /////Game controls//////
+  moveUpP1 = userAccount.player1Up;
+  moveDownP1 = userAccount.player1Down;
+  mute = userAccount.mute;
 
   context.fillStyle = "white";
   context.fillRect(player1.x, player1.y, player1.width, player1.height);
@@ -409,12 +418,6 @@ let animationFrameId = null;
     let moveInterval2up = null;
     let moveInterval2down = null;
     let tickPadel = 10;
-
-    let moveUpP1 = "KeyW";
-    let moveDownP1 = "KeyS";
-    let moveUpP2 = "KeyE";
-    let moveDownP2 = "KeyD";
-    let mute = userAccount.mute;
 
     function movePlayer1up(e)
     {

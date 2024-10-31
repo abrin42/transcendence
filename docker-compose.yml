@@ -47,8 +47,6 @@ services:
 
 
 volumes:
-    static_volume:
-    media_volume:
     postgres_data:
       driver: local
     protonmail_config:
