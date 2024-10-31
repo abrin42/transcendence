@@ -57,7 +57,6 @@ class PongConsumer(AsyncWebsocketConsumer):
                 await self.sendPadDown(2)
 
     async def ai_loop_game(self):
-        print("debut de la boucle ia")
         while self.P1Ready != -1:
             await asyncio.sleep(0.5)
             self.begin_time = datetime.now().timestamp()
@@ -67,7 +66,6 @@ class PongConsumer(AsyncWebsocketConsumer):
                 await self.ai_back_to_center()
                 await self.ai_catch_ball()
                 await asyncio.sleep(self.tick_back)
-        print("fin de la boucle ia")
 
 
 # ==========================================================================================================================
@@ -692,12 +690,6 @@ class PongConsumer(AsyncWebsocketConsumer):
         self.room_name = query_params.get('page', [''])[0]
         self.room_group_name = f"game_{self.room_name}"
         
-
-        print("-------------------------------------------------------------")
-        page_url = self.room_name.replace("game_ia_", "")
-        print(page_url)
-        print(self.room_group_name)
-        print(self.channel_name)
         await self.channel_layer.group_add(
             self.room_group_name,
             self.channel_name

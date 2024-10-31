@@ -15,7 +15,7 @@
     <main>
         <div id="wrapper">
             <video autoplay muted loop class="flex">
-                <source src="./../assets/CreditsSceneNoEffects.mp4" type="video/mp4">
+                <source src="./../assets/CreditsScene.mp4" type="video/mp4">
                     Your browser does not support the video element.
             </video>
 
