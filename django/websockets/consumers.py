@@ -61,7 +61,6 @@ class PongConsumer(AsyncWebsocketConsumer):
             await asyncio.sleep(0.5)
             self.begin_time = datetime.now().timestamp()
             while self.P1Ready == 1:
-                print(self.P1Ready)
                 await self.ai_get_infos_every_second()
                 await self.ai_back_to_center()
                 await self.ai_catch_ball()
