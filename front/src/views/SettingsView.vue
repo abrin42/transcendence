@@ -41,7 +41,7 @@
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
-                'X-CSRFToken': getCsrfToken(), // Assuming CSRF protection is enabled
+                'X-CSRFToken': getCsrfToken(), 
             },
             body: JSON.stringify({
                 moveUpP1: userAccount.player1Up,

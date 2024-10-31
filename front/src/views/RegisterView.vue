@@ -168,7 +168,6 @@
 
 <template>
     <main>
-        <!-- Ajout de @keydown.enter sur le conteneur principal -->
         <div id="wrapper" @keydown.enter="handleEnter">
             <h1>{{ $t('SIGN_UP') }}</h1>
             <div class="logContainer">
@@ -176,7 +175,6 @@
                     <span class="buttonText buttonTextSize">{{ $t('login') }}</span>
                 </button>
 
-                <!-- Checkbox pour les conditions d'utilisation -->
                 <div class="terms-container">
                     <input type="checkbox" id="terms" v-model="acceptTerms" />
                     <label for="terms">{{ $t('i_accept_the') }}<a href="/terms">{{ $t('terms_of_use') }}</a></label>

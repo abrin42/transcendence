@@ -22,7 +22,7 @@ import CreateHomeButton from '../components/CreateHomeButton.vue';
 
                     <h2>1. Introduction</h2>
                     <p>
-                        Welcome to Pong Wars ("we," "our," or "us"). This Privacy Policy outlines how we collect, use,
+                        Welcome to CYBERPONG ("we," "our," or "us"). This Privacy Policy outlines how we collect, use,
                         and
                         protect the personal data you provide when interacting with our website and services. We take
                         your

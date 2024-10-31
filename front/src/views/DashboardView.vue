@@ -205,7 +205,6 @@
             <div class="containerDashboard">
                 <div class="input-section profile-picture-section">
                     <h2 class="category-title">{{ $t('profile_picture') }}</h2>
-                    <!-- Utilisation de l'image par défaut si aucune image n'est présente -->
                     <img :src="userAccount.profilePicture || profilePicture" alt="Profile Picture" class="profile-picture" />
                     <label for="file-upload" class="custom-file-upload">
                         <i class="fas fa-upload"></i> {{ $t('choose_file') }}
@@ -218,7 +217,7 @@
                 <div class="TextContainer">
                     <TextDisplay v-if="showAllInfo || !showAllInfo" :textValue="userAccount.email" :nameContainer="$t('email')" />
                     <TextDisplay v-if="showAllInfo || !showAllInfo" :textValue="userAccount.nickname" :nameContainer="$t('nickname')" />
-                    <TextDisplay v-if="showAllInfo || !showAllInfo" :textValue="userAccount.phone_number" :nameContainer="$t('phone_number')" />
+                    <TextDisplay v-if="showAllInfo || !showAllInfo && userAccount.student == false" :textValue="userAccount.phone_number" :nameContainer="$t('phone_number')" />
                     <TextDisplay v-if="showAllInfo" :textValue="userAccount.username" :nameContainer="$t('username')" />
                     <TextDisplay v-if="showAllInfo" :textValue="userAccount.date_joined" :nameContainer="$t('date_joined')" />
                     <TextDisplay v-if="showAllInfo" :textValue="userAccount.win" :nameContainer="$t('number_of_wins')" />
@@ -250,13 +249,17 @@
                     <Switch :buttonText="`${$t('activate')} 2FA (${$t('email')})`" v-model="userAccount.email_2fa_active" />
                     <Switch :buttonText="`${$t('activate')} Anonymization`" v-model="userAccount.anonymized" />
                 </div>
+
+                <div class="terms-container">
+                    <label for="terms"><a href="/terms">Terms of use</a></label>
+                </div>
             </div>
         </div>
     </main>
 </template>
 
 
-<style scoped>
+<style scoped>s
 h1,
 .category-title {
     font-size: 1.5rem;
