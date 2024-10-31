@@ -87,6 +87,7 @@
     "local": "Locale",
     "online": "In linea",
     "tourney": "Torneo",
+    "remote": "Remoto",
 
     "ERROR_404": "ERRORE 404 - PAGINA NON TROVATA",
     "contact_devs": "Contattare gli sviluppatori se si ritiene che si tratti di un errore.",
@@ -161,5 +162,34 @@
     "error_creating_AI_bot": "Si è verificato un errore durante la creazione del bot AI.",
     "error_creating_local_game": "Si è verificato un errore durante la creazione di una partita locale.",
     "error_updating_keys": "Si è verificato un errore durante l'aggiornamento delle chiavi.",
-    "game-mode": "modalità-di-gioco"
+    "game-mode": "modalità-di-gioco",
+
+
+
+    "privacy_policy": "Informativa sulla privacy",
+    "effective_date": "Data di entrata in vigore:",
+    "date": "20/07/2024",
+    "introduction": "1. Introduzione",
+    "welcome_to_pong_wars": "Benvenuti a Pong Wars (“noi”, “nostro” o “ci”). La presente Informativa sulla privacy illustra le modalità di raccolta, utilizzo e protezione dei dati personali forniti dall'utente durante l'interazione con il nostro sito web e i nostri servizi. Prendiamo sul serio la vostra privacy e ci impegniamo a garantire la sicurezza dei vostri dati personali.",
+    "information_we_collect": "2. Informazioni raccolte",
+    "personal_information": "2.1. Informazioni personali",
+    "we_collect_following_informations": "Raccogliamo le seguenti informazioni personali per fornire e migliorare i nostri servizi:",
+    "we_collect_email_address": "Indirizzo e-mail: Utilizzato per la gestione dell'account e la comunicazione.",
+    "we_collect_phone_number": "Numero di telefono: Utilizzato per l'autenticazione a due fattori (2FA) per proteggere il vostro account.",
+    "we_collect_username": "Nome utente: raccolto e utilizzato per scopi di gioco e account.",
+    "game_information": "2.2. Informazioni sul gioco",
+    "gameplay_data": "Dati di gioco: Include punteggi, risultati e preferenze per migliorare la vostra esperienza di gioco.",
+    "how_we_use_your_information": "3. Come utilizziamo le vostre informazioni",
+    "we_use_your_information_for": "Utilizziamo i vostri dati personali per i seguenti scopi:",
+    "for_account_security": "Sicurezza dell'account: Per abilitare il 2FA e salvaguardare il vostro account.",
+    "for_communication": "Comunicazione: Per inviare notifiche relative all'account e rispondere alle richieste di informazioni.",
+    "for_gameplay_data": "Dati di gioco: Per fornire informazioni rilevanti sul gioco.",
+    "for_service_improvement": "Miglioramento del servizio: Per analizzare e migliorare l'esperienza degli utenti.",
+    "legal_basis_for_processing": "4. Base giuridica del trattamento",
+    "we_process_your_data_based_on": "Trattiamo i vostri dati personali sulla base di:",
+    "consent": "Consenso: Chiediamo il consenso esplicito dell'utente per le finalità di 2FA e di gestione dell'account.",
+    "contractual_necessity": "Necessità contrattuale: Il trattamento è necessario per fornire i nostri servizi e l'accesso alle informazioni di gioco.",
+    "legitimate_interests": "Interessi legittimi: Per la sicurezza e il miglioramento della nostra piattaforma e dei nostri servizi.",
+    "contact_us": "10. Contatti",
+    "any_questions_contact_us": "In caso di domande o dubbi sulla presente Informativa sulla privacy o sulle nostre pratiche di trattamento dei dati, si prega di contattarci all'indirizzo:"
 }

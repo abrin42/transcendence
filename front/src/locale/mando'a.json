@@ -87,6 +87,7 @@
     "local": "Yaim'la",
     "online": "O'r briik",
     "tourney": "Kyrbej",
+    "remote": "Sha chaaj",
 
     "ERROR_404": "TRATTOK'OR'YC 404 - NU MAR'EYI'LA",
     "contact_devs": "Gedet'ye lenedatir alore meh gar mirdi ibic trattok'or'yc.",
@@ -161,5 +162,34 @@
     "error_creating_AI_bot": "Trattok'or'yc ru banar vaal gotal'ur'yc be beskar'ad.",
     "error_creating_local_game": "Trattok'or'yc ru banar vaal gotal'ur'yc yaim'la geroya.",
     "error_updating_keys": "Trattok'or'yc ru banar vaal gotal'ur'yc tug'yc nynir'yce.",
-    "game-mode": "geroya-dajun"
+    "game-mode": "geroya-dajun",
+
+
+
+    "privacy_policy": "Privacy Policy",
+    "effective_date": "Effective Date:",
+    "date": "20/07/2024",
+    "introduction": "1. Introduction",
+    "welcome_to_pong_wars": "Welcome to Pong Wars (\"we\", \"our\" or \"us\"). This Privacy Policy outlines how we collect, use, and protect the personal data you provide when interacting with our website and services. We take your privacy seriously and are committed to ensuring that your personal information is safe and secure.",
+    "information_we_collect": "2. Information We Collect",
+    "personal_information": "2.1. Personal Information",
+    "we_collect_following_informations": "We collect the following personal information in order to provide and improve our services:",
+    "we_collect_email_address": "Email Address: Used for account management and communication.",
+    "we_collect_phone_number": "Phone Number: Used for two-factor authentication (2FA) to secure your account.",
+    "we_collect_username": "Username: Collected and used for gameplay and account purposes.",
+    "game_information": "2.2. Game Information",
+    "gameplay_data": "Gameplay Data: Includes scores, achievements, and preferences to enhance your gaming experience.",
+    "how_we_use_your_information": "3. How We Use Your Information",
+    "we_use_your_information_for": "We use your personal information for the following purposes:",
+    "for_account_security": "Account Security: To enable 2FA and safeguard your account.",
+    "for_communication": "Communication: To send account-related notifications and respond to enquiries.",
+    "for_gameplay_data": "Gameplay Data: To provide relevant game-related information.",
+    "for_service_improvement": "Service Improvement: To analyze and improve user experience.",
+    "legal_basis_for_processing": "4. Legal Basis for Processing",
+    "we_process_your_data_based_on": "We process your personal data on the basis of:",
+    "consent": "Consent: We ask your explicit consent for 2FA and account management purposes.",
+    "contractual_necessity": "Contractual Necessity: Processing is necessary to provide our services and access to game information.",
+    "legitimate_interests": "Legitimate Interests: For the security and improvement of our platform and services.",
+    "contact_us": "10. Contact Us",
+    "any_questions_contact_us": "If you have any questions or concerns about this Privacy Policy or our data practices, please contact us at:"
 }

@@ -17,58 +17,50 @@ import CreateHomeButton from '../components/CreateHomeButton.vue';
 
                 <!-- Privacy Policy Text -->
                 <div class="terms-text-container">
-                    <h1>Privacy Policy</h1>
-                    <p><strong>Effective Date:</strong> 20/07/2024</p>
+                    <h1>{{ $t('privacy_policy') }}</h1>
+                    <p><strong>{{ $t('effective_date') }}</strong> {{ $t('date') }}</p>
 
-                    <h2>1. Introduction</h2>
+                    <h2>{{ $t('introduction') }}</h2>
                     <p>
-                        Welcome to CYBERPONG ("we," "our," or "us"). This Privacy Policy outlines how we collect, use,
-                        and
-                        protect the personal data you provide when interacting with our website and services. We take
-                        your
-                        privacy seriously and are committed to ensuring that your personal information is safe and
-                        secure.
+                        {{ $t('welcome_to_pong_wars') }}
                     </p>
 
-                    <h2>2. Information We Collect</h2>
-                    <h3>2.1. Personal Information</h3>
-                    <p>We collect the following personal information to provide and improve our services:</p>
+                    <h2>{{ $t('information_we_collect') }}</h2>
+                    <h3>{{ $t('personal_information') }}</h3>
+                    <p>{{ $t('we_collect_following_informations') }}</p>
                     <ul>
-                        <li>Email Address: Used for account management and communication.</li>
-                        <li>Phone Number: Used for two-factor authentication (2FA) to secure your account.</li>
-                        <li>Username: Collected and used for gameplay and account purposes.</li>
+                        <li>{{ $t('we_collect_email_address') }}</li>
+                        <li>{{ $t('we_collect_phone_number') }}</li>
+                        <li>{{ $t('we_collect_username') }}</li>
                     </ul>
 
-                    <h3>2.2. Game Information</h3>
+                    <h3>{{ $t('game_information') }}</h3>
                     <p>
-                        Gameplay Data: Includes scores, achievements, and preferences to enhance your gaming experience.
+                        {{ $t('gameplay_data') }}
                     </p>
 
-                    <h2>3. How We Use Your Information</h2>
-                    <p>We use your personal information for the following purposes:</p>
+                    <h2>{{ $t('how_we_use_your_information') }}</h2>
+                    <p>{{ $t('we_use_your_information_for') }}</p>
                     <ul>
-                        <li>Account Security: To enable 2FA and safeguard your account.</li>
-                        <li>Communication: To send account-related notifications and respond to inquiries.</li>
-                        <li>Gameplay Data: To provide relevant game-related information.</li>
-                        <li>Service Improvement: To analyze and improve user experience.</li>
+                        <li>{{ $t('for_account_security') }}</li>
+                        <li>{{ $t('for_communication') }}</li>
+                        <li>{{ $t('for_gameplay_data') }}</li>
+                        <li>{{ $t('for_service_improvement') }}</li>
                     </ul>
 
-                    <h2>4. Legal Basis for Processing</h2>
-                    <p>We process your personal data based on:</p>
+                    <h2>{{ $t('legal_basis_for_processing') }}</h2>
+                    <p>{{ $t('we_process_your_data_based_on') }}</p>
                     <ul>
-                        <li>Consent: We seek your explicit consent for 2FA and account management purposes.</li>
-                        <li>Contractual Necessity: Processing is necessary to provide our services and access to game
-                            information.</li>
-                        <li>Legitimate Interests: For the security and improvement of our platform and services.</li>
+                        <li>{{ $t('consent') }}</li>
+                        <li>{{ $t('contractual_necessity') }}</li>
+                        <li>{{ $t('legitimate_interests') }}</li>
                     </ul>
 
-                    <h2>10. Contact Us</h2>
+                    <h2>{{ $t('contact_us') }}</h2>
                     <p>
-                        If you have any questions or concerns regarding this Privacy Policy or our data practices,
-                        please
-                        contact us at:
+                        {{ $t('any_questions_contact_us') }}
                     </p>
-                    <p>Email: proj42_lh@proton.me</p>
+                    <p>{{ $t('email') }}: proj42_lh@proton.me</p>
                     <p>Address: 20 Quai Frissard, 76600 Le Havre, [FRANCE]</p>
                 </div>
             </div>
