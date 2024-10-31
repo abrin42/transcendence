@@ -42,16 +42,14 @@
             return;
         router.push(page);
     }
-    console.log('mode1valewerewrwerwerwewerewuehere!!!!!!');
-    console.log(game.value);
-    console.log(mode1.value);
+
+    let isVisible = false;
+    if (game.value == 'legacy')
+        isVisible = true;
 
     function goToMatchMakingLocal() {
         mode2.value = 'local';
         gameSelection(game.value, mode1.value, mode2.value);
-        console.log('mode1valewerewrwerwerwewerewuehere!!!!!!');
-        console.log(game.value);
-        console.log(mode1.value);
         router.push('/matchmaking');
     }
 
@@ -83,7 +81,7 @@
                 <button class="button button-credits" @click="goToMatchmakingRemote()">
                     <span class="buttonText">{{ $t('remote') }}</span>
                 </button>
-                <button class="button button-credits" @click="goToTourney()">
+                <button v-if="isVisible === true" class="button button-credits" @click="goToTourney()">
                     <span class="buttonText">{{ $t('tourney') }}</span>
                 </button>
                 <CreateHomeButton />
