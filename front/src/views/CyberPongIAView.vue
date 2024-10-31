@@ -217,8 +217,6 @@ function __goTo(page) {
             player1Score = responseData.scorep1;
             player2Score = responseData.scorep2;
             
-            console.log("la game---");
-            console.log(responseData);
 
         }
         else if (response.status === 404) {
@@ -248,7 +246,6 @@ function __goTo(page) {
         });
         if (response.ok) {
             const responseData = await response.json();
-            console.log('rank updated successfully!', responseData);
         }
         else
         {
@@ -275,17 +272,14 @@ function __goTo(page) {
         });
         if (response.ok) {
             const responseData = await response.json();
-            console.log('Game updated successfully!', responseData);
 
             if (responseData.message == 'isFirstPlayer' || responseData.message == 'isSecondePlayer')
             {
               canPlay.value = 1;
-              console.log ("is player");
             }
             else if (responseData.message == 'isSpec')
             {
               canPlay.value = 0;
-              console.log ("is spec");
             }
 
 
@@ -317,7 +311,6 @@ function __goTo(page) {
         });
         if (response.ok) {
             const responseData = await response.json();
-            console.log('Game updated successfully!', responseData);
         } else {
             const errorData = await response.json();
             console.error('Error:', errorData.error);
@@ -372,8 +365,6 @@ function __goTo(page) {
 
 function  updatePoints(player, updatePts)
 {
-  // console.log(player);
-  // console.log(updatePts);
   if (player == 1)
   {
     player1Score = updatePts;
@@ -403,13 +394,10 @@ function updateBaal(x, y)
 }
 
 function connectWebSocket() {
-  console.log(lastSegment);
   let hostName =  window.location.hostname;
   let port = window.location.port || '8443';
   socket.value = new WebSocket(`wss://${hostName}:${port}/ws/websockets/?page=${encodeURIComponent(gamePage)}`);
   socket.value.onopen = () => {
-    console.log('WebSocket connecté');
-    console.log(socket.value);
     socket.value.send(JSON.stringify({
       'type': "pointInit",
       'player': "1",
@@ -420,7 +408,6 @@ function connectWebSocket() {
   
   
   socket.value.onmessage = async (event) => {
-    // console.log("---ON MESSAGE---");
     
     const data = JSON.parse(event.data);
     
@@ -433,16 +420,11 @@ function connectWebSocket() {
       };
       sendMessage(message);
 
-      // console.log(data.type);
-      // console.log(data.message);
       // connectionStatus.value = data.message;
       connection = 1;
     }
     else if (data.type == 'updatePts') //sound
     {
-      // console.log(data.type);
-      // console.log(data.updatePts);
-      // console.log(data.player);
       updatePoints(data.player, data.updatePts);
       if (soundOnOff == true)
       pointScoredAudio.play();
@@ -455,8 +437,6 @@ function connectWebSocket() {
     }
     else if (data.type == 'updateBaal')
     {
-      // console.log(data.x);
-      // console.log(data.y);
       updateBaal(data.x, data.y);
     }
     else if (data.type == 'endGame')
@@ -464,34 +444,22 @@ function connectWebSocket() {
       connection = 0;
       await updateGameInfo();
       await setGameRank();
-      // console.log(data.type);
       router.push(`/legacyrecap/${lastSegment}`);
     }
     else if (data.type == 'startGame')
     {
       await updateGameInfo();
-      // console.log(data.type);
     }
     else if (data.type == 'paddleHit')
     {
-      // console.log(data.type);
       if (soundOnOff == true)
         paddleHitAudio.play();
     }
     else if (data.type == 'wallHit')
     { 
-      // console.log(data.type);
       if (soundOnOff == true)
         wallHitAudio.play();
     }
-    else if (data.type == 'info_back') //a enlever test
-    {
-      // console.log(data.type);
-      // console.log(data.value_back1);
-      // console.log(data.value_back2);
-      // console.log(data.value_back3);
-    }
-    // console.log("---END ON MESSAGE---");
   };
 
   socket.value.onerror = (error) => {
@@ -499,7 +467,6 @@ function connectWebSocket() {
   };
 
   socket.value.onclose = () => {
-    console.log('WebSocket déconnecté, tentative de reconnexion...');
     setTimeout(() => 
     {
       if (connection != 0)
@@ -626,9 +593,7 @@ let animationFrameId = null;
     {
       if (e.code == mute)
       {
-        console.log(soundOnOff);
         soundOnOff = !soundOnOff;
-        console.log(soundOnOff);
       }
     }
 

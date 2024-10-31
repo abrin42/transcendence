@@ -100,7 +100,6 @@ async function createFalsePlayer(user1, user2, user3 ,user4)
         });
         if (response.ok) {
             const data = await response.json();
-            console.log('Game Data:', data);
         }
     }
     catch (error) {

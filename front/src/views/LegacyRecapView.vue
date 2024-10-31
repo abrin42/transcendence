@@ -74,8 +74,6 @@
             profilePicture2 = responseData.player2.profile_picture;
             gamestatus = responseData.state;
             
-            console.log("la game---");
-            console.log(responseData);
 
         }
         else if (response.status === 404) {
@@ -86,13 +84,10 @@
             const errorData = await response.json();
             console.error('Error:', errorData.error);
         }
-        console.log('HEEEEEEEERE');
-        console.log(result.value);
         if (gamestatus == 'end' && scoreplayer1.value >= 5)
             result.value = "PLAYER 1 WINS!";
         else if (gamestatus == 'end' && scoreplayer2.value >= 5)
             result.value = "PLAYER 2 WINS!";
-        console.log(result.value);
     } catch (error) {
         console.error('Error updating game:', error);
     }

@@ -2,7 +2,7 @@
 import { ref, onMounted } from 'vue';
 import PieChart from '../components/PieChart.vue';
 import CreateDropupButton from '../components/CreateDropupButton.vue';
-import CreateBackButton from '../components/CreateBackButton.vue';
+import CreateHomeButton from '../components/CreateHomeButton.vue';
 import profilePicture from '@/assets/img/default-profile.png';
 import { inject } from 'vue';
 
@@ -14,7 +14,6 @@ const varySpeed = inject('varySpeed');
 
 const currentUrl = window.location.href;
 const lastSegment = currentUrl.split('/').filter(Boolean).pop();
-console.log("user ", lastSegment);
 
 const user = ref([]);
 var obj = {};
@@ -46,7 +45,6 @@ async function getAllGames() {
         }
         const users = await response.json();
             const userData = JSON.parse(users);
-            console.log("games =", userData);
             userData.forEach((element) => {
                 if (element.fields.state == "end"){
                     var obj = {}
@@ -99,7 +97,6 @@ async function getAllUsers() {
                 }
             }
         });
-        console.log("user is god", user._rawValue[0]);
     } catch (error) {
         console.error('Error retrieving user data /getAllUsers:', error);
     }
@@ -111,7 +108,7 @@ async function getAllUsers() {
     <main>
         <div id="wrapper">
             <CreateDropupButton />
-            <CreateBackButton />
+            <CreateHomeButton />
             <h2 class="category-title">{{ $t('LEADERBOARD') }}</h2>
             <div class="leaderboardContainer">
                 <div>

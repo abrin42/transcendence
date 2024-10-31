@@ -271,7 +271,6 @@ function getCsrfToken() {
         });
         if (response.ok) {
             const data = await response.json();
-            console.log('---Game Data:', data);
 
             current_game_id.value = data.id;
 
@@ -304,7 +303,6 @@ async function createFalsePlayer(user1, user2, user3 ,user4)
         });
         if (response.ok) {
             const data = await response.json();
-            console.log('Game Data:', data);
         }
     }
     catch (error) {
@@ -329,7 +327,6 @@ async function createFalsePlayer(user1, user2, user3 ,user4)
 //         });
 //         if (response.ok) {
 //             const responseData = await response.json();
-//             console.log('rank updated successfully!', responseData);
 //         }
 //         else
 //         {
@@ -359,7 +356,6 @@ async function updateGameInfo() {
         });
         if (response.ok) {
             const responseData = await response.json();
-            console.log('Game updated successfully!', responseData);
         } else {
             const errorData = await response.json();
             console.error('Error:', errorData.error);
@@ -414,8 +410,6 @@ async function updateGameInfo() {
 
 function  updatePoints(player, updatePts)
 {
-// console.log(player);
-// console.log(updatePts);
 if (player == 1)
 {
     player1Score = updatePts;
@@ -445,35 +439,25 @@ ball.y = y;
 }
 
 function connectWebSocket() {
-console.log(lastSegment);
 let hostName =  window.location.hostname;
 let port = window.location.port || '8443';
 socket.value = new WebSocket(`wss://${hostName}:${port}/ws/websockets/?page=${encodeURIComponent(gamePage)}`);
 
 socket.value.onopen = () => {
-    console.log('WebSocket connecté');
-    console.log(socket.value);
 };
 
 
 socket.value.onmessage = async (event) => {
-    // console.log("---ON MESSAGE---");
     
     const data = JSON.parse(event.data);
     
     if (data.type == 'connection_success') 
     {
 
-    // console.log(data.type);
-    // console.log(data.message);
-    // connectionStatus.value = data.message;
     connection = 1;
     }
     else if (data.type == 'updatePts') //sound
     {
-    // console.log(data.type);
-    // console.log(data.updatePts);
-    // console.log(data.player);
     updatePoints(data.player, data.updatePts);
     if (soundOnOff == true)
     pointScoredAudio.play();
@@ -482,18 +466,14 @@ socket.value.onmessage = async (event) => {
     else if (data.type == 'updatePaddle')
     {
     updatePadel(data.player, data.newY);
-    // messages.value.push(data.type);
     }
     else if (data.type == 'updateBaal')
     {
-    // console.log(data.x);
-    // console.log(data.y);
     updateBaal(data.x, data.y);
     }
     else if (data.type == 'endGame')
     {
     connection = 0;
-    // console.log(data.type);
     await updateGameInfo();
     // await setGameRank();
     await end_game();
@@ -503,28 +483,18 @@ socket.value.onmessage = async (event) => {
     else if (data.type == 'startGame')
     {
     await updateGameInfo();
-    // console.log(data.type);
     }
     else if (data.type == 'paddleHit')
     {
-    // console.log(data.type);
     if (soundOnOff == true)
         paddleHitAudio.play();
     }
     else if (data.type == 'wallHit')
     { 
-    // console.log(data.type);
     if (soundOnOff == true)
         wallHitAudio.play();
     }
-    else if (data.type == 'info_back') //a enlever test
-    {
-    // console.log(data.type);
-    // console.log(data.value_back1);
-    // console.log(data.value_back2);
-    // console.log(data.value_back3);
-    }
-    // console.log("---END ON MESSAGE---");
+
 };
 }
 
@@ -548,9 +518,7 @@ let animationFrameId = null;
 
     function update() 
     {
-        // console.log("boucle game update");
         animationFrameId = requestAnimationFrame(update);
-        console.log();
         context.clearRect(0, 0, board.width, board.height); // clear rectangle after movement (remove previous paddle position)
         context.fillRect(player1.x, player1.y, player1.width, player1.height); 
         context.fillRect(player2.x, player2.y, player2.width, player2.height);
@@ -660,9 +628,7 @@ let animationFrameId = null;
     {
     if (e.code == mute)
     {
-        console.log(soundOnOff);
         soundOnOff = !soundOnOff;
-        console.log(soundOnOff);
     }
     }
 

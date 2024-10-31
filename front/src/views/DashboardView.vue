@@ -132,12 +132,10 @@
                 })
             });
             if (response.ok) {
-                console.log(userAccount.nickname);
                 const responseData = await response.json();
                 alert(i18n.global.t('account_updated_successfully'));
             } else {
                 const errorData = await response.json();
-                console.log(errorData);
             }
         } catch (error) {
             console.error('Error updating account:', error);

@@ -133,9 +133,7 @@ async function getFriendsRequest() {
             throw new Error(`HTTP error! Status: ${response.status}`);
         }
         const users = await response.json();
-        console.log(users);
          let users_data = JSON.parse(users)
-         console.log("all friends: ", users_data);
          for (let i = 0; i < users_data.length; i++) {
              var obj = {}
              if (users_data[i].fields.friend[0] == userAccount.username) {
@@ -154,7 +152,6 @@ async function getFriendsRequest() {
 // Accepter une demande d'ami
 async function acceptRequest(playerUsername) {
     try {
-        console.log('Inviting player with ID:', playerUsername);
         const response = await fetch('/api/friend/help/', {
             method: 'POST', // Change to POST to match the Django view
             headers: {
@@ -178,7 +175,6 @@ async function acceptRequest(playerUsername) {
 
 async function invitePlayer(playerUsername) {
     try {
-        console.log('Inviting player with ID:', playerUsername);
         const response = await fetch('/api/friend/add/', {
             method: 'POST',
             headers: {
@@ -205,7 +201,6 @@ async function invitePlayer(playerUsername) {
 // Refuser une demande d'ami
 function declineRequest(id) {
     friendRequests.value = friendRequests.value.filter(request => request.id !== id);
-    console.log('Demande d\'ami refusée pour ID:', id);
 }
 
 //const allPlayers = ref([]);
@@ -231,7 +226,6 @@ async function getAllUsers() {
                 obj['lose'] = element.fields.lose;
                 if (obj['username'][0] != '#'){allPlayers.value.push(obj);}
             });
-            console.log("all user", allPlayers._rawValue)
     } catch (error) {
         console.error('Error retrieving user data /getAllUsers:', error);
     }
@@ -248,7 +242,6 @@ async function getFriends() {
         }
         const users = await response.json();
         let users_data = JSON.parse(users)
-        console.log("all friends: ", users_data);
         for (let i = 0; i < users_data.length; i++) {
             var obj = {}
             if (users_data[i].fields.friend[0] == userAccount.username) {
@@ -283,7 +276,6 @@ function closePopup() {
 
 async function deleteFriend(playerUsername) {
     try {
-        console.log('delete player with :', playerUsername);
         const response = await fetch('/api/friend/delete/', {
             method: 'POST', // Change to POST to match the Django view
             headers: {
@@ -305,7 +297,6 @@ async function deleteFriend(playerUsername) {
 }
 
 function inviteFriendToPlay(friendId) {
-    console.log('Inviting friend with ID:', friendId, 'to play');
     alert(`${i18n.global.t('invitation_sent_to')} ${friends.value.find(friend => friend.id === friendId).name} ${i18n.global.t('to_play')}`);
 }
 
@@ -335,7 +326,6 @@ function closePopupFriendRequest() {
 }
 
 function goProfile(_username) {
-    console.log(_username);
     __goTo(`/leaderboard/${_username}`);
 }
 

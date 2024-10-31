@@ -94,7 +94,7 @@
         });
         if (response.status == 404)
         {
-            console.log("404 de la fonction");
+            console.error("404 de la fonction");
         }
     }
             // else
@@ -109,7 +109,6 @@
 
     function stopLoading() {
         clearInterval(dots);  // Stop the interval
-        console.log("Loading stopped.");
 }
     ////////////////////////////////////////////////
     ////////////////////////////////////////////////
@@ -143,8 +142,6 @@
     let waitingPlayer = 1;
 
     function goToLegacy(id) {
-        console.log("id hereee");
-        console.log(id);
         router.push(`/legacy-remote/${id}`);
         if(gametype.value == 'legacy')
             router.push(`/legacy-remote/${id}`);
@@ -156,8 +153,6 @@ let loadingmodule = true;
 
 async function insertPlayer() {
     try {
-        console.log("------hereeee-------")
-        console.log(userAccount.username);
         const response = await fetch('/api/game/insertplayer/', {
             method: 'POST',
             headers: {
@@ -170,16 +165,13 @@ async function insertPlayer() {
         });
         if (response.status == 404)
         {
-            console.log("404 de la fonction");
+            console.error("404 de la fonction");
         }
         if (response.ok) {
             game = await response.json();
-            console.log("___b_ids____", game.id, gameid);
             if (gameid == -1) {gameid = game.id}
-            console.log("___a_ids____", game.id, gameid);
             if (game.id != gameid)
                 return;
-            console.log("hereeeeeeeeeeee");
             if (game.player2 == null) {
                 waitingPlayer = 1;
                 isPlayer2 = 0;
@@ -209,19 +201,14 @@ async function insertPlayer() {
                 player2_name.textContent = game.player2.nickname;
                 player2_rank.textContent = `Rank: ${game.player2.rank}`;
             
-                console.log('heeeeeeeeeeeeere rn');
-                console.log(player2_rank.textContent);
                 opponentText.value = 'Player found!';                
                 vs_text.classList.add(...['fade-in']);
                 player2_pic.classList.add(...['fade-in']);
                 player2_name.classList.add(...['fade-in']);
                 player2_rank.classList.add(...['fade-in']);
 
-                console.log("lancement dans 3");
                 await new Promise(resolve => setTimeout(resolve, 1000));
-                console.log("lancement dans 2");
                 await new Promise(resolve => setTimeout(resolve, 1000));
-                console.log("lancement dans 1");
                 await new Promise(resolve => setTimeout(resolve, 1000));
                 goToLegacy(game.id);
             }
@@ -266,13 +253,11 @@ async function createPlyInput() {
     ///////////////////////////////////////////////
 
     //dynamic "loading" dots 
-    // console.log(loadingmodule);
     let dots;
     if (loadingmodule == true)
     {
         dots = window.setInterval( function() {
         var wait = document.getElementById('loading');
-        console.log(wait);
         if ( wait.innerHTML.length >= 3 ) 
             wait.innerHTML = ".";
         else 

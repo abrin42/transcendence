@@ -59,9 +59,7 @@
     }
 
     // function goToIA() {
-    //     console.log("-------------- CREATING THE IA PLAYER --------------");
     //     createAIPlayer();
-    //     console.log("-------------- WE ARE GOING TO IA --------------");
     //     game.value = 'solo';
     //     gameSelection(game.value, mode.value);
     //     createGameLocal();
@@ -75,14 +73,12 @@
    
             await createAIPlayer();
             await createGameLocal();
-            console.log(game_id.value);
             router.push(`/legacy-ia/${game_id.value}/`);
         }
         else if(game.value == 'cyberpong')
         {
             await createAIPlayer();
             await createGameLocal();
-            console.log(game_id.value);
             router.push(`/cyberpong-ia/${game_id.value}/`);
         }
         else if(game.value == 'threepong')
@@ -108,11 +104,6 @@
             });
             if (response.ok) {
                 const user = await response.json();
-                if (user) {
-                    console.log("hereee");
-                    console.log(user);
-                    console.log(user.username);
-                }
             }  
         } catch (error) {
             console.error('Erreur lors de la creation du bot AI:', error);
@@ -136,12 +127,7 @@
             });
             if (response.ok) {
                 const data = await response.json();
-                console.log('Game Data:', data);
                 game_id.value =  data.id;
-                console.log('data:', data);
-                console.log("game id", data.id);
-                console.log("p1 =",data.player1);
-                console.log("p2 =",data.player2);
                 
             }
         }

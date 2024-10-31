@@ -72,7 +72,7 @@ export function useUser() {
                 updateUserAccount(user);
                 is_connected.value = true;
             } else {
-                console.log('No user data retrieved.');
+                console.error('No user data retrieved.');
                 is_connected.value = false;
             }
         } catch (error) {

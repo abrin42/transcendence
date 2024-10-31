@@ -85,21 +85,15 @@
 
         if (data.player_data) {
             const playerData = JSON.parse(data.player_data);  
-            console.log('Player Data:', playerData);
 
             if (playerData.length > 0) {
                 const user = playerData[0];  
                 const userFields = user.fields; 
-                console.log('User:', userFields);
 
-                // Safely retrieve properties
                 const username = userFields.username;
                 sms2FA.value = userFields.sms_2fa_active;
                 email2FA.value = userFields.email_2fa_active;
 
-                console.log('Username:', username);
-                console.log('SMS 2FA Active:', sms2FA);
-                console.log('email 2FA Active:', email2FA);
 
             } else {
                 alert(i18n.global.t('error_user_data_not_found'));

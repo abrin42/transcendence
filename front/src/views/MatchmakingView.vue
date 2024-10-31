@@ -91,7 +91,6 @@
 
     function stopLoading() {
         clearInterval(dots);  // Stop the interval
-        console.log("Loading stopped.");
     }
 
     ////////////////////////////////////////////////
@@ -122,8 +121,6 @@
     let waitingPlayer = 1;
 
     function goToLegacy(id) {
-        console.log("id hereee");
-        console.log(id);
         if(gametype.value == 'legacy')
             router.push(`/legacy-local/${id}`);
         else if(gametype.value == 'cyberpong')
@@ -135,10 +132,6 @@
 
     async function createGameLocal()
     {
-        console.log("--------------------la---------------------------")
-        console.log(userAccount.username)
-        console.log(player2.username)
-        console.log("--------------------la 222---------------------------")
         try {
             const response = await fetch('/api/game/create_game_local/', {
                 method: 'POST',
@@ -153,12 +146,7 @@
             });
             if (response.ok) {
                 const data = await response.json();
-                console.log('Game Data:', data);
 
-            console.log('data:', data);
-            console.log("game id", data.id);
-            console.log("p1 =",data.player1);
-            console.log("p2 =",data.player2);
 
             // const player1 = data.player1;
             // const player1_pic = document.getElementById('player1-picture');
@@ -184,11 +172,8 @@
             // player2_rank.classList.add(...['fade-in']);
 
 
-            console.log("lancement dans 3");
             await new Promise(resolve => setTimeout(resolve, 1000));
-            console.log("lancement dans 2");
             await new Promise(resolve => setTimeout(resolve, 1000));
-            console.log("lancement dans 1");
             await new Promise(resolve => setTimeout(resolve, 1000));
             goToLegacy(data.id);
         }
@@ -202,13 +187,11 @@
     ///////////////////////////////////////////////
 
     //dynamic "loading" dots 
-    // console.log(loadingmodule);
     let dots;
     if (loadingmodule == true)
     {
         dots = window.setInterval( function() {
         var wait = document.getElementById('loading');
-        // console.log(wait);
         if ( wait.innerHTML.length >= 3 ) 
             wait.innerHTML = ".";
         else 
@@ -279,7 +262,6 @@
 
 
     async function validGame() {
-        console.log(playerName2);
         validateGame = true;
         try {
         const response = await fetch('/api/game/createOneFalsePlayer/', {
@@ -297,13 +279,7 @@
             const user = await response.json();
             if (user)
             {
-                console.log(user);
-                console.log(user.username);
                 player2 = user
-                console.log(player2);
-                console.log(player2.username);
-                console.log(player2.rank);
-                console.log(player2.username);
 
                 // const player2_pic = document.getElementById('player2-picture');
                 const player2_name = document.getElementById('player2-name');
@@ -324,12 +300,9 @@
 
 
             // const data = await response.json();
-            // console.log('player Data:', data);
 
             // player2 = data;
 
-            // console.log(player2);
-            // console.log(player2.username);
             // // const player2_pic = document.getElementById('player2-picture');
             // const player2_name = document.getElementById('player2-name');
             // // const player2_rank = document.getElementById('player2-rank');
