@@ -41,7 +41,7 @@
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
-                'X-CSRFToken': getCsrfToken(), // Assuming CSRF protection is enabled
+                'X-CSRFToken': getCsrfToken(), 
             },
             body: JSON.stringify({
                 moveUpP1: userAccount.player1Up,
@@ -114,10 +114,10 @@
                 userAccount.pause = event.code;
             else if(selectedKey.value === 'mute')
                 userAccount.mute = event.code;
-            update_keys();
-            console.log("changing");
-            selectedKey.value = null;
-            window.removeEventListener('keydown', setKey);
+            if (is_connected === true)
+                update_keys();
+                selectedKey.value = null;
+                window.removeEventListener('keydown', setKey);
         }
     };
 

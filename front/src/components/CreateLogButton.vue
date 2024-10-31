@@ -1,6 +1,6 @@
 <template>
     <div class="button-container" @mouseenter="showDropdown" @mouseleave="hideDropdown">
-        <button ref="button" class="button button-log" @click="__goTo(is_connected ? '/dashboard' : '/log')">
+        <button ref="button" class="button button-log" @click="goToLeaderboardLog">
             <span class="buttonText">{{ is_connected ? userAccount.nickname : $t('login') }}</span>
         </button>
 
@@ -29,7 +29,7 @@
 import { useUser } from '../useUser.js';
 const { getUser, userAccount, is_connected } = useUser();
 
-    onBeforeMount(async () => {
+    onMounted(async () => {
         await getUser();
     });
 
@@ -45,6 +45,11 @@ const router = useRouter();
         }
         router.push(page);
     }
+
+    const goToLeaderboardLog = () => {
+        const path = is_connected.value ? `/leaderboard/${userAccount.username}` : '/log/';
+        router.push(path);
+    };
 
     const button = ref(null);
     const dropdownVisible = ref(false);
@@ -65,7 +70,6 @@ const router = useRouter();
             console.error('Logout failed:', error);
         }
     };
-    
 
     function getCsrfToken() {
         const cookieValue = document.cookie

@@ -36,8 +36,6 @@ APPEND_SLASH = True
 OTHER_IP = os.environ.get("OTHER_IP")
 FT42_REDIRECT_URI = f"https://{OTHER_IP}:8443/api/player/auth/42/callback/"
 FT42_REDIRECT_LOCAL_URI = "https://localhost:8443/api/player/auth/42/callback/"
-#FT42_REDIRECT_URI = FT42_URI.replace("OTHER_IP", OTHER_IP)
-print(f"FT42_REDIRECT_URI: {FT42_REDIRECT_URI}")
 
 ALLOWED_HOSTS = [
     "localhost", 
@@ -179,18 +177,11 @@ MEDIA_URL = '/media/'
 # FT42
 FT42_CLIENT_ID = os.environ.get('FT42_client_id')
 FT42_CLIENT_SECRET = os.environ.get('FT42_client_secret')
-#FT42_REDIRECT_URI = os.environ.get('FT42_redirect_uri')
 FT42_OAUTH_URL = os.environ.get('FT42_0auth_url')
 
 # Vonage API
 VONAGE_API_KEY = os.environ.get('vonage_api_key')
 VONAGE_SECRET_KEY = os.environ.get('vonage_secret_key')
-
-# SMTP Server Configuration
-#SMTP_SERVER = os.environ.get('smtp_server')
-#SMTP_PORT = os.environ.get('smtp_port')
-#SMTP_USERNAME = os.environ.get('smtp_username')
-#SMTP_PASSWORD = os.environ.get('smtp_password')
 
 # EMAIL Configuration
 EMAIL_BACKEND = os.environ.get('EMAIL_BACKEND')

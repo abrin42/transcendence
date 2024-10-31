@@ -57,7 +57,7 @@ async function login() {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
-                'X-CSRFToken': getCsrfToken(), // Assuming CSRF protection is enabled
+                'X-CSRFToken': getCsrfToken(), 
             },
             body: JSON.stringify({
                 username: username.value,
@@ -78,7 +78,6 @@ async function login() {
         }
     } catch (error) {
         console.error('Erreur lors de la connexion /login:', error);
-        //alert(i18n.global.t('error_login'));
         alert(i18n.global.t('invalid_username_or_password'));
     }
 }

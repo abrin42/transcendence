@@ -82,7 +82,6 @@
         }
 
         const data = await response.json();
-        console.log('Response data:', data);
 
         if (data.player_data) {
             const playerData = JSON.parse(data.player_data);  

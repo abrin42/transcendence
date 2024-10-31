@@ -297,13 +297,9 @@
             const user = await response.json();
             if (user)
             {
-                // console.log('Response data:', data);
-
-                console.log("hereee");
                 console.log(user);
                 console.log(user.username);
                 player2 = user
-                console.log("hereee222");
                 console.log(player2);
                 console.log(player2.username);
                 console.log(player2.rank);

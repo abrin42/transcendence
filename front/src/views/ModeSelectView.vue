@@ -109,7 +109,6 @@
             if (response.ok) {
                 const user = await response.json();
                 if (user) {
-                    // console.log('Response data:', data);
                     console.log("hereee");
                     console.log(user);
                     console.log(user.username);
