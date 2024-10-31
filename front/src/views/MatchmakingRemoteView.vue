@@ -16,7 +16,7 @@
                     <p id="player1-rank" class="rank-text-left">{{playerRank1}}</p>
 
                     <p id="opponent-text" class="opponent-text">{{opponentText}}</p>
-                    <img id="player2-picture" class="profile-picture-matchmaking-right" :src="profilePicture"/>
+                    <img id="player2-picture" class="profile-picture-matchmaking-right" :src="player2 || profilePicture"/>
                     <p id="player2-name" class="profile-text-right">{{playerName2}}</p>
                     <p id="player2-rank" class="rank-text-right">{{playerRank2}}</p>
             </div>
@@ -97,8 +97,8 @@
         return cookieValue || '';
     }
 
-    let player1;
-    let player2;
+    let player1 = "";
+    let player2 = "";
     let isPlayer2 = 1;
     let playerName1 = "";
     let playerName2 = "";
@@ -119,74 +119,6 @@
     }
 
 let loadingmodule = true;
-
-async function createGameLocal()
-{
-    try {
-        const response = await fetch('/api/game/create_game_local/', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                'X-CSRFToken': getCsrfToken() // Assuming you have CSRF protection enabled
-            },
-            body: JSON.stringify({
-                username1: userAccount.username,
-                username2: userAccount.username, //change to seconde player
-            })
-        });
-        if (response.ok) {
-            const data = await response.json();
-            console.log('Game Data:', data);
-
-            console.log('data:', data);
-            console.log("game id", data.id);
-            console.log("p1 =",data.player1);
-            console.log("p2 =",data.player2);
-
-            const player1 = data.player1;
-            const player1_pic = document.getElementById('player1-picture');
-            const player1_name = document.getElementById('player1-name');
-            const player1_rank = document.getElementById('player1-rank');
-            const player2 = data.player2;
-            const player2_pic = document.getElementById('player2-picture');
-            const player2_name = document.getElementById('player2-name');
-            const player2_rank = document.getElementById('player2-rank');
-            const vs_text = document.getElementById('versus-image');
-
-            if(player1.profile_picture)
-                player1_pic.src = player1.profile_picture;
-            player1_name.textContent = player1.nickname;
-            player1_rank.textContent = `${player1.rank} pts`; 
-            if(player2.profile_picture)
-                player2_pic.src = player2.profile_picture;
-            player2_name.textContent = player2.nickname;
-            player2_rank.textContent = `${player2.rank} pts`; 
-            opponentText.value = 'Player found!';
-
-            player2_pic.classList.add(...['fade-in']);
-            player2_name.classList.add(...['fade-in']);
-            player2_rank.classList.add(...['fade-in']);
-            vs_text.classList.add(...['fade-in']);
-
-
-            console.log("lancement dans 5");
-            await new Promise(resolve => setTimeout(resolve, 1000));
-            console.log("lancement dans 4");
-            await new Promise(resolve => setTimeout(resolve, 1000));
-            console.log("lancement dans 3");
-            await new Promise(resolve => setTimeout(resolve, 1000));
-            console.log("lancement dans 2");
-            await new Promise(resolve => setTimeout(resolve, 1000));
-            console.log("lancement dans 1");
-            await new Promise(resolve => setTimeout(resolve, 1000));
-            goToLegacy(data.id);
-        }
-    }
-    catch (error) {
-        console.error('Erreur lors de la connexion:', error);
-        alert(i18n.global.t('error_login'));
-    }
-}
 
 async function insertPlayer() {
     try {
@@ -221,19 +153,26 @@ async function insertPlayer() {
                 waitingPlayer = 0;
 
                 //fadein second player
+                const player1_pic = document.getElementById('player1-picture');
+                const player1_name = document.getElementById('player1-name');
+                const player1_rank = document.getElementById('player1-rank');
                 const player2_pic = document.getElementById('player2-picture');
                 const player2_name = document.getElementById('player2-name');
                 const player2_rank = document.getElementById('player2-rank');
                 const vs_text = document.getElementById('versus-image');
 
-                if(game.player2.profilePicture)
+                if(game.player1.profile_picture)
+                    player1_pic.src = game.player1.profile_picture;
+                player1_name.textContent = game.player1.nickname;
+                player1_rank.textContent = `Rank: ${game.player1.rank}`;
+                if(game.player2.profile_picture)
                     player2_pic.src = game.player2.profile_picture;
                 player2_name.textContent = game.player2.nickname;
-                player2_rank.textContent = `${game.player2.rank}` + 'test';
+                player2_rank.textContent = `Rank: ${game.player2.rank}`;
+            
                 console.log('heeeeeeeeeeeeere rn');
                 console.log(player2_rank.textContent);
                 opponentText.value = 'Player found!';                
-                
                 vs_text.classList.add(...['fade-in']);
                 player2_pic.classList.add(...['fade-in']);
                 player2_name.classList.add(...['fade-in']);
