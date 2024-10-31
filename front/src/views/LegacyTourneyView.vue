@@ -2,7 +2,7 @@
 import CreateDropupButton from '@/components/CreateDropupButton.vue';
 import CreateBackButton from '@/components/CreateBackButton.vue';
 import NeonText from '@/components/NeonText.vue';
-import Input from '@/components/Input.vue'; // Assurez-vous que ce composant Input existe
+import Input from '@/components/Input.vue';
 
 import { useRouter } from 'vue-router';
 import { onBeforeMount, ref, watch, onUnmounted } from 'vue';
@@ -11,28 +11,23 @@ import i18n from '../i18n.js';
 
 const { getUser, userAccount, is_connected } = useUser();
 const router = useRouter();
-const timer = ref(10);
+const timer = ref(5);
 let interval = null;
 
-// Charger les utilisateurs et démarrer le timer si 4 participants
 onBeforeMount(async () => {
     await getUser();
 });
 
-// Navigation vers une autre page
 function __goTo(page) {
     if (page) {
         router.push(page);
     }
 }
 
-// Liste des participants
 const participants = ref([]);
 
-// Référence pour les nouveaux participants
 const newParticipants = ref(["", "", "", ""]);
 
-// Matches de tournoi
 const matches = ref([
     { round: 'SEMI', team1: '', team2: '', score1: 0, score2: 0, winner: '', loser: '' },
     { round: 'SEMI', team1: '', team2: '', score1: 0, score2: 0, winner: '', loser: '' },
@@ -40,7 +35,6 @@ const matches = ref([
     { round: 'FINAL', team1: '', team2: '', score1: 0, score2: 0, winner: '', loser: '' }
 ]);
 
-// Fonction pour mélanger les participants
 function shuffleParticipants() {
     for (let i = participants.value.length - 1; i > 0; i--) {
         const j = Math.floor(Math.random() * (i + 1));
@@ -48,34 +42,20 @@ function shuffleParticipants() {
     }
 }
 
-// Démarrer le tournoi si le nombre de participants est de 4
 async function startTournament() {
-
     if (participants.value.length === 4) {
         createFalsePlayer(participants.value[0].name, participants.value[1].name, participants.value[2].name, participants.value[3].name);
 
-        shuffleParticipants(); // Mélange les participants
-        setupSemiFinals(); // Configure les demi-finales
+        shuffleParticipants();
+        setupSemiFinals();
         for (let i = 0; i < 4; ++i) {
-            await new Promise(resolve => setTimeout(resolve, 1000));
+            await startTimer();
             await start_game(i);
             updateScore(i);
-            // await new Promise(resolve => setTimeout(resolve, 1000));
-            // await start_game();
-            // updateScore(1);
-            // await new Promise(resolve => setTimeout(resolve, 1000));
-            // await start_game();
-            // updateScore(2);
-            // await new Promise(resolve => setTimeout(resolve, 1000));
-            // await start_game();
-            // updateScore(3);
         }
-        // updateFinals();
-        // startTimer();
     }
 }
 
-// Configuration des demi-finales avec les participants mélangés
 function setupSemiFinals() {
     matches.value[0].team1 = '#' + participants.value[0].name;
     matches.value[0].team2 = '#' + participants.value[1].name;
@@ -83,7 +63,6 @@ function setupSemiFinals() {
     matches.value[1].team2 = '#' + participants.value[3].name;
 }
 
-// Fonction pour ajouter les participants
 function addParticipants() {
     const filteredParticipants = newParticipants.value.filter(name => name.trim() !== "");
 
@@ -100,7 +79,6 @@ function addParticipants() {
     }
 }
 
-// Mettre à jour les finales
 function updateScore(match_index) {
     matches.value[match_index].score1 = player1Score;
     matches.value[match_index].score2 = player2Score;
@@ -127,42 +105,13 @@ function updateScore(match_index) {
     }
 }
 
-// Mettre à jour les finales
-function updateFinals() {
-    const semi1 = matches.value[0];
-    const semi2 = matches.value[1];
-
-    if (semi1.winner && semi2.winner) {
-        matches.value[3].team1 = semi1.winner;
-        matches.value[3].team2 = semi2.winner;
+async function startTimer() {
+    timer.value = 5;
+    while (timer.value != 0) {
+        await new Promise(resolve => setTimeout(resolve, 1000));
+        timer.value--;
     }
 }
-
-// Fonction pour démarrer le timer
-function startTimer() {
-    if (!interval) {
-        interval = setInterval(() => {
-            timer.value--;
-            if (timer.value === -1) {
-                alert(i18n.global.t('GAME_STARTS_SOON'));
-                stopTimer();
-            }
-        }, 1000);
-    }
-}
-
-// Fonction pour arrêter le timer
-function stopTimer() {
-    if (interval) {
-        clearInterval(interval);
-        interval = null;
-    }
-}
-
-onUnmounted(() => {
-    stopTimer();
-});
-
 
 
 
@@ -225,7 +174,6 @@ let moveDownP2;
 let mute;
 
 async function start_game(i) {
-
     await getUser();
     await createGameLocal(i);
     connectWebSocket();
@@ -234,7 +182,7 @@ async function start_game(i) {
     board = document.getElementById("board");
     board.height = boardHeight;
     board.width = boardWidth;
-    context = board.getContext("2d"); //Drawing on board
+    context = board.getContext("2d");
 
     context.fillStyle = "white";
 
@@ -310,11 +258,11 @@ function getCsrfToken() {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
-                'X-CSRFToken': getCsrfToken() // Assuming you have CSRF protection enabled
+                'X-CSRFToken': getCsrfToken()
             },
             body: JSON.stringify({
                 username1: matches.value[i].team1,
-                username2: matches.value[i].team2, //change to seconde player
+                username2: matches.value[i].team2,
             })
         });
         if (response.ok) {
