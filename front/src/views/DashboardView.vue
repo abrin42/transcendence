@@ -188,9 +188,7 @@
         if (file) {
             const reader = new FileReader();
             reader.onload = (e) => {
-                console.log("updateUserAccount.profilePicture: " + userAccount.profilePicture);
                 userAccount.profilePicture = e.target.result;
-                console.log("updateUserAccount.profilePicture: " + userAccount.profilePicture);
             };
             reader.readAsDataURL(file);
         }

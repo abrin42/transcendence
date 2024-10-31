@@ -52,19 +52,6 @@ export function useUser() {
         userAccount.player2Down = user.player2Down;
         userAccount.pause = user.pause;
         userAccount.mute = user.mute;
-
-        console.log("updateUserAccount.nickname: " + userAccount.nickname);
-        console.log("updateUserAccount.username: " + userAccount.username);
-        console.log("updateUserAccount.email: " + userAccount.email);
-        console.log("updateUserAccount.password: " + userAccount.password);
-        console.log("updateUserAccount.phone_number: " + userAccount.phone_number);
-        console.log("updateUserAccount.email_2fa_active: " + userAccount.email_2fa_active);
-        console.log("updateUserAccount.sms_2fa_active: " + userAccount.sms_2fa_active);
-        console.log("updateUserAccount.student: " + userAccount.student);
-        console.log("updateUserAccount.language: " + userAccount.language);
-
-        console.log("updateUserAccount.mute: " + userAccount.mute);
-        console.log("updateUserAccount.player1Up: " + userAccount.player1Up);
     }
 
     async function getUser() {
@@ -73,8 +60,7 @@ export function useUser() {
                 method: 'GET',
                 credentials: 'include',
                 headers: {
-                    'Cache-Control': 'no-cache',  // Désactiver le cache
-                    'Pragma': 'no-cache',
+                    'Cache-Control': 'private',
                 },
             });
             if (response.status == 204) {
@@ -84,9 +70,7 @@ export function useUser() {
             const user = await response.json();
             if (user && !user.error) {
                 updateUserAccount(user);
-                console.log("updateuser ok")
                 is_connected.value = true;
-                console.log("is_connected.value: " + is_connected.value)
             } else {
                 console.log('No user data retrieved.');
                 is_connected.value = false;

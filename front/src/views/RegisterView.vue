@@ -138,7 +138,6 @@
 
             if (response.ok) {
                 const responseData = await response.json();
-                console.log('Account created successfully!', responseData);
                 alert(i18n.global.t('successful_registration'));
                 __goTo('/')
             } else {

@@ -61,7 +61,6 @@
             }
             
             const data = await response.json();
-            console.log('Response data:', data);
             
         } catch (error) {
             console.error('Error during fetch operation:', error);
