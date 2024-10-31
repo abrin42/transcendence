@@ -6,8 +6,8 @@
     import CreateLogButton from '../components/CreateLogButton.vue';
     import CreateHomeButton from '../components/CreateHomeButton.vue';
     import { useRouter } from 'vue-router';
-    import { onMounted } from 'vue';
     import { inject } from 'vue';
+    import { onMounted, onBeforeMount } from 'vue';
     
     ////////////////////////////////////////////////
     /////// GET USER ///////////////////////////////
@@ -30,6 +30,7 @@
             return;
         router.push(page);
     }
+
     const router = useRouter();
     const gameSelection = inject('gameSelection');
     const varySpeed = inject('varySpeed');
@@ -37,14 +38,16 @@
     const mode1 = inject('mode1');
     const mode2 = inject('mode2');
 
-
     game.value = '';
     mode1.value = '';
     mode2.value = '';
-
     
     varySpeed(1); //sets speed to average in App.vue
     gameSelection(game.value, mode1.value, mode2.value); //sets game selected back to empty if user uses back button
+
+    onMounted(async () => {
+        await getCSRF();
+    });
 
     async function getCSRF() {
         try {
@@ -68,7 +71,6 @@
         }
     }
     
-
     function goToGameSelect() {
         router.push('/gameselect');
     }

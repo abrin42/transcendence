@@ -29,7 +29,7 @@
 import { useUser } from '../useUser.js';
 const { getUser, userAccount, is_connected } = useUser();
 
-    onBeforeMount(async () => {
+    onMounted(async () => {
         await getUser();
     });
 
@@ -47,7 +47,7 @@ const router = useRouter();
     }
 
     const goToLeaderboardLog = () => {
-        const path = is_connected ? `/leaderboard/${userAccount.username}` : '/log';
+        const path = is_connected.value ? `/leaderboard/${userAccount.username}` : '/log/';
         router.push(path);
     };
 
